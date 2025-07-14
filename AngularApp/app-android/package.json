@@ -13,7 +13,6 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@capacitor/cli": "^4.8.0",
     "@capacitor/core": "^4.8.0",
     "@capacitor/android": "4.8.2",
     "@capacitor/app": "^4.1.1",
@@ -23,6 +22,7 @@
     "@angular/core": "^18.0.3"
   },
   "devDependencies": {
+    "@capacitor/cli": "^4.8.0",
     "@angular-devkit/build-angular": "^18.0.4",
     "@angular/cli": "^18.0.3"
   }
