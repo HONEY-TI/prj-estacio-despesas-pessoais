@@ -1,12 +1,12 @@
-name: Deploy Development AWS EC2 Server
+name: Deploy Development Project in AWS
 on:
   push:
-     branches: 
-       - staging 
+    branches: 
+      - staging 
 jobs:
   trigger_build_and_test:
     name: Triggered Deploy Dev
-    uses: alexfariakof/app-despesas-pessoais/.github/workflows/build_and_test.yml@main
+    uses: alexribeirofaria/prj-despesas-pessoais/.github/workflows/build_and_test.yml@main
     secrets: inherit     
         
   deploy:
@@ -31,7 +31,7 @@ jobs:
           DOCKER_CLI_AGGREGATE: 1
         run: |
           docker login -u ${{ secrets.DOCKER_LOGIN }} -p ${{ secrets.DOCKER_PASSWORD }}    
-          docker push alexfariakof/api-despesas-backend-netcore-dev-img
+          docker push ${{ secrets.DOCKER_DEV_IMAGE }}
         
       - name: Execute SSH Commands into EC2 
         env:

@@ -43,3 +43,4 @@ Thumbs.db
 .angular/**
 obj/**
 !sonar-project.properties
+**/www
