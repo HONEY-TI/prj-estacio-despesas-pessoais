@@ -25,10 +25,10 @@ public class SigningConfigurations : ISigningConfigurations
             string certificatePath = Path.Combine(AppContext.BaseDirectory, options.Value.Certificate);
             X509Certificate2 certificate = new X509Certificate2(certificatePath, options.Value.Password, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
             RSA? rsa = null;
-            rsa = certificate.GetRSAPublicKey();
+            rsa = certificate.GetRSAPrivateKey();
             RsaSecurityKey rsaSecurityKey = new RsaSecurityKey(rsa);
             rsaSecurityKey.KeyId = Guid.NewGuid().ToString();
-            SigningCredentials signingCredentials = new SigningCredentials(rsaSecurityKey, SecurityAlgorithms.RsaSha256Signature);
+            SigningCredentials signingCredentials = new SigningCredentials(rsaSecurityKey, SecurityAlgorithms.RsaSha256) ;
             Key = rsaSecurityKey;
             SigningCredentials = signingCredentials;
         }
