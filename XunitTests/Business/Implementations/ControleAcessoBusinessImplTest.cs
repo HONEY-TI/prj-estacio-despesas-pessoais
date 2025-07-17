@@ -29,7 +29,6 @@ public class ControleAcessoBusinessImplTest
 
     public ControleAcessoBusinessImplTest()
     {
-        var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
         var builder = WebApplication.CreateBuilder();
         var services = builder.Services;
         builder.AddSigningConfigurations();

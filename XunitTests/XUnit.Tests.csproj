@@ -53,4 +53,12 @@
 		<ProjectReference Include="..\Despesas.Repository\Despesas.Repository.csproj" />
 		<ProjectReference Include="..\Despesas.WebApi\Despesas.WebApi.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="..\Despesas.WebApi\certificate\webapi-cert.pfx">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
 </Project>

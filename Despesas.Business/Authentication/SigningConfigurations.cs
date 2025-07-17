@@ -1,6 +1,5 @@
 ﻿using Business.Authentication.Abstractions;
 using Despesas.Business.Authentication.Abstractions;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -17,23 +16,7 @@ public class SigningConfigurations : ISigningConfigurations
     public TokenConfiguration? TokenConfiguration { get; private set; }
     public SigningCredentials? SigningCredentials { get; private set; }
 
-    public SigningConfigurations(X509Certificate2 _X509Certificate, IOptions<TokenOptions> options) : this(options)
-    {   
-        RSA? rsa = _X509Certificate.GetRSAPrivateKey()
-                ?? _X509Certificate.GetRSAPublicKey()
-                ?? RSA.Create(2048)
-                ?? throw new InvalidOperationException("Erro ao obter chave RSA do certificado.");
-
-        var rsaKey = new RsaSecurityKey(rsa)
-        {
-            KeyId = Guid.NewGuid().ToString()
-        };
-
-        Key = rsaKey;
-        SigningCredentials = new SigningCredentials(Key, SecurityAlgorithms.RsaSha256);
-    }
-
-    private SigningConfigurations(IOptions<TokenOptions> options)
+    public SigningConfigurations(IOptions<TokenOptions> options)
     {
         TokenConfiguration = new TokenConfiguration(options);
         var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");

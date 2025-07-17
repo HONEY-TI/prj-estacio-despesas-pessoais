@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Options;
+﻿using Business.Authentication;
 using Despesas.WebApi.CommonDependenceInject;
-using Business.Authentication.Abstractions;
-using Business.Authentication;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CommonDependenceInject;
 public sealed class AuthorizationInjectDependenceTest
@@ -15,15 +15,17 @@ public sealed class AuthorizationInjectDependenceTest
     public void AddAuthConfigurations_ShouldAddAuthenticationAndAuthorizationConfigurations()
     {
         // Arrange
-        var configuration = new ConfigurationBuilder().SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json").Build();
-        var services = new ServiceCollection();
+        var builder = WebApplication.CreateBuilder();
+        builder.Configuration.SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json");        
+        builder.AddSigningConfigurations();
+        var services = builder.Services;
 
         // Act        
+        
         services.AddAutoAuthenticationConfigurations();
-
-        // Assert
         var serviceProvider = services.BuildServiceProvider();
 
+        // Assert
         Assert.NotNull(serviceProvider.GetService<SigningConfigurations>());
 
         // Assert authentication configurations
