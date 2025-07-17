@@ -29,6 +29,8 @@ public class ControleAcessoBusinessImplTest
 
     public ControleAcessoBusinessImplTest()
     {
+        Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Test");
+
         var builder = WebApplication.CreateBuilder();
         var services = builder.Services;
         builder.AddSigningConfigurations();
@@ -198,24 +200,28 @@ public class ControleAcessoBusinessImplTest
     public void ValidateCredentials_Should_Return_Authentication_Success_When_Credentials_Are_Valid()
     {
         // Arrange
+        var idUsuario = Guid.NewGuid();
+        var baseLogin = new ControleAcesso
+        {
+            Id = idUsuario,
+            RefreshTokenExpiry = DateTime.UtcNow.AddHours(1),            
+            Usuario = UsuarioFaker.Instance.GetNewFaker()
+        };
+
         JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
         SecurityToken securityToken = handler.CreateToken(new SecurityTokenDescriptor()
         {
             Audience = "Audience",
             Issuer = "Issuer",
-            Claims = new Dictionary<string, object> { { "KEY", Guid.NewGuid() } },
-            Expires = DateTime.UtcNow.AddSeconds(60)
+            Claims = new Dictionary<string, object> { { "KEY", idUsuario } },
+            SigningCredentials = _singingConfiguration.SigningCredentials,
+            Expires = DateTime.UtcNow.AddSeconds(60),
+            NotBefore = DateTime.UtcNow,
+            IssuedAt = DateTime.UtcNow,
+
         });
         var validToken = handler.WriteToken(securityToken);
-
-        var idUsuario = Guid.NewGuid();
-        var baseLogin = new ControleAcesso
-        {
-            Id = idUsuario,
-            RefreshTokenExpiry = DateTime.UtcNow.AddHours(1),
-            RefreshToken = validToken,
-            Usuario = UsuarioFaker.Instance.GetNewFaker()
-        };
+        baseLogin.RefreshToken = validToken;
         var authenticationDto = new AuthenticationDto
         {
             RefreshToken = validToken

@@ -1,6 +1,5 @@
 ﻿using Business.Authentication.Abstractions;
 using Despesas.Business.Authentication.Abstractions;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,9 +19,8 @@ public class SigningConfigurations : ISigningConfigurations
     {
         TokenConfiguration = new TokenConfiguration(options);
         var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        if (environment == Environments.Production) return;
 
-        if (!String.IsNullOrEmpty(options.Value.Certificate))
+        if (!String.IsNullOrEmpty(options.Value.Certificate) && (environment != "Test"))
         {
             string certificatePath = Path.Combine(AppContext.BaseDirectory, options.Value.Certificate);
             X509Certificate2 certificate = new X509Certificate2(certificatePath, options.Value.Password, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
