@@ -38,14 +38,10 @@ jobs:
     
     - name: Build and Restore App 
       run: dotnet build  ./Despesas.WebApi/Despesas.WebApi.csproj --restore
-      with:
-        dotnet-version: 8.0.x
       continue-on-error: false
 
     - name:  Test .Net App
       run: dotnet test ./XunitTests/XUnit.Tests.csproj
-      with:
-        dotnet-version: 8.0.x
       continue-on-error: false
   
   build_and_test_angular:
