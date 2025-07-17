@@ -95,7 +95,7 @@ public class Usings
             Seconds = 3600,
             DaysToExpiry = 1
         });
-        var signingConfigurations = new SigningConfigurations(options);
+        var signingConfigurations = new SigningConfigurations(null, options);
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingConfigurations.Key.ToString()));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
         var claims = new[] { new Claim("sub", userId.ToString()) };
