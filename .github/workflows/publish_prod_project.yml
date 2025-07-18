@@ -48,5 +48,5 @@ jobs:
           key: ${{ secrets.AWS_SSH_KEY }}
           port: 22
           script: |            
-            ./webapi/run.dev.docker.sh
+            ./webapi/run.prod.docker.sh
           continue-on-error: false
