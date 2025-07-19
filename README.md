@@ -18,7 +18,7 @@ This project can be access at [Production API Restful Despesas Pessoais](https:/
 
 ## Swagger Documentation in Production
 
-This project can be access at [Production API Restful Despesas Pessoais](https://alexfariakof.com/swagger).
+Swagger Documentation can be access at [Production API Restful Despesas Pessoais](https://alexfariakof.com/swagger).
 
 ## Application in Development
 
@@ -26,7 +26,7 @@ This project can be access at [Development API Restful Despesas Pessoais](https:
 
 ## Swagger Documentation in Development
 
-This project can be access at [Development API Restful Despesas Pessoais](https://alexfariakof.com:42535/swagger).
+Swagger Documentation can be access at [Development API Restful Despesas Pessoais](https://alexfariakof.com:42535/swagger).
 
 ![image](https://github.com/alexfariakof/despesas-backend-api-net-core/assets/42475620/c0abe2f5-da31-4907-90dc-bbb06a95d2f3)
 
