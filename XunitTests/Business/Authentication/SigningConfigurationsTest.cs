@@ -7,14 +7,25 @@ using System.Security.Claims;
 namespace Business.Authentication;
 public sealed class SigningConfigurationsTest
 {
+    private IOptions<TokenOptions> options;
+    public SigningConfigurationsTest()
+    {
+        options = Options.Create(new TokenOptions
+        {
+            Issuer = "testIssuer",
+            Audience = "testAudience",
+            Seconds = 30,
+            Certificate = "certificate/webapi-cert.pfx",
+            Password = "12345T!"
+        });
+    }
     [Fact]
     public void SigningConfigurations_Should_Initialize_Correctly()
     {
         // Arrange
-        var options = Options.Create(new TokenOptions());
 
         // Act
-        var signingConfigurations = new SigningConfigurations(options);
+        var signingConfigurations = new SigningConfigurations(Usings.GenerateCertificate(), options);
 
         // Assert
         Assert.NotNull(signingConfigurations.Key);
@@ -24,11 +35,9 @@ public sealed class SigningConfigurationsTest
     [Fact]
     public void Key_Should_Be_RSA_SecurityKey()
     {
-        // Arrange
-        var options = Options.Create(new TokenOptions());
 
         // Act
-        var signingConfigurations = new SigningConfigurations(options);
+        var signingConfigurations = new SigningConfigurations(Usings.GenerateCertificate(), options);
 
         // Assert
         Assert.IsType<RsaSecurityKey>(signingConfigurations.Key);
@@ -37,15 +46,13 @@ public sealed class SigningConfigurationsTest
     [Fact]
     public void SigningCredentials_Should_Be_Correct_Algorithm()
     {
-        // Arrange
-        var options = Options.Create(new TokenOptions());
-
+        
         // Act
-        var signingConfigurations = new SigningConfigurations(options);
+        var signingConfigurations = new SigningConfigurations(Usings.GenerateCertificate(), options);
 
         // Assert
         Assert.NotNull(signingConfigurations.SigningCredentials.Algorithm);
-        Assert.Equal(SecurityAlgorithms.RsaSha256Signature, signingConfigurations.SigningCredentials.Algorithm);
+        Assert.Equal(SecurityAlgorithms.RsaSha256, signingConfigurations.SigningCredentials.Algorithm);
     }
 
     [Fact]
@@ -58,8 +65,8 @@ public sealed class SigningConfigurationsTest
             Audience = "testAudience",
             Seconds = 3600 // 1 hour expiration for testing
         });
-        var signingConfigurations = new SigningConfigurations(options);
-        var handler = new JwtSecurityTokenHandler();
+
+        var signingConfigurations = new SigningConfigurations(Usings.GenerateCertificate(), options); var handler = new JwtSecurityTokenHandler();
         var userId = Guid.NewGuid();
         var claimsIdentity = new ClaimsIdentity(new[]
         {

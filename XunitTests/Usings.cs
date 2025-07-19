@@ -1,20 +1,21 @@
-﻿global using Xunit;
+﻿global using Domain.Entities;
 global using Moq;
-global using Domain.Entities;
+global using Xunit;
+using AutoMapper;
+using Business.Authentication;
+using Despesas.Business.Authentication.Abstractions;
+using Domain.Core;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Repository.Persistency.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Domain.Core;
-using Business.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-using Microsoft.EntityFrameworkCore;
-using Repository.Persistency.Generic;
-using Despesas.Business.Authentication.Abstractions;
 
 public class Usings
 {
@@ -86,6 +87,21 @@ public class Usings
         return _mock;
     }
 
+    public static X509Certificate2 GenerateCertificate()
+    {
+        var options = Options.Create(new TokenOptions
+        {
+            Issuer = "testIssuer",
+            Audience = "testAudience",
+            Seconds = 30,
+            Certificate = "certificate/webapi-cert.pfx",
+            Password = "12345T!"
+        });
+
+        string certificatePath = Path.Combine(AppContext.BaseDirectory, options.Value.Certificate);
+        return new X509Certificate2(certificatePath, options.Value.Password, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+    }
+
     public static string GenerateJwtToken(Guid userId)
     {
         var options = Options.Create(new TokenOptions
@@ -95,8 +111,8 @@ public class Usings
             Seconds = 3600,
             DaysToExpiry = 1
         });
-        var signingConfigurations = new SigningConfigurations(options);
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingConfigurations.Key.ToString()));
+        var signingConfigurations = new SigningConfigurations(Usings.GenerateCertificate(), options); var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingConfigurations.Key.ToString()));
+
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
         var claims = new[] { new Claim("sub", userId.ToString()) };
         var token = new JwtSecurityToken(
