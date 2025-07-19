@@ -18,11 +18,11 @@ public sealed class AuthorizationInjectDependenceTest
         var builder = WebApplication.CreateBuilder();
         builder.Configuration.SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json");        
         builder.AddSigningConfigurations();
+        builder.Services.AddAutoAuthenticationConfigurations();
         var services = builder.Services;
 
-        // Act        
+        // Act                
         
-        services.AddAutoAuthenticationConfigurations();
         var serviceProvider = services.BuildServiceProvider();
 
         // Assert

@@ -32,10 +32,10 @@ public class ControleAcessoBusinessImplTest
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Test");
 
         var builder = WebApplication.CreateBuilder();
-        var services = builder.Services;
         builder.AddSigningConfigurations();
-        services.AddServicesCryptography(builder.Configuration);
-
+        builder.AddServicesCryptography();
+        var services = builder.Services;
+        
         _singingConfiguration = services.BuildServiceProvider().GetService<SigningConfigurations>();
         var crypto = services.BuildServiceProvider().GetService<ICrypto>();
         _repositorioMock = new Mock<IControleAcessoRepositorioImpl>();

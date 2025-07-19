@@ -30,8 +30,9 @@ public sealed class DataSeedersDependenceInjectTest
     {
         // Arrange
         var builder = WebApplication.CreateBuilder();
+        builder.AddServicesCryptography();
         var services = builder.Services;
-        services.AddServicesCryptography(builder.Configuration);
+        
         services.CreateDataBaseInMemory();
         services.AddDataSeeders();
         var app = builder.Build();

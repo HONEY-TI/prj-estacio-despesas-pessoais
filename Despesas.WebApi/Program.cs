@@ -61,7 +61,7 @@ builder.AddSigningConfigurations();
 builder.Services.AddAutoAuthenticationConfigurations();
 
 // Add Cryptography Configurations
-builder.Services.AddServicesCryptography(builder.Configuration);
+builder.AddServicesCryptography();
 
 // Add CommonDependencesInject 
 builder.Services.AddAutoMapper();
