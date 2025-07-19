@@ -25,7 +25,7 @@ public class LancamentoBusinessImplTest
         // Arrange            
         var lancamentos = LancamentoFaker.Lancamentos();
         var data = lancamentos.First().Data;
-        var idUsuario = lancamentos.First().UsuarioId;        
+        var idUsuario = lancamentos.First().UsuarioId;
         _repositorioMock.Setup(r => r.FindByMesAno(data, idUsuario)).Returns(lancamentos.FindAll(l => l.UsuarioId == idUsuario));
 
         // Act
@@ -33,7 +33,7 @@ public class LancamentoBusinessImplTest
 
         // Assert
         Assert.NotNull(result);
-        Assert.IsType<List<LancamentoDto>>(result);            
+        Assert.IsType<List<LancamentoDto>>(result);
         Assert.Equal(lancamentos.FindAll(l => l.UsuarioId == idUsuario).Count, result.Count);
         _repositorioMock.Verify(r => r.FindByMesAno(data, idUsuario), Times.Once);
     }
@@ -43,7 +43,7 @@ public class LancamentoBusinessImplTest
     public void GetSaldo_Should_Return_Saldo_As_Decimal()
     {
         // Arrange
-        var idUsuario = 1;
+        var idUsuario = Guid.NewGuid();
         var saldo = 100.50m;
         _repositorioMock.Setup(r => r.GetSaldo(idUsuario)).Returns(saldo);
 
@@ -59,7 +59,7 @@ public class LancamentoBusinessImplTest
     public void GetDadosGraficoByAnoByIdUsuario_Should_Return_Grafico()
     {
         // Arrange
-        var idUsuario = 1;
+        var idUsuario = Guid.NewGuid();
         var data = new DateTime(2023, 10, 1);
         var graficoData = GraficoFaker.GetNewFaker();
         _repositorioMock.Setup(r => r.GetDadosGraficoByAno(idUsuario, data)).Returns(graficoData);

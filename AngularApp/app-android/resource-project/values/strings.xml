@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">app-despesas-pessoais-android</string>
+    <string name="title_activity_main">app-despesas-pessoais-android</string>
+    <string name="package_name">com.alexfariakof.android</string>
+    <string name="custom_url_scheme">com.alexfariakof.android</string>
+</resources>

@@ -1,12 +1,9 @@
-﻿using Asp.Versioning;
-using Business.Abstractions;
+﻿using Business.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Despesas.WebApi.Controllers.v2;
 
-[ApiVersion("2")]
-[Route("v{version:apiVersion}/[controller]")]
 public class GraficosController : AuthController
 {
     private IGraficosBusiness _graficosBusiness;
@@ -27,7 +24,7 @@ public class GraficosController : AuthController
     {
         try
         {
-            var dadosGrafico = _graficosBusiness.GetDadosGraficoByAnoByIdUsuario(IdUsuario, ano);
+            var dadosGrafico = _graficosBusiness.GetDadosGraficoByAnoByIdUsuario(UserIdentity, ano);
 
             datasets = new List<object> {
                 new { label = "Despesas", Data = dadosGrafico?.SomatorioDespesasPorAno?.Values.ToArray(), borderColor = "rgb(255, 99, 132)", backgroundColor = "rgba(255, 99, 132, 0.5)"  },

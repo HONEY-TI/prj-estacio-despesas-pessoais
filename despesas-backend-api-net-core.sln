@@ -5,14 +5,13 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{20928B7D-CC67-429A-B42D-53F23332BE7D}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		generate_coverage_report.ps1 = generate_coverage_report.ps1
 		generate_coverage_report.sh = generate_coverage_report.sh
 		sonar-project.properties = sonar-project.properties
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrations.MySqlServer", "Migrations.MySqlServer\Migrations.MySqlServer.csproj", "{5C6FAE48-3C97-40F4-857A-6EA1A2FAEC2A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrations.MsSqlServer", "Migrations.MsSqlServer\Migrations.MsSqlServer.csproj", "{713218DB-69D1-478F-9283-CA5F444E15EF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnit.Tests", "XunitTests\XUnit.Tests.csproj", "{B8D56F3F-4C55-4268-A1DE-66132D51C9A8}"
 EndProject
@@ -34,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Despesas.WebApi", "Despesas
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "AngularApp", "AngularApp\AngularApp.esproj", "{C6990D80-3FAD-4AAF-9C4D-CE6AFF2433B3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Migrations.MsSqlServer", "Migrations.MsSqlServer\Migrations.MsSqlServer.csproj", "{A5FD5610-DFFF-4313-8096-499F09152CC4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,10 +45,6 @@ Global
 		{5C6FAE48-3C97-40F4-857A-6EA1A2FAEC2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C6FAE48-3C97-40F4-857A-6EA1A2FAEC2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C6FAE48-3C97-40F4-857A-6EA1A2FAEC2A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{713218DB-69D1-478F-9283-CA5F444E15EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{713218DB-69D1-478F-9283-CA5F444E15EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{713218DB-69D1-478F-9283-CA5F444E15EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{713218DB-69D1-478F-9283-CA5F444E15EF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B8D56F3F-4C55-4268-A1DE-66132D51C9A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B8D56F3F-4C55-4268-A1DE-66132D51C9A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8D56F3F-4C55-4268-A1DE-66132D51C9A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -89,6 +86,10 @@ Global
 		{C6990D80-3FAD-4AAF-9C4D-CE6AFF2433B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6990D80-3FAD-4AAF-9C4D-CE6AFF2433B3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6990D80-3FAD-4AAF-9C4D-CE6AFF2433B3}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A5FD5610-DFFF-4313-8096-499F09152CC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5FD5610-DFFF-4313-8096-499F09152CC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5FD5610-DFFF-4313-8096-499F09152CC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5FD5610-DFFF-4313-8096-499F09152CC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

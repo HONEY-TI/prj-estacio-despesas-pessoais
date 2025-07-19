@@ -11,8 +11,8 @@ public class AmazonS3Bucket : IAmazonS3Bucket
 {
     private static IAmazonS3Bucket? _amazonS3Bucket;
     private AmazonS3Client? _client;
-    private readonly S3CannedACL _fileCannedACL = S3CannedACL.PublicRead;
-    private readonly RegionEndpoint _bucketRegion = RegionEndpoint.SAEast1;    
+    private readonly S3CannedACL _fileCannedACL = S3CannedACL.PublicReadWrite;
+    private readonly RegionEndpoint _bucketRegion = RegionEndpoint.USEast1;
     private readonly string? _accessKey;
     private readonly string? _secretAccessKey;
     private readonly string? _s3ServiceUrl;
@@ -20,7 +20,11 @@ public class AmazonS3Bucket : IAmazonS3Bucket
 
     private AmazonS3Bucket()
     {
-        var jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        var appsettings = environment == "Development" ? "appsettings.development.json" : "appsettings.json";
+
+        var jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, appsettings);
 
         if (File.Exists(jsonFilePath))
         {
@@ -90,7 +94,7 @@ public class AmazonS3Bucket : IAmazonS3Bucket
             config.ServiceURL = _s3ServiceUrl;
 
             _client = new AmazonS3Client(_accessKey, _secretAccessKey, config);
-            
+
             var deleteObjectRequest = new DeleteObjectRequest
             {
                 BucketName = _bucketName,

@@ -31,13 +31,13 @@ public class GenericRepositorio<T> : IRepositorio<T> where T : BaseModel, new()
         {
             return this._context.Set<T>().ToList();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             throw new Exception("GenericRepositorio_GetAll", ex);
         }
     }
 
-    public virtual T Get(int id)
+    public virtual T Get(Guid id)
     {
         return this._context.Set<T>().SingleOrDefault(prop => prop.Id.Equals(id));
     }
@@ -46,11 +46,11 @@ public class GenericRepositorio<T> : IRepositorio<T> where T : BaseModel, new()
     {
         try
         {
-            var existingEntity = _context.Set<T>().Find(entity.Id);
+            var existingEntity = _context.Set<T>().Find(entity.Id) ?? throw new NullReferenceException();
             _context.Entry(existingEntity).CurrentValues.SetValues(entity);
             _context.SaveChanges();
         }
-        catch (Exception ex)            
+        catch (Exception ex)
         {
             throw new Exception("GenericRepositorio_Update", ex);
         }
@@ -60,9 +60,9 @@ public class GenericRepositorio<T> : IRepositorio<T> where T : BaseModel, new()
     {
         try
         {
-            T result = this._context.Set<T>().SingleOrDefault(prop => prop.Id.Equals(entity.Id));
+            T? result = this._context.Set<T>().SingleOrDefault(prop => prop.Id.Equals(entity.Id));
             if (result != null)
-            {                    
+            {
                 if (result.GetType().Equals(typeof(Usuario)))
                 {
                     var dataSet = _context.Set<Usuario>();
@@ -88,7 +88,7 @@ public class GenericRepositorio<T> : IRepositorio<T> where T : BaseModel, new()
         }
     }
 
-    public virtual bool Exists(int? id)
+    public virtual bool Exists(Guid id)
     {
         return this._context.Set<T>().Any(prop => prop.Id.Equals(id));
     }

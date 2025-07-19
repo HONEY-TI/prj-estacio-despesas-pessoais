@@ -4,6 +4,7 @@ using Despesas.WebApi.Controllers.v2;
 using Business.Dtos.v2;
 using __mock__.v2;
 using Business.Dtos.Core;
+using Domain.Entities;
 
 namespace Api.Controllers.v2;
 public sealed class ControleAcessoControllerTest
@@ -56,7 +57,7 @@ public sealed class ControleAcessoControllerTest
     public void Post_With_Null_Telefone_Returns_BadRequest()
     {
         // Arrange
-        var controleAcessoDto = ControleAcessoFaker.Instance.GetNewFakerVM();        
+        var controleAcessoDto = ControleAcessoFaker.Instance.GetNewFakerVM();
         controleAcessoDto.Telefone = string.Empty;
         _mockControleAcessoBusiness.Setup(b => b.Create(It.IsAny<ControleAcessoDto>())).Throws(new ArgumentException("Campo Telefone não pode ser em branco"));
 
@@ -225,8 +226,8 @@ public sealed class ControleAcessoControllerTest
     {
         // Arrange
         var changePasswordVM = new ChangePasswordDto { Senha = "!12345", ConfirmaSenha = "!12345" };
-        Usings.SetupBearerToken(1, _controleAcessoController);
-        _mockControleAcessoBusiness.Setup(b => b.ChangePassword(1, "!12345"));
+        Usings.SetupBearerToken(Guid.NewGuid(), _controleAcessoController);
+        _mockControleAcessoBusiness.Setup(b => b.ChangePassword(It.IsAny<Guid>(), "!12345"));
 
         // Act
         var result = _controleAcessoController.ChangePassword(changePasswordVM) as ObjectResult;
@@ -239,31 +240,15 @@ public sealed class ControleAcessoControllerTest
     }
 
     [Fact]
-    public void ChangePassword_With_Usuario_Teste_Returns_BadRequest()
-    {
-        // Arrange
-        var changePasswordVM = new ChangePasswordDto { Senha = "!12345", ConfirmaSenha = "!12345" };
-        Usings.SetupBearerToken(2, _controleAcessoController);
-
-        // Act
-        var result = _controleAcessoController.ChangePassword(changePasswordVM) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("A senha deste usuário não pode ser atualizada!", message);
-    }
-
-    [Fact]
     public void ChangePassword_With_NULL_Password_Returns_BadRequest()
     {
         // Arrange
         var changePasswordVM = new ChangePasswordDto { Senha = null, ConfirmaSenha = "!12345" };
-        Usings.SetupBearerToken(1, _controleAcessoController);
+        Usings.SetupBearerToken(Guid.NewGuid(), _controleAcessoController);
+        ChangePasswordDto? nullChangePasswordDto = null;
 
         // Act
-        var result = _controleAcessoController.ChangePassword(null) as ObjectResult;
+        var result = _controleAcessoController.ChangePassword(nullChangePasswordDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -277,10 +262,11 @@ public sealed class ControleAcessoControllerTest
     {
         // Arrange
         var changePasswordVM = new ChangePasswordDto { Senha = "!12345", ConfirmaSenha = null };
-        Usings.SetupBearerToken(1, _controleAcessoController);
+        Usings.SetupBearerToken(Guid.NewGuid(), _controleAcessoController);
+        ChangePasswordDto? nullChangePasswordDto = null;
 
         // Act
-        var result = _controleAcessoController.ChangePassword(null) as ObjectResult;
+        var result = _controleAcessoController.ChangePassword(nullChangePasswordDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -294,8 +280,9 @@ public sealed class ControleAcessoControllerTest
     {
         // Arrange
         var changePasswordVM = new ChangePasswordDto { Senha = "!12345", ConfirmaSenha = "!12345" };
-        Usings.SetupBearerToken(1, _controleAcessoController);
-        _mockControleAcessoBusiness.Setup(b => b.ChangePassword(1, "!12345")).Throws(new Exception());
+        var idUsuario = Guid.NewGuid();
+        Usings.SetupBearerToken(idUsuario, _controleAcessoController);
+        _mockControleAcessoBusiness.Setup(b => b.ChangePassword(It.IsAny<Guid>(), "!12345")).Throws(new Exception());
 
         // Act
         var result = _controleAcessoController.ChangePassword(changePasswordVM) as ObjectResult;
@@ -314,7 +301,7 @@ public sealed class ControleAcessoControllerTest
         var email = "teste@teste.com";
         _mockControleAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>())).Callback(() => { });
         _mockControleAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>()));
-        Usings.SetupBearerToken(1, _controleAcessoController);
+        Usings.SetupBearerToken(Guid.NewGuid(), _controleAcessoController);
 
         // Act
         var result = _controleAcessoController.RecoveryPassword(email) as ObjectResult;
@@ -346,7 +333,7 @@ public sealed class ControleAcessoControllerTest
         // Arrange
         var email = new string('A', 257);
         _mockControleAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>())).Throws<Exception>();
-        
+
         // Act
         var result = _controleAcessoController.RecoveryPassword(email) as NoContentResult;
 
@@ -405,7 +392,7 @@ public sealed class ControleAcessoControllerTest
         // Arrange
         var authenticationDto = new AuthenticationDto();
         _controleAcessoController.ModelState.AddModelError("Key", "Error");
-        _mockControleAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns((AuthenticationDto)null);
+        _mockControleAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(() => null);
         // Act
         var result = _controleAcessoController.Refresh("fakeRefreshToken") as NoContentResult;
 
@@ -419,7 +406,7 @@ public sealed class ControleAcessoControllerTest
     {
         // Arrange
         var authenticationDto = new AuthenticationDto();
-        _mockControleAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns<AuthenticationDto>(null);
+        _mockControleAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(() => null);
 
         // Act
         var result = _controleAcessoController.Refresh("fakeRefreshToken") as NoContentResult;

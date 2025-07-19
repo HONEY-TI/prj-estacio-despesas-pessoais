@@ -26,7 +26,7 @@ public sealed class DespesaControllerTest
     {
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
-        int idUsuario = _despesaDtos.First().UsuarioId;
+        Guid idUsuario = _despesaDtos.First().UsuarioId;
         Usings.SetupBearerToken(idUsuario, _despesaController);
         _mockDespesaBusiness.Setup(business => business.FindAll(idUsuario)).Returns(_despesaDtos);
 
@@ -45,7 +45,7 @@ public sealed class DespesaControllerTest
     {
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
-        int idUsuario = _despesaDtos.First().UsuarioId;
+        Guid idUsuario = _despesaDtos.First().UsuarioId;
         Usings.SetupBearerToken(idUsuario, _despesaController);
         _mockDespesaBusiness.Setup(business => business.FindAll(idUsuario)).Throws<Exception>();
 
@@ -69,9 +69,9 @@ public sealed class DespesaControllerTest
     {
         // Arrange
         var despesaDto = DespesaFaker.Instance.DespesasVMs().First();
-        int idUsuario = despesaDto.UsuarioId;
+        Guid idUsuario = despesaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _despesaController);
-        _mockDespesaBusiness.Setup(business => business.FindById(despesaDto.Id, idUsuario)).Returns<DespesaDto>(null);
+        _mockDespesaBusiness.Setup(business => business.FindById(despesaDto.Id, idUsuario)).Returns(() => null);
 
         // Act
         var result = _despesaController.Get(despesaDto.Id) as ObjectResult;
@@ -90,8 +90,8 @@ public sealed class DespesaControllerTest
         // Arrange
         var despesa = DespesaFaker.Instance.Despesas().First();
         var despesaDto = _mapper.Map<DespesaDto>(despesa);
-        int idUsuario = despesaDto.UsuarioId;
-        int despesaId = despesa.Id;
+        Guid idUsuario = despesaDto.UsuarioId;
+        var despesaId = despesa.Id;
         Usings.SetupBearerToken(idUsuario, _despesaController);
         _mockDespesaBusiness.Setup(business => business.FindById(despesaId, idUsuario)).Returns(despesaDto);
 
@@ -112,7 +112,7 @@ public sealed class DespesaControllerTest
     {
         // Arrange
         var despesaDto = DespesaFaker.Instance.DespesasVMs().First();
-        int idUsuario = despesaDto.UsuarioId;
+        Guid idUsuario = despesaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _despesaController);
         _mockDespesaBusiness.Setup(business => business.FindById(despesaDto.Id, idUsuario)).Throws(new Exception());
 
@@ -133,7 +133,7 @@ public sealed class DespesaControllerTest
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
         var despesaDto = _despesaDtos[3];
-        int idUsuario = despesaDto.UsuarioId;
+        Guid idUsuario = despesaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _despesaController);
         _mockDespesaBusiness.Setup(business => business.Create(despesaDto)).Returns(despesaDto);
 
@@ -155,7 +155,7 @@ public sealed class DespesaControllerTest
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
         var despesaDto = _despesaDtos[3];
-        int idUsuario = despesaDto.UsuarioId;
+        Guid idUsuario = despesaDto.UsuarioId;
 
         Usings.SetupBearerToken(idUsuario, _despesaController);
         _mockDespesaBusiness.Setup(business => business.Create(despesaDto)).Throws(new Exception());
@@ -177,7 +177,7 @@ public sealed class DespesaControllerTest
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
         var despesaDto = _despesaDtos[4];
-        int idUsuario = despesaDto.UsuarioId;
+        Guid idUsuario = despesaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _despesaController);
         _mockDespesaBusiness.Setup(business => business.Update(despesaDto)).Returns(despesaDto);
 
@@ -199,9 +199,9 @@ public sealed class DespesaControllerTest
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
         var despesaDto = _despesaDtos[3];
-        int idUsuario = despesaDto.UsuarioId;
+        Guid idUsuario = despesaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _despesaController);
-        _mockDespesaBusiness.Setup(business => business.Update(despesaDto)).Returns<DespesaDto>(null);
+        _mockDespesaBusiness.Setup(business => business.Update(despesaDto)).Returns(() => null);
 
         // Act
         var result = _despesaController.Put(despesaDto) as ObjectResult;
@@ -220,7 +220,7 @@ public sealed class DespesaControllerTest
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
         var despesaDto = _despesaDtos[2];
-        int idUsuario = despesaDto.UsuarioId;
+        Guid idUsuario = despesaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _despesaController);
         _mockDespesaBusiness.Setup(business => business.Delete(despesaDto)).Returns(true);
         _mockDespesaBusiness.Setup(business => business.FindById(despesaDto.Id, idUsuario)).Returns(despesaDto);
@@ -233,7 +233,7 @@ public sealed class DespesaControllerTest
         Assert.IsType<OkObjectResult>(result);
         var message = (bool?)result.Value;
         Assert.True(message);
-        _mockDespesaBusiness.Verify(business => business.FindById(despesaDto.Id, idUsuario),Times.Once);
+        _mockDespesaBusiness.Verify(business => business.FindById(despesaDto.Id, idUsuario), Times.Once);
         _mockDespesaBusiness.Verify(b => b.Delete(despesaDto), Times.Once);
     }
 
@@ -243,11 +243,11 @@ public sealed class DespesaControllerTest
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
         var despesaDto = _despesaDtos[2];
-        int idUsuario = despesaDto.UsuarioId;
-        Usings.SetupBearerToken(0, _despesaController);
+        Guid idUsuario = despesaDto.UsuarioId;
+        Usings.SetupBearerToken(Guid.Empty, _despesaController);
         _mockDespesaBusiness.Setup(business => business.Delete(despesaDto)).Returns(true);
         _mockDespesaBusiness.Setup(business => business.FindById(despesaDto.Id, idUsuario)).Returns(despesaDto);
-        
+
         // Act
         var result = _despesaController.Delete(despesaDto.Id) as ObjectResult;
 
@@ -256,7 +256,7 @@ public sealed class DespesaControllerTest
         Assert.IsType<BadRequestObjectResult>(result);
         var message = result.Value;
         Assert.Equal("Usuário não permitido a realizar operação!", message);
-        _mockDespesaBusiness.Verify(business => business.FindById(despesaDto.Id, idUsuario),Times.Never);
+        _mockDespesaBusiness.Verify(business => business.FindById(despesaDto.Id, idUsuario), Times.Never);
         _mockDespesaBusiness.Verify(b => b.Delete(despesaDto), Times.Never);
     }
 
@@ -266,7 +266,7 @@ public sealed class DespesaControllerTest
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
         var despesaDto = _despesaDtos[2];
-        int idUsuario = despesaDto.UsuarioId;
+        Guid idUsuario = despesaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _despesaController);
         _mockDespesaBusiness.Setup(business => business.Delete(despesaDto)).Returns(false);
         _mockDespesaBusiness.Setup(business => business.FindById(despesaDto.Id, idUsuario)).Returns(despesaDto);
@@ -279,7 +279,7 @@ public sealed class DespesaControllerTest
         Assert.IsType<BadRequestObjectResult>(result);
         var message = result.Value;
         Assert.Equal("Erro ao excluir Despesa!", message);
-        _mockDespesaBusiness.Verify(business => business.FindById(despesaDto.Id, idUsuario),Times.Once);
+        _mockDespesaBusiness.Verify(business => business.FindById(despesaDto.Id, idUsuario), Times.Once);
         _mockDespesaBusiness.Verify(b => b.Delete(despesaDto), Times.Once);
     }
 }

@@ -4,7 +4,7 @@ using Repository.Persistency.UnitOfWork.Abstractions;
 using System.Linq.Expressions;
 
 namespace Repository.UnitOfWork;
-public sealed class UnitOfWork<T>: IRepositoy<T> where T : BaseModel
+public sealed class UnitOfWork<T> : IRepositoy<T> where T : BaseModel
 {
     private RegisterContext Context { get; set; }
 
@@ -13,7 +13,7 @@ public sealed class UnitOfWork<T>: IRepositoy<T> where T : BaseModel
         Context = context;
     }
 
-    public async Task<T?> GetById(int entityId)
+    public async Task<T?> GetById(Guid entityId)
     {
         return await Context.Set<T>().FindAsync(entityId);
     }
@@ -25,10 +25,10 @@ public sealed class UnitOfWork<T>: IRepositoy<T> where T : BaseModel
 
     public Task Insert(T entity)
     {
-        if (entity == null) 
+        if (entity == null)
             throw new ArgumentNullException(nameof(entity));
 
-        return Context.AddAsync(entity).AsTask(); 
+        return Context.AddAsync(entity).AsTask();
     }
 
     public Task? Update(T entity)
@@ -39,10 +39,10 @@ public sealed class UnitOfWork<T>: IRepositoy<T> where T : BaseModel
         return Context.Update(entity) as Task;
     }
 
-    public async void Delete(int entityId)
+    public async void Delete(Guid entityId)
     {
         var entity = await GetById(entityId);
-        
+
         if (entity == null)
             throw new ArgumentNullException(nameof(entity));
 
@@ -63,6 +63,6 @@ public sealed class UnitOfWork<T>: IRepositoy<T> where T : BaseModel
         catch
         {
             throw;
-        }        
+        }
     }
 }

@@ -1,0 +1,26 @@
+{
+  "name": "app-ios",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "add:ios": "npx cap add ios",
+    "build:mobile": "ng build --configuration=production-ios --output-path=www",
+    "start:ios": "npx cap sync ios && npx cap run ios"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor/app": "^7.0.1",
+    "@capacitor/core": "^7.4.0",
+    "@capacitor/haptics": "^7.0.1",
+    "@capacitor/ios": "7.4.0",
+    "@capacitor/keyboard": "^7.0.1",
+    "@capacitor/status-bar": "^7.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.0"
+  }
+}

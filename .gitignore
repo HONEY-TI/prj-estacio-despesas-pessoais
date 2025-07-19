@@ -396,9 +396,14 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-# Arquivo contento chave de criptografia
+# Script gerador de Certificado SSL
+*/gencert.sh
+
 .vscode/
-despesas-backend-api-net-core/appsettings.Development.json
-despesas-backend-api-net-core/appsettings.json
+*/appsettings.Development.json
+*/appsettings.json
 .config/
-/Despesas.WebApi/certificate/webapi-cert.pem
+*.pem
+*.pfx
+*.key
+*.crt

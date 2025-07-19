@@ -5,14 +5,18 @@
 		<Nullable>enable</Nullable>
 		<IsTestProject>false</IsTestProject>
 	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="EasyCryptoSalt" Version="1.0.3" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig">
-      <DependentUpon>$(MSBuildProjectDirectory)</DependentUpon>
-    </None>
-  </ItemGroup>
-  
+
 	<ItemGroup>
 		<ProjectReference Include="..\Despesas.Repository\Despesas.Repository.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig">
+			<DependentUpon>$(MSBuildProjectDirectory)</DependentUpon>
+		</None>
 	</ItemGroup>
 </Project>

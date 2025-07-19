@@ -5,18 +5,13 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig">
-      <DependentUpon>$(MSBuildProjectDirectory)</DependentUpon>
-    </None>
-  </ItemGroup>
-  
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Erudio.HATEOAS0101" Version="8.0.202.9" />
 		<PackageReference Include="MediatR" Version="12.2.0" />
 		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.4.0" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.0" />
+		<PackageReference Include="EasyCryptoSalt" Version="1.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -24,5 +19,11 @@
 		<ProjectReference Include="..\Despesas.Domain\Despesas.Domain.csproj" />
 		<ProjectReference Include="..\Despesas.Infrastructure\Despesas.Infrastructure.csproj" />
 		<ProjectReference Include="..\Despesas.Repository\Despesas.Repository.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig">
+			<DependentUpon>$(MSBuildProjectDirectory)</DependentUpon>
+		</None>
 	</ItemGroup>
 </Project>

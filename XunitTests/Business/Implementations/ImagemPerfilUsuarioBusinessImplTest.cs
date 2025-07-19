@@ -19,7 +19,7 @@ public class ImagemPerfilUsuarioBusinessImplTests
     public ImagemPerfilUsuarioBusinessImplTests()
     {
         _imagensPerfil = ImagemPerfilUsuarioFaker.Instance.ImagensPerfilUsuarios();
-        
+
         _repositorioMock = Usings.MockRepositorio(_imagensPerfil);
         _repositorioUsuarioMock = new Mock<IRepositorio<Usuario>>(MockBehavior.Default);
         _mockAmazonS3Bucket = new Mock<IAmazonS3Bucket>();
@@ -37,7 +37,7 @@ public class ImagemPerfilUsuarioBusinessImplTests
         var imagemPerfilDto = ImagemPerfilUsuarioFaker.Instance.GetNewDtoFrom(imagemPerfil);
         _mockAmazonS3Bucket.Setup(x => x.WritingAnObjectAsync(It.IsAny<ImagemPerfilUsuario>(), It.IsAny<byte[]>())).ReturnsAsync("http://teste.url");
         _repositorioMock.Setup(repo => repo.Insert(ref It.Ref<ImagemPerfilUsuario>.IsAny));
-        _repositorioUsuarioMock.Setup(repo => repo.Get(It.IsAny<int>())).Returns(usuario);
+        _repositorioUsuarioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(usuario);
 
         // Act
         var result = _imagemPerfilUsuarioBusiness.Create(imagemPerfilDto);
@@ -96,10 +96,10 @@ public class ImagemPerfilUsuarioBusinessImplTests
         // Arrange
         var imagem = _imagensPerfil.First();
         var imagemPerfilVM = _mapper.Map<ImagemPerfilDto>(imagem);
-        _repositorioMock.Setup(repo => repo.Get(It.IsAny<int>())).Returns(imagem);
+        _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(imagem);
 
         // Act
-        var result = _imagemPerfilUsuarioBusiness.FindById(imagemPerfilVM.Id, 0);
+        var result = _imagemPerfilUsuarioBusiness.FindById(imagemPerfilVM.Id, Guid.Empty);
 
         // Assert
         Assert.Null(result);
@@ -125,8 +125,8 @@ public class ImagemPerfilUsuarioBusinessImplTests
     public void FindByIdUsuario_Throws_Exception_And_Returns_Null()
     {
         // Arrange
-        var usuario = new Usuario { Id = 0 };
-        _repositorioMock.Setup(repo => repo.GetAll()).Throws<Exception>(null);
+        var usuario = new Usuario { Id = Guid.Empty };
+        _repositorioMock.Setup(repo => repo.GetAll()).Throws<Exception>(() => null);
 
         // Act
         var result = _imagemPerfilUsuarioBusiness.FindByIdUsuario(usuario.Id);
@@ -160,7 +160,7 @@ public class ImagemPerfilUsuarioBusinessImplTests
         // Arrange
         var imagemPerfil = _imagensPerfil.First();
         var imagemPerfilVM = _mapper.Map<ImagemPerfilDto>(imagemPerfil);
-        _repositorioMock.Setup(repo => repo.GetAll()).Throws<Exception>(null);
+        _repositorioMock.Setup(repo => repo.GetAll()).Throws<Exception>(() => null);
 
         // Act & Assert
         Assert.Throws<ArgumentException>(() => _imagemPerfilUsuarioBusiness.Update(imagemPerfilVM));

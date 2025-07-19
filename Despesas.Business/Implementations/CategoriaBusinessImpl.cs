@@ -8,12 +8,12 @@ using Repository.Persistency.Generic;
 using Domain.Entities.ValueObjects;
 
 namespace Business.Implementations;
-public class CategoriaBusinessImpl<Dto>: BusinessBase<Dto, Categoria>, IBusiness<Dto, Categoria> where Dto : class, new()
+public class CategoriaBusinessImpl<Dto> : BusinessBase<Dto, Categoria>, IBusiness<Dto, Categoria> where Dto : class, new()
 {
     private readonly IMediator _mediator;
     private readonly IUnitOfWork<Categoria> _unitOfWork;
     private readonly IRepositorio<Categoria> _repositorio;
-    public CategoriaBusinessImpl(IMediator mediator, IMapper mapper, IUnitOfWork<Categoria> unitOfWork, IRepositorio<Categoria> repositorio) : base (mapper, repositorio, unitOfWork)
+    public CategoriaBusinessImpl(IMediator mediator, IMapper mapper, IUnitOfWork<Categoria> unitOfWork, IRepositorio<Categoria> repositorio) : base(mapper, repositorio, unitOfWork)
     {
         _mediator = mediator;
         _unitOfWork = unitOfWork;
@@ -28,13 +28,13 @@ public class CategoriaBusinessImpl<Dto>: BusinessBase<Dto, Categoria>, IBusiness
         return this.Mapper.Map<Dto>(categoria);
     }
 
-    public override List<Dto> FindAll(int idUsuario)
+    public override List<Dto> FindAll(Guid idUsuario)
     {
-        var lstCategoria =  _repositorio.GetAll().Where(c => c.UsuarioId == idUsuario).ToList();
+        var lstCategoria = _repositorio.GetAll().Where(c => c.UsuarioId == idUsuario).ToList();
         return this.Mapper.Map<List<Dto>>(lstCategoria);
     }
 
-    public override Dto FindById(int id, int idUsuario)
+    public override Dto FindById(Guid id, Guid idUsuario)
     {
         var categoria = _repositorio?.Find(c => c.Id == id && c.Usuario.Id == idUsuario)?.FirstOrDefault();
         return this.Mapper.Map<Dto>(categoria);
@@ -53,7 +53,7 @@ public class CategoriaBusinessImpl<Dto>: BusinessBase<Dto, Categoria>, IBusiness
     {
         IsValidCategoria(dto);
         try
-        {            
+        {
             var categoria = this.Mapper.Map<Categoria>(dto);
             _repositorio.Delete(categoria);
             return true;
@@ -62,7 +62,7 @@ public class CategoriaBusinessImpl<Dto>: BusinessBase<Dto, Categoria>, IBusiness
         {
             return false;
         }
-    }    
+    }
 
     private void IsValidTipoCategoria(Dto dto)
     {

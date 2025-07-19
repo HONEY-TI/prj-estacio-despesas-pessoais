@@ -10,19 +10,19 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
 {
     private readonly IMapper _mapper;
     private readonly IRepositorio<ImagemPerfilUsuario> _repositorio;
-    private readonly IRepositorio<Usuario> _repositorioUsuario;    
+    private readonly IRepositorio<Usuario> _repositorioUsuario;
     private readonly IAmazonS3Bucket _amazonS3Bucket;
-    public ImagemPerfilUsuarioBusinessImpl(IMapper mapper, IRepositorio<ImagemPerfilUsuario> repositorio, IRepositorio<Usuario> repositorioUsuario,  IAmazonS3Bucket amazonS3Bucket)
+    public ImagemPerfilUsuarioBusinessImpl(IMapper mapper, IRepositorio<ImagemPerfilUsuario> repositorio, IRepositorio<Usuario> repositorioUsuario, IAmazonS3Bucket amazonS3Bucket)
     {
         _mapper = mapper;
         _repositorio = repositorio;
-        _repositorioUsuario = repositorioUsuario;        
+        _repositorioUsuario = repositorioUsuario;
         _amazonS3Bucket = amazonS3Bucket;
     }
 
     public Dto Create(Dto dto)
     {
-        ImagemPerfilUsuario? perfilFile = _mapper.Map<ImagemPerfilUsuario>(dto);
+        ImagemPerfilUsuario? perfilFile = _mapper.Map<ImagemPerfilUsuario>(dto);        
         try
         {
             perfilFile.Url = _amazonS3Bucket.WritingAnObjectAsync(perfilFile, dto.Arquivo).GetAwaiter().GetResult();
@@ -30,20 +30,21 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
             _repositorio.Insert(ref perfilFile);
             return _mapper.Map<Dto>(perfilFile);
         }
-        catch
+        catch (Exception ex) 
         {
             _amazonS3Bucket.DeleteObjectNonVersionedBucketAsync(perfilFile).GetAwaiter();
-            throw new ArgumentException("Erro ao criar imagem de perfil.");
+            throw new ArgumentException(ex.Message);
+           //throw new ArgumentException("Erro ao criar imagem de perfil.");
         }
     }
 
-    public List<Dto> FindAll(int idUsuario)
+    public List<Dto> FindAll(Guid idUsuario)
     {
         var lstPerfilFile = _repositorio.GetAll();
         return _mapper.Map<List<Dto>>(lstPerfilFile);
     }
 
-    public Dto FindById(int id, int idUsuario)
+    public Dto FindById(Guid id, Guid idUsuario)
     {
         var imagemPerfilUsuario = _mapper.Map<Dto>(_repositorio.Get(id));
         if (imagemPerfilUsuario.UsuarioId != idUsuario)
@@ -52,21 +53,21 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
         return imagemPerfilUsuario;
     }
 
-    public DtoUsuario FindByIdUsuario(int idUsuario)
+    public DtoUsuario FindByIdUsuario(Guid idUsuario)
     {
         try
         {
             var usuario = _repositorio?.GetAll()?.Find(u => u.UsuarioId == idUsuario)?.Usuario;
             return _mapper.Map<DtoUsuario>(usuario);
         }
-        catch 
-        { 
-            return null;  
-        }            
+        catch
+        {
+            return null;
+        }
     }
 
     public Dto Update(Dto dto)
-    {        
+    {
         try
         {
             var validImagemPerfil = _repositorio.GetAll().Find(prop => prop.UsuarioId.Equals(dto.UsuarioId));
@@ -75,7 +76,7 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
 
             _amazonS3Bucket.DeleteObjectNonVersionedBucketAsync(validImagemPerfil).GetAwaiter().GetResult();
             validImagemPerfil.Url = _amazonS3Bucket.WritingAnObjectAsync(validImagemPerfil, dto.Arquivo).GetAwaiter().GetResult();
-            _repositorio.Update(ref validImagemPerfil);            
+            _repositorio.Update(ref validImagemPerfil);
             return _mapper.Map<Dto>(validImagemPerfil);
         }
         catch
@@ -84,7 +85,7 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
         }
     }
 
-    public bool Delete(int idUsuario)
+    public bool Delete(Guid idUsuario)
     {
         var imagemPerfilUsuario = _repositorio.GetAll().Find(prop => prop.UsuarioId.Equals(idUsuario));
         if (imagemPerfilUsuario != null)
@@ -92,7 +93,7 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
             var result = _amazonS3Bucket.DeleteObjectNonVersionedBucketAsync(imagemPerfilUsuario).GetAwaiter().GetResult();
             if (result)
             {
-               return _repositorio.Delete(new ImagemPerfilUsuario { Id = imagemPerfilUsuario.Id });
+                return _repositorio.Delete(new ImagemPerfilUsuario { Id = imagemPerfilUsuario.Id });
             }
         }
         return false;

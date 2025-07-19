@@ -1,13 +1,10 @@
-﻿using Asp.Versioning;
-using Business.Abstractions;
+﻿using Business.Abstractions;
 using Business.Dtos.v2;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Despesas.WebApi.Controllers.v2;
 
-[ApiVersion("2")]
-[Route("v{version:apiVersion}/[controller]")]
 public class LancamentoController : AuthController
 {
     private ILancamentoBusiness<LancamentoDto> _lancamentoBusiness;
@@ -25,7 +22,7 @@ public class LancamentoController : AuthController
     {
         try
         {
-            var list = _lancamentoBusiness.FindByMesAno(anoMes, IdUsuario);
+            var list = _lancamentoBusiness.FindByMesAno(anoMes, UserIdentity);
             if (list == null || list.Count == 0)
                 return Ok(new List<LancamentoDto>());
 

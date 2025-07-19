@@ -10,7 +10,7 @@ public class SaldoRepositorioImpl : ISaldoRepositorio
         Context = context;
     }
 
-    public decimal GetSaldo(int idUsuario)
+    public decimal GetSaldo(Guid idUsuario)
     {
         try
         {
@@ -25,14 +25,14 @@ public class SaldoRepositorioImpl : ISaldoRepositorio
         }
     }
 
-    public decimal GetSaldoByAno(DateTime mesAno, int idUsuario)
+    public decimal GetSaldoByAno(DateTime mesAno, Guid idUsuario)
     {
         int ano = mesAno.Year;
 
         try
         {
             decimal sumDespesa = Context.Despesa.Where(d => d.UsuarioId == idUsuario && d.Data.Year == ano).AsEnumerable().Sum(d => d.Valor);
-            decimal sumReceita = Context.Receita.Where(r => r.UsuarioId == idUsuario && r.Data.Year ==  ano).AsEnumerable().Sum(r => r.Valor);
+            decimal sumReceita = Context.Receita.Where(r => r.UsuarioId == idUsuario && r.Data.Year == ano).AsEnumerable().Sum(r => r.Valor);
 
             return (sumReceita - sumDespesa);
         }
@@ -42,7 +42,7 @@ public class SaldoRepositorioImpl : ISaldoRepositorio
         }
     }
 
-    public decimal GetSaldoByMesAno(DateTime mesAno, int idUsuario)
+    public decimal GetSaldoByMesAno(DateTime mesAno, Guid idUsuario)
     {
         int mes = mesAno.Month;
         int ano = mesAno.Year;

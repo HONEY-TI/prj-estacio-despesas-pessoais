@@ -17,7 +17,7 @@ public class ReceitaDto : ReceitaDtoBase, ISupportHyperMedia
     public override decimal Valor { get; set; }
 
     [JsonIgnore]
-    public override int? IdCategoria
+    public override Guid? IdCategoria
     {
         get
         {
@@ -25,7 +25,7 @@ public class ReceitaDto : ReceitaDtoBase, ISupportHyperMedia
         }
         set
         {
-            if (value != null)
+            if (value != null && this.Categoria != null)
             {
                 this.Categoria.Id = value.Value;
             }

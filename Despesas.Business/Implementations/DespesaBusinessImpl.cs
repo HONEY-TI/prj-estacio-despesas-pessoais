@@ -8,12 +8,12 @@ using Repository.Persistency.Generic;
 using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace Business.Implementations;
-public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>,IBusiness<Dto, Despesa> where Dto : DespesaDtoBase, new()
+public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusiness<Dto, Despesa> where Dto : DespesaDtoBase, new()
 {
     private readonly IRepositorio<Despesa> _repositorio;
     private readonly IRepositorio<Categoria> _repoCategoria;
     private readonly IMapper _mapper;
-    public DespesaBusinessImpl(IMapper mapper, IUnitOfWork<Despesa> unitOfWork, IRepositorio<Despesa> repositorio, IRepositorio<Categoria> repoCategoria): base(mapper, repositorio, unitOfWork)
+    public DespesaBusinessImpl(IMapper mapper, IUnitOfWork<Despesa> unitOfWork, IRepositorio<Despesa> repositorio, IRepositorio<Categoria> repoCategoria) : base(mapper, repositorio, unitOfWork)
     {
         _repositorio = repositorio;
         _repoCategoria = repoCategoria;
@@ -28,33 +28,33 @@ public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>,IBusiness<Dto
         return _mapper.Map<Dto>(despesa);
     }
 
-    public override List<Dto> FindAll(int idUsuario)
+    public override List<Dto> FindAll(Guid idUsuario)
     {
         var despesas = _repositorio.GetAll().FindAll(d => d.UsuarioId == idUsuario);
         var dtos = _mapper.Map<List<Dto>>(despesas);
         return dtos;
     }
 
-    public override  Dto FindById(int id, int idUsuario)
+    public override Dto FindById(Guid id, Guid idUsuario)
     {
         var despesa = _repositorio.Get(id);
         if (despesa is null) return null;
         despesa.UsuarioId = idUsuario;
         IsValidDespesa(despesa);
-        var despesaDto = _mapper.Map<Dto>(despesa);        
-        return despesaDto; 
+        var despesaDto = _mapper.Map<Dto>(despesa);
+        return despesaDto;
     }
 
-    public override  Dto Update(Dto dto)
+    public override Dto Update(Dto dto)
     {
         Despesa despesa = _mapper.Map<Despesa>(dto);
         IsValidDespesa(despesa);
-        IsValidCategoria(despesa);        
+        IsValidCategoria(despesa);
         _repositorio.Update(ref despesa);
         return _mapper.Map<Dto>(despesa);
     }
 
-    public override  bool Delete(Dto dto)
+    public override bool Delete(Dto dto)
     {
         Despesa despesa = _mapper.Map<Despesa>(dto);
         IsValidDespesa(despesa);

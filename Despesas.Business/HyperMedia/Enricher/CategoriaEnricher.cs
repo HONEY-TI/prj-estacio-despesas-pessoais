@@ -13,8 +13,8 @@ public class CategoriaEnricher : ContentResponseEnricher<CategoriaDto>
         var path = "categoria";
         string link = GetLink(content.Id, urlHelper, path);
 
-        content.Links.Add(new HyperMediaLink() 
-        { 
+        content.Links.Add(new HyperMediaLink()
+        {
             Action = HttpActionVerb.GET,
             Href = link,
             Rel = RelationType.self,
@@ -49,7 +49,7 @@ public class CategoriaEnricher : ContentResponseEnricher<CategoriaDto>
         return Task.CompletedTask;
     }
 
-    private string GetLink(int id, IUrlHelper urlHelper, string path)
+    private string GetLink(Guid id, IUrlHelper urlHelper, string path)
     {
         lock (_lock)
         {

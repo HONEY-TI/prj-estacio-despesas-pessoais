@@ -1,16 +1,14 @@
-﻿using Asp.Versioning;
-using Business.Abstractions;
+﻿using Business.Abstractions;
 using Business.Dtos.v1;
+using Despesas.WebApi.Controllers.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 
 namespace Despesas.WebApi.Controllers.v1;
 
-[ApiVersion("1")]
 [Route("v1/[controller]")]
-[ApiController]
-public class ControleAcessoController : AuthController
+public class ControleAcessoController : BaseAuthController
 {
     private IControleAcessoBusiness<ControleAcessoDto, LoginDto> _controleAcessoBusiness;
     public ControleAcessoController(IControleAcessoBusiness<ControleAcessoDto, LoginDto> controleAcessoBusiness)
@@ -67,7 +65,7 @@ public class ControleAcessoController : AuthController
             if (String.IsNullOrEmpty(login.Senha) || String.IsNullOrWhiteSpace(login.Senha))
                 return BadRequest(new { message = "Campo Senha não pode ser em branco ou nulo!" });
 
-            var result = _controleAcessoBusiness.ValidateCredentials(login);            
+            var result = _controleAcessoBusiness.ValidateCredentials(login);
             if (result == null) throw new NullReferenceException();
             return new OkObjectResult(result);
         }
@@ -82,7 +80,7 @@ public class ControleAcessoController : AuthController
     public IActionResult ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
     {
 
-        if (IdUsuario.Equals(2))
+        if (UserIdentity.Equals(2))
             return BadRequest(new { message = "A senha deste usuário não pode ser atualizada!" });
 
         if (String.IsNullOrEmpty(changePasswordDto.Senha) || String.IsNullOrWhiteSpace(changePasswordDto.Senha))
@@ -92,7 +90,7 @@ public class ControleAcessoController : AuthController
             return BadRequest(new { message = "Campo Confirma Senha não pode ser em branco ou nulo!" });
         try
         {
-            _controleAcessoBusiness.ChangePassword(IdUsuario, changePasswordDto.Senha);
+            _controleAcessoBusiness.ChangePassword(UserIdentity, changePasswordDto.Senha);
             return Ok(new { message = true });
         }
         catch

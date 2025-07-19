@@ -1,5 +1,4 @@
-﻿using Asp.Versioning;
-using Business.Abstractions;
+﻿using Business.Abstractions;
 using Business.Dtos.v2;
 using Business.HyperMedia.Filters;
 using Microsoft.AspNetCore.Authorization;
@@ -7,19 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Despesas.WebApi.Controllers.v2;
 
-[ApiVersion("2")]
-[Route("v{version:apiVersion}/[controller]")]
 public class UsuarioController : AuthController
 {
     private readonly IUsuarioBusiness<UsuarioDto> _usuarioBusiness;
     private readonly IImagemPerfilUsuarioBusiness<ImagemPerfilDto, UsuarioDto> _imagemPerfilBussiness;
-    
+
     public UsuarioController(IUsuarioBusiness<UsuarioDto> usuarioBusiness, IImagemPerfilUsuarioBusiness<ImagemPerfilDto, UsuarioDto> imagemPerfilBussiness)
     {
         _usuarioBusiness = usuarioBusiness;
         _imagemPerfilBussiness = imagemPerfilBussiness;
     }
-    
+
     [HttpGet("GetUsuario")]
     [Authorize("Bearer", Roles = "User")]
     [ProducesResponseType(200, Type = typeof(UsuarioDto))]
@@ -31,11 +28,11 @@ public class UsuarioController : AuthController
     {
         try
         {
-            var _usuario = _usuarioBusiness.FindById(IdUsuario);
+            var _usuario = _usuarioBusiness.FindById(UserIdentity);
             if (_usuario == null) throw new();
             return Ok(_usuario);
         }
-        catch(Exception ex) 
+        catch (Exception ex)
         {
             if (ex is ArgumentException argEx)
                 return BadRequest(argEx.Message);
@@ -55,7 +52,7 @@ public class UsuarioController : AuthController
     {
         try
         {
-            usuarioDto.UsuarioId = IdUsuario;            
+            usuarioDto.UsuarioId = UserIdentity;
             return Ok(_usuarioBusiness.Update(usuarioDto));
         }
         catch (Exception ex)
@@ -63,7 +60,7 @@ public class UsuarioController : AuthController
             if (ex is ArgumentException argEx)
                 return BadRequest(argEx.Message);
 
-            return BadRequest("Erro ao atualizar Usuário!");
+            return BadRequest("Erro ao atualizar dados pessoais do usuário!");
         }
     }
 
@@ -78,7 +75,7 @@ public class UsuarioController : AuthController
     {
         try
         {
-            var usuarios = _usuarioBusiness.FindAll(IdUsuario);
+            var usuarios = _usuarioBusiness.FindAll(UserIdentity);
             return Ok(usuarios);
         }
         catch (Exception ex)
@@ -87,7 +84,7 @@ public class UsuarioController : AuthController
                 return BadRequest(argEx.Message);
 
             return BadRequest("Não foi possível realizar a consulta de usuários.");
-        }       
+        }
     }
 
     [HttpPost]
@@ -101,7 +98,7 @@ public class UsuarioController : AuthController
     {
         try
         {
-            usuarioDto.UsuarioId = IdUsuario;
+            usuarioDto.UsuarioId = UserIdentity;
             return Ok(_usuarioBusiness.Create(usuarioDto));
         }
         catch (Exception ex)
@@ -124,7 +121,7 @@ public class UsuarioController : AuthController
     {
         try
         {
-            usuarioDto.UsuarioId = IdUsuario;
+            usuarioDto.UsuarioId = UserIdentity;
             return Ok(_usuarioBusiness.Update(usuarioDto));
         }
         catch (Exception ex)
@@ -148,7 +145,7 @@ public class UsuarioController : AuthController
         try
         {
             if (_usuarioBusiness.Delete(usuarioDto))
-                return  Ok(true);
+                return Ok(true);
 
             throw new ArgumentException("Não foi possivél excluir este usuário.");
         }
@@ -173,12 +170,12 @@ public class UsuarioController : AuthController
         try
         {
 
-            var imagemPerfilUsuario = _imagemPerfilBussiness.FindAll(IdUsuario).Find(prop => prop.UsuarioId.Equals(IdUsuario));
+            var imagemPerfilUsuario = _imagemPerfilBussiness.FindAll(UserIdentity).Find(prop => prop.UsuarioId.Equals(UserIdentity));
 
             if (imagemPerfilUsuario != null)
                 return Ok(imagemPerfilUsuario);
             else
-                throw new();
+                return Ok(new ImagemPerfilDto());
         }
         catch (Exception ex)
         {
@@ -200,7 +197,7 @@ public class UsuarioController : AuthController
     {
         try
         {
-            ImagemPerfilDto imagemPerfilUsuario = await ConvertFileToImagemPerfilUsuarioDtoAsync(file, IdUsuario);
+            ImagemPerfilDto imagemPerfilUsuario = await ConvertFileToImagemPerfilUsuarioDtoAsync(file, UserIdentity);
             var _imagemPerfilUsuario = _imagemPerfilBussiness.Create(imagemPerfilUsuario);
 
             if (_imagemPerfilUsuario != null)
@@ -228,7 +225,7 @@ public class UsuarioController : AuthController
     {
         try
         {
-            ImagemPerfilDto imagemPerfilUsuario = await ConvertFileToImagemPerfilUsuarioDtoAsync(file, IdUsuario);
+            ImagemPerfilDto imagemPerfilUsuario = await ConvertFileToImagemPerfilUsuarioDtoAsync(file, UserIdentity);
             imagemPerfilUsuario = _imagemPerfilBussiness.Update(imagemPerfilUsuario);
             if (imagemPerfilUsuario != null)
                 return Ok(imagemPerfilUsuario);
@@ -255,7 +252,7 @@ public class UsuarioController : AuthController
     {
         try
         {
-            if (_imagemPerfilBussiness.Delete(IdUsuario))
+            if (_imagemPerfilBussiness.Delete(UserIdentity))
                 return Ok(true);
             else
                 throw new();
@@ -269,9 +266,9 @@ public class UsuarioController : AuthController
         }
     }
 
-    private async Task<ImagemPerfilDto> ConvertFileToImagemPerfilUsuarioDtoAsync(IFormFile file, int idUsuario)
+    private async Task<ImagemPerfilDto> ConvertFileToImagemPerfilUsuarioDtoAsync(IFormFile file, Guid idUsuario)
     {
-        string fileName = idUsuario + "-imagem-perfil-usuario-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+        string fileName = idUsuario.ToString().Replace("-", "") + "-img-perfil-" + DateTime.Now.ToString("yyyyMMddHHmmss");
         string typeFile = "";
         int posicaoUltimoPontoNoArquivo = file.FileName.LastIndexOf('.');
         if (posicaoUltimoPontoNoArquivo >= 0 && posicaoUltimoPontoNoArquivo < file.FileName.Length - 1)
@@ -285,11 +282,10 @@ public class UsuarioController : AuthController
 
                 ImagemPerfilDto imagemPerfilUsuario = new ImagemPerfilDto
                 {
-
                     Name = fileName,
                     Type = typeFile,
                     ContentType = file.ContentType,
-                    UsuarioId = IdUsuario,
+                    UsuarioId = UserIdentity,
                     Arquivo = memoryStream.GetBuffer()
                 };
                 return imagemPerfilUsuario;

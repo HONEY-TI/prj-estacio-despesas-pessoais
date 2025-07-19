@@ -8,7 +8,7 @@ namespace Api.Controllers.v2;
 public sealed class GraficosControllerTest
 {
     private Mock<IGraficosBusiness> _mockGraficoBusiness;
-    private GraficosController _GraficoController;  
+    private GraficosController _GraficoController;
 
     public GraficosControllerTest()
     {
@@ -21,7 +21,7 @@ public sealed class GraficosControllerTest
     {
         // Arrange
         var dadosGrafico = GraficoFaker.GetNewFaker();
-        int idUsuario = 1;
+        var idUsuario = Guid.NewGuid();
         DateTime anoMes = DateTime.Today;
         Usings.SetupBearerToken(idUsuario, _GraficoController);
         _mockGraficoBusiness.Setup(business => business.GetDadosGraficoByAnoByIdUsuario(idUsuario, anoMes)).Returns(dadosGrafico);
@@ -40,10 +40,9 @@ public sealed class GraficosControllerTest
     {
         // Arrange
         var dadosGrafico = GraficoFaker.GetNewFaker();
-        int idUsuario = 1;
         DateTime anoMes = DateTime.Today;
-        Usings.SetupBearerToken(0, _GraficoController);
-        _mockGraficoBusiness.Setup(business => business.GetDadosGraficoByAnoByIdUsuario(It.IsAny<int>(), It.IsAny<DateTime>())).Throws(new Exception());
+        Usings.SetupBearerToken(Guid.Empty, _GraficoController);
+        _mockGraficoBusiness.Setup(business => business.GetDadosGraficoByAnoByIdUsuario(It.IsAny<Guid>(), It.IsAny<DateTime>())).Throws(new Exception());
 
         // Act
         var result = _GraficoController.GetByAnoByIdUsuario(anoMes) as ObjectResult;

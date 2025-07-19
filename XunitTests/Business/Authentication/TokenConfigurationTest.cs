@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Despesas.Business.Authentication.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace Business.Authentication;
 public sealed class TokenConfigurationTest
@@ -11,7 +12,7 @@ public sealed class TokenConfigurationTest
         {
             Issuer = "TesteIssuer",
             Audience = "TesteAudience",
-            Seconds = 3600
+            Seconds = 3600,
         });
 
         // Act

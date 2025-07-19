@@ -1,8 +1,9 @@
-name: Deploy Development Project in AWS
+﻿name: Deploy Development Project in AWS
 on:
   push:
     branches: 
       - staging 
+      
 jobs:
   trigger_build_and_test:
     name: Triggered Deploy Dev

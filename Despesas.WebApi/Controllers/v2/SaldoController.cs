@@ -1,5 +1,4 @@
-﻿using Asp.Versioning;
-using Business.Abstractions;
+﻿using Business.Abstractions;
 using Business.Dtos.v2;
 using Business.HyperMedia.Filters;
 using Microsoft.AspNetCore.Authorization;
@@ -7,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Despesas.WebApi.Controllers.v2;
 
-[ApiVersion("2")]
-[Route("v{version:apiVersion}/[controller]")]
 public class SaldoController : AuthController
 {
     private ISaldoBusiness _saldoBusiness;
@@ -28,7 +25,7 @@ public class SaldoController : AuthController
     {
         try
         {
-            var saldo = _saldoBusiness.GetSaldo(IdUsuario);
+            var saldo = _saldoBusiness.GetSaldo(UserIdentity);
             return Ok(saldo);
         }
         catch
@@ -48,7 +45,7 @@ public class SaldoController : AuthController
     {
         try
         {
-            var saldo = _saldoBusiness.GetSaldoAnual(ano, IdUsuario);
+            var saldo = _saldoBusiness.GetSaldoAnual(ano, UserIdentity);
             return Ok(saldo);
         }
         catch
@@ -68,7 +65,7 @@ public class SaldoController : AuthController
     {
         try
         {
-            var saldo = _saldoBusiness.GetSaldoByMesAno(anoMes, IdUsuario);
+            var saldo = _saldoBusiness.GetSaldoByMesAno(anoMes, UserIdentity);
             return Ok(saldo);
         }
         catch

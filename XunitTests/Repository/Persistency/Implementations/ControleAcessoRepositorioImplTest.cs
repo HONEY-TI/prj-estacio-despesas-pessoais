@@ -59,7 +59,8 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
         mockRepository.Setup(repo => repo.Create(It.IsAny<ControleAcesso>())).Throws(new InvalidOperationException("ControleAcessoRepositorioImpl_Create_Exception"));
 
         // Act & Assert 
-        Assert.Throws<InvalidOperationException>(() => mockRepository.Object.Create((ControleAcesso)null));
+        ControleAcesso? nullControleAceesso = null;
+        Assert.Throws<InvalidOperationException>(() => mockRepository.Object.Create(nullControleAceesso));
         //Assert.Equal("ControleAcessoRepositorioImpl_Create_Exception", exception.Message);
     }
 
@@ -95,7 +96,7 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
         var mockControleAcesso = new ControleAcesso { Login = lstControleAcesso.Last().Login };
         context.AddRange(lstControleAcesso);
         context.SaveChanges();
-        var repository = new Mock<ControleAcessoRepositorioImpl>(context);        
+        var repository = new Mock<ControleAcessoRepositorioImpl>(context);
 
         // Act
         var result = repository.Object.RecoveryPassword(mockControleAcesso.Login, newPassword);
@@ -166,10 +167,10 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
         var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
         var controleAcesso = context.ControleAcesso.ToList().First();
         mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<ControleAcesso, bool>>>())).Returns(controleAcesso);
-        mockRepository.Setup(repo => repo.ChangePassword(0, "!12345")).Returns(true);
+        mockRepository.Setup(repo => repo.ChangePassword(Guid.Empty, "!12345")).Returns(true);
 
         // Act
-        var result = mockRepository.Object.ChangePassword(0, "!12345");
+        var result = mockRepository.Object.ChangePassword(Guid.Empty, "!12345");
 
         //Assert
         Assert.IsType<bool>(result);
@@ -191,7 +192,7 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
         context.SaveChanges();
         var repository = new ControleAcessoRepositorioImpl(context);
         var controleAcesso = context.ControleAcesso.Last();
-        
+
         // Act
         var result = repository.ChangePassword(controleAcesso.UsuarioId, "!12345");
 
@@ -226,7 +227,7 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
         Assert.Equal("ChangePassword_Erro", exception.Message);
         Assert.True(true);
     }
-     
+
     [Fact]
     public void Create_Should_Throw_Exception_When_User_Already_Exists()
     {
@@ -278,7 +279,7 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
         // Arrange
         var context = _fixture.Context;
         var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var nonExistingId = -1;
+        var nonExistingId = Guid.Empty;
 
         // Act & Assert
         Assert.Throws<ArgumentException>(() => mockRepository.Object.RevokeRefreshToken(nonExistingId));

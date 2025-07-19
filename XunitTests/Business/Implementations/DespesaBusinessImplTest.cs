@@ -18,12 +18,12 @@ public class DespesaBusinessImplTest
     private Mapper _mapper;
 
     public DespesaBusinessImplTest()
-    {        
+    {
         _unitOfWork = new Mock<IUnitOfWork<Despesa>>(MockBehavior.Default);
         _repositorioMock = new Mock<IRepositorio<Despesa>>();
         _repositorioCategoria = new Mock<IRepositorio<Categoria>>(MockBehavior.Default);
         _mapper = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<DespesaProfile>(); }));
-        _despesaBusiness = new DespesaBusinessImpl<DespesaDto>(_mapper, _unitOfWork.Object, _repositorioMock.Object,  _repositorioCategoria.Object);
+        _despesaBusiness = new DespesaBusinessImpl<DespesaDto>(_mapper, _unitOfWork.Object, _repositorioMock.Object, _repositorioCategoria.Object);
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class DespesaBusinessImplTest
         var categorias = CategoriaFaker.Instance.Categorias(despesa.Usuario, (int)TipoCategoria.CategoriaType.Despesa, despesa.UsuarioId);
         categorias.Add(despesa.Categoria ?? new());
         _repositorioCategoria.Setup(repo => repo.GetAll()).Returns(categorias);
-        
+
         // Act
         var result = _despesaBusiness.Create(despesaDto);
 
@@ -93,10 +93,10 @@ public class DespesaBusinessImplTest
         var despesa = DespesaFaker.Instance.Despesas().First();
         var id = despesa.Id;
 
-        _repositorioMock.Setup(repo => repo.Get(id)).Returns<Despesa>(null);
+        _repositorioMock.Setup(repo => repo.Get(id)).Returns(() => null);
 
         // Act
-        var result = _despesaBusiness.FindById(id, 0);
+        var result = _despesaBusiness.FindById(id, Guid.Empty);
 
         // Assert
         Assert.Null(result);
@@ -110,9 +110,9 @@ public class DespesaBusinessImplTest
         var despesas = DespesaFaker.Instance.Despesas();
         var despesa = despesas.First();
         despesa.Descricao = "Teste Update Despesa";
-        var despesaDto = _mapper.Map<DespesaDto>(despesa);        
+        var despesaDto = _mapper.Map<DespesaDto>(despesa);
         _repositorioMock.Setup(repo => repo.Update(ref It.Ref<Despesa>.IsAny));
-        _repositorioMock.Setup(repo => repo.Get(It.IsAny<int>())).Returns(despesa);
+        _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(despesa);
         _repositorioCategoria.Setup(repo => repo.GetAll()).Returns(despesas.Select(d => d.Categoria ?? new()).ToList());
 
         // Act
@@ -132,9 +132,9 @@ public class DespesaBusinessImplTest
         // Arrange
         var despesa = DespesaFaker.Instance.Despesas().First();
         _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Despesa>())).Returns(true);
-        _repositorioMock.Setup(repo => repo.Get(It.IsAny<int>())).Returns(despesa);
+        _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(despesa);
         var despesaDto = _mapper.Map<DespesaDto>(despesa);
-        
+
         // Act
         var result = _despesaBusiness.Delete(despesaDto);
 
@@ -151,7 +151,7 @@ public class DespesaBusinessImplTest
         var despesa = DespesaFaker.Instance.Despesas().First();
         var despesaDto = _mapper.Map<DespesaDto>(despesa);
         var categorias = CategoriaFaker.Instance.Categorias();
-        _repositorioMock.Setup(repo => repo.Insert(ref It.Ref<Despesa>.IsAny)).Throws<Exception>();        
+        _repositorioMock.Setup(repo => repo.Insert(ref It.Ref<Despesa>.IsAny)).Throws<Exception>();
         _repositorioCategoria.Setup(repo => repo.GetAll()).Throws(new ArgumentException("Erro Categoria inexistente ou não cadastrada!"));
 
         // Act & Assert 

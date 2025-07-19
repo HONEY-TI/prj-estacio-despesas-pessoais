@@ -1,4 +1,4 @@
-version: '3.9'
+﻿version: '3.9'
 services:
   app-despesas-pessoais-dev:
     container_name: app-despesas-pessoais-dev
@@ -8,6 +8,12 @@ services:
       dockerfile: Despesas.WebApi/Dockerfile.development
     environment:
       TZ: America/Sao_Paulo
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Staging
     ports:
+      - 42535:42535
       - 42536:42536
+    volumes:
+      - ./Despesas.WebApi/appsettings.docker.development.json:/app/appsettings.development.json
+      - ./Despesas.WebApi/appsettings.docker.development.json:/app/appsettings.json
+      - ./Despesas.WebApi/certificate/webapi-cert.pfx:/app/certificate/webapi-cert.pfx
+ 

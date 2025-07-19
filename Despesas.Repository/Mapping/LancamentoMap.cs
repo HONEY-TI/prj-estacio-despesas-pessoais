@@ -1,19 +1,23 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Domain.Entities;
 
 namespace Repository.Mapping;
-public class LancamentoMap: IEntityTypeConfiguration<Lancamento>
+public class LancamentoMap : IEntityTypeConfiguration<Lancamento>
 {
     public void Configure(EntityTypeBuilder<Lancamento> builder)
     {
         builder.ToTable(nameof(Lancamento));
+        builder.Property(l => l.Id).HasColumnType("binary(16)")
+            .HasConversion(v => v.ToByteArray(), v => new Guid(v))
+            .ValueGeneratedOnAdd().IsRequired();
         builder.HasKey(l => l.Id);
-        builder.Property(l => l.Id).ValueGeneratedOnAdd().IsRequired();        
-        builder.Property(l => l.UsuarioId).IsRequired();
-        builder.Property(l => l.DespesaId).IsRequired(false).HasDefaultValue(null);
-        builder.Property(l => l.ReceitaId).IsRequired(false).HasDefaultValue(null);
-        builder.Property(l => l.UsuarioId).IsRequired();
+        builder.Property(l => l.UsuarioId).HasColumnType("binary(16)")
+            .HasConversion(v => v.ToByteArray(), v => new Guid(v)).IsRequired();
+        builder.Property(l => l.DespesaId).HasColumnType("binary(16)")
+            .HasConversion(v => v.ToByteArray(), v => new Guid(v));
+        builder.Property(l => l.ReceitaId).HasColumnType("binary(16)")
+            .HasConversion(v => v.ToByteArray(), v => new Guid(v));
 
         //MySqlServer
         builder.Property(m => m.Data).HasColumnType("datetime").IsRequired();
