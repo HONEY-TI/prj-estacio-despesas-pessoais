@@ -17,7 +17,7 @@ public static class AutorizationDependenceInject
         X509Certificate2 certificate = new X509Certificate2(certificatePath, options.Value.Password, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
         var signingConfigurations = new SigningConfigurations(options);
         builder.Services.AddSingleton<SigningConfigurations>(signingConfigurations);
-
+        
         if (builder.Environment.IsProduction())
         {
             builder.WebHost.ConfigureKestrel(serverOptions =>
