@@ -16,20 +16,37 @@ public class SigningConfigurations : ISigningConfigurations
     public TokenConfiguration? TokenConfiguration { get; private set; }
     public SigningCredentials? SigningCredentials { get; private set; }
 
-    public SigningConfigurations(IOptions<TokenOptions> options)
+    public SigningConfigurations(X509Certificate2 _X509Certificate, IOptions<TokenOptions> options) : this(options)
+    {
+        RSA? rsa = _X509Certificate.GetRSAPrivateKey()
+                ?? _X509Certificate.GetRSAPublicKey()
+                ?? RSA.Create(2048)
+                ?? throw new InvalidOperationException("Erro ao obter chave RSA do certificado.");
+
+        var rsaKey = new RsaSecurityKey(rsa)
+        {
+            KeyId = Guid.NewGuid().ToString()
+        };
+
+        Key = rsaKey;
+        SigningCredentials = new SigningCredentials(Key, SecurityAlgorithms.RsaSha256);
+    }
+
+    private SigningConfigurations(IOptions<TokenOptions> options)
     {
         TokenConfiguration = new TokenConfiguration(options);
         var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        if (environment == Environments.Production) return;
 
         if (!String.IsNullOrEmpty(options.Value.Certificate) && (environment != "Test") && ((environment != Environments.Staging)))
         {
             string certificatePath = Path.Combine(AppContext.BaseDirectory, options.Value.Certificate);
             X509Certificate2 certificate = new X509Certificate2(certificatePath, options.Value.Password, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
             RSA? rsa = null;
-            rsa = certificate.GetRSAPrivateKey();
+            rsa = certificate.GetRSAPublicKey();
             RsaSecurityKey rsaSecurityKey = new RsaSecurityKey(rsa);
             rsaSecurityKey.KeyId = Guid.NewGuid().ToString();
-            SigningCredentials signingCredentials = new SigningCredentials(rsaSecurityKey, SecurityAlgorithms.RsaSha256) ;
+            SigningCredentials signingCredentials = new SigningCredentials(rsaSecurityKey, SecurityAlgorithms.RsaSha256Signature);
             Key = rsaSecurityKey;
             SigningCredentials = signingCredentials;
         }

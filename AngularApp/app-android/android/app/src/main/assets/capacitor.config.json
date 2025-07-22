@@ -1,0 +1,6 @@
+{
+	"appId": "com.alexfariakof.android",
+	"appName": "Despesas Pessoais",
+	"webDir": "../www",
+	"bundledWebRuntime": false
+}
