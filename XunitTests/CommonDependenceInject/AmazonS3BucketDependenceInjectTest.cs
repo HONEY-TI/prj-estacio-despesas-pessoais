@@ -1,7 +1,5 @@
 ﻿using Despesas.Infrastructure.Amazon;
 using Despesas.Infrastructure.Amazon.Abstractions;
-using Despesas.WebApi.CommonDependenceInject;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -10,34 +8,34 @@ namespace CommonDependenceInject;
 public sealed class AmazonS3BucketDependenceInjectTest
 {
     [Fact]
-    public void AddAmazonS3BucketConfigurations_Should_Register_Required_Services()
+    public void Should_Register_AmazonS3Bucket_With_Manually_Created_Options()
     {
         // Arrange
-        var inMemorySettings = new Dictionary<string, string>
+        var options = Options.Create(new AmazonS3Options
         {
-            { "AmazonS3Configurations:AccessKey", "fake-access-key" },
-            { "AmazonS3Configurations:SecretKey", "fake-secret-key" },
-            { "AmazonS3Configurations:BucketName", "fake-bucket" }        
-        };
-
-        IConfiguration configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
-            .Build();
+            AccessKey = "fake-access-key",
+            SecretAccessKey = "fake-secret-key",
+            BucketName = "fake-bucket",
+            S3ServiceUrl = "fake-url"
+        });
 
         var services = new ServiceCollection();
+        services.AddSingleton<IOptions<AmazonS3Options>>(options);
+        services.AddSingleton<IAmazonS3Bucket, AmazonS3Bucket>();
 
-        // Act
-        services.AddAmazonS3BucketConfigurations(configuration);
         var serviceProvider = services.BuildServiceProvider();
 
-        // Assert
-        var options = serviceProvider.GetService<IOptions<AmazonS3Options>>();
-        Assert.NotNull(options);
-        Assert.Equal("fake-access-key", options.Value.AccessKey);
-        Assert.Equal("fake-secret-key", options.Value.SecretAccessKey);
-        Assert.Equal("fake-bucket", options.Value.BucketName);
-        
+        // Act
+        var resolvedOptions = serviceProvider.GetService<IOptions<AmazonS3Options>>();
         var amazonS3Bucket = serviceProvider.GetService<IAmazonS3Bucket>();
+
+        // Assert
+        Assert.NotNull(resolvedOptions);
+        Assert.Equal("fake-access-key", resolvedOptions.Value.AccessKey);
+        Assert.Equal("fake-secret-key", resolvedOptions.Value.SecretAccessKey);
+        Assert.Equal("fake-bucket", resolvedOptions.Value.BucketName);
+        Assert.Equal("fake-url", resolvedOptions.Value.S3ServiceUrl);
+
         Assert.NotNull(amazonS3Bucket);
         Assert.IsType<AmazonS3Bucket>(amazonS3Bucket);
     }
