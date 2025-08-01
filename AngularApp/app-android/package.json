@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "add:android": "npx cap add android",
-    "build:mobile": "ng build --configuration=production-android --output-path=www",
+    "build:prod": "ng build --configuration=production-android --output-path=www",
+    "build:dev": "ng build --configuration=development-android --output-path=www",
     "start:android": "npx cap sync android && npx cap run android"
   },
   "keywords": [],

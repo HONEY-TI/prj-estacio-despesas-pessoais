@@ -22,8 +22,11 @@
     "add:ios": "npm run add:ios --workspace=app-ios",
     "install:android": "npm install --workspace=app-android",
     "install:ios": "npm install --workspace=app-ios",
-    "build:android": "npm run build:mobile --workspace=app-android",
-    "build:ios": "npm run build:mobile --workspace=app-ios",
+    "build:android-prod": "npm run build:prod --workspace=app-android",
+    "build:ios-prod": "npm run build:prod --workspace=app-ios",
+    "build:android-dev": "npm run build:dev --workspace=app-android",
+    "build:ios-dev": "npm run build:dev --workspace=app-ios",
+
     "start:android": "npm run start:android --workspace=app-android",
     "start:ios": "npm run start:ios --workspace=app-ios"
   },
