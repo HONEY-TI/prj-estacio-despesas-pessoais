@@ -18,6 +18,11 @@ public abstract class ControleAcessoDtoBase : ModelDtoBase
     [Required]
     public virtual string? Senha { get; set; }
 
-    [Required]
+    [Required]    
     public virtual string? ConfirmaSenha { get; set; }
+    
+    public virtual string? ExternalProvider { get; set; }
+    
+    public virtual string? ExternalId { get; set; }
+
 }

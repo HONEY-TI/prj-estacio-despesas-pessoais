@@ -21,10 +21,12 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } f
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, } from '@angular/material-moment-adapter';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { LoginRoutingModule } from './pages/login/login.routing.module';
+
 @NgModule({
-  declarations: [AppComponent, LoginComponent],
+  declarations: [AppComponent],
   bootstrap: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, CommonModule, ReactiveFormsModule, AlertModule, PrimeiroAcessoComponent,
+  imports: [BrowserModule, LoginRoutingModule, AppRoutingModule, CommonModule, ReactiveFormsModule, PrimeiroAcessoComponent,
     MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, BrowserAnimationsModule, MomentDateModule,
     NgxMaskDirective, NgxMaskPipe],
   providers: [AuthService, ControleAcessoService, MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent, NgbActiveModal, NgbDropdownModule,
@@ -38,4 +40,5 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     provideNgxMask(), provideHttpClient(withInterceptorsFromDi()), provideAnimationsAsync()]
 })
+
 export class AppModule { }

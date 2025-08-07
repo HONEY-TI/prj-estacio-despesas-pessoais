@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 namespace Despesas.WebApi.Controllers.v1;
 
 [Route("v1/[controller]")]
-public class ControleAcessoController : BaseAuthController
+public class ControleAcessoController : UnitControllerBase
 {
     private IControleAcessoBusiness<ControleAcessoDto, LoginDto> _controleAcessoBusiness;
     public ControleAcessoController(IControleAcessoBusiness<ControleAcessoDto, LoginDto> controleAcessoBusiness)

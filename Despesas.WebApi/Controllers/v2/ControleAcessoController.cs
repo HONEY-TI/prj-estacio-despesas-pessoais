@@ -1,8 +1,11 @@
 ﻿using Business.Abstractions;
 using Business.Dtos.Core;
 using Business.Dtos.v2;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Despesas.WebApi.Controllers.v2;
 
@@ -54,6 +57,45 @@ public class ControleAcessoController : AuthController
         }
     }
 
+    [AllowAnonymous]
+    [HttpGet("GoogleSignIn")]
+    public async Task<IActionResult> GoogleSignIn()
+    {
+        var redirectUrl = Url.Action("GoogleCallback", "ControleAcesso", null, Request.Scheme);
+        var properties = new AuthenticationProperties { RedirectUri = redirectUrl };
+        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+    }
+
+
+    [HttpGet("GoogleCallback")]
+    public async Task<IActionResult> GoogleCallback()
+    {
+        var authenticateResult = await HttpContext.AuthenticateAsync();
+
+        if (!authenticateResult.Succeeded || authenticateResult.Principal == null)
+            return BadRequest("Erro ao autenticar com o Google.");
+
+        var email = authenticateResult.Principal.FindFirst(ClaimTypes.Email)?.Value;
+        var sub = authenticateResult.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var name = authenticateResult.Principal.FindFirst(ClaimTypes.Name)?.Value;
+
+        if (email == null || sub == null)
+            return BadRequest("Erro ao obter informações do Google.");
+
+        var loginDto = new LoginDto
+        {
+            Email = email,
+            Senha = null,
+            ExternalProvider = "Google",
+            ExternalId = sub
+        };
+
+        var authResult = _controleAcessoBusiness.ValidateExternalCredentials(loginDto);
+        if (authResult == null)
+            return Unauthorized("Usuário não autorizado.");
+
+        return Ok(authResult);
+    }
 
     [HttpPost("ChangePassword")]
     [Authorize("Bearer", Roles = "User")]

@@ -61,6 +61,47 @@ public class ControleAcessoBusinessImpl<DtoCa, DtoLogin> : IControleAcessoBusine
         return AuthenticationException("Usuário Inválido!");
     }
 
+    public AuthenticationDto ValidateExternalCredentials(DtoLogin loginDto)
+    {
+        ControleAcesso? baseLogin = _repositorio.Find(c =>
+            (c.ExternalProvider == loginDto.ExternalProvider && c.ExternalId == loginDto.ExternalId) && c.Login.Equals(loginDto.Email)
+        );
+
+        if (baseLogin == null && !string.IsNullOrEmpty(loginDto.ExternalProvider))
+        {
+            var login = new Business.Dtos.v2.LoginDto
+            {
+                Email = loginDto.Email,
+                Senha = Guid.NewGuid().ToString("N"),
+                ExternalProvider = loginDto.ExternalProvider,
+                ExternalId = loginDto.ExternalId
+            };           
+
+            Create(this._mapper.Map<DtoCa>(login));
+
+            baseLogin = _repositorio.Find(c => c.Login.Equals(loginDto.Email));
+        }
+
+        if (baseLogin == null)
+            throw new ArgumentException("Não foi possível criar a conta para este login google.");
+
+        if (baseLogin.Usuario?.StatusUsuario == StatusUsuario.Inativo)
+            return AuthenticationException("Usuário Inativo!");
+                
+        if (string.IsNullOrEmpty(loginDto.ExternalProvider))
+        {
+        
+            if (!_crypto.Verify(loginDto?.Senha ?? "", baseLogin?.Senha ?? ""))
+                return AuthenticationException("Senha inválida!");
+        }
+
+        baseLogin.RefreshToken = _singingConfiguration.GenerateRefreshToken();
+        baseLogin.RefreshTokenExpiry = DateTime.UtcNow.AddDays(_singingConfiguration.TokenConfiguration.DaysToExpiry);
+
+        _repositorio.RefreshTokenInfo(baseLogin);
+        return AuthenticationSuccess(baseLogin);
+    }
+
     public AuthenticationDto ValidateCredentials(string refreshToken)
     {
         var baseLogin = _repositorio.FindByRefreshToken(refreshToken);

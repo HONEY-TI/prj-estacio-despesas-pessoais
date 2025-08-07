@@ -46,9 +46,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\AngularApp\AngularApp.esproj" />
 		<ProjectReference Include="..\Despesas.Business\Despesas.Business.csproj" />
+		<ProjectReference Include="..\Despesas.DataSeeders\Despesas.DataSeeders.csproj" />
 		<ProjectReference Include="..\Despesas.Domain\Despesas.Domain.csproj" />
+		<ProjectReference Include="..\Despesas.Frontend\Despesas.Frontend.esproj" />
 		<ProjectReference Include="..\Despesas.Infrastructure\Despesas.Infrastructure.csproj" />
 		<ProjectReference Include="..\Despesas.Repository\Despesas.Repository.csproj" />
 		<ProjectReference Include="..\Despesas.WebApi\Despesas.WebApi.csproj" />

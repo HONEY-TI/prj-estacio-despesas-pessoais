@@ -33,11 +33,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\AngularApp\AngularApp.esproj" />
 		<ProjectReference Include="..\Despesas.Business\Despesas.Business.csproj" />
-		<ProjectReference Include="..\Despesas.DataSeeders\Despesas.DataSeeders.csproj" />
-		<ProjectReference Include="..\Migrations.MsSqlServer\Migrations.MsSqlServer.csproj" />
-		<ProjectReference Include="..\Migrations.MySqlServer\Migrations.MySqlServer.csproj" />
+		<ProjectReference Include="..\Despesas.Frontend\Despesas.Frontend.esproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -10,4 +10,5 @@ public class LoginDto : LoginDtoBase
 
     [Required(ErrorMessage = "O campo Senha é obrigatório.")]
     public override string? Senha { get; set; }
+
 }

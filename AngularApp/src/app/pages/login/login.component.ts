@@ -6,6 +6,7 @@ import { AlertComponent, AlertType } from "../../shared/components";
 import { ILogin, IAuth } from "../../shared/models";
 import { AuthService } from "../../shared/services";
 import { ControleAcessoService } from "../../shared/services/api";
+import { AuthGoogleService } from "../../shared/services/auth/auth.google.service";
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ import { ControleAcessoService } from "../../shared/services/api";
   styleUrls: ['./login.component.scss']
 })
 
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
   loginForm: FormGroup & ILogin;
   showPassword = false;
   eyeIconClass: string = 'bi-eye';
@@ -23,12 +24,13 @@ export class LoginComponent implements OnInit{
     public router: Router,
     public controleAcessoService: ControleAcessoService,
     public authProviderService: AuthService,
-    public modalALert: AlertComponent ){  }
+    public authProviderGoogleService: AuthGoogleService,
+    public modalALert: AlertComponent) { }
 
-  ngOnInit(): void{
+  ngOnInit(): void {
     this.loginForm = this.formbuilder.group({
-        email: ['teste@teste.com', [Validators.required, Validators.email]],
-        senha: ['12345T!', [Validators.required, Validators.nullValidator]]
+      email: ['teste@teste.com', [Validators.required, Validators.email]],
+      senha: ['12345T!', [Validators.required, Validators.nullValidator]]
     }) as FormGroup & ILogin;
   }
 
@@ -45,25 +47,54 @@ export class LoginComponent implements OnInit{
         }
       }),
       catchError((error) => {
-        if (error && typeof error.message === 'string'){
+        if (error && typeof error.message === 'string') {
           throw (error.message);
         }
         throw (error);
       })
     )
-    .subscribe({
-      next: (response: boolean) => {
-        if (response)
-          this.router.navigate(['/dashboard']);
-      },
-      error :(errorMessage: string) =>  {
-        this.modalALert.open(AlertComponent, errorMessage, AlertType.Warning);
-      }
-    });
+      .subscribe({
+        next: (response: boolean) => {
+          if (response)
+            this.router.navigate(['/dashboard']);
+        },
+        error: (errorMessage: string) => {
+          this.modalALert.open(AlertComponent, errorMessage, AlertType.Warning);
+        }
+      });
+  }
+
+  onGoogleLoginClick() {
+    this.controleAcessoService.onGooglesignIn().pipe(
+      map((response: IAuth) => {
+        if (response.authenticated) {
+          return this.authProviderService.createAccessToken(response);
+        }
+        else {
+          throw (response);
+        }
+      }),
+      catchError((error) => {
+        if (error && typeof error.message === 'string') {
+          throw (error.message);
+        }
+        throw (error);
+      })
+    )
+      .subscribe({
+        next: (response: boolean) => {
+          if (response)
+            this.router.navigate(['/dashboard']);
+        },
+        error: (errorMessage: string) => {
+          this.modalALert.open(AlertComponent, errorMessage, AlertType.Warning);
+        }
+      });;
   }
 
   onTooglePassword() {
     this.showPassword = !this.showPassword;
     this.eyeIconClass = (this.eyeIconClass === 'bi-eye') ? 'bi-eye-slash' : 'bi-eye';
   }
+
 }

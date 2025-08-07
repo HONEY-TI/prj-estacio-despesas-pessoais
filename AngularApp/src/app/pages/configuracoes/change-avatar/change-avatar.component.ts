@@ -9,6 +9,7 @@ import { ImagemPerfilService } from '../../../shared/services/api';
   templateUrl: './change-avatar.component.html',
   styleUrls: ['./change-avatar.component.scss']
 })
+
 export class ChangeAvatarComponent implements OnInit {
   @Input() handleAvatarUploaded: (event: Event) => void;
   formAvatar: FormGroup;

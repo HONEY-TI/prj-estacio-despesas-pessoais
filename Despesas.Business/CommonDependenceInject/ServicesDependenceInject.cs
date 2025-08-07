@@ -5,7 +5,7 @@ using Despesas.Infrastructure.Email;
 using Despesas.Infrastructure.Email.Abstractions;
 using Domain.Entities;
 using EasyCryptoSalt;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Repository.Persistency.UnitOfWork;
 using Repository.Persistency.UnitOfWork.Abstractions;
@@ -14,10 +14,11 @@ namespace Business.CommonDependenceInject;
 
 public static class ServicesDependenceInject
 {
-    public static void AddServicesCryptography(this WebApplicationBuilder builder)
+    public static IServiceCollection AddServicesCryptography(this IServiceCollection services, IConfiguration configuration)
     {
-        builder.Services.Configure<CryptoOptions>(builder.Configuration.GetSection("CryptoConfigurations"));
-        builder.Services.AddSingleton<ICrypto, Crypto>();
+        services.Configure<CryptoOptions>(configuration.GetSection("CryptoConfigurations"));
+        services.AddSingleton<ICrypto, Crypto>();
+        return services;
     }
 
     public static IServiceCollection AddServices(this IServiceCollection services)

@@ -8,7 +8,7 @@ namespace Despesas.WebApi.Controllers.v1;
 [ApiVersion("1")]
 [Route("v1/[controller]")]
 
-public class AuthController : BaseAuthController
+public class AuthController : UnitControllerBase
 {
     public AuthController() : base() { }
 }

@@ -1,7 +1,7 @@
 {
   "name": "despesas-frontend-angular",
   "version": "2.0.0",
-    "workspaces": [
+  "workspaces": [
     "app-android",
     "app-ios"
   ],
@@ -39,7 +39,7 @@
     "@angular/material-moment-adapter": "^18.0.3",
     "@angular/platform-browser": "^18.0.3",
     "@angular/platform-browser-dynamic": "^18.0.3",
-    "@angular/router": "^18.0.3",
+    "@angular/router": "^18.2.13",
     "@date-io/dayjs": "^2.17.0",
     "@ng-bootstrap/ng-bootstrap": "^17.0.0",
     "@popperjs/core": "^2.11.8",
@@ -53,6 +53,7 @@
     "datatables.net-select": "^1.7.0",
     "datatables.net-select-dt": "^1.7.0",
     "dayjs": "^1.11.10",
+    "google-auth-library": "^10.2.1",
     "jquery": "^3.7.1",
     "mdb-ui-kit": "^7.3.2",
     "moment": "^2.30.1",

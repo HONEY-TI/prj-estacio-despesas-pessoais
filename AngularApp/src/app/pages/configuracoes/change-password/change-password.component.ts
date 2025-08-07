@@ -9,6 +9,7 @@ import { ControleAcessoService } from '../../../shared/services/api';
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss']
 })
+
 export class ChangePasswordComponent implements OnInit {
   changePasswordFrom: FormGroup & ILogin;
   eyeIconClass: string = 'bi-eye';

@@ -16,9 +16,6 @@ public class DataSeeder : IDataSeeder
     {
         try
         {
-            //if (!_context.Database.CanConnect()) throw new Exception();
-            _context.Database.EnsureDeleted();
-            _context.Database.EnsureCreated();
 
             new DataSeederControleAcesso(_context, _crypto).SeedData();
             new DataSeederDespesa(_context).SeedData();
