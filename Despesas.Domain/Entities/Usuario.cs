@@ -97,5 +97,6 @@ public class Usuario : BaseModel
 
         if (String.IsNullOrEmpty(email) || String.IsNullOrWhiteSpace(email))
             throw new ArgumentException("Email não pode ser em branco ou nulo.");
+
     }
 }
