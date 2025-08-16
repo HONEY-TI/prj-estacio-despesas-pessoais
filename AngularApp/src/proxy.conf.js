@@ -19,7 +19,9 @@ const PROXY_CONFIG = [{
   secure: false,
   changeOrigin: true,
   headers: {
-    Connection: 'Keep-Alive'
+    Connection: 'Keep-Alive',
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Embedder-Policy": "require-corp"
   }
 }]
 
