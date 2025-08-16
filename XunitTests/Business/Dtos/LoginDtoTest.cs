@@ -1,4 +1,4 @@
-﻿using Business.Dtos.v1;
+﻿using Despesas.Business.Dtos;
 
 namespace Business.Dtos;
 public sealed class LoginDtoTest

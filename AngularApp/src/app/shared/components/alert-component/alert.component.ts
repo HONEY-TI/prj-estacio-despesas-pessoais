@@ -3,7 +3,8 @@ import { NgbModalConfig, NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-boots
 
 @Component({
   selector: 'app-alert-component',
-  templateUrl: './alert.component.html'
+  templateUrl: './alert.component.html',
+  standalone: false
 })
 
 export class AlertComponent {

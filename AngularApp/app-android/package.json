@@ -13,17 +13,15 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@capacitor/cli": "^4.8.2",
-    "@capacitor/core": "^4.8.0",
-    "@capacitor/android": "4.8.2",
-    "@capacitor/app": "^4.1.1",
-    "@capacitor/haptics": "^4.0.1",
-    "@capacitor/keyboard": "^4.1.1",
-    "@capacitor/status-bar": "^4.1.1",
-    "@angular/core": "^18.0.3"
+    "@capacitor/android": "5.7.8",
+    "@capacitor/app": "5.0.8",
+    "@capacitor/cli": "5.7.8",
+    "@capacitor/core": "5.7.8",
+    "@capacitor/haptics": "5.0.8",
+    "@capacitor/keyboard": "5.0.9",
+    "@capacitor/status-bar": "5.0.8"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^18.0.4",
-    "@angular/cli": "^18.0.3"
+    "@angular-devkit/build-angular": "^20.1.5"
   }
 }

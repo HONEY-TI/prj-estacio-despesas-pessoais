@@ -407,3 +407,4 @@ FodyWeavers.xsd
 *.pfx
 *.key
 *.crt
+/Despesas.Backend/Program.cs

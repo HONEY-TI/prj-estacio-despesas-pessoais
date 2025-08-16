@@ -6,3 +6,4 @@ export interface IAuth {
   refreshToken: string,
   message: string;
 }
+

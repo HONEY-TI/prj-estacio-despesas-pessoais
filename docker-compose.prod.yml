@@ -1,11 +1,10 @@
-﻿version: '3.9'
-services:
+﻿services:
     app-despesas-pessoais-prod:
         container_name: app-despesas-pessoais-prod
         image: alexfariakof/api-despesas-backend-netcore-img
         build:
             context: .
-            dockerfile: Despesas.WebApi/Dockerfile.production        
+            dockerfile: Despesas.Backend/Dockerfile.production        
         environment:
             TZ: America/Sao_Paulo
             ASPNETCORE_ENVIRONMENT: Production
@@ -13,9 +12,7 @@ services:
            - 80:80
            - 443:443  
         volumes:
-           - ./Despesas.WebApi/appsettings.docker.json:/app/appsettings.json
-           - ./Despesas.WebApi/appsettings.docker.json:/app/appsettings.develpment.json
-           - ./Despesas.WebApi/certificate/webapi-cert.pfx:/app/certificate/webapi-cert.pfx
-        deploy:
-           update_config:
-             order: start-first 
+           - ./Despesas.Backend/appsettings.docker.json:/app/appsettings.json
+           - ./Despesas.Backend/appsettings.docker.json:/app/appsettings.develpment.json
+           - ./Despesas.Backend/certificate/webapi-cert.pfx:/app/certificate/webapi-cert.pfx
+ 

@@ -21,7 +21,7 @@ public sealed class GenericRepositorioTest
         var repository = new GenericRepositorio<Categoria>(_dbContextMock.Object);
 
         // Act
-        repository.Insert(ref item);
+        repository.Insert(item);
 
         // Assert
         _dbContextMock.Verify(c => c.SaveChanges(), Times.Once);
@@ -79,10 +79,10 @@ public sealed class GenericRepositorioTest
         var repository = new GenericRepositorio<Categoria>(dbContext);
 
         // Act
-        repository.Insert(ref existingItem);
+        repository.Insert(existingItem);
         var updatedItem = existingItem;
         updatedItem.Descricao = "Teste Update Item";
-        repository.Update(ref updatedItem);
+        repository.Update(updatedItem);
         var result = updatedItem;
 
         // Assert
@@ -123,7 +123,7 @@ public sealed class GenericRepositorioTest
         var repository = new GenericRepositorio<Categoria>(dbContext);
 
         // Act &  Assert 
-        var exception = Assert.Throws<Exception>(() => repository.Update(ref existingItem));
+        var exception = Assert.Throws<Exception>(() => repository.Update(existingItem));
     }
 
     [Fact]

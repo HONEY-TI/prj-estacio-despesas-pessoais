@@ -4,7 +4,8 @@ import { Subject } from 'rxjs';
 @Component({
   selector: 'app-data-table',
   templateUrl: './data-table.component.html',
-  styleUrls: ['./data-table.component.scss']
+  styleUrls: ['./data-table.component.scss'],
+  standalone: false
 })
 
 export class DataTableComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
@@ -29,6 +30,7 @@ export class DataTableComponent implements OnInit, AfterViewInit, OnDestroy, OnC
   }
 
   ngAfterViewInit(): void {
+    this.initializeDataTable();
     this.dtTrigger.next();
   }
 

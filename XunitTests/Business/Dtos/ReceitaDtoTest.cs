@@ -1,15 +1,23 @@
-﻿using Business.Dtos.Parser;
-using __mock__.v1;
+﻿using __mock__.Entities;
+using AutoMapper;
+using Despesas.Business.Dtos;
+using Despesas.Business.Dtos.Profile;
 
 namespace Business.Dtos;
 public sealed class ReceitaDtoTest
 {
+
     [Fact]
     public void ReceitaDto_Should_Set_Properties_Correctly()
     {
-        // Arrange and Act
+        // Arrange
+        var mapper = new Mapper(new MapperConfiguration(cfg => {
+            cfg.AddProfile<ReceitaProfile>();
+        }));
+
+        // Act
         var receita = ReceitaFaker.Instance.Receitas().First();
-        var receitaDto = new ReceitaParser().Parse(receita);
+        var receitaDto = mapper.Map<ReceitaDto>(receita); 
 
         // Assert
         Assert.Equal(receita.Id, receitaDto.Id);

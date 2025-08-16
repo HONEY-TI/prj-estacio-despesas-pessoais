@@ -1,0 +1,21 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM alexfariakof/dotnet-sdk-8.0-with-node:latest
+
+# Atualiza pacotes e instala ferramentas necessárias
+RUN apt-get update && \
+    apt-get install -y wget curl gnupg ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# Instala .NET SDK 8.0.413
+RUN wget https://dotnet.microsoft.com/download/dotnet/scripts/v1/dotnet-install.sh -O dotnet-install.sh && \
+    chmod +x dotnet-install.sh && \
+    ./dotnet-install.sh --channel 8.0 --version 8.0.413 && \
+    rm dotnet-install.sh
+
+# Ajusta o PATH para incluir .NET instalado manualmente
+ENV PATH="$PATH:/root/.dotnet:/root/.dotnet/tools"
+
+# Instala Node.js v22.15.0 (instalação direta da fonte oficial)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g npm@latest

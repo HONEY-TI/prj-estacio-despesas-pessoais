@@ -26,7 +26,7 @@ public sealed class DespesaRepositorioImplTest : IClassFixture<DespesaFixture>
         newDespesa.Id = Guid.Empty;
 
         // Act
-        _repository.Insert(ref newDespesa);
+        _repository.Insert(newDespesa);
 
         // Assert
         Assert.NotNull(newDespesa);
@@ -40,7 +40,7 @@ public sealed class DespesaRepositorioImplTest : IClassFixture<DespesaFixture>
         Despesa? newDespesa = null;
 
         // Act & Assert
-        Assert.Throws<NullReferenceException>(() => _repository.Insert(ref newDespesa));
+        Assert.Throws<NullReferenceException>(() => _repository.Insert(newDespesa));
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public sealed class DespesaRepositorioImplTest : IClassFixture<DespesaFixture>
         };
 
         // Act
-        _repository.Update(ref updatedItem);
+        _repository.Update(updatedItem);
         var result = _fixture.Context.Despesa.Find(updatedItem.Id);
 
         // Assert
@@ -79,7 +79,7 @@ public sealed class DespesaRepositorioImplTest : IClassFixture<DespesaFixture>
         var updatedItem = new Despesa { Id = Guid.NewGuid() };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => _repository.Update(ref updatedItem));
+        Assert.Throws<InvalidOperationException>(() => _repository.Update(updatedItem));
     }
 
     [Fact]

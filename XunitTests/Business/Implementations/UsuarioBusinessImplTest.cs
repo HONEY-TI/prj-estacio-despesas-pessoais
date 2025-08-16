@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Business.Dtos.Core.Profile;
-using Business.Dtos.v2;
-using __mock__.v2;
+using __mock__.Entities;
 using Domain.Entities.ValueObjects;
 using System.Linq.Expressions;
 using Business.Implementations;
 using Repository.Persistency.Generic;
+using Despesas.Business.Dtos;
+using Despesas.Business.Dtos.Profile;
 
 namespace Business;
 public class UsuarioBusinessImplTest
@@ -28,7 +28,7 @@ public class UsuarioBusinessImplTest
         // Arrange
         var usuario = _usuarios.First();
         usuario.PerfilUsuario = new PerfilUsuario(PerfilUsuario.Perfil.Admin);
-        _repositorioMock.Setup(repo => repo.Insert(ref It.Ref<Usuario>.IsAny));
+        _repositorioMock.Setup(repo => repo.Insert(It.IsAny<Usuario>()));
         _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(usuario);
 
         // Act
@@ -38,7 +38,7 @@ public class UsuarioBusinessImplTest
         Assert.NotNull(result);
         Assert.IsType<UsuarioDto>(result);
         //Assert.Equal(usuario.Id, result.Id);
-        _repositorioMock.Verify(repo => repo.Insert(ref It.Ref<Usuario>.IsAny), Times.Once);
+        _repositorioMock.Verify(repo => repo.Insert(It.IsAny<Usuario>()), Times.Once);
     }
 
     [Fact]
@@ -108,7 +108,7 @@ public class UsuarioBusinessImplTest
         var usuarioDto = _mapper.Map<UsuarioDto>(usuario);
         usuario.Nome = "Teste Usuario Update";
 
-        _repositorioMock.Setup(repo => repo.Update(ref It.Ref<Usuario>.IsAny));
+        _repositorioMock.Setup(repo => repo.Update(It.IsAny<Usuario>()));
 
         // Act
         var result = _usuarioBusiness.Update(usuarioDto);
@@ -117,7 +117,7 @@ public class UsuarioBusinessImplTest
         Assert.NotNull(result);
         Assert.IsType<UsuarioDto>(result);
         Assert.Equal(usuarioDto.Id, result.Id);
-        _repositorioMock.Verify(repo => repo.Update(ref It.Ref<Usuario>.IsAny), Times.Once);
+        _repositorioMock.Verify(repo => repo.Update(It.IsAny<Usuario>()), Times.Once);
     }
 
     [Fact]

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Business.Dtos.v2;
-using __mock__.v2;
+using __mock__.Entities;
 using Repository.Persistency.UnitOfWork.Abstractions;
-using Business.Dtos.Core.Profile;
 using Repository.Persistency.Generic;
 using Business.Implementations;
+using Despesas.Business.Dtos;
+using Despesas.Business.Dtos.Profile;
 
 namespace Business;
 
@@ -32,7 +32,7 @@ public class ReceitaBusinessImplTest
         var receitas = ReceitaFaker.Instance.Receitas();
         var receita = receitas.First();
         var receitaDto = _mapper.Map<ReceitaDto>(receita);
-        _repositorioMock.Setup(repo => repo.Insert(ref It.Ref<Receita>.IsAny));
+        _repositorioMock.Setup(repo => repo.Insert(It.IsAny<Receita>()));
         _repositorioMockCategoria.Setup(repo => repo.GetAll()).Returns(receitas.Select(r => r.Categoria ?? new()).ToList());
 
         // Act
@@ -42,7 +42,7 @@ public class ReceitaBusinessImplTest
         Assert.NotNull(result);
         Assert.IsType<ReceitaDto>(result);
         Assert.Equal(receitaDto.Id, result.Id);
-        _repositorioMock.Verify(repo => repo.Insert(ref It.Ref<Receita>.IsAny), Times.Once());
+        _repositorioMock.Verify(repo => repo.Insert(It.IsAny<Receita>()), Times.Once());
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class ReceitaBusinessImplTest
         var receitas = ReceitaFaker.Instance.Receitas();
         var receita = receitas.First();
         var receitaDto = _mapper.Map<ReceitaDto>(receita);
-        _repositorioMock.Setup(repo => repo.Update(ref It.Ref<Receita>.IsAny));
+        _repositorioMock.Setup(repo => repo.Update(It.IsAny<Receita>()));
         _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(receita);
         _repositorioMockCategoria.Setup(repo => repo.GetAll()).Returns(receitas.Select(r => r.Categoria ?? new()).ToList());
 
@@ -116,7 +116,7 @@ public class ReceitaBusinessImplTest
         Assert.NotNull(result);
         Assert.IsType<ReceitaDto>(result);
         Assert.Equal(receita.Id, result.Id);
-        _repositorioMock.Verify(repo => repo.Update(ref It.Ref<Receita>.IsAny), Times.Once);
+        _repositorioMock.Verify(repo => repo.Update(It.IsAny<Receita>()), Times.Once);
     }
 
     [Fact]
@@ -145,7 +145,7 @@ public class ReceitaBusinessImplTest
         var receita = ReceitaFaker.Instance.Receitas().First();
         var receitaDto = _mapper.Map<ReceitaDto>(receita);
 
-        _repositorioMock.Setup(repo => repo.Insert(ref It.Ref<Receita>.IsAny)).Throws(() => new ArgumentException("Erro InvalidCategorie"));
+        _repositorioMock.Setup(repo => repo.Insert(It.Ref<Receita>.IsAny)).Throws(() => new ArgumentException("Erro InvalidCategorie"));
         var categorias = CategoriaFaker.Instance.Categorias();
         _repositorioMockCategoria.Setup(repo => repo.GetAll()).Returns(categorias);
 

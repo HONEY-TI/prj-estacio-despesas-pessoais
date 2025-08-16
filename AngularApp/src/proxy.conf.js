@@ -14,11 +14,14 @@ const PROXY_CONFIG = [{
     "/graficos",
     "/saldo",
     "/usuario",
+    "/dashboard"
   ],
   secure: false,
   changeOrigin: true,
   headers: {
-    Connection: 'Keep-Alive'
+    Connection: 'Keep-Alive',
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Embedder-Policy": "require-corp"
   }
 }]
 
