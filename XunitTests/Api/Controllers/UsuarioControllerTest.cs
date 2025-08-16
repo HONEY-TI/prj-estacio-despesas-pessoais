@@ -1,17 +1,16 @@
 ﻿using Business.Abstractions;
-using Business.Dtos.v2;
-using Despesas.WebApi.Controllers.v2;
 using Microsoft.AspNetCore.Mvc;
-using __mock__.v2;
+using __mock__.Entities;
 using Domain.Entities.ValueObjects;
 using AutoMapper;
-using Business.Dtos.Core.Profile;
+using Despesas.Business.Dtos;
+using Despesas.Business.Dtos.Profile;
+using Despesas.Backend.Controllers;
 
-namespace Api.Controllers.v2;
+namespace XUnit.Api.Controllers;
 public sealed class UsuarioControllerTest
 {
     private Mock<IUsuarioBusiness<UsuarioDto>> _mockUsuarioBusiness;
-    private Mock<IImagemPerfilUsuarioBusiness<ImagemPerfilDto, UsuarioDto>> _mockImagemPerfilBusiness;
     private UsuarioController _usuarioController;
     private List<UsuarioDto> _usuarioDtos;
     private UsuarioDto administrador;
@@ -21,8 +20,7 @@ public sealed class UsuarioControllerTest
     public UsuarioControllerTest()
     {
         _mockUsuarioBusiness = new Mock<IUsuarioBusiness<UsuarioDto>>();
-        _mockImagemPerfilBusiness = new Mock<IImagemPerfilUsuarioBusiness<ImagemPerfilDto, UsuarioDto>>();
-        _usuarioController = new UsuarioController(_mockUsuarioBusiness.Object, _mockImagemPerfilBusiness.Object);
+        _usuarioController = new UsuarioController(_mockUsuarioBusiness.Object);
         var usuarios = UsuarioFaker.Instance.GetNewFakersUsuarios(20);
         _mapper = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<UsuarioProfile>(); }));
         administrador = _mapper.Map<UsuarioDto>(usuarios.FindAll(u => u.PerfilUsuario == PerfilUsuario.Perfil.Admin).First());
@@ -41,7 +39,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(business => business.FindById(It.IsAny<Guid>())).Returns(usauriosDtos.Find(u => u.Id == idUsuario) ?? new());
 
         // Act
-        var result = _usuarioController.GetUsuarioById() as ObjectResult;
+        var result = _usuarioController.Get() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);

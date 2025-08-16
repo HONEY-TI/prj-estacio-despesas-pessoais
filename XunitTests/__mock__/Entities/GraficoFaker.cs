@@ -1,6 +1,6 @@
 ﻿using Bogus;
 
-namespace __mock__.v1;
+namespace __mock__.Entities;
 public sealed class GraficoFaker
 {
     public static Grafico GetNewFaker()
@@ -36,6 +36,5 @@ public sealed class GraficoFaker
             { "Novembro", f.Random.Decimal(1, 5000) },
             { "Dezembro", f.Random.Decimal(1, 5000) },
         });
-
     }
 }

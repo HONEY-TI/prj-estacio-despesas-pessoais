@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Business.Abstractions.Generic;
-using Business.Dtos.Core.Profile;
-using Business.Dtos.v1;
-using __mock__.v1;
+using __mock__.Entities;
 using Repository.Persistency.Generic;
+using Despesas.Business.Dtos.Profile;
+using Despesas.Business.Dtos;
 
 namespace Business.Generic;
 public class GenericBusinessTests
@@ -26,7 +26,7 @@ public class GenericBusinessTests
         // Arrange
         var obj = _categorias.Last();
         var categoria = CategoriaFaker.Instance.CategoriasVMs().First();
-        _mockRepositorio.Setup(repo => repo.Insert(ref It.Ref<Categoria>.IsAny));
+        _mockRepositorio.Setup(repo => repo.Insert(It.IsAny<Categoria>()));
 
         // Act
         var result = _genericBusiness.Create(categoria);
@@ -35,7 +35,7 @@ public class GenericBusinessTests
         Assert.NotNull(result);
         Assert.IsType<CategoriaDto>(result);
         Assert.Equal(categoria.Id, result.Id);
-        _mockRepositorio.Verify(repo => repo.Insert(ref It.Ref<Categoria>.IsAny), Times.Once);
+        _mockRepositorio.Verify(repo => repo.Insert(It.IsAny<Categoria>()), Times.Once);
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class GenericBusinessTests
         // Arrange
         var obj = ReceitaFaker.Instance.ReceitasVMs().First();
         var repositoryMock = new Mock<IRepositorio<Receita>>();
-        repositoryMock.Setup(repo => repo.Update(ref It.Ref<Receita>.IsAny));
+        repositoryMock.Setup(repo => repo.Update(It.IsAny<Receita>()));
         _mapper = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<ReceitaProfile>(); }));
         var business = new GenericBusiness<ReceitaDto, Receita>(_mapper, repositoryMock.Object);
 
@@ -97,7 +97,7 @@ public class GenericBusinessTests
         Assert.NotNull(result);
         Assert.Equal(obj, result);
         Assert.IsType<ReceitaDto>(result);
-        repositoryMock.Verify(repo => repo.Update(ref It.Ref<Receita>.IsAny), Times.Once);
+        repositoryMock.Verify(repo => repo.Update(It.IsAny<Receita>()), Times.Once);
     }
 
     [Fact]

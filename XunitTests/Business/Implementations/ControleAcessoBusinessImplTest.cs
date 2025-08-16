@@ -1,22 +1,21 @@
 ﻿using Business.Authentication;
-using Business.Dtos.v2;
 using Despesas.Infrastructure.Email;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Persistency.Abstractions;
 using System.IdentityModel.Tokens.Jwt;
-using __mock__.v2;
-using Business.Dtos.Core;
+using __mock__.Entities;
 using System.Linq.Expressions;
 using AutoMapper;
-using Business.Dtos.Core.Profile;
 using Business.Implementations;
 using EasyCryptoSalt;
 using Microsoft.AspNetCore.Builder;
 using Business.CommonDependenceInject;
-using Despesas.WebApi.CommonDependenceInject;
+using Despesas.Backend.CommonDependenceInject;
 using Microsoft.Extensions.DependencyInjection;
 using Business.Abstractions;
+using Despesas.Business.Dtos;
+using Despesas.Business.Dtos.Profile;
+using Despesas.Business.Dtos.Abstractions;
 
 namespace Business;
 public class ControleAcessoBusinessImplTest
@@ -33,7 +32,7 @@ public class ControleAcessoBusinessImplTest
 
         var builder = WebApplication.CreateBuilder();
         builder.AddSigningConfigurations();
-        builder.AddServicesCryptography();
+        builder.Services.AddServicesCryptography(builder.Configuration);
         var services = builder.Services;
         
         _singingConfiguration = services.BuildServiceProvider().GetService<SigningConfigurations>();
@@ -69,7 +68,7 @@ public class ControleAcessoBusinessImplTest
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<ControleAcesso, bool>>>())).Returns(controleAcesso);
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<ControleAcesso, bool>>>())).Returns(controleAcesso);
         var mockControleAcessoBusiness = new Mock<IControleAcessoBusiness<ControleAcessoDto, LoginDto>>(MockBehavior.Strict);
-        mockControleAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(new AuthenticationDto() { Authenticated = true, AccessToken = Guid.NewGuid().ToString() });
+        mockControleAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(new BaseAuthenticationDto() { Authenticated = true, AccessToken = Guid.NewGuid().ToString() });
 
         // Act
         var result = mockControleAcessoBusiness.Object.ValidateCredentials(loginDto);
@@ -133,9 +132,9 @@ public class ControleAcessoBusinessImplTest
         var controleAcesso = ControleAcessoFaker.Instance.GetNewFaker();
         controleAcesso.Usuario.StatusUsuario = StatusUsuario.Ativo;
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<ControleAcesso, bool>>>())).Returns(controleAcesso);
-        var mockControleAcessoBusiness = new Mock<IControleAcessoBusiness<Business.Dtos.v1.ControleAcessoDto, Business.Dtos.v1.LoginDto>>(MockBehavior.Strict);
-        mockControleAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<Business.Dtos.v1.LoginDto>())).Returns(new AuthenticationDto() { Authenticated = false, AccessToken = Guid.NewGuid().ToString(), Message = "Senha inválida!" });
-        var loginDto = new Dtos.v1.LoginDto() { Email = controleAcesso.Login, Senha = Guid.NewGuid().ToString() };
+        var mockControleAcessoBusiness = new Mock<IControleAcessoBusiness<ControleAcessoDto, LoginDto>>(MockBehavior.Strict);
+        mockControleAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(new BaseAuthenticationDto() { Authenticated = false, AccessToken = Guid.NewGuid().ToString(), Message = "Senha inválida!" });
+        var loginDto = new LoginDto() { Email = controleAcesso.Login, Senha = Guid.NewGuid().ToString() };
 
         // Act
         var result = mockControleAcessoBusiness.Object.ValidateCredentials(loginDto);
@@ -187,7 +186,7 @@ public class ControleAcessoBusinessImplTest
         var idUsuario = Guid.NewGuid();
         string newPassword = "123456789";
         _repositorioMock.Setup(repo => repo.ChangePassword(It.IsAny<Guid>(), newPassword)).Returns(true);
-        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<ControleAcesso, bool>>>())).Returns(new ControleAcesso { UsuarioId = idUsuario });
+        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<ControleAcesso, bool>>>())).Returns(() => null);
 
         // Act
         _controleAcessoBusiness.ChangePassword(idUsuario, newPassword);
@@ -222,7 +221,7 @@ public class ControleAcessoBusinessImplTest
         });
         var validToken = handler.WriteToken(securityToken);
         baseLogin.RefreshToken = validToken;
-        var authenticationDto = new AuthenticationDto
+        var authenticationDto = new BaseAuthenticationDto
         {
             RefreshToken = validToken
         };
@@ -247,7 +246,7 @@ public class ControleAcessoBusinessImplTest
             RefreshTokenExpiry = DateTime.UtcNow.AddHours(-1), // Token expirado
             RefreshToken = "expired_refresh_token"
         };
-        var authenticationDto = new AuthenticationDto
+        var authenticationDto = new BaseAuthenticationDto
         {
             RefreshToken = "expired_refresh_token"
         };
@@ -264,7 +263,7 @@ public class ControleAcessoBusinessImplTest
     public void ValidateCredentials_Should_Return_Authentication_Exception_When_RefreshToken_Is_Invalid()
     {
         // Arrange
-        var authenticationDto = new AuthenticationDto
+        var authenticationDto = new BaseAuthenticationDto
         {
             RefreshToken = "invalid_refresh_token"
         };

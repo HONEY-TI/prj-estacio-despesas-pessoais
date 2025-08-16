@@ -23,7 +23,7 @@ public sealed class CategoriaRepositorioImplTest : IClassFixture<DatabaseFixture
 
 
         // Act
-        _repository.Insert(ref newCategoria);
+        _repository.Insert(newCategoria);
         var insertedCategoria = _fixture.Context.Categoria.Find(newCategoria.Id);
 
         // Assert
@@ -38,7 +38,7 @@ public sealed class CategoriaRepositorioImplTest : IClassFixture<DatabaseFixture
         Categoria? newCategoria = null;
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => _repository.Insert(ref newCategoria));
+        Assert.Throws<InvalidOperationException>(() => _repository.Insert(newCategoria));
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public sealed class CategoriaRepositorioImplTest : IClassFixture<DatabaseFixture
         };
 
         // Act
-        _repository.Update(ref updatedItem);
+        _repository.Update(updatedItem);
         var result = _fixture.Context.Categoria.Find(updatedItem.Id);
 
         // Assert
@@ -75,7 +75,7 @@ public sealed class CategoriaRepositorioImplTest : IClassFixture<DatabaseFixture
         var updatedItem = new Categoria { Id = Guid.NewGuid() };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => _repository.Update(ref updatedItem));
+        Assert.Throws<InvalidOperationException>(() => _repository.Update(updatedItem));
     }
 
     [Fact]

@@ -1,4 +1,4 @@
-$baseDirectory = ($PWD)
+﻿$baseDirectory = ($PWD)
 $projectTestPath = Join-Path -Path ($baseDirectory) -ChildPath "XunitTests"
 
 if (-Not (Test-Path -Path $projectTestPath)) {
@@ -7,8 +7,8 @@ if (-Not (Test-Path -Path $projectTestPath)) {
 }
 
 $projectAngular = (Resolve-Path -Path "$baseDirectory\AngularApp");
-$sourceDirs = "$baseDirectory\Despesas.Business;$baseDirectory\Despesas.Domain;$baseDirectory\Despesas.Repository;$baseDirectory\Despesas.WebApi;$baseDirectory\AngularApp;"
-$filefilters = "$baseDirectory\Despesas.DataSeeders\**;-$baseDirectory\Migrations.MySqlServer\**;-$baseDirectory\Migrations.MsSqlServer\**;-$baseDirectory\Despesas.CrossCutting\**;-$baseDirectory\Despesas.Business\HyperMedia\**"
+$sourceDirs = "$baseDirectory\Despesas.Business;$baseDirectory\Despesas.Domain;$baseDirectory\Despesas.Repository;$baseDirectory\Despesas.Backend;$baseDirectory\AngularApp;"
+$filefilters = "$baseDirectory\Migrations.DataSeeders\**;-$baseDirectory\Migrations.MySqlServer\**;-$baseDirectory\Migrations.MsSqlServer\**;-$baseDirectory\Despesas.CrossCutting\**;-$baseDirectory\Despesas.Business\HyperMedia\**"
 $reportPath = Join-Path -Path ($projectTestPath) -ChildPath "TestResults"
 $coveragePath = Join-Path -Path $reportPath -ChildPath "coveragereport"
 $coverageAngularPath = Join-Path -Path $projectAngular -ChildPath "coverage"

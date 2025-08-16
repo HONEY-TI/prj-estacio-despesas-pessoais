@@ -1,9 +1,9 @@
 ﻿using Bogus;
-using Business.Dtos.Core;
-using Business.Dtos.v2;
+using Despesas.Business.Dtos;
+using Despesas.Business.Dtos.Abstractions;
 using Domain.Entities.ValueObjects;
 
-namespace __mock__.v2;
+namespace __mock__.Entities;
 public sealed class DespesaFaker
 {
     static int counter = 1;
@@ -58,13 +58,13 @@ public sealed class DespesaFaker
         .RuleFor(r => r.Descricao, f => f.Commerce.ProductName())
         .RuleFor(r => r.Valor, f => f.Random.Decimal(1, 900000))
         .RuleFor(r => r.UsuarioId, idUsuario)
-        .RuleFor(r => r.IdCategoria, CategoriaFaker.Instance.GetNewFakerVM(UsuarioFaker.Instance.GetNewFakerVM(idUsuario), TipoCategoriaDto.Despesa, idUsuario).Id)
+        .RuleFor(r => r.IdCategoria, CategoriaFaker.Instance.GetNewFakerVM(UsuarioFaker.Instance.GetNewFakerVM(idUsuario), BaseTipoCategoriaDto.Despesa, idUsuario).Id)
         .Generate();
         counterVM++;
         return despesaFaker;
     }
 
-    public List<DespesaDto> DespesasVMs(UsuarioDtoBase? usuarioDto = null, Guid? idUsuario = null)
+    public List<DespesaDto> DespesasVMs(BaseUsuarioDto? usuarioDto = null, Guid? idUsuario = null)
     {
         var listDespesaDto = new List<DespesaDto>();
         for (int i = 0; i < 10; i++)
@@ -73,7 +73,7 @@ public sealed class DespesaFaker
                 usuarioDto = UsuarioFaker.Instance.GetNewFakerVM(Guid.NewGuid());
 
             usuarioDto = usuarioDto ?? new UsuarioDto();
-            var categoriaDto = CategoriaFaker.Instance.GetNewFakerVM(usuarioDto, TipoCategoriaDto.Despesa);
+            var categoriaDto = CategoriaFaker.Instance.GetNewFakerVM(usuarioDto, BaseTipoCategoriaDto.Despesa);
 
             var despesaDto = GetNewFakerVM(usuarioDto.Id, categoriaDto.Id);
             listDespesaDto.Add(despesaDto);

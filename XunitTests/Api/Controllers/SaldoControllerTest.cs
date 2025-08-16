@@ -1,9 +1,9 @@
 ﻿using Business.Abstractions;
-using Despesas.WebApi.Controllers.v2;
 using Microsoft.AspNetCore.Mvc;
-using Business.Dtos.v2;
+using Despesas.Business.Dtos;
+using Despesas.Backend.Controllers;
 
-namespace Api.Controllers.v2;
+namespace XUnit.Api.Controllers;
 
 public sealed class SaldoControllerTest
 {

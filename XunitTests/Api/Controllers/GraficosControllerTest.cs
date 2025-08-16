@@ -1,9 +1,9 @@
 ﻿using Business.Abstractions;
-using Despesas.WebApi.Controllers.v2;
 using Microsoft.AspNetCore.Mvc;
-using __mock__.v2;
+using __mock__.Entities;
+using Despesas.Backend.Controllers;
 
-namespace Api.Controllers.v2;
+namespace XUnit.Api.Controllers;
 
 public sealed class GraficosControllerTest
 {

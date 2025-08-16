@@ -1,7 +1,7 @@
 ﻿using Bogus;
-using Business.Dtos.v1;
+using Despesas.Business.Dtos;
 
-namespace __mock__.v1;
+namespace __mock__.Entities;
 public sealed class ImagemPerfilUsuarioFaker
 {
     static int counter = 1;
@@ -24,33 +24,47 @@ public sealed class ImagemPerfilUsuarioFaker
         lock (LockObject)
         {
             var imagemFaker = new Faker<ImagemPerfilUsuario>()
-            .RuleFor(i => i.Id, f => Guid.NewGuid())
-            .RuleFor(i => i.Url, f => f.Internet.Url())
-            .RuleFor(i => i.Name, f => f.System.FileName())
-            .RuleFor(i => i.ContentType, f => f.System.CommonFileType())
-            .RuleFor(i => i.UsuarioId, usuario.Id)
-            .RuleFor(i => i.Usuario, usuario)
-            .Generate();
+                .RuleFor(i => i.Id, f => Guid.NewGuid())
+                .RuleFor(i => i.Url, f => f.Internet.Url())
+                .RuleFor(i => i.Name, f => f.System.FileName())
+                .RuleFor(i => i.ContentType, f => f.System.CommonFileType())
+                .RuleFor(i => i.UsuarioId, usuario.Id)
+                .RuleFor(i => i.Usuario, usuario)
+                .Generate();
             counter++;
             return imagemFaker;
         }
     }
 
-    public ImagemPerfilDto GetNewFakerVM(UsuarioDto usuarioDto)
+    public ImagemPerfilDto GetNewFakerDto(UsuarioDto usuarioDto)
     {
         lock (LockObject)
         {
             var imagemFaker = new Faker<ImagemPerfilDto>()
-            .RuleFor(i => i.Id, f => Guid.NewGuid())
-            .RuleFor(i => i.Url, f => f.Internet.Url())
-            .RuleFor(i => i.Name, f => f.System.FileName())
-            .RuleFor(i => i.UsuarioId, usuarioDto.Id)
-            .RuleFor(i => i.ContentType, f => counter % 2 == 0 ? "image/png" : "image/jpg")
-            .Generate();
+                .RuleFor(i => i.Id, f => Guid.NewGuid())
+                .RuleFor(i => i.Url, f => f.Internet.Url())
+                .RuleFor(i => i.Name, f => f.System.FileName())
+                .RuleFor(i => i.UsuarioId, usuarioDto.Id)
+                .RuleFor(i => i.ContentType, f => counter % 2 == 0 ? "image/png" : "image/jpg")
+                .Generate();
             counterVM++;
             return imagemFaker;
         }
     }
+
+    public ImagemPerfilDto GetNewDtoFrom(ImagemPerfilUsuario imagemPerfil)
+    {
+        var imagemFaker = new ImagemPerfilDto()
+        {
+            Id = imagemPerfil.Id,
+            Url = imagemPerfil.Url,
+            Name = imagemPerfil.Name,
+            UsuarioId = imagemPerfil.UsuarioId,
+            ContentType = imagemPerfil.ContentType
+        };
+        return imagemFaker;
+    }
+
 
     public List<ImagemPerfilUsuario> ImagensPerfilUsuarios(Usuario? usuario = null, Guid? idUsuario = null)
     {
@@ -76,7 +90,7 @@ public sealed class ImagemPerfilUsuarioFaker
                 usuarioDto = UsuarioFaker.Instance.GetNewFakerVM();
 
             usuarioDto = usuarioDto ?? new();
-            var imagemVM = ImagemPerfilUsuarioFaker.Instance.GetNewFakerVM(usuarioDto);
+            var imagemVM = ImagemPerfilUsuarioFaker.Instance.GetNewFakerDto(usuarioDto);
 
             imagensVM.Add(imagemVM);
         }

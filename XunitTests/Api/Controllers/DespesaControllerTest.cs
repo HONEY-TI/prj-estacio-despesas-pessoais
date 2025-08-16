@@ -1,12 +1,12 @@
-﻿using Business.Dtos.v2;
-using Despesas.WebApi.Controllers.v2;
-using Microsoft.AspNetCore.Mvc;
-using __mock__.v2;
+﻿using Microsoft.AspNetCore.Mvc;
+using __mock__.Entities;
 using AutoMapper;
-using Business.Dtos.Core.Profile;
 using Business.Abstractions;
+using Despesas.Business.Dtos;
+using Despesas.Business.Dtos.Profile;
+using Despesas.Backend.Controllers;
 
-namespace Api.Controllers.v2;
+namespace XUnit.Api.Controllers;
 
 public sealed class DespesaControllerTest
 {

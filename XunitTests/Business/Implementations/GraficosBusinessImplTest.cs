@@ -1,5 +1,5 @@
 ﻿using Repository.Persistency.Abstractions;
-using __mock__.v1;
+using __mock__.Entities;
 using Business.Implementations;
 
 namespace Business;

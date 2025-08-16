@@ -1,9 +1,9 @@
 ﻿using Bogus;
-using Business.Dtos.Core;
-using Business.Dtos.v1;
+using Despesas.Business.Dtos;
+using Despesas.Business.Dtos.Abstractions;
 using Domain.Entities.ValueObjects;
 
-namespace __mock__.v1;
+namespace __mock__.Entities;
 public sealed class CategoriaFaker
 {
     static int counter = 1;
@@ -33,27 +33,27 @@ public sealed class CategoriaFaker
             .RuleFor(c => c.UsuarioId, usuario.Id)
             .RuleFor(c => c.Usuario, usuario)
             .Generate();
-        counter++;
         categoriaFaker.TipoCategoria = tipoCategoria == null ? counter % 2 == 0 ? new TipoCategoria(TipoCategoria.CategoriaType.Receita) : new TipoCategoria(TipoCategoria.CategoriaType.Despesa) : tipoCategoria;
+        counter++;
         return categoriaFaker;
     }
 
-    public CategoriaDto GetNewFakerVM(UsuarioDtoBase BaseUsuarioDto, TipoCategoriaDto? tipoCategoria = null, Guid? idUsuario = null)
+    public CategoriaDto GetNewFakerVM(BaseUsuarioDto BaseUsuarioDto, BaseTipoCategoriaDto? tipoCategoria = null, Guid? idUsuario = null)
     {
         if (idUsuario == null)
             BaseUsuarioDto = UsuarioFaker.Instance.GetNewFakerVM();
 
         var categoriaFaker = new Faker<CategoriaDto>()
-            .RuleFor(c => c.Id, Guid.NewGuid())
-            .RuleFor(c => c.Descricao, f => f.Commerce.ProductName())
-            .RuleFor(c => c.UsuarioId, f => BaseUsuarioDto.Id)
-            .Generate();
+        .RuleFor(c => c.Id, Guid.NewGuid())
+        .RuleFor(c => c.Descricao, f => f.Commerce.ProductName())
+        .RuleFor(c => c.UsuarioId, f => BaseUsuarioDto.Id)
+        .Generate();
+        categoriaFaker.IdTipoCategoria = tipoCategoria.Equals(null) ? counter % 2 == 0 ? BaseTipoCategoriaDto.Despesa : BaseTipoCategoriaDto.Receita : (BaseTipoCategoriaDto)tipoCategoria;
         counterVM++;
-        categoriaFaker.IdTipoCategoria = tipoCategoria.Equals(null) ? counter % 2 == 0 ? 1 : 2 : (int)tipoCategoria;
         return categoriaFaker;
     }
 
-    public List<CategoriaDto> CategoriasVMs(UsuarioDtoBase? baseUsuarioDto = null, TipoCategoriaDto tipoCategoria = TipoCategoriaDto.Todas, int? idUsuario = null)
+    public List<CategoriaDto> CategoriasVMs(BaseUsuarioDto? baseUsuarioDto = null, BaseTipoCategoriaDto tipoCategoria = BaseTipoCategoriaDto.Todas, Guid? idUsuario = null)
     {
         var listCategoriaDto = new List<CategoriaDto>();
         for (int i = 0; i < 10; i++)
@@ -61,8 +61,8 @@ public sealed class CategoriaFaker
             if (idUsuario == null)
                 baseUsuarioDto = UsuarioFaker.Instance.GetNewFakerVM(Guid.NewGuid());
 
-            var categoriaDto = GetNewFakerVM(baseUsuarioDto ?? new UsuarioDto(), tipoCategoria);
-
+            baseUsuarioDto = baseUsuarioDto ?? new UsuarioDto();
+            var categoriaDto = GetNewFakerVM(baseUsuarioDto, tipoCategoria);
             listCategoriaDto.Add(categoriaDto);
         }
         return listCategoriaDto;
@@ -82,7 +82,8 @@ public sealed class CategoriaFaker
             }
             else
             {
-                categoria = GetNewFaker(usuario ?? new(), tipoCategoria, idUsuario);
+                usuario = usuario ?? new();
+                categoria = GetNewFaker(usuario, tipoCategoria, idUsuario);
             }
 
             listCategoria.Add(categoria);

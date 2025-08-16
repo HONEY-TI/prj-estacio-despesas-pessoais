@@ -27,7 +27,7 @@ public sealed class ReceitaRepositorioImplTest : IClassFixture<ReceitaFixture>
         newReceita.Id = Guid.Empty;
 
         // Act
-        _repository.Insert(ref newReceita);
+        _repository.Insert(newReceita);
 
         // Assert
         Assert.NotNull(newReceita);
@@ -41,7 +41,7 @@ public sealed class ReceitaRepositorioImplTest : IClassFixture<ReceitaFixture>
         Receita? newReceita = null;
 
         // Act & Assert
-        Assert.Throws<NullReferenceException>(() => _repository.Insert(ref newReceita));
+        Assert.Throws<NullReferenceException>(() => _repository.Insert(newReceita));
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public sealed class ReceitaRepositorioImplTest : IClassFixture<ReceitaFixture>
         };
 
         // Act
-        _repository.Update(ref updatedItem);
+        _repository.Update(updatedItem);
         var result = _fixture.Context.Receita.Find(updatedItem.Id);
 
         // Assert
@@ -80,7 +80,7 @@ public sealed class ReceitaRepositorioImplTest : IClassFixture<ReceitaFixture>
         var updatedItem = new Receita { Id = Guid.NewGuid() };
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => _repository.Update(ref updatedItem));
+        Assert.Throws<InvalidOperationException>(() => _repository.Update(updatedItem));
     }
 
     [Fact]

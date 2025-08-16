@@ -1,28 +1,27 @@
 ﻿using Business.Abstractions;
-using Business.Dtos.v2;
-using Despesas.WebApi.Controllers.v2;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
-using __mock__.v2;
+using __mock__.Entities;
 using AutoMapper;
-using Business.Dtos.Core.Profile;
+using Despesas.Business.Dtos;
+using Despesas.Business.Dtos.Profile;
+using Despesas.Backend.Controllers;
 
-namespace Api.Controllers.v2;
+namespace XUnit.Api.Controllers;
 
 public sealed class ImagemPerfilUsuarioControllerTest
 {
     private Mock<IUsuarioBusiness<UsuarioDto>> _mockUsuarioBusiness;
     private Mock<IImagemPerfilUsuarioBusiness<ImagemPerfilDto, UsuarioDto>> _mockImagemPerfilBusiness;
-    private UsuarioController _usuarioController;
+    private ImagemPerfilUsuarioController _imagePerfilUsuarioController;
     private Mapper _mapperImagemPerfil;
     private Mapper _mapperUsuario;
 
     public ImagemPerfilUsuarioControllerTest()
     {
-        _mockUsuarioBusiness = new Mock<IUsuarioBusiness<UsuarioDto>>();
         _mockImagemPerfilBusiness = new Mock<IImagemPerfilUsuarioBusiness<ImagemPerfilDto, UsuarioDto>>();
-        _usuarioController = new UsuarioController(_mockUsuarioBusiness.Object, _mockImagemPerfilBusiness.Object);
+        _imagePerfilUsuarioController = new ImagemPerfilUsuarioController(_mockImagemPerfilBusiness.Object);
         _mapperImagemPerfil = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<ImagemPerfilUsuarioProfile>(); }));
         _mapperUsuario = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<UsuarioProfile>(); }));
     }
@@ -35,11 +34,11 @@ public sealed class ImagemPerfilUsuarioControllerTest
         var _imagemPerfilUsuarioDtos = _mapperImagemPerfil.Map<List<ImagemPerfilDto>>(_imagemPerfilUsuarios);
         var usuarioDto = _mapperUsuario.Map<UsuarioDto>(_imagemPerfilUsuarios.First().Usuario);
         Guid idUsuario = usuarioDto.Id;
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.FindAll(idUsuario)).Returns(_imagemPerfilUsuarioDtos);
 
         // Act
-        var result = _usuarioController.GetImagemPerfil() as ObjectResult;
+        var result = _imagePerfilUsuarioController.GetImagemPerfil() as ObjectResult;
         // Assert
         Assert.NotNull(result);
         Assert.IsType<OkObjectResult>(result);
@@ -57,11 +56,11 @@ public sealed class ImagemPerfilUsuarioControllerTest
         var _imagemPerfilUsuarioDtos = _mapperImagemPerfil.Map<List<ImagemPerfilDto>>(_imagemPerfilUsuarios);
         var usuarioDto = _mapperUsuario.Map<UsuarioDto>(_imagemPerfilUsuarios.First().Usuario);
         Guid idUsuario = Guid.NewGuid();
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.FindAll(idUsuario)).Returns(_imagemPerfilUsuarioDtos);
 
         // Act
-        var result = _usuarioController.GetImagemPerfil() as ObjectResult;
+        var result = _imagePerfilUsuarioController.GetImagemPerfil() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -80,14 +79,14 @@ public sealed class ImagemPerfilUsuarioControllerTest
         var imagemPerfilUsuarioDto = _imagemPerfilUsuarioDtos.First();
         Guid idUsuario = imagemPerfilUsuarioDto.UsuarioId;
 
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.Create(It.IsAny<ImagemPerfilDto>())).Returns(imagemPerfilUsuarioDto);
 
         var formFile = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Test file content")), 0, Encoding.UTF8.GetBytes("Test file content").Length, "test", "test.jpg");
         formFile.Headers = new HeaderDictionary { { "Content-Type", "image/jpg" } };
 
         // Act
-        var result = await _usuarioController.PostImagemPerfil(formFile) as ObjectResult;
+        var result = await _imagePerfilUsuarioController.PostImagemPerfil(formFile) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -102,7 +101,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
         formFile.Headers = new HeaderDictionary { { "Content-Type", "image/png" } };
 
         // Act file type PNG
-        result = await _usuarioController.PostImagemPerfil(formFile) as ObjectResult;
+        result = await _imagePerfilUsuarioController.PostImagemPerfil(formFile) as ObjectResult;
 
         // Assert file Type PNG
         Assert.NotNull(result);
@@ -117,7 +116,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
         formFile.Headers = new HeaderDictionary { { "Content-Type", "image/jpeg" } };
 
         // Act file type JPEG
-        result = await _usuarioController.PostImagemPerfil(formFile) as ObjectResult;
+        result = await _imagePerfilUsuarioController.PostImagemPerfil(formFile) as ObjectResult;
 
         // Assert file Type JPEG
         Assert.NotNull(result);
@@ -134,14 +133,14 @@ public sealed class ImagemPerfilUsuarioControllerTest
         // Arrange
         var imagemPerfilUsuarioDto = ImagemPerfilUsuarioFaker.Instance.ImagensPerfilUsuarioDtos().First();
         Guid idUsuario = imagemPerfilUsuarioDto.UsuarioId;
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.Create(It.IsAny<ImagemPerfilDto>())).Returns(imagemPerfilUsuarioDto);
 
         var formFile = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Test file not Image type content")), 0, Encoding.UTF8.GetBytes("Test file not Image type content").Length, "DATA File Erro", "test.txt");
         formFile.Headers = new HeaderDictionary { { "Content-Type", "image/txt" } };
 
         // Act
-        var result = await _usuarioController.PostImagemPerfil(formFile) as ObjectResult;
+        var result = await _imagePerfilUsuarioController.PostImagemPerfil(formFile) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -157,14 +156,14 @@ public sealed class ImagemPerfilUsuarioControllerTest
         // Arrange
         var imagemPerfilUsuarioDto = ImagemPerfilUsuarioFaker.Instance.ImagensPerfilUsuarioDtos().First();
         Guid idUsuario = imagemPerfilUsuarioDto.UsuarioId;
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.Create(It.IsAny<ImagemPerfilDto>())).Returns(() => null);
 
         var formFile = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Test file content")), 0, Encoding.UTF8.GetBytes("Test file content").Length, "test", "test.jpg");
         formFile.Headers = new HeaderDictionary { { "Content-Type", "image/jpg" } };
 
         // Act
-        var result = await _usuarioController.PostImagemPerfil(formFile) as ObjectResult;
+        var result = await _imagePerfilUsuarioController.PostImagemPerfil(formFile) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -179,12 +178,12 @@ public sealed class ImagemPerfilUsuarioControllerTest
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.Create(It.IsAny<ImagemPerfilDto>())).Returns(() => null);
         var formFile = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Test file content")), 0, Encoding.UTF8.GetBytes("Test file content").Length, "test", "test.jpg");
 
         // Act
-        var result = await _usuarioController.PostImagemPerfil(formFile) as ObjectResult;
+        var result = await _imagePerfilUsuarioController.PostImagemPerfil(formFile) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -201,14 +200,14 @@ public sealed class ImagemPerfilUsuarioControllerTest
         // Arrange
         var imagemPerfilUsuarioDto = ImagemPerfilUsuarioFaker.Instance.ImagensPerfilUsuarioDtos().First();
         Guid idUsuario = imagemPerfilUsuarioDto.UsuarioId;
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.Update(It.IsAny<ImagemPerfilDto>())).Returns(imagemPerfilUsuarioDto);
 
         var formFile = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Test file content")), 0, Encoding.UTF8.GetBytes("Test file content").Length, "test", "test.jpg");
         formFile.Headers = new HeaderDictionary { { "Content-Type", "image/jpg" } };
 
         // Act
-        var result = await _usuarioController.PutImagemPerfil(formFile) as ObjectResult;
+        var result = await _imagePerfilUsuarioController.PutImagemPerfil(formFile) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -223,7 +222,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
         formFile.Headers = new HeaderDictionary { { "Content-Type", "image/png" } };
 
         // Act file type PNG
-        result = await _usuarioController.PutImagemPerfil(formFile) as ObjectResult;
+        result = await _imagePerfilUsuarioController.PutImagemPerfil(formFile) as ObjectResult;
 
         // Assert file Type PNG
         Assert.NotNull(result);
@@ -238,7 +237,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
         formFile.Headers = new HeaderDictionary { { "Content-Type", "image/jpeg" } };
 
         // Act file type JPEG
-        result = await _usuarioController.PutImagemPerfil(formFile) as ObjectResult;
+        result = await _imagePerfilUsuarioController.PutImagemPerfil(formFile) as ObjectResult;
 
         // Assert file Type JPEG
         Assert.NotNull(result);
@@ -254,12 +253,12 @@ public sealed class ImagemPerfilUsuarioControllerTest
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.Update(It.IsAny<ImagemPerfilDto>())).Returns(() => null);
         var formFile = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Test file content")), 0, Encoding.UTF8.GetBytes("Test file content").Length, "test", "test.jpg");
 
         // Act
-        var result = await _usuarioController.PutImagemPerfil(formFile) as ObjectResult;
+        var result = await _imagePerfilUsuarioController.PutImagemPerfil(formFile) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -277,13 +276,13 @@ public sealed class ImagemPerfilUsuarioControllerTest
         // Arrange
         var imagemPerfilUsuarioDto = ImagemPerfilUsuarioFaker.Instance.ImagensPerfilUsuarioDtos().First();
         Guid idUsuario = imagemPerfilUsuarioDto.UsuarioId;
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.Update(It.IsAny<ImagemPerfilDto>())).Returns(imagemPerfilUsuarioDto);
         var formFile = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Test file not Image type content")), 0, Encoding.UTF8.GetBytes("Test file not Image type content").Length, "DATA File Erro", "test.txt");
         formFile.Headers = new HeaderDictionary { { "Content-Type", "image/txt" } };
 
         // Act
-        var result = await _usuarioController.PutImagemPerfil(formFile) as ObjectResult;
+        var result = await _imagePerfilUsuarioController.PutImagemPerfil(formFile) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -299,13 +298,13 @@ public sealed class ImagemPerfilUsuarioControllerTest
         // Arrange
         var imagemPerfilUsuarioDto = ImagemPerfilUsuarioFaker.Instance.ImagensPerfilUsuarioDtos().First();
         Guid idUsuario = imagemPerfilUsuarioDto.UsuarioId;
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.Update(It.IsAny<ImagemPerfilDto>())).Returns(() => null);
         var formFile = new FormFile(new MemoryStream(Encoding.UTF8.GetBytes("Test file content")), 0, Encoding.UTF8.GetBytes("Test file content").Length, "test", "test.jpg");
         formFile.Headers = new HeaderDictionary { { "Content-Type", "image/jpg" } };
 
         // Act
-        var result = await _usuarioController.PutImagemPerfil(formFile) as ObjectResult;
+        var result = await _imagePerfilUsuarioController.PutImagemPerfil(formFile) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -320,11 +319,11 @@ public sealed class ImagemPerfilUsuarioControllerTest
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.Delete(It.IsAny<Guid>())).Returns(true);
 
         // Act
-        var result = _usuarioController.DeleteImagemPerfil() as ObjectResult;
+        var result = _imagePerfilUsuarioController.DeleteImagemPerfil() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -340,11 +339,11 @@ public sealed class ImagemPerfilUsuarioControllerTest
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.Delete(It.IsAny<Guid>())).Returns(false);
 
         // Act
-        var result = _usuarioController.DeleteImagemPerfil() as ObjectResult;
+        var result = _imagePerfilUsuarioController.DeleteImagemPerfil() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -359,11 +358,11 @@ public sealed class ImagemPerfilUsuarioControllerTest
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
-        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.Delete(It.IsAny<Guid>())).Throws<Exception>();
 
         // Act
-        var result = _usuarioController.DeleteImagemPerfil() as ObjectResult;
+        var result = _imagePerfilUsuarioController.DeleteImagemPerfil() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);

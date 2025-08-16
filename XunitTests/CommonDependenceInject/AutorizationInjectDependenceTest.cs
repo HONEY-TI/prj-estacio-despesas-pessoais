@@ -1,5 +1,5 @@
 ﻿using Business.Authentication;
-using Despesas.WebApi.CommonDependenceInject;
+using Despesas.Backend.CommonDependenceInject;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +18,7 @@ public sealed class AuthorizationInjectDependenceTest
         var builder = WebApplication.CreateBuilder();
         builder.Configuration.SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.json");        
         builder.AddSigningConfigurations();
-        builder.Services.AddAutoAuthenticationConfigurations();
+        builder.AddAuthenticationConfigurations();
         var services = builder.Services;
 
         // Act                

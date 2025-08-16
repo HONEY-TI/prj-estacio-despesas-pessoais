@@ -1,5 +1,7 @@
-﻿using Business.Dtos.Parser;
-using __mock__.v1;
+﻿using __mock__.Entities;
+using AutoMapper;
+using Despesas.Business.Dtos;
+using Despesas.Business.Dtos.Profile;
 
 namespace Business.Dtos;
 public sealed class DespesaDtoTest
@@ -7,9 +9,14 @@ public sealed class DespesaDtoTest
     [Fact]
     public void DespesaDto_Should_Set_Properties_Correctly()
     {
-        // Arrange and Act
+        // Arrange 
+        var mapper = new Mapper(new MapperConfiguration(cfg => {
+            cfg.AddProfile<DespesaProfile>();
+        }));
+
+        // Act
         var despesa = DespesaFaker.Instance.Despesas().First();
-        var despesaDto = new DespesaParser().Parse(despesa);
+        var despesaDto = mapper.Map<DespesaDto>(despesa);
 
         // Assert
         Assert.Equal(despesa.Id, despesaDto.Id);

@@ -1,7 +1,7 @@
 ﻿using Bogus;
-using Business.Dtos.v1;
+using Despesas.Business.Dtos;
 
-namespace __mock__.v1;
+namespace __mock__.Entities;
 public sealed class ControleAcessoFaker
 {
     static int counter = 1;
@@ -26,12 +26,12 @@ public sealed class ControleAcessoFaker
             if (usuario == null) usuario = UsuarioFaker.Instance.GetNewFaker();
 
             var controleAcessoFaker = new Faker<ControleAcesso>()
-            .RuleFor(ca => ca.Id, Guid.NewGuid())
-            .RuleFor(ca => ca.Login, usuario.Email)
-            .RuleFor(ca => ca.Senha, "!12345")
-            .RuleFor(ca => ca.UsuarioId, usuario.Id)
-            .RuleFor(ca => ca.Usuario, usuario)
-            .Generate();
+                .RuleFor(ca => ca.Id, Guid.NewGuid())
+                .RuleFor(ca => ca.Login, usuario.Email)
+                .RuleFor(ca => ca.Senha, f => f.Internet.Password(8, false, "", "!12345"))
+                .RuleFor(ca => ca.UsuarioId, usuario.Id)
+                .RuleFor(ca => ca.Usuario, usuario)
+                .Generate();
             counter++;
             return controleAcessoFaker;
         }
@@ -44,15 +44,14 @@ public sealed class ControleAcessoFaker
             if (usuario == null) usuario = UsuarioFaker.Instance.GetNewFaker();
 
             var controleAcessoDtoFaker = new Faker<ControleAcessoDto>()
-            .RuleFor(ca => ca.Nome, usuario.Nome)
-            .RuleFor(ca => ca.SobreNome, usuario.SobreNome)
-            .RuleFor(ca => ca.Email, usuario.Email)
-            .RuleFor(ca => ca.Telefone, usuario.Telefone)
-            .RuleFor(ca => ca.Senha, "!12345")
-            .RuleFor(ca => ca.ConfirmaSenha, "!12345");
-
-
-            return controleAcessoDtoFaker.Generate();
+                .RuleFor(ca => ca.Nome, usuario.Nome)
+                .RuleFor(ca => ca.SobreNome, usuario.SobreNome)
+                .RuleFor(ca => ca.Email, usuario.Email)
+                .RuleFor(ca => ca.Telefone, usuario.Telefone)
+                .RuleFor(ca => ca.Senha, f => f.Internet.Password(8, false, "", "!12345"))
+                .Generate();
+            controleAcessoDtoFaker.ConfirmaSenha = controleAcessoDtoFaker.Senha;
+            return controleAcessoDtoFaker;
         }
     }
 

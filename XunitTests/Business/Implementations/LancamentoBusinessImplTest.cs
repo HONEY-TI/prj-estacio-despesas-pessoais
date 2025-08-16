@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Business.Dtos.v1;
 using Repository.Persistency.Abstractions;
-using __mock__.v1;
-using Business.Dtos.Core.Profile;
+using __mock__.Entities;
 using Business.Implementations;
+using Despesas.Business.Dtos.Profile;
+using Despesas.Business.Dtos;
 
 namespace Business;
 public class LancamentoBusinessImplTest

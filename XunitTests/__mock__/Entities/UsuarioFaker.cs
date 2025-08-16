@@ -1,8 +1,8 @@
 ﻿using Bogus;
-using Business.Dtos.v1;
+using Despesas.Business.Dtos;
 using Domain.Entities.ValueObjects;
 
-namespace __mock__.v1;
+namespace __mock__.Entities;
 public sealed class UsuarioFaker
 {
     static int counter = 1;

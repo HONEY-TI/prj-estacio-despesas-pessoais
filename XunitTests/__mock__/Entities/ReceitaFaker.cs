@@ -1,9 +1,9 @@
 ﻿using Bogus;
-using Business.Dtos.Core;
-using Business.Dtos.v1;
+using Despesas.Business.Dtos;
+using Despesas.Business.Dtos.Abstractions;
 using Domain.Entities.ValueObjects;
 
-namespace __mock__.v1;
+namespace __mock__.Entities;
 public sealed class ReceitaFaker
 {
     static int counter = 1;
@@ -43,19 +43,20 @@ public sealed class ReceitaFaker
 
     public ReceitaDto GetNewFakerVM(Guid idUsuario, Guid idCategoria)
     {
+
         var receitaFaker = new Faker<ReceitaDto>()
             .RuleFor(r => r.Id, f => Guid.NewGuid())
             .RuleFor(r => r.Data, new DateTime(DateTime.Now.Year, new Random().Next(1, 13), 1))
             .RuleFor(r => r.Descricao, f => f.Commerce.ProductName())
             .RuleFor(r => r.Valor, f => f.Random.Decimal(1, 900000))
             .RuleFor(r => r.UsuarioId, idUsuario)
-            .RuleFor(r => r.IdCategoria, CategoriaFaker.Instance.GetNewFakerVM(UsuarioFaker.Instance.GetNewFakerVM(idUsuario), TipoCategoriaDto.Receita, idUsuario).Id)
+            .RuleFor(r => r.IdCategoria, CategoriaFaker.Instance.GetNewFakerVM(UsuarioFaker.Instance.GetNewFakerVM(idUsuario), BaseTipoCategoriaDto.Receita, idUsuario).Id)
             .Generate();
         counterVM++;
         return receitaFaker;
     }
 
-    public List<ReceitaDto> ReceitasVMs(UsuarioDtoBase? usuarioDto = null, Guid? idUsuario = null)
+    public List<ReceitaDto> ReceitasVMs(BaseUsuarioDto? usuarioDto = null, Guid? idUsuario = null)
     {
         var listReceitaDto = new List<ReceitaDto>();
         for (int i = 0; i < 10; i++)
@@ -72,7 +73,7 @@ public sealed class ReceitaFaker
         return listReceitaDto;
     }
 
-    public List<Receita> Receitas(Usuario? usuario = null, Guid? idUsuario = null, int count = 10)
+    public List<Receita> Receitas(Usuario? usuario = null, int? idUsuario = null, int count = 10)
     {
         var listReceita = new List<Receita>();
         for (int i = 0; i < count; i++)
