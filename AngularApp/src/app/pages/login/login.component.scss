@@ -43,3 +43,14 @@
 .not-error-input {
   display: none;
 }
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .google-icon {
+    width: 16px;
+    height: 16px;
+  }
+}

@@ -11,13 +11,19 @@ public class ControleAcesso : BaseModel
     }
 
     public string Senha { get; set; } = string.Empty;
+
     public Guid UsuarioId { get; set; }
 
     public string RefreshToken { get; set; } = String.Empty;
 
-    public DateTime? RefreshTokenExpiry { get; set; }
+    public DateTime? RefreshTokenExpiry { get; set; }    
+
+    public string? ExternalProvider { get; set; }    
+
+    public string? ExternalId { get; set; }    
 
     public virtual Usuario? Usuario { get; set; }
+    
     public void CreateAccount(Usuario usuario, string senha)
     {
         this.Login = usuario.Email;

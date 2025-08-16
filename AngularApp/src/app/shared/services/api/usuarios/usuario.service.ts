@@ -14,7 +14,7 @@ export class UsuarioService extends AbstractService {
   }
 
   getUsuario(): any {
-    return this.httpClient.get(`${ this.routeUrl }/GetUsuario`);
+    return this.httpClient.get(`${ this.routeUrl }`);
   }
 
   postUsuario(usuario: IUsuario): any {

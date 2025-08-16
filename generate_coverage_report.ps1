@@ -3,8 +3,8 @@ cls
 # Pasta onde o relatário será gerado
 $baseDirectory = Get-Location
 $projectTestPath = Join-Path -Path (Get-Location) -ChildPath "XunitTests"
-$sourceDirs = "$baseDirectory\Despesas.Business;$baseDirectory\Despesas.Domain;$baseDirectory\Despesas.Repository;$baseDirectory\Despesas.WebApi;"
-$filefilters = "$baseDirectory\Despesas.DataSeeders\**;-$baseDirectory\Migrations.MySqlServer\**;-$baseDirectory\Migrations.MsSqlServer\**;-$baseDirectory\Despesas.CrossCutting\**;-$baseDirectory\Despesas.Business\HyperMedia\**"
+$sourceDirs = "$baseDirectory\Despesas.Business;$baseDirectory\Despesas.Domain;$baseDirectory\Despesas.Repository;$baseDirectory\Despesas.Backend;"
+$filefilters = "$baseDirectory\Migrations.DataSeeders\**;-$baseDirectory\Migrations.MySqlServer\**;-$baseDirectory\Migrations.MsSqlServer\**;-$baseDirectory\Despesas.CrossCutting\**;-$baseDirectory\Despesas.Business\HyperMedia\**"
 $reportPath = Join-Path -Path (Get-Location) -ChildPath "XunitTests\TestResults"
 $coverageXmlPath = Join-Path -Path $reportPath -ChildPath "coveragereport"
 

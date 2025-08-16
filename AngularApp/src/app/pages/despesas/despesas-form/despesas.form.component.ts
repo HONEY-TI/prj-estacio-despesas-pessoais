@@ -10,7 +10,8 @@ import { CustomValidators } from '../../../shared/validators';
 @Component({
   selector: 'app-despesas-form',
   templateUrl: './despesas.form.component.html',
-  styleUrls: ['./despesas.form.component.scss']
+  styleUrls: ['./despesas.form.component.scss'],
+  standalone: false
 })
 
 export class DespesasFormComponent {

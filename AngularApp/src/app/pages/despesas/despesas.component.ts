@@ -9,7 +9,8 @@ import { DespesaService } from "../../shared/services/api";
 @Component({
   selector: 'app-despesas',
   templateUrl: './despesas.component.html',
-  styleUrls: ['./despesas.component.scss']
+  styleUrls: ['./despesas.component.scss'],
+  standalone: false
 })
 export class DespesasComponent implements BarraFerramentaClass, OnInit {
   @ViewChild(DataTableComponent) dataTable: DataTableComponent;

@@ -6,12 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Migrations.MsSqlServer;
+using Repository;
 
 #nullable disable
 
 namespace Migrations.MsSqlServer.Migrations.Application
 {
-    [DbContext(typeof(MsSqlServerContext))]
+    [DbContext(typeof(RegisterContext))]
     [Migration("20240517172152_Initial")]
     partial class Initial
     {

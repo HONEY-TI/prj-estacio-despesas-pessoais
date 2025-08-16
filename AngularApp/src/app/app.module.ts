@@ -11,8 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbActiveModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing.module';
-import { LoginComponent } from './pages/login/login.component';
-import { PrimeiroAcessoComponent } from './pages/primeiro-acesso/primeiro-acesso.component';
+import { AcessoComponent } from './pages/acesso/acesso.component';
 import { AlertComponent, ModalFormComponent, ModalConfirmComponent } from './shared/components';
 import { AlertModule } from './shared/components/alert-component/alert.component.module';
 import { AuthService, MenuService, CustomInterceptor } from './shared/services';
@@ -21,10 +20,16 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } f
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, } from '@angular/material-moment-adapter';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { DashboardModule } from './pages/dashboard/dashboard.module';
+import { CategoriasModule } from './pages/categorias/categorias.module';
+import { DespesasModule } from './pages/despesas/despesas.module';
+import { ReceitasModule } from './pages/receitas/receitas.module';
+import { LancamentosModule } from './pages/lancamentos/lancamentos.module';
+
 @NgModule({
-  declarations: [AppComponent, LoginComponent],
+  declarations: [AppComponent],
   bootstrap: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, CommonModule, ReactiveFormsModule, AlertModule, PrimeiroAcessoComponent,
+  imports: [BrowserModule, AppRoutingModule, CommonModule, ReactiveFormsModule, AcessoComponent, AlertModule, DashboardModule, CategoriasModule, DespesasModule, ReceitasModule, LancamentosModule,
     MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, BrowserAnimationsModule, MomentDateModule,
     NgxMaskDirective, NgxMaskPipe],
   providers: [AuthService, ControleAcessoService, MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent, NgbActiveModal, NgbDropdownModule,
@@ -38,4 +43,5 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
     provideNgxMask(), provideHttpClient(withInterceptorsFromDi()), provideAnimationsAsync()]
 })
+
 export class AppModule { }

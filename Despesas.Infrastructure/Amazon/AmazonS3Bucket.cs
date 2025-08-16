@@ -37,7 +37,7 @@ public class AmazonS3Bucket : IAmazonS3Bucket
         }
         else
         {
-            throw new ArgumentException("File appsettings.json não encontrado.");
+            throw new Exception("File appsettings.json não encontrado.");
         }
     }
 
@@ -82,7 +82,7 @@ public class AmazonS3Bucket : IAmazonS3Bucket
         }
         catch
         {
-            throw new ArgumentException("AmazonS3Bucket_WritingAnObjectAsync_Errro");
+            throw new Exception("AmazonS3Bucket_WritingAnObjectAsync_Errro");
         }
     }
 
@@ -101,7 +101,6 @@ public class AmazonS3Bucket : IAmazonS3Bucket
                 Key = perfilFile.Name,
             };
 
-            Console.WriteLine("Deleting an object");
             await _client.DeleteObjectAsync(deleteObjectRequest);
             return true;
         }

@@ -6,12 +6,12 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app.routing.module';
-import { PrimeiroAcessoComponent } from './pages/primeiro-acesso/primeiro-acesso.component';
 import { AuthService } from './shared/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { AuthProvider } from './shared/provider/auth.provider';
 import { MatDatepickerIntl } from '@angular/material/datepicker';
 import { DateAdapter } from '@angular/material/core';
+import { AcessoComponent } from './pages/acesso/acesso.component';
 
 describe('AppComponent', () => {
   let app: AppComponent;
@@ -25,7 +25,7 @@ describe('AppComponent', () => {
     mockAuthService = jasmine.createSpyObj('AuthService', [ 'isAuthenticated']);
     TestBed.configureTestingModule({
     declarations: [AppComponent, LoginComponent],
-    imports: [BrowserModule, AppRoutingModule, CommonModule, ReactiveFormsModule, FormsModule, PrimeiroAcessoComponent],
+    imports: [BrowserModule, AppRoutingModule, CommonModule, ReactiveFormsModule, FormsModule, AcessoComponent],
     providers: [AuthService, AuthProvider,
         { provide: Router, useValue: mockRouter },
         { provide: AuthService, useValue: mockAuthService },

@@ -11,7 +11,8 @@ import { ReceitasFormComponent } from "../receitas/receitas-form/receitas.form.c
 @Component({
   selector: 'app-lancamentos',
   templateUrl: './lancamentos.component.html',
-  styleUrls: ['./lancamentos.component.scss']
+  styleUrls: ['./lancamentos.component.scss'],
+  standalone: false
 })
 
 export class LancamentosComponent implements OnInit {

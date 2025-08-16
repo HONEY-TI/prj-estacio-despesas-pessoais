@@ -1,8 +1,8 @@
 import { environment } from "../../../../../environments/environment";
-
 export abstract class AbstractService {
-  protected readonly routeUrl: string;
+  protected routeUrl: string;
+  private baseUrl:string = `${environment.BASE_URL}`;
   constructor(route: string) {
-    this.routeUrl = `${ environment.BASE_URL }/${ environment.API_VERSION }/${route}`;
+    this.routeUrl = `${ this.baseUrl }/${route}`;
   }
 }

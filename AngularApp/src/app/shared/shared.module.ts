@@ -9,7 +9,7 @@ import { DataTableModule } from "./components/data-table/data-table.component.mo
 
 @NgModule({
   declarations: [LayoutComponent],
-  imports: [CommonModule, FormsModule, BarraFerramentaModule, CurrencyMaskModule],
+  imports: [CommonModule, FormsModule, BarraFerramentaModule, CurrencyMaskModule, DataTableModule],
   exports: [LayoutComponent, BarraFerramentaComponent, DataTableModule, CurrencyMaskModule, MatSelectModule],
   providers: [DataTableComponent]
 })

@@ -19,7 +19,6 @@ export class TokenStorageService {
   }
 
   public saveToken(token: string): void {
-    sessionStorage.removeItem(TOKEN_KEY);
     sessionStorage.setItem(TOKEN_KEY, token);
 
     const user = this.getUser();
@@ -33,16 +32,14 @@ export class TokenStorageService {
   }
 
   public saveRefreshToken(token: string): void {
-    localStorage.removeItem(REFRESHTOKEN_KEY);
-    localStorage.setItem(REFRESHTOKEN_KEY, token);
+    sessionStorage.setItem(REFRESHTOKEN_KEY, token);
   }
 
   public getRefreshToken(): string | null {
-    return localStorage.getItem(REFRESHTOKEN_KEY);
+    return sessionStorage.getItem(REFRESHTOKEN_KEY);
   }
 
   public saveUser(user: IAuth): void {
-    sessionStorage.removeItem(USER_KEY);
     sessionStorage.setItem(USER_KEY, JSON.stringify(user));
   }
 

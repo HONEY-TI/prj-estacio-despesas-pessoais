@@ -1,0 +1,21 @@
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER app
+
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:80;https://+:443;
+
+FROM alexfariakof/dotnet-sdk-8.0-with-node:latest AS publish 
+WORKDIR /src
+COPY . . 
+
+WORKDIR /src/Despesas.Backend
+RUN dotnet publish "./Despesas.Backend.csproj" -c Release -f net8.0 -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /app
+
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Despesas.Backend.dll"]

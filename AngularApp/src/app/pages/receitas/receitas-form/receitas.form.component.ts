@@ -10,7 +10,8 @@ import { CustomValidators } from '../../../shared/validators';
 @Component({
   selector: 'app-receitas-form',
   templateUrl: './receitas.form.component.html',
-  styleUrls: ['./receitas.form.component.scss']
+  styleUrls: ['./receitas.form.component.scss'],
+  standalone: false
 })
 
 export class ReceitasFormComponent {

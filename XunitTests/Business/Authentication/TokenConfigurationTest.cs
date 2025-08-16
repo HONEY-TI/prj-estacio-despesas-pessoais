@@ -1,4 +1,5 @@
-﻿using Despesas.Business.Authentication.Abstractions;
+﻿using Despesas.Application.Authentication;
+using Despesas.Business.Authentication.Abstractions;
 using Microsoft.Extensions.Options;
 
 namespace Business.Authentication;

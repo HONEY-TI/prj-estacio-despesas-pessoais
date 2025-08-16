@@ -1,6 +1,4 @@
-version: '3.9'
-
-services:
+﻿services:
   migrations.mysqlserver:
     domainname: migrations
     container_name: maria-server-in-docker

@@ -30,7 +30,7 @@ public sealed class BaseRepositoryTest : IClassFixture<BaseRepositoryFixture>
         receita.Usuario = MockUsuario.Instance.GetUsuario();
         receita.Usuario.PerfilUsuario = _fixture.Context.PerfilUsuario.Single(pu => pu.Id.Equals(1));
 
-        repository.Insert(ref receita);
+        repository.Insert(receita);
 
         Assert.Contains(_fixture.Context.Receita, r => r.Descricao == receita.Descricao);
     }
@@ -41,11 +41,11 @@ public sealed class BaseRepositoryTest : IClassFixture<BaseRepositoryFixture>
         var repository = new BaseRepositoryClassTest(_fixture.Context);
         var receita = _fixture.Context.Receita.First();
         receita.Categoria.TipoCategoria = _fixture.Context.TipoCategoria.Single(tp => tp.Id.Equals(2));
-        receita.Usuario = MockUsuario.Instance.GetUsuario();
+        receita.Usuario = _fixture.Context.Usuario.First();
         receita.Usuario.PerfilUsuario = _fixture.Context.PerfilUsuario.Single(pu => pu.Id.Equals(1));
         receita.Descricao = "Updated Receita";
 
-        repository.Update(ref receita);
+        repository.Update(receita);
 
         Assert.Equal("Updated Receita", _fixture.Context.Receita.First(r => r.Id == receita.Id).Descricao);
     }

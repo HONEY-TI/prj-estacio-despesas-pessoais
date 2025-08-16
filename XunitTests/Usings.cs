@@ -3,6 +3,7 @@ global using Moq;
 global using Xunit;
 using AutoMapper;
 using Business.Authentication;
+using Despesas.Application.Authentication;
 using Despesas.Business.Authentication.Abstractions;
 using Domain.Core;
 using Microsoft.AspNetCore.Http;
@@ -66,9 +67,9 @@ public class Usings
             );
 
         _mock.Setup(repo => repo.GetAll()).Returns(() => _dataSet.ToList());
-        _mock.Setup(repo => repo.Insert(ref It.Ref<T>.IsAny));
+        _mock.Setup(repo => repo.Insert(It.Ref<T>.IsAny));
         _mock
-            .Setup(repo => repo.Update(ref It.Ref<T>.IsAny));
+            .Setup(repo => repo.Update(It.Ref<T>.IsAny));
         _mock
             .Setup(repo => repo.Delete(It.IsAny<T>()))
             .Returns(

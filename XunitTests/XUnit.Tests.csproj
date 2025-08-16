@@ -9,17 +9,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="appsettings.json" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="appsettings.json">
+		<Content Include="..\Despesas.Backend\appsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
 	</ItemGroup>
-
+	
 	<ItemGroup>
 		<None Include="..\.editorconfig" Link=".editorconfig">
 			<DependentUpon>$(MSBuildProjectDirectory)</DependentUpon>
@@ -47,15 +43,15 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\AngularApp\AngularApp.esproj" />
-		<ProjectReference Include="..\Despesas.Business\Despesas.Business.csproj" />
+		<ProjectReference Include="..\Despesas.Backend\Despesas.Backend.csproj" />
 		<ProjectReference Include="..\Despesas.Domain\Despesas.Domain.csproj" />
 		<ProjectReference Include="..\Despesas.Infrastructure\Despesas.Infrastructure.csproj" />
 		<ProjectReference Include="..\Despesas.Repository\Despesas.Repository.csproj" />
-		<ProjectReference Include="..\Despesas.WebApi\Despesas.WebApi.csproj" />
+		<ProjectReference Include="..\Migrations.DataSeeders\Migrations.DataSeeders.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="..\Despesas.WebApi\certificate\webapi-cert.pfx">
+		<Content Include="..\Despesas.Backend\certificate\webapi-cert.pfx">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

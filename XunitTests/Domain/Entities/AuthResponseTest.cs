@@ -1,4 +1,4 @@
-﻿using Business.Dtos.Core;
+﻿using Despesas.Application.Dtos.Abstractions;
 
 namespace Domain.Entities;
 public sealed class AuthResponseTest
@@ -12,7 +12,7 @@ public sealed class AuthResponseTest
         var mockUsuario = Mock.Of<Usuario>();
 
         // Arrange and ACt
-        var authResponse = new AuthenticationDto
+        var authResponse = new BaseAuthenticationDto
         {
             Authenticated = authenticated,
             Created = created,

@@ -12,7 +12,7 @@ public class GenericRepositorio<T> : IRepositorio<T> where T : BaseModel, new()
         _context = context;
     }
 
-    public virtual void Insert(ref T item)
+    public virtual void Insert(T item)
     {
         try
         {
@@ -42,7 +42,7 @@ public class GenericRepositorio<T> : IRepositorio<T> where T : BaseModel, new()
         return this._context.Set<T>().SingleOrDefault(prop => prop.Id.Equals(id));
     }
 
-    public virtual void Update(ref T entity)
+    public virtual void Update(T entity)
     {
         try
         {
