@@ -1,5 +1,4 @@
-﻿using Business.CommonDependenceInject;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -9,6 +8,7 @@ using System.Reflection;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 using Microsoft.EntityFrameworkCore;
 using Migrations.DataSeeders.CommonDependenceInject;
+using Despesas.Application.CommonDependenceInject;
 
 
 var host = Host.CreateDefaultBuilder(args)
