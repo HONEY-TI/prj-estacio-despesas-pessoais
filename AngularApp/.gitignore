@@ -45,3 +45,4 @@ obj/**
 !sonar-project.properties
 **/www
 **/client_secret.json
+**/app-android/android/app/build
