@@ -1,4 +1,4 @@
-﻿name: Test and Analysis Code In Sonar Cloud
+name: Test and Analysis Code In Sonar Cloud
 on:
   workflow_call:
   pull_request:
@@ -73,8 +73,8 @@ jobs:
             $baseDirectory = Get-Location
             $projectTestPath = Join-Path -Path (Get-Location) -ChildPath "XunitTests"            
             $projectAngular = Join-Path -Path ($baseDirectory) -ChildPath "AngularApp"
-            $sourceDirs = "$baseDirectory\Despesas.Business;$baseDirectory\Despesas.Domain;$baseDirectory\Despesas.Repository;$baseDirectory\Despesas.WebApi;"
-            $filefilters = "$baseDirectory\Despesas.DataSeeders\**;-$baseDirectory\Migrations.MySqlServer\**;-$baseDirectory\Migrations.MsSqlServer\**;-$baseDirectory\Despesas.CrossCutting\**;-$baseDirectory\Despesas.Business\HyperMedia\**"
+            $sourceDirs = "$baseDirectory\Despesas.Business;$baseDirectory\Despesas.Domain;$baseDirectory\Despesas.Repository;$baseDirectory\Despesas.Backend;"
+            $filefilters = "$baseDirectory\Migrations.DataSeeders\**;-$baseDirectory\Migrations.MySqlServer\**;-$baseDirectory\Migrations.MsSqlServer\**;-$baseDirectory\Despesas.CrossCutting\**;-$baseDirectory\Despesas.Business\HyperMedia\**"
             $reportPath = Join-Path -Path ($projectTestPath) -ChildPath "TestResults"
             $coveragePath = Join-Path -Path $reportPath -ChildPath "coveragereport"
             $coverageAngularPath = Join-Path -Path $projectAngular -ChildPath "coverage"
