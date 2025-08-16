@@ -1,4 +1,4 @@
-﻿using Business.Dtos.Core.Profile;
+﻿using Despesas.Business.Dtos.Profile;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Business.CommonDependenceInject;

@@ -1,12 +1,13 @@
-﻿using Domain.Entities;
+﻿
+using Domain.Entities;
 
-namespace Business.Dtos.Core.Profile;
+namespace Despesas.Business.Dtos.Profile;
 public class LancamentoProfile : AutoMapper.Profile
 {
     public LancamentoProfile()
     {
 
-        CreateMap<Lancamento, Business.Dtos.v1.LancamentoDto>()
+        CreateMap<Lancamento, LancamentoDto>()
             .ForMember(dest => dest.IdDespesa, opt => opt.MapFrom(src => src.DespesaId))
             .ForMember(dest => dest.IdReceita, opt => opt.MapFrom(src => src.ReceitaId))
             .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.Descricao))
@@ -14,7 +15,7 @@ public class LancamentoProfile : AutoMapper.Profile
             .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.ReceitaId == Guid.Empty ? src.Despesa.Descricao : src.Receita.Descricao))
             .ReverseMap();
 
-        CreateMap<Lancamento, Business.Dtos.v2.LancamentoDto>()
+        CreateMap<Lancamento, LancamentoDto>()
             .ForMember(dest => dest.IdDespesa, opt => opt.MapFrom(src => src.DespesaId))
             .ForMember(dest => dest.IdReceita, opt => opt.MapFrom(src => src.ReceitaId))
             .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria.Descricao))

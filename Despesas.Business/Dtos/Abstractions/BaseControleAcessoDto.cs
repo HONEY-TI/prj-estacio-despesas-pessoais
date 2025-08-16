@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Despesas.Business.Dtos.Core;
+using System.ComponentModel.DataAnnotations;
 
-namespace Business.Dtos.Core;
-public abstract class ControleAcessoDtoBase : ModelDtoBase
+namespace Despesas.Business.Dtos.Abstractions;
+public abstract class BaseControleAcessoDto : BaseModelDto
 {
     [Required]
     public virtual string? Nome { get; set; }

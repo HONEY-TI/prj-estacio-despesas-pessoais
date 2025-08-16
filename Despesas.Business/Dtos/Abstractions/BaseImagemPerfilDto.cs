@@ -1,5 +1,7 @@
-﻿namespace Business.Dtos.Core;
-public abstract class ImagemPerfilDtoBase : ModelDtoBase
+﻿using Despesas.Business.Dtos.Core;
+
+namespace Despesas.Business.Dtos.Abstractions;
+public abstract class BaseImagemPerfilDto : BaseModelDto
 {
     public virtual string? Url { get; set; }
     public virtual string? Name { get; set; }

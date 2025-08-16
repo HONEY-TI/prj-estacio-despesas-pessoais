@@ -1,23 +1,24 @@
-﻿using Domain.Entities;
+﻿using Despesas.Business.Dtos.Abstractions;
+using Domain.Entities;
 using Domain.Entities.ValueObjects;
 
-namespace Business.Dtos.Core.Profile;
+namespace Despesas.Business.Dtos.Profile;
 public class DespesaProfile : AutoMapper.Profile
 {
     public DespesaProfile()
     {
-        CreateMap<Business.Dtos.v1.DespesaDto, Despesa>().ReverseMap();
+        CreateMap<DespesaDto, Despesa>().ReverseMap();
 
-        CreateMap<Despesa, Business.Dtos.v1.DespesaDto>()
+        CreateMap<Despesa, DespesaDto>()
             .ForMember(dest => dest.IdCategoria, opt => opt.MapFrom(src => src.CategoriaId))
             .ForMember(dest => dest.IdCategoria, opt => opt.MapFrom(src => src.Categoria.Id))
             .ReverseMap();
 
 
-        CreateMap<Business.Dtos.v2.DespesaDto, Despesa>()
+        CreateMap<DespesaDto, Despesa>()
             .ReverseMap();
 
-        CreateMap<Despesa, Business.Dtos.v2.DespesaDto>()
+        CreateMap<Despesa, DespesaDto>()
             .ForMember(dest => dest.IdCategoria, opt => opt.MapFrom(src => src.CategoriaId))
             .ForMember(dest => dest.IdCategoria, opt => opt.MapFrom(src => src.Categoria.Id))
             .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria))
@@ -25,10 +26,10 @@ public class DespesaProfile : AutoMapper.Profile
             .ReverseMap();
 
 
-        CreateMap<Categoria, Business.Dtos.v2.CategoriaDto>()
+        CreateMap<Categoria, CategoriaDto>()
         .ForMember(dest => dest.IdTipoCategoria, opt => opt.MapFrom(src => src.TipoCategoria.Id))
         .ReverseMap();
 
-        CreateMap<TipoCategoriaDto, TipoCategoria>().ReverseMap();
+        CreateMap<BaseTipoCategoriaDto, TipoCategoria>().ReverseMap();
     }
 }

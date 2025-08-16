@@ -1,5 +1,7 @@
-﻿namespace Business.Dtos.Core;
-public abstract class LancamentoDtoBase : ModelDtoBase
+﻿using Despesas.Business.Dtos.Core;
+
+namespace Despesas.Business.Dtos.Abstractions;
+public abstract class BaseLancamentoDto : BaseModelDto
 {
     public virtual Guid IdDespesa { get; set; }
     public virtual Guid IdReceita { get; set; }
