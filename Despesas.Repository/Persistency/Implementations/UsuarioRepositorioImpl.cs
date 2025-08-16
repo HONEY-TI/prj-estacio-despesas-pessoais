@@ -12,7 +12,7 @@ public class UsuarioRepositorioImpl : BaseRepository<Usuario>, IRepositorio<Usua
         Context = context;
     }
 
-    public override void Insert(ref Usuario entity)
+    public override void Insert(Usuario entity)
     {
         var controleAcesso = new ControleAcesso();
         controleAcesso.Usuario = entity;
@@ -31,20 +31,6 @@ public class UsuarioRepositorioImpl : BaseRepository<Usuario>, IRepositorio<Usua
     public override Usuario Get(Guid id)
     {
         return Context.Usuario.Single(prop => prop.Id.Equals(id));
-    }
-
-    public override void Update(ref Usuario entity)
-    {
-        var usuarioId = entity.Id;
-        var usuario = Context.Set<Usuario>().Single(prop => prop.Id.Equals(usuarioId));
-        if (usuario == null)
-            throw new AggregateException("Usuário não possui conta de acesso!");
-
-        usuario.PerfilUsuario = Context.Set<PerfilUsuario>().First(perfil => perfil.Id.Equals(usuario.PerfilUsuario.Id));
-        usuario.Categorias.ToList().ForEach(c => c.TipoCategoria = Context.Set<TipoCategoria>().First(tc => tc.Id.Equals(c.TipoCategoria.Id)));
-        Context.Usuario.Entry(usuario).CurrentValues.SetValues(entity);
-        Context.SaveChanges();
-        entity = usuario;
     }
 
     public override bool Delete(Usuario obj)

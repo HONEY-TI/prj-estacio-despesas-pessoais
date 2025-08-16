@@ -4,27 +4,33 @@ import { ILogin } from '../../../models/ILogin';
 import { AbstractService } from '../base/AbstractService';
 import { Observable } from 'rxjs';
 import { IControleAcesso } from '../../../models';
+import { IGoogleAuth } from '../../../models/IGoogleAuth';
 
-  @Injectable({
-      providedIn: 'root'
-  })
+@Injectable({
+  providedIn: 'root'
+})
 
-  export class ControleAcessoService extends AbstractService {
-    constructor(public httpClient: HttpClient) {
-      const ROUTE = 'ControleAcesso';
-      super(ROUTE);
-    }
+export class ControleAcessoService extends AbstractService {
+  constructor(public httpClient: HttpClient) {
+    const ROUTE = 'ControleAcesso';
+    super(ROUTE);
+  }
 
-    signIn(login: ILogin): Observable<any> {
-      return this.httpClient.post<ILogin>(`${ this.routeUrl }/SignIn`, login);
-    }
+  signIn(login: ILogin): Observable<any> {
+    return this.httpClient.post<ILogin>(`${this.routeUrl}/SignIn`, login);
+  }
 
-    createUsuario(controleAcesso: IControleAcesso): Observable<any> {
-      return this.httpClient.post<IControleAcesso>(`${ this.routeUrl }`, controleAcesso);
-    }
-
-    changePassword(login: ILogin): Observable<any> {
-      return this.httpClient.post<ILogin>(`${ this.routeUrl }/ChangePassword`, login);
-    }
+  signInWithGoogleAccount(auth: IGoogleAuth): Observable<any> {
+    return this.httpClient.post<IGoogleAuth>(`${this.routeUrl}/SignInWithGoogle`, auth);
 
   }
+
+  createUsuario(controleAcesso: IControleAcesso): Observable<any> {
+    return this.httpClient.post<IControleAcesso>(`${this.routeUrl}`, controleAcesso);
+  }
+
+  changePassword(login: ILogin): Observable<any> {
+    return this.httpClient.post<ILogin>(`${this.routeUrl}/ChangePassword`, login);
+  }
+
+}

@@ -22,7 +22,7 @@ public class DespesaRepositorioImpl : BaseRepository<Despesa>, IRepositorio<Desp
         return Context.Despesa.Include(d => d.Categoria).Include(d => d.Usuario).ToList();
     }
 
-    public override void Insert(ref Despesa entity)
+    public override void Insert(Despesa entity)
     {
         var categoriaId = entity.CategoriaId;
         entity.Categoria = Context.Set<Categoria>().First(c => c.Id.Equals(categoriaId));
@@ -30,7 +30,7 @@ public class DespesaRepositorioImpl : BaseRepository<Despesa>, IRepositorio<Desp
         Context.SaveChanges();
     }
 
-    public override void Update(ref Despesa entity)
+    public override void Update(Despesa entity)
     {
         var despesaId = entity.Id;
         var categoriaId = entity.CategoriaId;

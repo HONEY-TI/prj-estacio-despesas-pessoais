@@ -1,31 +1,28 @@
-﻿using Business.Dtos.Core;
-using Business.Dtos.v1;
+﻿using __mock__.Entities;
+using AutoMapper;
+using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Profile;
 
 namespace Business.Dtos;
 public sealed class CategoriaDtoTest
 {
 
-    [Theory]
-    [InlineData("Test Categoria Description 1", TipoCategoriaDto.Todas)]
-    [InlineData("Test Categoria Description 2", TipoCategoriaDto.Despesa)]
-    [InlineData("Test Categoria Description 3", TipoCategoriaDto.Receita)]
-    public void CategoriaDto_Should_Set_Properties_Correctly(string descricao, TipoCategoriaDto tipoCategoria)
+    [Fact]
+    
+    public void CategoriaDto_Should_Set_Properties_Correctly()
     {
-        // Arrange
-        var categoriaDto = new CategoriaDto();
-        var id = Guid.NewGuid();
-        var idUsuario = Guid.NewGuid();
+        // Arrange        
+        var mapper = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<CategoriaProfile>(); }));        
 
         // Act
-        categoriaDto.Id = id;
-        categoriaDto.Descricao = descricao;
-        categoriaDto.UsuarioId = idUsuario;
-        categoriaDto.IdTipoCategoria = (int)tipoCategoria;
+        var categoria = CategoriaFaker.Instance.Categorias().First();
+        var categoriaDto = mapper.Map<CategoriaDto>(categoria);
+
 
         // Assert
-        Assert.Equal(id, categoriaDto.Id);
-        Assert.Equal(descricao, categoriaDto.Descricao);
-        Assert.Equal(idUsuario, categoriaDto.UsuarioId);
-        Assert.Equal((int)tipoCategoria, categoriaDto.IdTipoCategoria);
+        Assert.Equal(categoria.Id, categoriaDto.Id);
+        Assert.Equal(categoria.Descricao, categoriaDto.Descricao);
+        Assert.Equal(categoria.UsuarioId, categoriaDto.UsuarioId);
+        Assert.Equal(categoria.TipoCategoria.Id, (int)categoriaDto.IdTipoCategoria);
     }
 }

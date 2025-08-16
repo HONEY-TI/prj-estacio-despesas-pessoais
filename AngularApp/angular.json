@@ -10,7 +10,14 @@
           "strict": true
         },
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "scss",
+          "standalone": false
+        },
+        "@schematics/angular:directive": {
+          "standalone": false
+        },
+        "@schematics/angular:pipe": {
+          "standalone": false
         }
       },
       "root": "",
@@ -50,7 +57,7 @@
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
               "node_modules/mdb-ui-kit/js/mdb.umd.min.js",
               "node_modules/datatables.net/js/jquery.dataTables.js",
-              "node_modules/datatables.net-select/js/dataTables.select.js",
+              "node_modules/datatables.net-select/js/dataTables.select.min.js",
               "node_modules/dayjs/dayjs.min.js",
               "node_modules/dayjs/locale/pt-br.js",
               "node_modules/moment/min/moment.min.js"
@@ -65,8 +72,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "3mb",
-                  "maximumError": "3mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "4mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -77,8 +84,8 @@
               "outputHashing": "all",
               "fileReplacements": [
                 {
-                  "replace": "./src/environments/environment.ts",
-                  "with": "./src/environments/environment.prod.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
                 }
               ]
             },
@@ -90,8 +97,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "3mb",
-                  "maximumError": "3mb"
+                  "maximumWarning": "4mb",
+                  "maximumError": "4mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -102,8 +109,8 @@
               "outputHashing": "all",
               "fileReplacements": [
                 {
-                  "replace": "./src/environments/environment.ts",
-                  "with": "./src/environments/environment.staging.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
                 }
               ]
             },
@@ -126,8 +133,8 @@
               ],
               "fileReplacements": [
                 {
-                  "replace": "./src/environments/environment.ts",
-                  "with": "./src/environments/environment.dev.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
                 }
               ]
             },
@@ -137,35 +144,36 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
-            },
-            "development-android": {
-              "outputPath": "wwww",
-              "optimization": true,
-              "fileReplacements": [
+              "namedChunks": true,
+              "budgets": [
                 {
-                  "replace": "./src/environments/environment.ts",
-                  "with": "./src/environments/environment.mobile.dev.ts"
+                  "type": "initial",
+                  "maximumWarning": "4mb",
+                  "maximumError": "4mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
-              ]
-            },
-            "development-ios": {
-              "outputPath": "www",
-              "optimization": true,
+              ],
               "fileReplacements": [
                 {
-                  "replace": "./src/environments/environment.ts",
-                  "with": "./src/environments/environment.mobile.dev.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
                 }
               ]
             },
             "production-android": {
               "outputPath": "wwww",
               "optimization": true,
+              "sourceMap": false,
+              "aot": true,
+              "extractLicenses": true,
               "fileReplacements": [
                 {
-                  "replace": "./src/environments/environment.ts",
-                  "with": "./src/environments/environment.mobile.prod.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.mobile.ts"
                 }
               ]
             },
@@ -174,8 +182,8 @@
               "optimization": true,
               "fileReplacements": [
                 {
-                  "replace": "./src/environments/environment.ts",
-                  "with": "./src/environments/environment.mobile.prod.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.mobile.ts"
                 }
               ]
             }

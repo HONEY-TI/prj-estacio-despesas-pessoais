@@ -8,7 +8,7 @@ import { AbstractService } from '../base/AbstractService';
 
 export class ImagemPerfilService extends AbstractService {
   constructor(public httpClient: HttpClient) {
-    const ROUTE = 'Usuario/ImagemPerfil';
+    const ROUTE = 'ImagemPerfilUsuario';
     super(ROUTE);
   }
 

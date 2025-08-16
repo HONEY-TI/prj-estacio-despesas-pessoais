@@ -1,50 +1,24 @@
-﻿using Business.CommonDependenceInject;
-using DataSeeders;
-using Despesas.WebApi.CommonDependenceInject;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Repository.CommonDependenceInject;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Migrations.DataSeeders;
+using Migrations.DataSeeders.CommonDependenceInject;
 
 namespace CommonDependenceInject;
 
-public sealed class DataSeedersDependenceInjectTest
+public sealed class DataSeedersDependenceInjectTests
 {
     [Fact]
-    public void AddDataSeeders_Should_Register_DataSeeder_Service()
+    public void RunDataSeeders_Should_Invoke_SeedData_On_IDataSeeder()
     {
         // Arrange
-        var builder = WebApplication.CreateBuilder();
-        var services = builder.Services;
+        var services = new ServiceCollection();                
+        var dataSeederMock = new Mock<IDataSeeder>();                
+        services.AddTransient(_ => dataSeederMock.Object);               
+        var serviceProvider = services.BuildServiceProvider();
 
         // Act
-        services.AddDataSeeders();
+        DataSeedersDependenceInject.RunDataSeeders(serviceProvider);
 
         // Assert
-        var dataSeederService = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IDataSeeder));
-        Assert.NotNull(dataSeederService);
-        Assert.Equal(ServiceLifetime.Transient, dataSeederService.Lifetime);
-    }
-
-    [Fact]
-    public void RunDataSeeders_Should_Invoke_SeedData_Method()
-    {
-        // Arrange
-        var builder = WebApplication.CreateBuilder();
-        builder.AddServicesCryptography();
-        var services = builder.Services;
-        
-        services.CreateDataBaseInMemory();
-        services.AddDataSeeders();
-        var app = builder.Build();
-
-        // Act
-        app.RunDataSeeders();
-
-        // Assert
-        using (var scope = app.Services.CreateScope())
-        {
-            var dataSeeder = scope.ServiceProvider.GetRequiredService<IDataSeeder>();
-            Assert.NotNull(dataSeeder);
-        }
+        dataSeederMock.Verify(ds => ds.SeedData(), Times.Once);
     }
 }

@@ -8,7 +8,8 @@ import { CategoriaService } from '../../../shared/services/api';
 @Component({
   selector: 'app-categorias-form',
   templateUrl: './categorias.form.component.html',
-  styleUrls: ['./categorias.form.component.scss']
+  styleUrls: ['./categorias.form.component.scss'],
+  standalone: false
 })
 
 export class CategoriasFormComponent implements OnInit {

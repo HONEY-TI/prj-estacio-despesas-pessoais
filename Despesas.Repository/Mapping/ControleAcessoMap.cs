@@ -19,5 +19,10 @@ public class ControleAcessoMap : IEntityTypeConfiguration<ControleAcesso>
         //builder.Property(ca => ca.Senha).IsRequired().HasColumnType("TEXT").HasDefaultValueSql("''");
         builder.Property(ca => ca.RefreshToken).HasDefaultValue(null).IsRequired(false);
         builder.Property(ca => ca.RefreshTokenExpiry).HasDefaultValue(null).IsRequired(false);
+
+        builder.HasIndex(ca => ca.ExternalProvider).IsUnique(true);
+        builder.Property(ca => ca.ExternalProvider);
+        builder.HasIndex(ca => ca.ExternalId).IsUnique(true);
+        builder.Property(ca => ca.ExternalId);
     }
 }

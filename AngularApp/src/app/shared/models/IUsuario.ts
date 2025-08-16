@@ -2,6 +2,6 @@ export interface IUsuario {
   id: number;
   nome: string;
   sobreNome: string;
-  telefone: string;
+  telefone: string | null;
   email: string;
 }

@@ -4,7 +4,12 @@ import { AuthService } from './shared/services/auth/auth.service';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [AuthService]
+  providers: [AuthService],
+  standalone: false
 })
 
-export class AppComponent  {}
+export class AppComponent  {
+  constructor() {
+
+  }
+}

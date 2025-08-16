@@ -12,17 +12,16 @@ public abstract class BaseRepository<T> where T : BaseModel, new()
         Context = context;
     }
 
-    public virtual void Insert(ref T entity)
+    public virtual void Insert(T entity)
     {
         Context.Add(entity);
         Context.SaveChanges();
     }
 
-    public virtual void Update(ref T entity)
+    public virtual void Update(T entity)
     {
-        var existingEntity = this.Context.Set<T>().Find(entity.Id) ?? throw new ArgumentException("Entity not found.");
-        this.Context.Entry(existingEntity).CurrentValues.SetValues(entity);
-        this.Context.SaveChanges();
+        Context.Update(entity);
+        Context.SaveChanges();
     }
 
     public virtual bool Delete(T entity)

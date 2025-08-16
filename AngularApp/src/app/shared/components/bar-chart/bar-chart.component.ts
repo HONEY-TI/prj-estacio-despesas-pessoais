@@ -8,6 +8,7 @@ import { ViewportRuler } from '@angular/cdk/scrolling';
   selector: 'app-bar-chart',
   templateUrl: './bar-chart.component.html',
   styleUrls: ['./bar-chart.component.scss'],
+  standalone: false
 })
 export class BarChartComponent implements OnInit {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
@@ -70,11 +71,13 @@ export class BarChartComponent implements OnInit {
   };
 
   public chartClicked({ event, active }: { event?: ChartEvent, active?: {}[] }): void {
-    console.log(event, active);
+    /* Controle de Eventos  OnCliked */
+    //console.log(event, active);
   }
 
   public chartHovered({ event, active }: { event?: ChartEvent, active?: {}[] }): void {
-    console.log(event, active);
+      /* Controle de Eventos  OnHover */
+        console.log(event, active);
   }
 
   public loadBarChart(lables: any[], datasetes: any[]): void {

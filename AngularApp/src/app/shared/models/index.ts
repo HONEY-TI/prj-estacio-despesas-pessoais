@@ -10,3 +10,4 @@ export * from './ILancamento';
 export * from './IUsuario';
 export * from './IImagemPerfil';
 export * from './ISaldo';
+export * from './IGoogleAuth';

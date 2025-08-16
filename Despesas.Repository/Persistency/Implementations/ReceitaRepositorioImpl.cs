@@ -22,7 +22,7 @@ public class ReceitaRepositorioImpl : BaseRepository<Receita>, IRepositorio<Rece
         return Context.Receita.Include(d => d.Categoria).Include(d => d.Usuario).ToList();
     }
 
-    public override void Insert(ref Receita entity)
+    public override void Insert(Receita entity)
     {
         var categoriaId = entity.CategoriaId;
         entity.Categoria = Context.Set<Categoria>().First(c => c.Id.Equals(categoriaId));
@@ -30,7 +30,7 @@ public class ReceitaRepositorioImpl : BaseRepository<Receita>, IRepositorio<Rece
         Context.SaveChanges();
     }
 
-    public override void Update(ref Receita entity)
+    public override void Update(Receita entity)
     {
         var receitaId = entity.Id;
         var categoriaId = entity.CategoriaId;
