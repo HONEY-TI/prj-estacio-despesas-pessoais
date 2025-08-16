@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Business.Abstractions;
 using __mock__.Entities;
-using Despesas.Business.Dtos;
 using Despesas.Backend.Controllers;
-using Despesas.Business.Dtos.Abstractions;
+using Despesas.Application.Dtos;
+using Despesas.Application.Abstractions;
+using Despesas.Application.Dtos.Abstractions;
 
 namespace XUnit.Api.Controllers;
 public sealed class ControleAcessoControllerTest

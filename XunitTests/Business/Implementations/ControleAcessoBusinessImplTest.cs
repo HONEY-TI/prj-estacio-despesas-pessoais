@@ -1,21 +1,21 @@
-﻿using Business.Authentication;
-using Despesas.Infrastructure.Email;
+﻿using Despesas.Infrastructure.Email;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Persistency.Abstractions;
 using System.IdentityModel.Tokens.Jwt;
 using __mock__.Entities;
 using System.Linq.Expressions;
 using AutoMapper;
-using Business.Implementations;
 using EasyCryptoSalt;
 using Microsoft.AspNetCore.Builder;
-using Business.CommonDependenceInject;
 using Despesas.Backend.CommonDependenceInject;
 using Microsoft.Extensions.DependencyInjection;
-using Business.Abstractions;
-using Despesas.Business.Dtos;
-using Despesas.Business.Dtos.Profile;
-using Despesas.Business.Dtos.Abstractions;
+using Despesas.Application.Implementations;
+using Despesas.Application.Authentication;
+using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Profile;
+using Despesas.Application.CommonDependenceInject;
+using Despesas.Application.Abstractions;
+using Despesas.Application.Dtos.Abstractions;
 
 namespace Business;
 public class ControleAcessoBusinessImplTest

@@ -1,4 +1,4 @@
-﻿using Despesas.Business.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos.Abstractions;
 
 namespace Domain.Entities;
 public sealed class AuthResponseTest

@@ -2,10 +2,10 @@
 using __mock__.Entities;
 using Domain.Entities.ValueObjects;
 using System.Linq.Expressions;
-using Business.Implementations;
 using Repository.Persistency.Generic;
-using Despesas.Business.Dtos;
-using Despesas.Business.Dtos.Profile;
+using Despesas.Application.Implementations;
+using Despesas.Application.Dtos.Profile;
+using Despesas.Application.Dtos;
 
 namespace Business;
 public class UsuarioBusinessImplTest

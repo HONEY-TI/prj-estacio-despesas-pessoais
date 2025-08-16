@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using Despesas.Business.Dtos;
+using Despesas.Application.Dtos;
 
 namespace __mock__.Entities;
 public sealed class LancamentoFaker

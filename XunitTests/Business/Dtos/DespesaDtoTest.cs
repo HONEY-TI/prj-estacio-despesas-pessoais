@@ -1,7 +1,7 @@
 ﻿using __mock__.Entities;
 using AutoMapper;
-using Despesas.Business.Dtos;
-using Despesas.Business.Dtos.Profile;
+using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Profile;
 
 namespace Business.Dtos;
 public sealed class DespesaDtoTest

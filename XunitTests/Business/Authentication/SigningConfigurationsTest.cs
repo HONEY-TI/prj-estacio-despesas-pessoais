@@ -1,4 +1,5 @@
-﻿using Despesas.Business.Authentication.Abstractions;
+﻿using Despesas.Application.Authentication;
+using Despesas.Business.Authentication.Abstractions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

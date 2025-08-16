@@ -1,17 +1,18 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Repository;
 using Repository.CommonDependenceInject;
-using Business.CommonDependenceInject;
 using Repository.Persistency.Abstractions;
-using Business.Abstractions;
 using Repository.Persistency.UnitOfWork.Abstractions;
 using Repository.UnitOfWork;
 using Despesas.Infrastructure.Email.Abstractions;
 using Despesas.Infrastructure.Email;
-using Business.Implementations;
 using Repository.Persistency.Generic;
 using Repository.Persistency.Implementations;
-using Despesas.Business.Dtos;
+using Despesas.Application.CommonDependenceInject;
+using Despesas.Application.Abstractions.Generic;
+using Despesas.Application.Abstractions;
+using Despesas.Application.Dtos;
+using Despesas.Application.Implementations;
 
 namespace CommonDependenceInject;
 public sealed class ServicesDependenceInjectTest
@@ -27,22 +28,22 @@ public sealed class ServicesDependenceInjectTest
 
         // Assert
 
-        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(Business.Abstractions.Generic.IBusiness<DespesaDto, Despesa>) && descriptor.ImplementationType == typeof(DespesaBusinessImpl<DespesaDto>)));
-        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(Business.Abstractions.Generic.IBusiness<ReceitaDto, Receita>) && descriptor.ImplementationType == typeof(ReceitaBusinessImpl<ReceitaDto>)));
-        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(Business.Abstractions.Generic.IBusiness<CategoriaDto, Categoria>) && descriptor.ImplementationType == typeof(CategoriaBusinessImpl<CategoriaDto>)));
+        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IBusiness<DespesaDto, Despesa>) && descriptor.ImplementationType == typeof(DespesaBusinessImpl<DespesaDto>)));
+        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IBusiness<ReceitaDto, Receita>) && descriptor.ImplementationType == typeof(ReceitaBusinessImpl<ReceitaDto>)));
+        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IBusiness<CategoriaDto, Categoria>) && descriptor.ImplementationType == typeof(CategoriaBusinessImpl<CategoriaDto>)));
         Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IControleAcessoBusiness<ControleAcessoDto, LoginDto>) && descriptor.ImplementationType == typeof(ControleAcessoBusinessImpl<ControleAcessoDto, LoginDto>)));
         Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(ILancamentoBusiness<LancamentoDto>) && descriptor.ImplementationType == typeof(LancamentoBusinessImpl<LancamentoDto>)));
         Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IUsuarioBusiness<UsuarioDto>) && descriptor.ImplementationType == typeof(UsuarioBusinessImpl<UsuarioDto>)));
         Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IImagemPerfilUsuarioBusiness<ImagemPerfilDto, UsuarioDto>) && descriptor.ImplementationType == typeof(ImagemPerfilUsuarioBusinessImpl<ImagemPerfilDto, UsuarioDto>)));
 
         Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IUnitOfWork<>) && descriptor.ImplementationType == typeof(UnitOfWork<>)));
-        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(Business.Abstractions.IBusinessBase<CategoriaDto, Categoria>) && descriptor.ImplementationType == typeof(CategoriaBusinessImpl<CategoriaDto>)));
-        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(Business.Abstractions.IBusinessBase<DespesaDto, Despesa>) && descriptor.ImplementationType == typeof(DespesaBusinessImpl<DespesaDto>)));
-        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(Business.Abstractions.IBusinessBase<ReceitaDto, Receita>) && descriptor.ImplementationType == typeof(ReceitaBusinessImpl<ReceitaDto>)));
+        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IBusinessBase<CategoriaDto, Categoria>) && descriptor.ImplementationType == typeof(CategoriaBusinessImpl<CategoriaDto>)));
+        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IBusinessBase<DespesaDto, Despesa>) && descriptor.ImplementationType == typeof(DespesaBusinessImpl<DespesaDto>)));
+        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IBusinessBase<ReceitaDto, Receita>) && descriptor.ImplementationType == typeof(ReceitaBusinessImpl<ReceitaDto>)));
 
-        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(Business.Abstractions.Generic.IBusiness<DespesaDto, Despesa>) && descriptor.ImplementationType == typeof(DespesaBusinessImpl<DespesaDto>)));
-        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(Business.Abstractions.Generic.IBusiness<ReceitaDto, Receita>) && descriptor.ImplementationType == typeof(ReceitaBusinessImpl<ReceitaDto>)));
-        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(Business.Abstractions.Generic.IBusiness<CategoriaDto, Categoria>) && descriptor.ImplementationType == typeof(CategoriaBusinessImpl<CategoriaDto>)));
+        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IBusiness<DespesaDto, Despesa>) && descriptor.ImplementationType == typeof(DespesaBusinessImpl<DespesaDto>)));
+        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IBusiness<ReceitaDto, Receita>) && descriptor.ImplementationType == typeof(ReceitaBusinessImpl<ReceitaDto>)));
+        Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IBusiness<CategoriaDto, Categoria>) && descriptor.ImplementationType == typeof(CategoriaBusinessImpl<CategoriaDto>)));
         Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IControleAcessoBusiness<ControleAcessoDto, LoginDto>) && descriptor.ImplementationType == typeof(ControleAcessoBusinessImpl<ControleAcessoDto, LoginDto>)));
         Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(ILancamentoBusiness<LancamentoDto>) && descriptor.ImplementationType == typeof(LancamentoBusinessImpl<LancamentoDto>)));
         Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IUsuarioBusiness<UsuarioDto>) && descriptor.ImplementationType == typeof(UsuarioBusinessImpl<UsuarioDto>)));

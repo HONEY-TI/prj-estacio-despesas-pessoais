@@ -2,10 +2,10 @@
 using __mock__.Entities;
 using Domain.Entities.ValueObjects;
 using Repository.Persistency.UnitOfWork.Abstractions;
-using Business.Implementations;
 using Repository.Persistency.Generic;
-using Despesas.Business.Dtos;
-using Despesas.Business.Dtos.Profile;
+using Despesas.Application.Implementations;
+using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Profile;
 
 namespace Business;
 

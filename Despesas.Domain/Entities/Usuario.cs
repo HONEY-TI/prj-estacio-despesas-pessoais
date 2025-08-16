@@ -98,7 +98,8 @@ public class Usuario : BaseModel
         if (String.IsNullOrEmpty(email) || String.IsNullOrWhiteSpace(email))
             throw new ArgumentException("Email não pode ser em branco ou nulo.");
 
-        /* Removido por permissão de login com google Account*/
+        // Removido por permissão de login com google Account
+        /*
         if (String.IsNullOrEmpty(telefone) || String.IsNullOrWhiteSpace(telefone))
             throw new ArgumentException("Telefone não pode ser em branco ou nulo.");
         */

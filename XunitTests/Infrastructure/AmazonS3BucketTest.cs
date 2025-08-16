@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Despesas.Business.Dtos;
-using Despesas.Business.Dtos.Profile;
+using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Profile;
 using Despesas.Infrastructure.Amazon;
 using Despesas.Infrastructure.Amazon.Abstractions;
 

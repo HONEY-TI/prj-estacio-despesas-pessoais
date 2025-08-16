@@ -1,4 +1,4 @@
-﻿using Despesas.Business.Dtos;
+﻿using Despesas.Application.Dtos;
 
 namespace Business.Dtos;
 public sealed class ChangePasswordDtoTest

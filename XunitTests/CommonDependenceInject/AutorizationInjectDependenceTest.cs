@@ -1,4 +1,5 @@
 ﻿using Business.Authentication;
+using Despesas.Application.Authentication;
 using Despesas.Backend.CommonDependenceInject;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

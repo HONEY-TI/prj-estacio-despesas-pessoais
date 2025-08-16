@@ -2,9 +2,9 @@
 using Despesas.Infrastructure.Amazon.Abstractions;
 using __mock__.Entities;
 using Repository.Persistency.Generic;
-using Business.Implementations;
-using Despesas.Business.Dtos;
-using Despesas.Business.Dtos.Profile;
+using Despesas.Application.Implementations;
+using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Profile;
 
 namespace Business;
 public class ImagemPerfilUsuarioBusinessImplTests

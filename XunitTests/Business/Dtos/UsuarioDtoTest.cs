@@ -1,5 +1,5 @@
-﻿using Despesas.Business.Dtos;
-using Despesas.Business.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Abstractions;
 using Domain.Entities.ValueObjects;
 
 namespace Business.Dtos;

@@ -1,7 +1,7 @@
 ﻿using __mock__.Entities;
 using AutoMapper;
-using Despesas.Business.Dtos;
-using Despesas.Business.Dtos.Profile;
+using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Profile;
 
 namespace Business.Dtos;
 public sealed class CategoriaDtoTest
@@ -12,9 +12,7 @@ public sealed class CategoriaDtoTest
     public void CategoriaDto_Should_Set_Properties_Correctly()
     {
         // Arrange        
-        var mapper = new Mapper(new MapperConfiguration(cfg => {
-            cfg.AddProfile<CategoriaProfile>();
-        }));        
+        var mapper = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<CategoriaProfile>(); }));        
 
         // Act
         var categoria = CategoriaFaker.Instance.Categorias().First();

@@ -1,4 +1,4 @@
-﻿using Business.Implementations;
+﻿using Despesas.Application.Implementations;
 using Repository.Persistency.Abstractions;
 
 namespace Business;

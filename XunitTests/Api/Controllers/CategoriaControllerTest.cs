@@ -1,10 +1,10 @@
 ﻿using Domain.Entities.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 using __mock__.Entities;
-using Business.Abstractions;
-using Despesas.Business.Dtos;
-using Despesas.Business.Dtos.Abstractions;
 using Despesas.Backend.Controllers;
+using Despesas.Application.Abstractions;
+using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Abstractions;
 
 namespace XUnit.Api.Controllers;
 public sealed class CategoriaControllerTest

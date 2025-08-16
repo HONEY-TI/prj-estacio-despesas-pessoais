@@ -1,6 +1,6 @@
 ﻿using Repository.Persistency.Abstractions;
 using __mock__.Entities;
-using Business.Implementations;
+using Despesas.Application.Implementations;
 
 namespace Business;
 public class GraficosBusinessImplTest

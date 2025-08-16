@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Business.Abstractions.Generic;
 using __mock__.Entities;
 using Repository.Persistency.Generic;
-using Despesas.Business.Dtos.Profile;
-using Despesas.Business.Dtos;
+using Despesas.Application.Dtos;
+using Despesas.Application.Abstractions.Generic;
+using Despesas.Application.Dtos.Profile;
 
 namespace Business.Generic;
 public class GenericBusinessTests

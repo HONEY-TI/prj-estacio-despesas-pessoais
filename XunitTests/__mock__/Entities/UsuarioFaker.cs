@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using Despesas.Business.Dtos;
+using Despesas.Application.Dtos;
 using Domain.Entities.ValueObjects;
 
 namespace __mock__.Entities;

@@ -3,6 +3,7 @@ global using Moq;
 global using Xunit;
 using AutoMapper;
 using Business.Authentication;
+using Despesas.Application.Authentication;
 using Despesas.Business.Authentication.Abstractions;
 using Domain.Core;
 using Microsoft.AspNetCore.Http;
