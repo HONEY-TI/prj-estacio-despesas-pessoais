@@ -15,7 +15,7 @@ dotnet ef database update 20250803203640_GoogleCredentials
 
 
 dotnet ef database update 20231222054303_Changes-relationship-between-Card-and-CardBrand
-dotnet ef database update  -o Migrations.Application 20240517172405_Initial
+dotnet ef database update  -o Migrations.Application 220250804062341_Initial
 
 dotnet ef migrations add UpdateDataBase -o Migrations.Application
 

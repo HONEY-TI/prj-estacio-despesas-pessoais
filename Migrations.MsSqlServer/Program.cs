@@ -15,7 +15,7 @@ var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
         string connectionString = ConfigurationManager.ConnectionStrings["SqlConnectionString"]?.ConnectionString
-            ?? throw new Exception("Connection string 'MySqlConnectionString' não encontrada no app.config.");
+            ?? throw new Exception("Connection string 'Sql Server SqlConnectionString' não encontrada no app.config.");
 
         string environment = ConfigurationManager.AppSettings["Environment"] ?? "Production";
 
@@ -23,7 +23,7 @@ var host = Host.CreateDefaultBuilder(args)
         Console.WriteLine($"Connection String: {connectionString}");
 
         services.AddDbContext<RegisterContext>(options =>
-            options.UseMySQL(
+            options.UseSqlServer(
                 connectionString,
                 builder => builder.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name)
             )
