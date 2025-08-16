@@ -31,4 +31,4 @@ EXPOSE 42535
 EXPOSE 42536
 COPY --from=build /app/publish .
 COPY --from=build /app/test ./wwwroot/coveragereport
-ENTRYPOINT ["dotnet", "Despesas.WebApi.dll"]
+ENTRYPOINT ["dotnet", "Despesas.Backend.dll"]
