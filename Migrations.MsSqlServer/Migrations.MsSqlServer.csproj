@@ -21,8 +21,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Despesas.Application\Despesas.Application.csproj" />
 		<ProjectReference Include="..\Despesas.Repository\Despesas.Repository.csproj" />
-		<ProjectReference Include="..\Despesas.Business\Despesas.Business.csproj" />
 		<ProjectReference Include="..\Migrations.DataSeeders\Migrations.DataSeeders.csproj" />
 	</ItemGroup>
 	
