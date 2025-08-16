@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, catchError, filter, finalize, map, switchMap, take, throwError } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { LoadingComponent } from '../app/shared/components';
 import { AuthService, TokenStorageService } from '../app/shared/services';
 import { IAuth } from '../app/shared/models';
+import { LoadingComponent } from '../app/shared/components';
 
 @Injectable({
   providedIn: 'root'
