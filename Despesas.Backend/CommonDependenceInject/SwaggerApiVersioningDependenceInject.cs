@@ -10,7 +10,7 @@ namespace Despesas.Backend.CommonDependenceInject;
 public static class SwaggerApiVersioningDependenceInject
 {
     private readonly static string appName = "API Balanço Pessoal";
-    private readonly static string currentVersion = "v0.0.1";
+    private readonly static string currentVersion = "v3.0.0";
     private readonly static string appDescription = @$"
            A API Balanço Pessoal fornece serviços para o gerenciamento de finanças pessoais de forma simples e objetiva.  Por meio de seus endpoints, é possível registrar 
        gastos e receitas, consultar relatórios, obter gráficos consolidados e organizar informações financeiras de maneira prática e eficiente.
