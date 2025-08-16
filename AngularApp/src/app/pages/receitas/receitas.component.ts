@@ -10,7 +10,8 @@ import { ReceitaService } from "../../shared/services/api";
 @Component({
   selector: 'app-receitas',
   templateUrl: './receitas.component.html',
-  styleUrls: ['./receitas.component.scss']
+  styleUrls: ['./receitas.component.scss'],
+  standalone: false
 })
 export class ReceitasComponent implements BarraFerramentaClass {
   @ViewChild(DataTableComponent) dataTable: DataTableComponent;

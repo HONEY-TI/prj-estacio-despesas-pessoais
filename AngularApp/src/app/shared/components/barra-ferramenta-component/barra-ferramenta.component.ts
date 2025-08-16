@@ -5,7 +5,8 @@ import { BarraFerramentaClass } from "./barra-ferramenta.abstract";
 @Component({
   selector: 'app-barra-ferramenta',
   templateUrl: './barra-ferramenta.component.html',
-  styleUrls: ['./barra-ferramenta.component.scss']
+  styleUrls: ['./barra-ferramenta.component.scss'],
+  standalone: false
 })
 
 export class BarraFerramentaComponent implements BarraFerramentaClass {

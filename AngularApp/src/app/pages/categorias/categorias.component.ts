@@ -9,7 +9,8 @@ import { CategoriaService } from '../../shared/services/api';
 @Component({
   selector: 'app-categorias',
   templateUrl: './categorias.component.html',
-  styleUrls: ['./categorias.component.scss']
+  styleUrls: ['./categorias.component.scss'],
+  standalone: false
 })
 
 export class CategoriasComponent implements BarraFerramentaClass, OnInit {

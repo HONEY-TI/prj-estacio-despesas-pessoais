@@ -14,14 +14,14 @@ export class AuthProvider implements CanActivate {
 
   constructor() {
     try {
-      const accessToken = sessionStorage.getItem('@token');
+      const accessToken = sessionStorage.getItem('auth-token');
       if (accessToken) {
         this.setAccessToken(accessToken);
       } else {
-        this.clearSessionStorage();
+        this.clearsessionStorage();
       }
     } catch {
-      this.clearSessionStorage();
+      this.clearsessionStorage();
     }
   }
 
@@ -29,7 +29,7 @@ export class AuthProvider implements CanActivate {
     return this.isAuthenticated();
   }
 
-  public clearSessionStorage() {
+  public clearsessionStorage() {
     this.setAccessToken(undefined);
     sessionStorage.clear();
   }
@@ -39,16 +39,15 @@ export class AuthProvider implements CanActivate {
   }
 
   isAuthenticated(): boolean {
-    const accessToken = this.accessTokenSubject.getValue() ?? sessionStorage.getItem('@token');
+    const accessToken = this.accessTokenSubject.getValue() ?? sessionStorage.getItem('auth-token');
     if (accessToken === null || accessToken === undefined) {
-      this.clearSessionStorage();
+      this.clearsessionStorage();
       return false;
     }
     return true;
   }
 
   createAccessToken(auth: IAuth): void {
-    sessionStorage.setItem('@token', auth.accessToken);
     this.setAccessToken(auth.accessToken);
   }
 }

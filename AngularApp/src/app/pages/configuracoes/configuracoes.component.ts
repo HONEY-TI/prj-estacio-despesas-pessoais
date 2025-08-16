@@ -4,7 +4,8 @@ import { MenuService } from "../../shared/services";
 @Component({
   selector: 'app-configuracoes',
   templateUrl: './configuracoes.component.html',
-  styleUrls: ['./configuracoes.component.scss']
+  styleUrls: ['./configuracoes.component.scss'],
+  standalone: false
 })
 
 export class ConfiguracoesComponent  implements  OnInit {
