@@ -1,4 +1,4 @@
-﻿namespace Business.Abstractions;
+﻿namespace Despesas.Application.Abstractions;
 public interface IImagemPerfilUsuarioBusiness<Dto, DtoUsuario> where Dto : class where DtoUsuario : class, new()
 {
     Dto Create(Dto obj);
