@@ -1,4 +1,4 @@
-﻿namespace Despesas.Business.Dtos.Abstractions;
+﻿namespace Despesas.Application.Dtos.Abstractions;
 public abstract class BaseChangePasswordDto
 {
     public virtual string? Senha { get; set; }

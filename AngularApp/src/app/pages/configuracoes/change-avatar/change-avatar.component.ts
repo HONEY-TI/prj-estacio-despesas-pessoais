@@ -7,7 +7,8 @@ import { ImagemPerfilService } from '../../../shared/services/api';
 @Component({
   selector: 'app-change-avatar',
   templateUrl: './change-avatar.component.html',
-  styleUrls: ['./change-avatar.component.scss']
+  styleUrls: ['./change-avatar.component.scss'],
+  standalone: false
 })
 
 export class ChangeAvatarComponent implements OnInit {

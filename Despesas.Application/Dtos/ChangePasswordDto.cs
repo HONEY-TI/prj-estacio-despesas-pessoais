@@ -1,7 +1,7 @@
-﻿using Despesas.Business.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos.Abstractions;
 using System.ComponentModel.DataAnnotations;
 
-namespace Despesas.Business.Dtos;
+namespace Despesas.Application.Dtos;
 public class ChangePasswordDto : BaseChangePasswordDto, IValidatableObject
 {
     [Required(ErrorMessage = "O campo Senha é obrigatório.")]
