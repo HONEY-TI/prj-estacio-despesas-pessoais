@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Despesas.DataSeeders.CommonDependenceInject;
-using DataSeeders;
+using Migrations.DataSeeders;
+using Migrations.DataSeeders.CommonDependenceInject;
 
 namespace CommonDependenceInject;
 
