@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="..\Despesas.Backend\appsettings.json" >
+		<Content Include="..\Despesas.Backend\appsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -43,7 +43,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Despesas.Backend\Despesas.Backend.csproj" />
-		<ProjectReference Include="..\Despesas.Business\Despesas.Business.csproj" />
 		<ProjectReference Include="..\Despesas.Domain\Despesas.Domain.csproj" />
 		<ProjectReference Include="..\Despesas.Infrastructure\Despesas.Infrastructure.csproj" />
 		<ProjectReference Include="..\Despesas.Repository\Despesas.Repository.csproj" />
