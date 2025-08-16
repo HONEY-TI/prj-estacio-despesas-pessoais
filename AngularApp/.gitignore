@@ -44,3 +44,4 @@ Thumbs.db
 obj/**
 !sonar-project.properties
 **/www
+**/client_secret.json
