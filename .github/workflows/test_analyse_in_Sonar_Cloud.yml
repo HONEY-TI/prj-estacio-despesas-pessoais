@@ -1,4 +1,4 @@
-﻿name: Test and Analysis Code In Sonar Cloud
+name: Test and Analysis Code In Sonar Cloud
 on:
   workflow_call:
   pull_request:
