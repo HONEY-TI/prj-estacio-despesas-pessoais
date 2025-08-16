@@ -15,6 +15,12 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
             "https://alexfariakof.com",
             "https://alexfariakof.com:42535",
+            "https://localhost", 
+            "https://localhost:42535",
+            "https://localhost:4200",            
+            "https://127.0.0.1",
+            "https://127.0.0.1:4200",
+            "https://127.0.0.1:42535",
             "https://accounts.google.com")
         .AllowAnyMethod()
         .AllowAnyHeader()
