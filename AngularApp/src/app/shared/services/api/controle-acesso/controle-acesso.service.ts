@@ -4,6 +4,7 @@ import { ILogin } from '../../../models/ILogin';
 import { AbstractService } from '../base/AbstractService';
 import { Observable } from 'rxjs';
 import { IControleAcesso } from '../../../models';
+import { IGoogleAuth } from '../../../models/IGoogleAuth';
 
 @Injectable({
   providedIn: 'root'
@@ -19,13 +20,9 @@ export class ControleAcessoService extends AbstractService {
     return this.httpClient.post<ILogin>(`${this.routeUrl}/SignIn`, login);
   }
 
+  signInWithGoogleAccount(auth: IGoogleAuth): Observable<any> {
+    return this.httpClient.post<IGoogleAuth>(`${this.routeUrl}/SignInWithGoogle`, auth);
 
-  onGooglesignIn(): Observable<any> {
-    return new Observable(observer => {
-      alert("onGooglesignIn Funcionando");
-      observer.next(null);
-      observer.complete();
-    });
   }
 
   createUsuario(controleAcesso: IControleAcesso): Observable<any> {

@@ -23,7 +23,7 @@
       <div class="bg-dark w-100 p-2 d-flex flex-column align-items-center justify-content-center">
         <h2 class="text-light m-0">Identifique-se</h2>
       </div>
-      <form class="p-4" (submit)="onLoginClick()" [formGroup]="loginForm">
+      <form class="p-4 pb-2" (submit)="onLoginClick()" [formGroup]="loginForm">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Email</mat-label>
           <input matInput required id="email" name="email" formControlName="email" type="text"
@@ -64,12 +64,13 @@
             Entrar
           </button>
         </div>
-        <div class="input-group mt-3 d-flex flex-column align-items-center justify-content-center">
-          <button class="btn btn-primary w-100" (click)="onGoogleLoginClick()">
-            <i class="bi bi-google "> Entrar com Google</i>
-          </button>
-        </div>
       </form>
+      <div class="px-4 input-group mb-2 d-flex flex-column align-items-center justify-content-center"  >
+          <button id="googleSignInButton" class="btn btn-google" (click)="onGoogleLoginClick()">
+            <img  src="../../../assets/googleIcon.png" alt="Google" class="google-icon" />
+            Entrar com Google
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -88,7 +89,7 @@
       </a>
       <!-- Github -->
       <a class="btn text-white btn-floating m-1 bg-black" target="_blank" rel="noopener"
-        href="https://github.com/alexfariakof" role="button">
+        href="https://github.com/alexribeirofaria" role="button">
         <i class="bi bi-github btnSocialMedia"></i>
       </a>
       <!-- WebTrust -->

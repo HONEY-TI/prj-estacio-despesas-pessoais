@@ -1,5 +1,5 @@
-import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { Component, ElementRef, OnInit, Renderer2 } from "@angular/core";
+import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
 import { map, catchError } from "rxjs";
 import { AlertComponent, AlertType } from "../../shared/components";
@@ -11,7 +11,8 @@ import { AuthGoogleService } from "../../shared/services/auth/auth.google.servic
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  standalone: false
 })
 
 export class LoginComponent implements OnInit {
@@ -20,6 +21,8 @@ export class LoginComponent implements OnInit {
   eyeIconClass: string = 'bi-eye';
 
   constructor(
+    private renderer: Renderer2,
+    private el: ElementRef,
     private formbuilder: FormBuilder,
     public router: Router,
     public controleAcessoService: ControleAcessoService,
@@ -32,9 +35,11 @@ export class LoginComponent implements OnInit {
       email: ['teste@teste.com', [Validators.required, Validators.email]],
       senha: ['12345T!', [Validators.required, Validators.nullValidator]]
     }) as FormGroup & ILogin;
+    this.renderer.setAttribute(this.el.nativeElement, 'aria-hidden', 'false');
   }
 
   onLoginClick() {
+
     let login: ILogin = this.loginForm.getRawValue();
 
     this.controleAcessoService.signIn(login).pipe(
@@ -56,7 +61,11 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: (response: boolean) => {
           if (response)
-            this.router.navigate(['/dashboard']);
+            this.router.navigate(['/dashboard']).then(success => {
+              if (!success) {
+                console.error('Falha ao navegar para /dashboard');
+              }
+            });
         },
         error: (errorMessage: string) => {
           this.modalALert.open(AlertComponent, errorMessage, AlertType.Warning);
@@ -65,31 +74,29 @@ export class LoginComponent implements OnInit {
   }
 
   onGoogleLoginClick() {
-    this.controleAcessoService.onGooglesignIn().pipe(
+    this.authProviderGoogleService.handleGoogleLogin().pipe(
       map((response: IAuth) => {
         if (response.authenticated) {
           return this.authProviderService.createAccessToken(response);
-        }
-        else {
-          throw (response);
+        } else {
+          throw response;
         }
       }),
       catchError((error) => {
         if (error && typeof error.message === 'string') {
-          throw (error.message);
+          throw error.message;
         }
-        throw (error);
+        throw error;
       })
-    )
-      .subscribe({
-        next: (response: boolean) => {
-          if (response)
-            this.router.navigate(['/dashboard']);
-        },
-        error: (errorMessage: string) => {
-          this.modalALert.open(AlertComponent, errorMessage, AlertType.Warning);
-        }
-      });;
+    ).subscribe({
+      next: (response: boolean) => {
+        if (response)
+          this.router.navigate(['/dashboard']);
+      },
+      error: (errorMessage: string) => {
+        this.modalALert.open(AlertComponent, errorMessage, AlertType.Warning);
+      }
+    });
   }
 
   onTooglePassword() {

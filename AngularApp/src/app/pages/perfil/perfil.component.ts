@@ -8,7 +8,8 @@ import { UsuarioService } from "../../shared/services/api";
 @Component({
   selector: 'app-perfil',
   templateUrl: './perfil.component.html',
-  styleUrls: ['./perfil.component.scss']
+  styleUrls: ['./perfil.component.scss'],
+  standalone: false
 })
 export class PerfilComponent implements OnInit {
   prefilFrom: FormGroup & IUsuario = this.formbuilder.group({}) as FormGroup & IUsuario;
