@@ -30,13 +30,12 @@ jobs:
         git config --global user.email "alexfariakof@yahoo.com.br"
         git config --global user.name "Alex Ribeiro de Faria"
 
-        git clone https://x-access-token:${{ secrets.TOKEN_DESTINO }}@github.com/alexribeirofaria/angular-frontend-despesas.git destino-repo
-        cp -r AngularApp/* destino-repo/
+        git clone https://x-access-token:${{ secrets.TOKEN_DESTINO }}@github.com/alexribeirofaria/angular-frontend-despesas.git
+        cd angular-frontend-despesas
 
-        cd destino-repo
+        cp -r ../AngularApp/* .
+
         git add .
-
-        # Faz commit apenas se houver mudanças
-        if ! git diff --cached --quiet; then
-          git commit --author="${{ env.COMMIT_AUTHOR }}" --date="${{ env.COMMIT_DATE }}" -m "${{ env.COMMIT_MSG }}"
-          g
+        git commit --author="${{ env.COMMIT_AUTHOR }}" --date="${{ env.COMMIT_DATE }}" -m "${{ env.COMMIT_MSG }}" || echo "No changes to commit"
+        git push origin master
+    
