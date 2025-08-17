@@ -13,13 +13,13 @@ public sealed class DatabaseFixture : IDisposable
         Context = new RegisterContext(options);
         Context.Database.EnsureCreated();
 
-        var lstControleAcesso = MockControleAcesso.Instance.GetControleAcessos();
-        lstControleAcesso.ForEach(c => c.Usuario = c.Usuario.CreateUsuario(c.Usuario));
-        lstControleAcesso.ForEach(c => c.Usuario.PerfilUsuario = Context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id));
-        lstControleAcesso.Select(c => c.Usuario).ToList()
+        var lstAcesso = MockAcesso.Instance.GetAcessos();
+        lstAcesso.ForEach(c => c.Usuario = c.Usuario.CreateUsuario(c.Usuario));
+        lstAcesso.ForEach(c => c.Usuario.PerfilUsuario = Context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id));
+        lstAcesso.Select(c => c.Usuario).ToList()
             .SelectMany(u => u.Categorias).ToList()
             .ForEach(c => c.TipoCategoria = Context.TipoCategoria.First(tc => tc.Id == c.TipoCategoria.Id));
-        Context.AddRange(lstControleAcesso);
+        Context.AddRange(lstAcesso);
 
         Context.SaveChanges();
     }

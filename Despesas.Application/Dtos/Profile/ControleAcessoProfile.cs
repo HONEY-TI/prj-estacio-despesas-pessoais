@@ -1,21 +1,21 @@
 ﻿using Domain.Entities;
 
 namespace Despesas.Application.Dtos.Profile;
-public class ControleAcessoProfile : AutoMapper.Profile
+public class AcessoProfile : AutoMapper.Profile
 {
-    public ControleAcessoProfile()
+    public AcessoProfile()
     {
-        CreateMap<ControleAcessoDto, Usuario>().ReverseMap();
-        CreateMap<ControleAcessoDto, GoogleAuthenticationDto>().ReverseMap();
+        CreateMap<AcessoDto, Usuario>().ReverseMap();
+        CreateMap<AcessoDto, GoogleAuthenticationDto>().ReverseMap();
 
-        CreateMap<ControleAcesso, ControleAcessoDto>().AfterMap((s, d) =>
+        CreateMap<Acesso, AcessoDto>().AfterMap((s, d) =>
         {
             d.Senha = "********";
         }).ReverseMap();
 
 
-        CreateMap<ControleAcessoDto, Usuario>().ReverseMap();
-        CreateMap<ControleAcesso, ControleAcessoDto>().AfterMap((s, d) =>
+        CreateMap<AcessoDto, Usuario>().ReverseMap();
+        CreateMap<Acesso, AcessoDto>().AfterMap((s, d) =>
         {
             d.Senha = "********";
         }).ReverseMap();

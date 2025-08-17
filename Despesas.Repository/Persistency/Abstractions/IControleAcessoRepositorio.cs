@@ -2,13 +2,13 @@
 using System.Linq.Expressions;
 
 namespace Repository.Persistency.Abstractions;
-public interface IControleAcessoRepositorioImpl
+public interface IAcessoRepositorioImpl
 {
-    void Create(ControleAcesso controleAcesso);
-    ControleAcesso? Find(Expression<Func<ControleAcesso, bool>> expression);
+    void Create(Acesso acesso);
+    Acesso? Find(Expression<Func<Acesso, bool>> expression);
     bool ChangePassword(Guid idUsuario, string password);
     bool RecoveryPassword(string email, string newPassword);
     void RevokeRefreshToken(Guid idUsuario);
-    ControleAcesso FindByRefreshToken(string refreshToken);
-    void RefreshTokenInfo(ControleAcesso controleAcesso);    
+    Acesso FindByRefreshToken(string refreshToken);
+    void RefreshTokenInfo(Acesso acesso);    
 }

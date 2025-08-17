@@ -4,7 +4,7 @@ using Despesas.Backend.Controllers;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 
-namespace XUnit.Api.Controllers;
+namespace Api.Controllers;
 
 public sealed class LancamentoControllerTest
 {

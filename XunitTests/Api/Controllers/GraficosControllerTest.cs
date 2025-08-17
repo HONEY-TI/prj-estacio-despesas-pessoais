@@ -3,7 +3,7 @@ using __mock__.Entities;
 using Despesas.Backend.Controllers;
 using Despesas.Application.Abstractions;
 
-namespace XUnit.Api.Controllers;
+namespace Api.Controllers;
 
 public sealed class GraficosControllerTest
 {

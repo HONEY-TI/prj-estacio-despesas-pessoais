@@ -6,7 +6,7 @@ using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Profile;
 
-namespace XUnit.Api.Controllers;
+namespace Api.Controllers;
 
 public sealed class DespesaControllerTest
 {

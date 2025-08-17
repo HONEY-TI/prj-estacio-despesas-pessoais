@@ -4,7 +4,7 @@ using Despesas.Application.Dtos.Profile;
 using Despesas.Infrastructure.Amazon;
 using Despesas.Infrastructure.Amazon.Abstractions;
 
-namespace XUnit.Infrastructure;
+namespace Infrastructure;
 public sealed class AmazonS3BucketTest
 {
     private IAmazonS3Bucket _amazonS3Bucket;
@@ -42,7 +42,7 @@ public sealed class AmazonS3BucketTest
         var imagemPerfilUsuarioProfile = mapper.Map<ImagemPerfilUsuario>(perfilFileVM);
 
         var mockAmazonS3Bucket = new Mock<IAmazonS3Bucket>(MockBehavior.Strict);
-        mockAmazonS3Bucket.Setup(s => s.WritingAnObjectAsync(It.IsAny<ImagemPerfilUsuario>(), It.IsAny<byte[]>())).ReturnsAsync($"https://{_bucketName}.s3.amazonaws.com/{perfilFileVM.Name}");
+        mockAmazonS3Bucket.Setup(static s => s.WritingAnObjectAsync(It.IsAny<ImagemPerfilUsuario>(), It.IsAny<byte[]>())).ReturnsAsync($"https://{_bucketName}.s3.amazonaws.com/{perfilFileVM.Name}");
 
         // Act
         var url = await mockAmazonS3Bucket.Object.WritingAnObjectAsync(imagemPerfilUsuarioProfile, perfilFileVM.Arquivo);

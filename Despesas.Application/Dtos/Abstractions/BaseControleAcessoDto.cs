@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Despesas.Application.Dtos.Abstractions;
 
-public abstract class BaseControleAcessoDto : BaseModelDto
+public abstract class BaseAcessoDto : BaseModelDto
 {
     [Required]
     public virtual string? Nome { get; set; }

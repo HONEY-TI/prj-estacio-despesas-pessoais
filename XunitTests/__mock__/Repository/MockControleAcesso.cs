@@ -1,50 +1,50 @@
 ﻿using Bogus;
 
 namespace __mock__.Repository;
-public sealed class MockControleAcesso
+public sealed class MockAcesso
 {
-    private static MockControleAcesso? _instance;
+    private static MockAcesso? _instance;
     private static readonly object LockObject = new object();
 
-    public static MockControleAcesso Instance
+    public static MockAcesso Instance
     {
         get
         {
             lock (LockObject)
             {
-                return _instance ??= new MockControleAcesso();
+                return _instance ??= new MockAcesso();
             }
         }
     }
 
-    public ControleAcesso GetControleAcesso(Usuario? usuario = null)
+    public Acesso GetAcesso(Usuario? usuario = null)
     {
         lock (LockObject)
         {
             if (usuario == null) usuario = MockUsuario.Instance.GetUsuario();
 
-            var mockControleAcesso = new Faker<ControleAcesso>()
+            var mockAcesso = new Faker<Acesso>()
             .RuleFor(ca => ca.Login, usuario.Email)
             .RuleFor(ca => ca.Senha, "!12345")
             .RuleFor(ca => ca.UsuarioId, usuario.Id)
             .RuleFor(ca => ca.Usuario, usuario);
 
-            return mockControleAcesso.Generate();
+            return mockAcesso.Generate();
         }
     }
 
-    public List<ControleAcesso> GetControleAcessos(int count = 3)
+    public List<Acesso> GetAcessos(int count = 3)
     {
         lock (LockObject)
         {
-            var listControleAcesso = new List<ControleAcesso>();
+            var listAcesso = new List<Acesso>();
             for (int i = 0; i < count; i++)
             {
                 var usuario = MockUsuario.Instance.GetUsuario();
-                var controleAcesso = GetControleAcesso(usuario);
-                listControleAcesso.Add(controleAcesso);
+                var acesso = GetAcesso(usuario);
+                listAcesso.Add(acesso);
             }
-            return listControleAcesso;
+            return listAcesso;
         }
     }
 }

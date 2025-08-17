@@ -1,18 +1,18 @@
 ﻿namespace Domain.Entities;
-public sealed class ControleAcessoTest
+public sealed class AcessoTest
 {
     [Theory]
     [InlineData("Teste@teste.com", "Teste password 1 ")]
     [InlineData("Teste2@teste.com", "Teste password 2 ")]
     [InlineData("Teste3@teste.com", "Teste password 3 ")]
-    public void ControleAcesso_Should_Set_Properties_Correctly(string login, string senha)
+    public void Acesso_Should_Set_Properties_Correctly(string login, string senha)
     {
         var mockUsuario = Mock.Of<Usuario>();
         var id = Guid.NewGuid();
         var usuarioId = Guid.NewGuid();
 
         // Arrange and Act
-        var controleAcesso = new ControleAcesso
+        var acesso = new Acesso
         {
             Id = id,
             Login = login,
@@ -23,10 +23,10 @@ public sealed class ControleAcessoTest
         };
 
         // Assert
-        Assert.Equal(id, controleAcesso.Id);
-        Assert.Equal(login, controleAcesso.Login);
-        Assert.NotNull(controleAcesso.Senha);
-        Assert.Equal(usuarioId, controleAcesso.UsuarioId);
-        Assert.Equal(mockUsuario, controleAcesso.Usuario);
+        Assert.Equal(id, acesso.Id);
+        Assert.Equal(login, acesso.Login);
+        Assert.NotNull(acesso.Senha);
+        Assert.Equal(usuarioId, acesso.UsuarioId);
+        Assert.Equal(mockUsuario, acesso.Usuario);
     }
 }

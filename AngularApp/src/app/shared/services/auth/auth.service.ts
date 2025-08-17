@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 
 export class AuthService {
   private accessTokenSubject = new BehaviorSubject<string | undefined>(undefined);
-  private urlPath: string =  'ControleAcesso';
+  private urlPath: string =  'Acesso';
 
   accessToken$ = this.accessTokenSubject.asObservable();
 

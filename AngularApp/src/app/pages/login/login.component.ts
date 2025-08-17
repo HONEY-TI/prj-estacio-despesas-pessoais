@@ -5,7 +5,7 @@ import { map, catchError } from "rxjs";
 import { AlertComponent, AlertType } from "../../shared/components";
 import { ILogin, IAuth } from "../../shared/models";
 import { AuthService } from "../../shared/services";
-import { ControleAcessoService } from "../../shared/services/api";
+import { AcessoService } from "../../shared/services/api";
 import { AuthGoogleService } from "../../shared/services/auth/auth.google.service";
 
 @Component({
@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     private el: ElementRef,
     private formbuilder: FormBuilder,
     public router: Router,
-    public controleAcessoService: ControleAcessoService,
+    public acessoService: AcessoService,
     public authProviderService: AuthService,
     public authProviderGoogleService: AuthGoogleService,
     public modalALert: AlertComponent) { }
@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
 
     let login: ILogin = this.loginForm.getRawValue();
 
-    this.controleAcessoService.signIn(login).pipe(
+    this.acessoService.signIn(login).pipe(
       map((response: IAuth) => {
         if (response.authenticated) {
           return this.authProviderService.createAccessToken(response);

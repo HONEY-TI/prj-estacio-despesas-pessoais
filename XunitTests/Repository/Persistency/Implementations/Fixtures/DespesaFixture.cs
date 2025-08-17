@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Persistency.Implementations.Fixtures;
 
-public class DespesaFixture : IDisposable
+public sealed class DespesaFixture : IDisposable
 {
     public RegisterContext Context { get; private set; }
 
@@ -14,12 +14,12 @@ public class DespesaFixture : IDisposable
         Context = new RegisterContext(options);
         Context.Database.EnsureCreated();
 
-        var controleAcesso = MockControleAcesso.Instance.GetControleAcesso();
-        controleAcesso.Usuario.CreateUsuario(controleAcesso.Usuario);
-        controleAcesso.Usuario.PerfilUsuario = Context.PerfilUsuario.First(tc => tc.Id == controleAcesso.Usuario.PerfilUsuario.Id);
-        controleAcesso.Usuario.Categorias.ToList()
+        var acesso = MockAcesso.Instance.GetAcesso();
+        acesso.Usuario.CreateUsuario(acesso.Usuario);
+        acesso.Usuario.PerfilUsuario = Context.PerfilUsuario.First(tc => tc.Id == acesso.Usuario.PerfilUsuario.Id);
+        acesso.Usuario.Categorias.ToList()
             .ForEach(c => c.TipoCategoria = Context.TipoCategoria.First(tc => tc.Id == c.TipoCategoria.Id));
-        Context.Add(controleAcesso);
+        Context.Add(acesso);
         Context.SaveChanges();
 
         var usuario = Context.Usuario.First();

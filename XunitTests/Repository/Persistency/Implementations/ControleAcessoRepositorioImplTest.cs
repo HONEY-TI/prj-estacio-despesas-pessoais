@@ -7,11 +7,12 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Persistency.Implementations;
-public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAcessoRepositorioFixture>
-{
-    private readonly ControleAcessoRepositorioFixture _fixture;
 
-    public ControleAcessoRepositorioImplTest(ControleAcessoRepositorioFixture fixture)
+public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioFixture>
+{
+    private readonly AcessoRepositorioFixture _fixture;
+
+    public AcessoRepositorioImplTest(AcessoRepositorioFixture fixture)
     {
         _fixture = fixture;
     }
@@ -21,12 +22,12 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
     {
         // Arrange and Setup mock repository
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        mockRepository.Setup(repo => repo.Create(It.IsAny<ControleAcesso>()));
-        var mockControleAcesso = MockControleAcesso.Instance.GetControleAcesso();
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        mockRepository.Setup(repo => repo.Create(It.IsAny<Acesso>()));
+        var mockAcesso = MockAcesso.Instance.GetAcesso();
 
         // Act
-        Action result = () => mockRepository.Object.Create(mockControleAcesso);
+        Action result = () => mockRepository.Object.Create(mockAcesso);
 
         // Assert
         Assert.IsNotType<Exception>(result);
@@ -37,16 +38,16 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
     {
         // Arrange and Setup mock repository
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        mockRepository.Setup(repo => repo.Create(It.IsAny<ControleAcesso>()));
-        var mockControleAcesso = context.ControleAcesso.ToList().First();
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        mockRepository.Setup(repo => repo.Create(It.IsAny<Acesso>()));
+        var mockAcesso = context.Acesso.ToList().First();
 
         // Act
-        Action result = () => mockRepository.Object.Create(mockControleAcesso);
+        Action result = () => mockRepository.Object.Create(mockAcesso);
 
         // Assert
         Assert.NotNull(result);
-        mockRepository.Verify(repo => repo.Create(It.IsAny<ControleAcesso>()), Times.Never);
+        mockRepository.Verify(repo => repo.Create(It.IsAny<Acesso>()), Times.Never);
     }
 
     [Fact]
@@ -54,31 +55,31 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
     {
         // Arrange and Setup mock repository
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<ControleAcesso, bool>>>())).Returns(new ControleAcesso());
-        mockRepository.Setup(repo => repo.Create(It.IsAny<ControleAcesso>())).Throws(new InvalidOperationException("ControleAcessoRepositorioImpl_Create_Exception"));
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(new Acesso());
+        mockRepository.Setup(repo => repo.Create(It.IsAny<Acesso>())).Throws(new InvalidOperationException("AcessoRepositorioImpl_Create_Exception"));
 
         // Act & Assert 
-        ControleAcesso? nullControleAceesso = null;
+        Acesso? nullControleAceesso = null;
         Assert.Throws<InvalidOperationException>(() => mockRepository.Object.Create(nullControleAceesso));
-        //Assert.Equal("ControleAcessoRepositorioImpl_Create_Exception", exception.Message);
+        //Assert.Equal("AcessoRepositorioImpl_Create_Exception", exception.Message);
     }
 
     [Fact]
-    public void FindByEmail_Should_Returns_ControleAcesso()
+    public void FindByEmail_Should_Returns_Acesso()
     {
         // Arrange and Setup Repository
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var mockControleAcesso = context.ControleAcesso.ToList().First();
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        var mockAcesso = context.Acesso.ToList().First();
 
         // Act
-        var result = mockRepository.Object.Find(c => c.Equals(mockControleAcesso));
+        var result = mockRepository.Object.Find(c => c.Equals(mockAcesso));
 
         // Assert
         Assert.NotNull(result);
-        Assert.IsType<ControleAcesso>(result);
-        Assert.Equal(mockControleAcesso, result);
+        Assert.IsType<Acesso>(result);
+        Assert.Equal(mockAcesso, result);
     }
 
     [Fact]
@@ -91,15 +92,15 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));
         context.SaveChanges();
-        var lstControleAcesso = MockControleAcesso.Instance.GetControleAcessos().ToList();
-        lstControleAcesso.ForEach(c => c.Usuario.PerfilUsuario = context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id));
-        var mockControleAcesso = new ControleAcesso { Login = lstControleAcesso.Last().Login };
-        context.AddRange(lstControleAcesso);
+        var lstAcesso = MockAcesso.Instance.GetAcessos().ToList();
+        lstAcesso.ForEach(c => c.Usuario.PerfilUsuario = context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id));
+        var mockAcesso = new Acesso { Login = lstAcesso.Last().Login };
+        context.AddRange(lstAcesso);
         context.SaveChanges();
-        var repository = new Mock<ControleAcessoRepositorioImpl>(context);
+        var repository = new Mock<AcessoRepositorioImpl>(context);
 
         // Act
-        var result = repository.Object.RecoveryPassword(mockControleAcesso.Login, newPassword);
+        var result = repository.Object.RecoveryPassword(mockAcesso.Login, newPassword);
 
         //Assert
         Assert.IsType<bool>(result);
@@ -111,28 +112,28 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
     {
         // Arrange
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
         var mockUsuario = new Usuario { Email = string.Empty };
-        var mockControleAcesso = context.ControleAcesso.ToList().First();
+        var mockAcesso = context.Acesso.ToList().First();
         context.Usuario = Usings.MockDbSet(new List<Usuario> { mockUsuario }).Object;
         var newPassword = "!12345";
-        ControleAcesso MockControleAcesso = new ControleAcesso
+        Acesso MockAcesso = new Acesso
         {
-            Id = mockControleAcesso.Id,
-            Login = mockControleAcesso.Login,
+            Id = mockAcesso.Id,
+            Login = mockAcesso.Login,
             Senha = newPassword,
-            Usuario = mockControleAcesso.Usuario,
-            UsuarioId = mockControleAcesso.UsuarioId
+            Usuario = mockAcesso.Usuario,
+            UsuarioId = mockAcesso.UsuarioId
         };
-        context.ControleAcesso = Usings.MockDbSet(new List<ControleAcesso> { MockControleAcesso }).Object;
+        context.Acesso = Usings.MockDbSet(new List<Acesso> { MockAcesso }).Object;
 
         context.SaveChanges();
         var emailSender = new Mock<EmailSender>();
-        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<ControleAcesso, bool>>>())).Returns(mockControleAcesso);
-        mockRepository.Setup(repo => repo.RecoveryPassword(mockControleAcesso.Login, It.IsAny<string>())).Returns(false);
+        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(mockAcesso);
+        mockRepository.Setup(repo => repo.RecoveryPassword(mockAcesso.Login, It.IsAny<string>())).Returns(false);
 
         // Act
-        var result = mockRepository.Object.RecoveryPassword(mockControleAcesso.Login, newPassword);
+        var result = mockRepository.Object.RecoveryPassword(mockAcesso.Login, newPassword);
 
         //Assert
         Assert.IsType<bool>(result);
@@ -144,15 +145,15 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
     {
         // Arrange
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var dataset = context.ControleAcesso.ToList();
-        context.ControleAcesso = Usings.MockDbSet(dataset).Object;
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        var dataset = context.Acesso.ToList();
+        context.Acesso = Usings.MockDbSet(dataset).Object;
         context.SaveChanges();
-        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<ControleAcesso, bool>>>())).Throws(new Exception());
-        var mockControleAcesso = dataset.First();
+        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Throws(new Exception());
+        var mockAcesso = dataset.First();
 
         // Act
-        var result = mockRepository.Object.RecoveryPassword(mockControleAcesso.Login, "newPassword");
+        var result = mockRepository.Object.RecoveryPassword(mockAcesso.Login, "newPassword");
 
         //Assert
         Assert.IsType<bool>(result);
@@ -164,9 +165,9 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
     {
         // Arrange
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var controleAcesso = context.ControleAcesso.ToList().First();
-        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<ControleAcesso, bool>>>())).Returns(controleAcesso);
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        var acesso = context.Acesso.ToList().First();
+        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(acesso);
         mockRepository.Setup(repo => repo.ChangePassword(Guid.Empty, "!12345")).Returns(true);
 
         // Act
@@ -186,15 +187,15 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));
         context.SaveChanges();
-        var lstControleAcesso = MockControleAcesso.Instance.GetControleAcessos();
-        lstControleAcesso.ForEach(c => c.Usuario.PerfilUsuario = context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id));
-        context.AddRange(lstControleAcesso);
+        var lstAcesso = MockAcesso.Instance.GetAcessos();
+        lstAcesso.ForEach(c => c.Usuario.PerfilUsuario = context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id));
+        context.AddRange(lstAcesso);
         context.SaveChanges();
-        var repository = new ControleAcessoRepositorioImpl(context);
-        var controleAcesso = context.ControleAcesso.Last();
+        var repository = new AcessoRepositorioImpl(context);
+        var acesso = context.Acesso.Last();
 
         // Act
-        var result = repository.ChangePassword(controleAcesso.UsuarioId, "!12345");
+        var result = repository.ChangePassword(acesso.UsuarioId, "!12345");
 
         //Assert
         Assert.IsType<bool>(result);
@@ -206,24 +207,24 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
     {
         // Arrange
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var controleAcesso = context.ControleAcesso.ToList().First();
-        var mockUsuario = controleAcesso.Usuario;
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        var acesso = context.Acesso.ToList().First();
+        var mockUsuario = acesso.Usuario;
         mockUsuario.Email = "teste@teste.com";
-        var dbSetMock = Usings.MockDbSet(context.ControleAcesso.ToList());
+        var dbSetMock = Usings.MockDbSet(context.Acesso.ToList());
         var _dbContextMock = new Mock<RegisterContext>(context);
-        _dbContextMock.Setup(c => c.Set<ControleAcesso>()).Returns(dbSetMock.Object);
+        _dbContextMock.Setup(c => c.Set<Acesso>()).Returns(dbSetMock.Object);
         _dbContextMock.Setup(c => c.SaveChanges()).Throws<Exception>();
-        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<ControleAcesso, bool>>>())).Returns(new ControleAcesso());
-        mockRepository.Setup(repo => repo.ChangePassword(controleAcesso.UsuarioId, "!12345")).Throws<Exception>();
+        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(new Acesso());
+        mockRepository.Setup(repo => repo.ChangePassword(acesso.UsuarioId, "!12345")).Throws<Exception>();
 
         // Act
-        //var result = mockRepository.Object.ChangePassword(controleAcesso.UsuarioId, "!12345");
-        Action result = () => mockRepository.Object.ChangePassword(controleAcesso.UsuarioId, "!12345");
+        //var result = mockRepository.Object.ChangePassword(acesso.UsuarioId, "!12345");
+        Action result = () => mockRepository.Object.ChangePassword(acesso.UsuarioId, "!12345");
 
         //Assert
         Assert.NotNull(result);
-        var exception = Assert.Throws<Exception>(() => mockRepository.Object.ChangePassword(controleAcesso.UsuarioId, "!12345"));
+        var exception = Assert.Throws<Exception>(() => mockRepository.Object.ChangePassword(acesso.UsuarioId, "!12345"));
         Assert.Equal("ChangePassword_Erro", exception.Message);
         Assert.True(true);
     }
@@ -233,28 +234,28 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
     {
         // Arrange
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var mockControleAcesso = context.ControleAcesso.ToList().First();
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        var mockAcesso = context.Acesso.ToList().First();
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => mockRepository.Object.Create(mockControleAcesso));
+        Assert.Throws<ArgumentException>(() => mockRepository.Object.Create(mockAcesso));
     }
 
 
     [Fact]
-    public void FindById_Should_Return_ControleAcesso_When_User_Exists()
+    public void FindById_Should_Return_Acesso_When_User_Exists()
     {
         // Arrange
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var mockControleAcesso = context.ControleAcesso.ToList().First();
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        var mockAcesso = context.Acesso.ToList().First();
 
         // Act
-        var result = mockRepository.Object.Find(controleAcesso => controleAcesso.Id.Equals(mockControleAcesso.Id));
+        var result = mockRepository.Object.Find(acesso => acesso.Id.Equals(mockAcesso.Id));
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(mockControleAcesso, result);
+        Assert.Equal(mockAcesso, result);
     }
 
     [Fact]
@@ -262,12 +263,12 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
     {
         // Arrange
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
         var nonExistingId = -1;
-        var repository = new ControleAcessoRepositorioImpl(context);
+        var repository = new AcessoRepositorioImpl(context);
 
         // Act
-        var result = repository.Find(controleAcesso => controleAcesso.Id.Equals(nonExistingId));
+        var result = repository.Find(acesso => acesso.Id.Equals(nonExistingId));
 
         // Assert
         Assert.Null(result);
@@ -278,7 +279,7 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
     {
         // Arrange
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
         var nonExistingId = Guid.Empty;
 
         // Act & Assert
@@ -290,33 +291,35 @@ public sealed class ControleAcessoRepositorioImplTest : IClassFixture<ControleAc
     {
         // Arrange
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var mockControleAcesso = context.ControleAcesso.ToList().First();
+        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        var mockAcesso = context.Acesso.ToList().First();
 
         // Act
-        mockRepository.Object.RevokeRefreshToken(mockControleAcesso.Id);
+        mockRepository.Object.RevokeRefreshToken(mockAcesso.Id);
 
         // Assert
-        Assert.Empty(mockControleAcesso.RefreshToken);
-        Assert.Null(mockControleAcesso.RefreshTokenExpiry);
+        Assert.Empty(mockAcesso.RefreshToken);
+        Assert.Null(mockAcesso.RefreshTokenExpiry);
     }
 
     [Fact]
     public void RefreshTokenInfo_Should_Update_Token_Info()
     {
         // Arrange
-        var context = _fixture.Context;
-        var mockRepository = Mock.Get<IControleAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var mockControleAcesso = context.ControleAcesso.ToList().First();
+        var mockRepository = _fixture.Repository;
+        var mockAcesso =  MockAcesso.Instance.GetAcesso();
+        mockRepository.Object.Create(mockAcesso);
+        var mockRefreshToken = Guid.NewGuid().ToString();
 
         // Act
-        mockControleAcesso.RefreshToken = "new_token";
-        mockControleAcesso.RefreshTokenExpiry = DateTime.UtcNow.AddHours(1);
-        mockRepository.Object.RefreshTokenInfo(mockControleAcesso);
+        mockAcesso.RefreshToken = mockRefreshToken;
+        mockAcesso.RefreshTokenExpiry = DateTime.UtcNow.AddMinutes(1);
+        mockRepository.Object.RefreshTokenInfo(mockAcesso);
+        
 
         // Assert
-        Assert.NotNull(mockControleAcesso.RefreshToken);
-        Assert.NotNull(mockControleAcesso.RefreshTokenExpiry);
-        Assert.Equal("new_token", mockControleAcesso.RefreshToken);
+        Assert.NotNull(mockAcesso.RefreshToken);
+        Assert.NotNull(mockAcesso.RefreshTokenExpiry);
+        Assert.Equal(mockAcesso.RefreshToken, mockRefreshToken);
     }
 }

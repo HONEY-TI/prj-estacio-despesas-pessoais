@@ -4,12 +4,12 @@ using Repository;
 
 namespace Migrations.DataSeeders.Implementations;
 
-public class DataSeederControleAcesso : IDataSeeder
+public class DataSeederAcesso : IDataSeeder
 {
     private readonly ICrypto _crypto;
 
     private readonly RegisterContext _context;
-    public DataSeederControleAcesso(RegisterContext context, ICrypto crypto)
+    public DataSeederAcesso(RegisterContext context, ICrypto crypto)
     {
         _context = context;
         _crypto = crypto;
@@ -17,7 +17,7 @@ public class DataSeederControleAcesso : IDataSeeder
 
     public void SeedData()
     {
-        var account = new ControleAcesso();
+        var account = new Acesso();
         var usuario = new Usuario
         {
             Nome = "Alex",
@@ -36,7 +36,7 @@ public class DataSeederControleAcesso : IDataSeeder
         _context.Add(account);
         _context.SaveChanges();
 
-        account = new ControleAcesso();
+        account = new Acesso();
         usuario = new Usuario
         {
             Nome = "Teste",

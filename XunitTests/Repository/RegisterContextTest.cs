@@ -14,7 +14,7 @@ public sealed class RegisterContextTest
         using (var context = new RegisterContext(options))
         {
             // Assert
-            Assert.NotNull(context.ControleAcesso);
+            Assert.NotNull(context.Acesso);
             Assert.NotNull(context.Usuario);
             Assert.NotNull(context.ImagemPerfilUsuario);
             Assert.NotNull(context.Despesa);
@@ -38,7 +38,7 @@ public sealed class RegisterContextTest
             Assert.True(model.FindEntityType(typeof(Categoria)) != null);
             Assert.True(model.FindEntityType(typeof(Usuario)) != null);
             Assert.True(model.FindEntityType(typeof(ImagemPerfilUsuario)) != null);
-            Assert.True(model.FindEntityType(typeof(ControleAcesso)) != null);
+            Assert.True(model.FindEntityType(typeof(Acesso)) != null);
             Assert.True(model.FindEntityType(typeof(Despesa)) != null);
             Assert.True(model.FindEntityType(typeof(Receita)) != null);
             Assert.True(model.FindEntityType(typeof(Lancamento)) != null);

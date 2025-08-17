@@ -20,7 +20,7 @@ public static class RepositoryDependenceInject
         services.AddScoped(typeof(IRepositorio<Despesa>), typeof(DespesaRepositorioImpl));
         services.AddScoped(typeof(IRepositorio<Receita>), typeof(ReceitaRepositorioImpl));
         services.AddScoped(typeof(IRepositorio<Usuario>), typeof(UsuarioRepositorioImpl));
-        services.AddScoped<IControleAcessoRepositorioImpl, ControleAcessoRepositorioImpl>();
+        services.AddScoped<IAcessoRepositorioImpl, AcessoRepositorioImpl>();
         services.AddScoped(typeof(ILancamentoRepositorio), typeof(LancamentoRepositorioImpl));
         services.AddScoped(typeof(ISaldoRepositorio), typeof(SaldoRepositorioImpl));
         services.AddScoped(typeof(IGraficosRepositorio), typeof(GraficosRepositorioImpl));

@@ -1,8 +1,7 @@
-﻿global using Domain.Entities;
-global using Moq;
+﻿global using Moq;
 global using Xunit;
+global using Domain.Entities;
 using AutoMapper;
-using Business.Authentication;
 using Despesas.Application.Authentication;
 using Despesas.Business.Authentication.Abstractions;
 using Domain.Core;
@@ -18,7 +17,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-public class Usings
+public sealed class Usings
 {
     private Usings() { }
 

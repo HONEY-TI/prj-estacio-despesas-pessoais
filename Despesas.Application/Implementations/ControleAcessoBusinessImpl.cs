@@ -15,16 +15,16 @@ using System.Text.RegularExpressions;
 using static Domain.Entities.ValueObjects.PerfilUsuario;
 
 namespace Despesas.Application.Implementations;
-public class ControleAcessoBusinessImpl<DtoCa, DtoLogin> : IControleAcessoBusiness<DtoCa, DtoLogin> where DtoCa : BaseControleAcessoDto where DtoLogin : BaseLoginDto, new()
+public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLogin> where DtoCa : BaseAcessoDto where DtoLogin : BaseLoginDto, new()
 {
     private readonly ICrypto _crypto;
     private readonly IMapper _mapper;
-    private readonly IControleAcessoRepositorioImpl _repositorio;
+    private readonly IAcessoRepositorioImpl _repositorio;
     private readonly IEmailSender _emailSender;
     private readonly ISigningConfigurations _singingConfiguration;
     
 
-    public ControleAcessoBusinessImpl(IMapper mapper, IControleAcessoRepositorioImpl repositorio, SigningConfigurations singingConfiguration, IEmailSender emailSender, ICrypto crypto)
+    public AcessoBusinessImpl(IMapper mapper, IAcessoRepositorioImpl repositorio, SigningConfigurations singingConfiguration, IEmailSender emailSender, ICrypto crypto)
     {
         _mapper = mapper;
         _repositorio = repositorio;
@@ -33,19 +33,19 @@ public class ControleAcessoBusinessImpl<DtoCa, DtoLogin> : IControleAcessoBusine
         _crypto = crypto;
     }
 
-    public void Create(DtoCa controleAcessoDto)
+    public void Create(DtoCa acessoDto)
     {
-        var usuario = _mapper.Map<Usuario>(controleAcessoDto);
+        var usuario = _mapper.Map<Usuario>(acessoDto);
         usuario = new Usuario().CreateUsuario(usuario);
-        ControleAcesso controleAcesso = controleAcessoDto != null ? _mapper.Map<ControleAcesso>(controleAcessoDto) : new ControleAcesso();
+        Acesso acesso = acessoDto != null ? _mapper.Map<Acesso>(acessoDto) : new Acesso();
 
-        controleAcesso.CreateAccount(usuario, _crypto.Encrypt(controleAcessoDto.Senha));
-        _repositorio.Create(controleAcesso);
+        acesso.CreateAccount(usuario, _crypto.Encrypt(acessoDto.Senha));
+        _repositorio.Create(acesso);
     }
 
     public BaseAuthenticationDto ValidateCredentials(DtoLogin loginDto)
     {
-        ControleAcesso baseLogin = _repositorio.Find(c => c.Login.Equals(loginDto.Email)) ?? throw new ArgumentException("Usuário inexistente!");
+        Acesso baseLogin = _repositorio.Find(c => c.Login.Equals(loginDto.Email)) ?? throw new ArgumentException("Usuário inexistente!");
 
         if (baseLogin?.Usuario?.StatusUsuario == StatusUsuario.Inativo)
             return AuthenticationException("Usuário Inativo!");
@@ -66,7 +66,7 @@ public class ControleAcessoBusinessImpl<DtoCa, DtoLogin> : IControleAcessoBusine
 
     public BaseAuthenticationDto ValidateExternalCredentials(GoogleAuthenticationDto authenticationDto)
     {
-        ControleAcesso? baseLogin = _repositorio.Find(c =>
+        Acesso? baseLogin = _repositorio.Find(c =>
             (c.ExternalProvider == authenticationDto.ExternalProvider && c.ExternalId == authenticationDto.ExternalId) && c.Login.Equals(authenticationDto.Email)
         );
 
@@ -118,9 +118,9 @@ public class ControleAcessoBusinessImpl<DtoCa, DtoLogin> : IControleAcessoBusine
         IsValidEmail(email);
         var newPassword = Guid.NewGuid().ToString().Substring(0, 8);
         var result = _repositorio.RecoveryPassword(email, newPassword);
-        var controleAcesso = _repositorio.Find(c => c.Login.Equals(email));
+        var acesso = _repositorio.Find(c => c.Login.Equals(email));
 
-        if (result && _emailSender.SendEmailPassword(controleAcesso?.Usuario, newPassword))
+        if (result && _emailSender.SendEmailPassword(acesso?.Usuario, newPassword))
             throw new ArgumentException("Erro ao enviar email de recuperação de senha!");
     }
 
@@ -139,14 +139,14 @@ public class ControleAcessoBusinessImpl<DtoCa, DtoLogin> : IControleAcessoBusine
         };
     }
 
-    private BaseAuthenticationDto AuthenticationSuccess(ControleAcesso controleAcesso)
+    private BaseAuthenticationDto AuthenticationSuccess(Acesso acesso)
     {
         ClaimsIdentity identity = new ClaimsIdentity(new[]
         {
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-            new Claim("role",  ((Perfil)controleAcesso.Usuario.PerfilUsuario.Id).ToString()),
-            new Claim(JwtRegisteredClaimNames.Sub, controleAcesso.UsuarioId.ToString()),
-            new Claim(JwtRegisteredClaimNames.AuthTime, controleAcesso.RefreshTokenExpiry == null ? DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString() : controleAcesso.RefreshTokenExpiry.ToString()),
+            new Claim("role",  ((Perfil)acesso.Usuario.PerfilUsuario.Id).ToString()),
+            new Claim(JwtRegisteredClaimNames.Sub, acesso.UsuarioId.ToString()),
+            new Claim(JwtRegisteredClaimNames.AuthTime, acesso.RefreshTokenExpiry == null ? DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString() : acesso.RefreshTokenExpiry.ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
         });
 
@@ -160,7 +160,7 @@ public class ControleAcessoBusinessImpl<DtoCa, DtoLogin> : IControleAcessoBusine
             Created = createDate.ToString("yyyy-MM-dd HH:mm:ss"),
             Expiration = expirationDate.ToString("yyyy-MM-dd HH:mm:ss"),
             AccessToken = token,
-            RefreshToken = controleAcesso.RefreshToken,
+            RefreshToken = acesso.RefreshToken,
             Message = "OK"
         };
     }
