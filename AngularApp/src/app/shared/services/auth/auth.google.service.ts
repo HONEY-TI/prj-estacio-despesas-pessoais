@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, throwError } from 'rxjs';
 import { IAuth, IGoogleAuth } from '../../models';
 import { environment } from '../../../../environments/environment';
-import { ControleAcessoService } from '../api';
+import { AcessoService } from '../api';
 import { AuthService } from '..';
 
 declare const google: any;
@@ -18,7 +18,7 @@ export class AuthGoogleService {
   private clientId: string = environment.client_id;
   private initialized = false; // garante que o Google seja inicializado apenas 1 vez
 
-  constructor(private authProviderService: AuthService, private controleAcessoService: ControleAcessoService) {
+  constructor(private authProviderService: AuthService, private acessoService: AcessoService) {
     this.initializeGoogleLogin();
   }
 
@@ -113,7 +113,7 @@ export class AuthGoogleService {
       email: userData.email
     };
 
-    return this.controleAcessoService.signInWithGoogleAccount(authData).pipe(
+    return this.acessoService.signInWithGoogleAccount(authData).pipe(
       map((res) => {
         if (res.authenticated) this.userSubject.next(userData);
         return res;

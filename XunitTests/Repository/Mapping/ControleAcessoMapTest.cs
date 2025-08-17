@@ -2,24 +2,24 @@
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace Repository.Mapping;
-public sealed class ControleAcessoMapTest
+public sealed class AcessoMapTest
 {
     [Fact]
     public void EntityConfiguration_IsValid()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "ControleAcessoMapTest").Options;
+        var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "AcessoMapTest").Options;
 
         using (var context = new RegisterContext(options))
         {
             var builder = new ModelBuilder(new ConventionSet());
-            var configuration = new ControleAcessoMap();
+            var configuration = new AcessoMap();
 
             // Act
-            configuration.Configure(builder.Entity<ControleAcesso>());
+            configuration.Configure(builder.Entity<Acesso>());
 
             var model = builder.Model;
-            var entityType = model.FindEntityType(typeof(ControleAcesso));
+            var entityType = model.FindEntityType(typeof(Acesso));
 
             var idProperty = entityType?.FindProperty("Id");
 

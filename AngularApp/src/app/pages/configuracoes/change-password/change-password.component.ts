@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertComponent, AlertType } from '../../../shared/components';
 import { ILogin } from '../../../shared/models';
-import { ControleAcessoService } from '../../../shared/services/api';
+import { AcessoService } from '../../../shared/services/api';
 
 @Component({
   selector: 'app-change-password',
@@ -20,7 +20,7 @@ export class ChangePasswordComponent implements OnInit {
 
   constructor(
     public formbuilder: FormBuilder,
-    public controleAcessoService: ControleAcessoService,
+    public acessoService: AcessoService,
     public modalAlert: AlertComponent) { }
 
   ngOnInit(): void {
@@ -35,7 +35,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   onSaveClick = (): void => {
-    this.controleAcessoService.changePassword(this.changePasswordFrom.getRawValue())
+    this.acessoService.changePassword(this.changePasswordFrom.getRawValue())
       .subscribe({
         next: (response: boolean) => {
           if (response) {

@@ -19,7 +19,7 @@ public class DataSeeder : IDataSeeder
         try
         {
 
-            new DataSeederControleAcesso(_context, _crypto).SeedData();
+            new DataSeederAcesso(_context, _crypto).SeedData();
             new DataSeederDespesa(_context).SeedData();
             new DataSeederReceita(_context).SeedData();
         }

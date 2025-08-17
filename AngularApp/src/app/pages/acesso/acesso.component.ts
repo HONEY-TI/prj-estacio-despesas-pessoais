@@ -3,8 +3,8 @@ import { FormGroup, FormBuilder, Validators, ReactiveFormsModule, FormsModule } 
 import { Router } from "@angular/router";
 import { map, catchError } from "rxjs";
 import { AlertComponent, AlertType } from "../../shared/components";
-import { IControleAcesso } from "../../shared/models";
-import { ControleAcessoService } from "../../shared/services/api";
+import { IAcesso } from "../../shared/models";
+import { AcessoService } from "../../shared/services/api";
 import { CustomValidators } from "../../shared/validators";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
@@ -20,7 +20,7 @@ import { MatIconModule } from "@angular/material/icon";
 
 })
 export class AcessoComponent  implements OnInit {
-  createAccountFrom : FormGroup & IControleAcesso;
+  createAccountFrom : FormGroup & IAcesso;
   eyeIconClass: string = 'bi-eye';
   eyeIconClassConfirmaSenha: string = 'bi-eye';
   showSenha = false;
@@ -29,7 +29,7 @@ export class AcessoComponent  implements OnInit {
   constructor(
     public formbuilder: FormBuilder,
     public router: Router,
-    public controleAcessoService: ControleAcessoService,
+    public acessoService: AcessoService,
     public modalALert: AlertComponent) {
   }
 
@@ -43,12 +43,12 @@ export class AcessoComponent  implements OnInit {
       confirmaSenha: ['', [Validators.required]]
     }, {
       validator: CustomValidators.isValidPassword
-    })as FormGroup & IControleAcesso;
+    })as FormGroup & IAcesso;
   }
 
   onSaveClick() {
-    let controleAcesso: IControleAcesso = this.createAccountFrom.getRawValue();
-    this.controleAcessoService.createUsuario(controleAcesso).pipe(
+    let acesso: IAcesso = this.createAccountFrom.getRawValue();
+    this.acessoService.createUsuario(acesso).pipe(
       map((response: boolean) => {
         if (response) {
           return response;

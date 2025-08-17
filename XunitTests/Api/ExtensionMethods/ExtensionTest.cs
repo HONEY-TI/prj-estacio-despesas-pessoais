@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Api.ExtensionMethods
 {
-    public class ExtensionTest
+    public sealed class ExtensionTest
     {
         [Theory]
         [InlineData("123", 123)]

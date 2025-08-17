@@ -15,7 +15,7 @@ import { AcessoComponent } from './pages/acesso/acesso.component';
 import { AlertComponent, ModalFormComponent, ModalConfirmComponent } from './shared/components';
 import { AlertModule } from './shared/components/alert-component/alert.component.module';
 import { AuthService, MenuService, CustomInterceptor } from './shared/services';
-import { ControleAcessoService } from './shared/services/api';
+import { AcessoService } from './shared/services/api';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, } from '@angular/material-moment-adapter';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
@@ -32,7 +32,7 @@ import { LancamentosModule } from './pages/lancamentos/lancamentos.module';
   imports: [BrowserModule, AppRoutingModule, CommonModule, ReactiveFormsModule, AcessoComponent, AlertModule, DashboardModule, CategoriasModule, DespesasModule, ReceitasModule, LancamentosModule,
     MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, BrowserAnimationsModule, MomentDateModule,
     NgxMaskDirective, NgxMaskPipe],
-  providers: [AuthService, ControleAcessoService, MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent, NgbActiveModal, NgbDropdownModule,
+  providers: [AuthService, AcessoService, MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent, NgbActiveModal, NgbDropdownModule,
     { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true, },
     { provide: MAT_DATE_LOCALE, useValue: 'pt-br' },
     {

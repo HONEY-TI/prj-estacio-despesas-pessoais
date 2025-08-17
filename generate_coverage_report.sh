@@ -1,7 +1,7 @@
-#!/bin/bash
+﻿#!/bin/bash
 
 # Pasta onde o relatório será gerado
-reportPath="./despesas-backend-api-net-core.XUnit/TestResults"
+reportPath="./XunitTests/TestResults"
 
 # Exclui todo o conteúdo da pasta TestResults, se existir
 if [ -d "$reportPath" ]; then
@@ -10,16 +10,16 @@ fi
 
 # Executa o teste e coleta o GUID gerado
 dotnet build ./despesas-backend-api-net-core/despesas-backend-api-net-core.csproj --restore
-dotnet test ./despesas-backend-api-net-core.XUnit/despesas-backend-api-net-core.XUnit.csproj -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura --collect:"XPlat Code Coverage;Format=opencover"
+dotnet test ./XunitTests/XunitTests.csproj -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura --collect:"XPlat Code Coverage;Format=opencover"
 
 # Encontra o diretório mais recente na pasta TestResults
-latestDir=$(ls -td ./despesas-backend-api-net-core.XUnit/TestResults/* | head -n 1)
+latestDir=$(ls -td ./XunitTests/TestResults/* | head -n 1)
 
 # Verifica se encontrou um diretório e, em caso afirmativo, obtém o nome do diretório (GUID)
 if [ -n "$latestDir" ]; then
     guid=$(basename $latestDir)
 
-    baseDirectory=$(pwd)/despesas-backend-api-net-core.XUnit
+    baseDirectory=$(pwd)/XunitTests
     coverageXmlPath=$baseDirectory/TestResults/$guid
     sourceDirs=$(pwd)/despesas-backend-api-net-core
     # Gera o relatório de cobertura usando o GUID capturado

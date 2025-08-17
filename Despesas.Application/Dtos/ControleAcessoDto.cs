@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Despesas.Application.Dtos;
-public class ControleAcessoDto : BaseControleAcessoDto, IValidatableObject
+public class AcessoDto : BaseAcessoDto, IValidatableObject
 {
     [Required(ErrorMessage = "O campo Nome é obrigatório.")]
     public override string? Nome { get; set; }

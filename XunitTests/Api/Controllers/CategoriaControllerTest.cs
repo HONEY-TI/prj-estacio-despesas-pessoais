@@ -1,12 +1,12 @@
-﻿using Domain.Entities.ValueObjects;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using __mock__.Entities;
 using Despesas.Backend.Controllers;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Abstractions;
+using Domain.Entities.ValueObjects;
 
-namespace XUnit.Api.Controllers;
+namespace Api.Controllers;
 public sealed class CategoriaControllerTest
 {
     private Mock<IBusinessBase<CategoriaDto, Categoria>> _mockCategoriaBusiness;

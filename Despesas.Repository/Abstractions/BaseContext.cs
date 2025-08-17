@@ -9,7 +9,7 @@ namespace Repository.Abastractions;
 public class BaseContext<TContext> : DbContext where TContext : DbContext
 {
     public BaseContext(DbContextOptions<TContext> options) : base(options) { }
-    public DbSet<ControleAcesso> ControleAcesso { get; set; }
+    public DbSet<Acesso> Acesso { get; set; }
     public DbSet<Usuario> Usuario { get; set; }
     public DbSet<ImagemPerfilUsuario> ImagemPerfilUsuario { get; set; }
     public DbSet<Despesa> Despesa { get; set; }
@@ -27,7 +27,7 @@ public class BaseContext<TContext> : DbContext where TContext : DbContext
         modelBuilder.ApplyConfiguration(new PerfilUsuarioMap());
         modelBuilder.ApplyConfiguration(new UsuarioMap());
         modelBuilder.ApplyConfiguration(new ImagemPerfilUsuarioMap());
-        modelBuilder.ApplyConfiguration(new ControleAcessoMap());
+        modelBuilder.ApplyConfiguration(new AcessoMap());
         modelBuilder.ApplyConfiguration(new DespesaMap());
         modelBuilder.ApplyConfiguration(new ReceitaMap());
         modelBuilder.ApplyConfiguration(new LancamentoMap());

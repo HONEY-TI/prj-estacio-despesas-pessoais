@@ -7,7 +7,7 @@ public static class AutoMapperInjectDependence
 {
     public static IServiceCollection AddAutoMapper(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(ControleAcessoProfile).Assembly);
+        services.AddAutoMapper(typeof(AcessoProfile).Assembly);
         services.AddAutoMapper(typeof(CategoriaProfile).Assembly);
         services.AddAutoMapper(typeof(DespesaProfile).Assembly);
         services.AddAutoMapper(typeof(ImagemPerfilUsuarioProfile).Assembly);

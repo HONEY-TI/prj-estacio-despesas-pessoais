@@ -4,27 +4,28 @@ using Microsoft.EntityFrameworkCore;
 using __mock__.Repository;
 
 namespace Repository.Persistency.Implementations.Fixtures;
-public sealed class ControleAcessoRepositorioFixture : IDisposable
+
+public sealed class AcessoRepositorioFixture : IDisposable
 {
     public RegisterContext Context { get; private set; }
-    public Mock<ControleAcessoRepositorioImpl> Repository { get; set; }
-    public Mock<IControleAcessoRepositorioImpl> MockRepository { get; private set; }
+    public Mock<AcessoRepositorioImpl> Repository { get; set; }
+    public Mock<IAcessoRepositorioImpl> MockRepository { get; private set; }
 
-    public ControleAcessoRepositorioFixture()
+    public AcessoRepositorioFixture()
     {
-        var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "ControleAcessoRepositorioImpl").Options;
+        var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "AcessoRepositorioImpl").Options;
         Context = new RegisterContext(options);
         Context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         Context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));
         Context.SaveChanges();
 
-        var lstControleAcesso = MockControleAcesso.Instance.GetControleAcessos();
-        lstControleAcesso.ForEach(c => c.Usuario.PerfilUsuario = Context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id));
-        Context.AddRange(lstControleAcesso);
+        var lstAcesso = MockAcesso.Instance.GetAcessos();
+        lstAcesso.ForEach(c => c.Usuario.PerfilUsuario = Context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id));
+        Context.AddRange(lstAcesso);
         Context.SaveChanges();
 
-        Repository = new Mock<ControleAcessoRepositorioImpl>(Context);
-        MockRepository = Mock.Get<IControleAcessoRepositorioImpl>(Repository.Object);
+        Repository = new Mock<AcessoRepositorioImpl>(Context);
+        MockRepository = Mock.Get<IAcessoRepositorioImpl>(Repository.Object);
     }
 
     public void Dispose()

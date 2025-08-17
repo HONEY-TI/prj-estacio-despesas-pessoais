@@ -2,30 +2,30 @@
 using Despesas.Application.Dtos;
 
 namespace __mock__.Entities;
-public sealed class ControleAcessoFaker
+public sealed class AcessoFaker
 {
     static int counter = 1;
-    private static ControleAcessoFaker? _instance;
+    private static AcessoFaker? _instance;
     private static readonly object LockObject = new object();
 
-    public static ControleAcessoFaker Instance
+    public static AcessoFaker Instance
     {
         get
         {
             lock (LockObject)
             {
-                return _instance ??= new ControleAcessoFaker();
+                return _instance ??= new AcessoFaker();
             }
         }
     }
 
-    public ControleAcesso GetNewFaker(Usuario? usuario = null)
+    public Acesso GetNewFaker(Usuario? usuario = null)
     {
         lock (LockObject)
         {
             if (usuario == null) usuario = UsuarioFaker.Instance.GetNewFaker();
 
-            var controleAcessoFaker = new Faker<ControleAcesso>()
+            var acessoFaker = new Faker<Acesso>()
                 .RuleFor(ca => ca.Id, Guid.NewGuid())
                 .RuleFor(ca => ca.Login, usuario.Email)
                 .RuleFor(ca => ca.Senha, f => f.Internet.Password(8, false, "", "!12345"))
@@ -33,54 +33,54 @@ public sealed class ControleAcessoFaker
                 .RuleFor(ca => ca.Usuario, usuario)
                 .Generate();
             counter++;
-            return controleAcessoFaker;
+            return acessoFaker;
         }
     }
 
-    public ControleAcessoDto GetNewFakerVM(Usuario? usuario = null)
+    public AcessoDto GetNewFakerVM(Usuario? usuario = null)
     {
         lock (LockObject)
         {
             if (usuario == null) usuario = UsuarioFaker.Instance.GetNewFaker();
 
-            var controleAcessoDtoFaker = new Faker<ControleAcessoDto>()
+            var acessoDtoFaker = new Faker<AcessoDto>()
                 .RuleFor(ca => ca.Nome, usuario.Nome)
                 .RuleFor(ca => ca.SobreNome, usuario.SobreNome)
                 .RuleFor(ca => ca.Email, usuario.Email)
                 .RuleFor(ca => ca.Telefone, usuario.Telefone)
                 .RuleFor(ca => ca.Senha, f => f.Internet.Password(8, false, "", "!12345"))
                 .Generate();
-            controleAcessoDtoFaker.ConfirmaSenha = controleAcessoDtoFaker.Senha;
-            return controleAcessoDtoFaker;
+            acessoDtoFaker.ConfirmaSenha = acessoDtoFaker.Senha;
+            return acessoDtoFaker;
         }
     }
 
-    public List<ControleAcessoDto> ControleAcessoDtos(int count = 3)
+    public List<AcessoDto> AcessoDtos(int count = 3)
     {
-        var listControleAcessoDto = new List<ControleAcessoDto>();
+        var listAcessoDto = new List<AcessoDto>();
         for (int i = 0; i < count; i++)
         {
             var usuario = UsuarioFaker.Instance.GetNewFaker();
-            var controleAcessoDto = GetNewFakerVM(usuario);
-            listControleAcessoDto.Add(controleAcessoDto);
+            var acessoDto = GetNewFakerVM(usuario);
+            listAcessoDto.Add(acessoDto);
         }
 
-        return listControleAcessoDto;
+        return listAcessoDto;
     }
 
-    public List<ControleAcesso> ControleAcessos(int count = 3)
+    public List<Acesso> Acessos(int count = 3)
     {
         lock (LockObject)
         {
 
-            var listControleAcesso = new List<ControleAcesso>();
+            var listAcesso = new List<Acesso>();
             for (int i = 0; i < count; i++)
             {
                 var usuario = UsuarioFaker.Instance.GetNewFaker();
-                var controleAcesso = GetNewFaker(usuario);
-                listControleAcesso.Add(controleAcesso);
+                var acesso = GetNewFaker(usuario);
+                listAcesso.Add(acesso);
             }
-            return listControleAcesso;
+            return listAcesso;
         }
     }
 }
