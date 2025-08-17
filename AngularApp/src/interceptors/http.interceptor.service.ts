@@ -80,13 +80,11 @@ export class CustomInterceptor implements HttpInterceptor {
     );
   }
 
-  private addTokenHeader(request: HttpRequest<any>): HttpRequest<any> {
-    const isFormData = request.body instanceof FormData;
-
+  private addTokenHeader(request: HttpRequest<any>) {
     return request.clone({
       setHeaders: {
         Authorization: `Bearer ${this.tokenService.getToken()}`,
-        ...(isFormData ? {} : { 'Content-Type': 'application/json' })
+        'Content-Type': 'application/json'
       }
     });
   }

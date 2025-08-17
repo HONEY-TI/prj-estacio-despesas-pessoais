@@ -27,3 +27,14 @@ README.md
 despesas-frontend-angular.code-workspace
 .editorconfig
 **/generate_coverage_report.*
+**/nginx*
+**/README.md
+**/LICENSE
+**/karma.conf.js
+**/ionic.config.json
+**/android*
+**/.angular*
+**/.documents*
+**/app-android*
+**/app-ios*
+**/cetificate*
