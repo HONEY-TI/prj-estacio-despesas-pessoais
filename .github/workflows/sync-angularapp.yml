@@ -19,7 +19,7 @@ jobs:
       id: commit_info
       run: |
         echo "COMMIT_MSG=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
-        echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:%an\ <%ae>)" >> $GITHUB_ENV
+        echo "COMMIT_AUTHOR=$(git log -1 --pretty=format:%an\ \<%ae\>)" >> $GITHUB_ENV
         echo "COMMIT_DATE=$(git log -1 --date=iso-strict --pretty=format:%ad)" >> $GITHUB_ENV
 
     - name: Clone destination repo
@@ -36,7 +36,4 @@ jobs:
         # Faz commit apenas se houver mudanças
         if ! git diff --cached --quiet; then
           git commit --author="${{ env.COMMIT_AUTHOR }}" --date="${{ env.COMMIT_DATE }}" -m "${{ env.COMMIT_MSG }}"
-          git push origin master
-        else
-          echo "Nenhuma alteração detectada."
-        fi
+          g
