@@ -83,7 +83,8 @@ export class CustomInterceptor implements HttpInterceptor {
   private addTokenHeader(request: HttpRequest<any>) {
     return request.clone({
       setHeaders: {
-        Authorization: `Bearer ${this.tokenService.getToken()}`
+        Authorization: `Bearer ${this.tokenService.getToken()}`,
+        'Content-Type': 'application/json'
       }
     });
   }

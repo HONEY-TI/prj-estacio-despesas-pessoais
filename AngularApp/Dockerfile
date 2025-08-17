@@ -1,7 +1,6 @@
-FROM node:21-slim
-ENV NODE_ENV=development
+FROM node:current-slim as node
 WORKDIR /app
-RUN npm install -g @angular/cli 
+RUN npm install -g npm@latest >/dev/null 2ENV NODE_ENV=development
 EXPOSE 4200
 EXPOSE 9229
 USER node

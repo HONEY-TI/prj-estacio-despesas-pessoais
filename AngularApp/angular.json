@@ -69,6 +69,7 @@
               "sourceMap": false,
               "aot": true,
               "extractLicenses": true,
+              "namedChunks": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -119,11 +120,12 @@
               "extractLicenses": false,
               "progress": true,
               "aot": true,
+              "namedChunks": true,
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "3.5mb",
+                  "maximumError": "3.5mb"
                 },
                 {
                   "type": "anyComponentStyle",

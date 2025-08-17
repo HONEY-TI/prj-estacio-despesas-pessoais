@@ -1,4 +1,3 @@
-version: '3.4'
 services:
   despesas-frontend-angular-local:
     container_name: local
@@ -13,5 +12,7 @@ services:
       - 9229:9229
     volumes:
       - ./:/app
+      - ./certificate/ssl_certificate.pem:/etc/nginx/certificate/ssl_certificate.pem:ro
+      - ./certificate/ssl_certificate.key:/etc/nginx/certificate/ssl_certificate.key:ro
     command: |
       /bin/sh -c "npm install --silent --no-audit --no-fund; npm start;"
