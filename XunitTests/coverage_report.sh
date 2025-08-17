@@ -4,8 +4,8 @@
 projectTestPath=$(pwd)
 baseDirectory=$(realpath ..)
 projectAngular=$(realpath "$baseDirectory/AngularApp")
-sourceDirs="$baseDirectory/Despesas.Business:$baseDirectory/Despesas.Domain:$baseDirectory/Despesas.Repository:$baseDirectory/Despesas.Backend:$baseDirectory/AngularApp"
-filefilters="$baseDirectory/Despesas.DataSeeders/**;- $baseDirectory/Migrations.MySqlServer/**;- $baseDirectory/Migrations.MsSqlServer/**;- $baseDirectory/Despesas.CrossCutting/**;- $baseDirectory/Despesas.Business/HyperMedia/**"
+sourceDirs="$baseDirectory/Despesas.Application:$baseDirectory/Despesas.Domain:$baseDirectory/Despesas.Repository:$baseDirectory/Despesas.Backend:$baseDirectory/AngularApp"
+filefilters="$baseDirectory/Despesas.DataSeeders/**;- $baseDirectory/Migrations.MySqlServer/**;- $baseDirectory/Migrations.MsSqlServer/**;- $baseDirectory/Despesas.CrossCutting/**;- $baseDirectory/Despesas.Application/HyperMedia/**"
 reportPath="$projectTestPath/TestResults"
 coveragePath="$reportPath/coveragereport"
 coverageAngularPath="$projectAngular/coverage"
