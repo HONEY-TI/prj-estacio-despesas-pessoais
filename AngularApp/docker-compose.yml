@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     environment:
-      NODE_ENV: development
+      NODE_ENV: local-development
     ports:
       - 4200:4200
       - 9229:9229

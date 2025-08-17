@@ -82,38 +82,7 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all",
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
-            },
-            "staging": {
-              "optimization": true,
-              "sourceMap": false,
-              "aot": true,
-              "extractLicenses": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "4mb",
-                  "maximumError": "4mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
-              "outputHashing": "all",
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.staging.ts"
-                }
-              ]
+              "outputHashing": "all"
             },
             "development": {
               "optimization": true,
@@ -162,11 +131,11 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.dev.ts"
+                  "with": "src/environments/environment.local.ts"
                 }
               ]
             },
-            "production-android": {
+            "development-android": {
               "outputPath": "wwww",
               "optimization": true,
               "sourceMap": false,
@@ -175,19 +144,36 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.mobile.ts"
+                  "with": "src/environments/environment.local.ts"
                 }
               ]
+            },
+            "development-ios": {
+              "outputPath": "wwww",
+              "optimization": true,
+              "sourceMap": false,
+              "aot": true,
+              "extractLicenses": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
+            },
+            "production-android": {
+              "outputPath": "www",
+              "optimization": true,
+              "sourceMap": false,
+              "aot": true,
+              "extractLicenses": true
             },
             "production-ios": {
               "outputPath": "www",
               "optimization": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.mobile.ts"
-                }
-              ]
+              "sourceMap": false,
+              "aot": true,
+              "extractLicenses": true
             }
           },
           "defaultConfiguration": "production"
