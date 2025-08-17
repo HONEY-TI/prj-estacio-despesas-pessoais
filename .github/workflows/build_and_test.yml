@@ -12,6 +12,7 @@ on:
     types: [opened]
     branches:       
       - main
+      - staging
 
 permissions:
     contents: read 
