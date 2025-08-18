@@ -26,7 +26,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\AngularApp\AngularApp.esproj" />
 		<ProjectReference Include="..\Despesas.Application\Despesas.Application.csproj" />
 	</ItemGroup>
 
@@ -72,19 +71,50 @@
 		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm install" />
 	</Target>
 
-	<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+	<Target Name="PublishRunWebpackProduction" AfterTargets="ComputeFilesToPublish" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Production'">
 		<!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm install" />
-		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm run build -- --configuration production" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
 
-		<!-- Include the newly-built files in the publish output -->
 		<ItemGroup>
-			<DistFiles Include="$(SpaRoot)\dist\angular-app\**; $(SpaRoot)\dist-server\angular-app\**" />
+			<DistFiles Include="$(SpaRoot)\dist\**; $(SpaRoot)\dist-server\angular-app\**" />
 			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
 				<RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
 				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			</ResolvedFileToPublish>
 		</ItemGroup>
+
 	</Target>
+	
+	<Target Name="PublishRunWebpackDevelopment" AfterTargets="ComputeFilesToPublish" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Staging'">
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:dev" />
+
+		<ItemGroup>
+			<DistFiles Include="$(SpaRoot)\dist\**; $(SpaRoot)\dist-server\angular-app\**" />
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+
+	</Target>
+	
+	<Target Name="PublishRunWebpackLocal" AfterTargets="ComputeFilesToPublish" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Development'">
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:local" />
+
+		<ItemGroup>
+			<DistFiles Include="$(SpaRoot)\dist\**; $(SpaRoot)\dist-server\angular-app\**" />
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+
+	</Target>
+
 </Project>

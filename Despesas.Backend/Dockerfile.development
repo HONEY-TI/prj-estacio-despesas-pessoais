@@ -22,7 +22,7 @@ WORKDIR /src/AngularApp
 RUN npm install
 
 WORKDIR /src/Despesas.Backend
-RUN dotnet publish "./Despesas.Backend.csproj" -c Release -f net8.0 -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Despesas.Backend.csproj" -c Release -f net8.0 -o /app/publish /p:UseAppHost=false /p:ASPNETCORE_ENVIRONMENT=Staging
 
 FROM base AS final
 WORKDIR /app
