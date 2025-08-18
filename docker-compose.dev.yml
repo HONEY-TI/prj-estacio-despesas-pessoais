@@ -15,4 +15,3 @@
       - ./Despesas.Backend/appsettings.docker.development.json:/app/appsettings.development.json
       - ./Despesas.Backend/appsettings.docker.development.json:/app/appsettings.json
       - ./Despesas.Backend/certificate/webapi-cert.pfx:/app/certificate/webapi-cert.pfx
- 

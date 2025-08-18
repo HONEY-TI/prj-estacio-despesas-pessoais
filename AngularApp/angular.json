@@ -90,6 +90,7 @@
               "progress": true,
               "aot": true,
               "namedChunks": true,
+              "outputHashing": "all",
               "budgets": [
                 {
                   "type": "initial",
@@ -116,6 +117,7 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true,
+              "outputHashing": "all",
               "budgets": [
                 {
                   "type": "initial",
@@ -136,7 +138,7 @@
               ]
             },
             "development-android": {
-              "outputPath": "wwww",
+              "outputPath": "www",
               "optimization": true,
               "sourceMap": false,
               "aot": true,
@@ -149,7 +151,7 @@
               ]
             },
             "development-ios": {
-              "outputPath": "wwww",
+              "outputPath": "www",
               "optimization": true,
               "sourceMap": false,
               "aot": true,
