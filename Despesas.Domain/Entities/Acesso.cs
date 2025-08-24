@@ -1,7 +1,7 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Aggreggates;
 
 namespace Domain.Entities;
-public class Acesso : BaseModel
+public class Acesso : BaseDomain
 {
     private string _login = string.Empty;
     public string Login

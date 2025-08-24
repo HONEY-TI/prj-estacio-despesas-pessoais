@@ -1,9 +1,9 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Aggreggates;
 using Domain.Entities;
 using System.Linq.Expressions;
 
 namespace Repository.Persistency.Generic;
-public class GenericRepositorio<T> : IRepositorio<T> where T : BaseModel, new()
+public class GenericRepositorio<T> : IRepositorio<T> where T : BaseDomain, new()
 {
     protected readonly RegisterContext _context;
 

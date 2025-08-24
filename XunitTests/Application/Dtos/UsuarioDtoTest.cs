@@ -1,11 +1,10 @@
 ﻿using Despesas.Application.Dtos;
-using Despesas.Application.Dtos.Abstractions;
-using Domain.Entities.ValueObjects;
+using Domain.Core.ValueObject;
 
 namespace Application.Dtos;
 public sealed class UsuarioDtoTest
 {
-    public sealed class UsuarioDtoBaseTest : BaseUsuarioDto { }
+    public sealed class UsuarioDtoBaseTest : UsuarioDto { }
 
     [Theory]
     [InlineData("Usuario 1", "Teste Usuario 1", "(21) 99999-9999", "user1@user.com")]

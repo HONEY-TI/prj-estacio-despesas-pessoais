@@ -2,8 +2,8 @@
 using Repository.Persistency.Generic;
 using Microsoft.EntityFrameworkCore;
 using Repository.Abastractions;
-using Domain.Entities.ValueObjects;
 using System.Linq.Expressions;
+using Domain.Core.ValueObject;
 
 namespace Repository.Persistency.Implementations;
 public class CategoriaRepositorioImpl : BaseRepository<Categoria>, IRepositorio<Categoria>

@@ -1,15 +1,15 @@
-﻿using Despesas.Application.Dtos;
-using Despesas.Application.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos.Abstractions;
+using Despesas.Application.Dtos.Core;
 
 namespace Despesas.Application.Abstractions;
 
 public interface IAcessoBusiness<DtoCa, DtoLogin> where DtoCa : class where DtoLogin : class
 {
-    BaseAuthenticationDto ValidateCredentials(DtoLogin loginDto);
+    AuthenticationDto ValidateCredentials(DtoLogin loginDto);
 
-    BaseAuthenticationDto ValidateExternalCredentials(GoogleAuthenticationDto authenticationDto);
+    AuthenticationDto ValidateExternalCredentials(GoogleAuthenticationDto authenticationDto);
     
-    BaseAuthenticationDto ValidateCredentials(string refreshToken);
+    AuthenticationDto ValidateCredentials(string refreshToken);
     void Create(DtoCa acessoDto);
     void ChangePassword(Guid idUsuario, string password);
     void RecoveryPassword(string email);

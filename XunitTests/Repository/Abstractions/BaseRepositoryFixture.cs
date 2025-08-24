@@ -1,5 +1,5 @@
 ﻿using __mock__.Repository;
-using Domain.Entities.ValueObjects;
+using Domain.Core.ValueObject;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Abstractions;

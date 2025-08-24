@@ -1,21 +1,21 @@
-﻿using Despesas.Application.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos.Core;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Despesas.Application.Dtos;
-public class ReceitaDto : BaseReceitaDto
+public class ReceitaDto : BaseDto
 {
     [Required(ErrorMessage = "O campo Data é obrigatório.")]
-    public override DateTime? Data { get; set; }
+    public DateTime? Data { get; set; }
 
     [Required(ErrorMessage = "O campo Descrição é obrigatório.")]
-    public override string? Descricao { get; set; }
+    public string? Descricao { get; set; }
 
     [Required(ErrorMessage = "O campo Valor é obrigatório.")]
-    public override decimal Valor { get; set; }
+    public decimal Valor { get; set; }
 
     [JsonIgnore]
-    public override Guid? IdCategoria
+    public Guid? IdCategoria
     {
         get
         {

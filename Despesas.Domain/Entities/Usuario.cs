@@ -1,8 +1,8 @@
-﻿using Domain.Core;
-using Domain.Entities.ValueObjects;
+﻿using Domain.Core.Aggreggates;
+using Domain.Core.ValueObject;
 
 namespace Domain.Entities;
-public class Usuario : BaseModel
+public class Usuario : BaseDomain
 {
     public string Nome { get; set; } = String.Empty;
     public string SobreNome { get; set; } = String.Empty;

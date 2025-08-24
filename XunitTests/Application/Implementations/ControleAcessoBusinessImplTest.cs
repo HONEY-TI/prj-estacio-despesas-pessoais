@@ -1,21 +1,23 @@
-﻿using Despesas.Infrastructure.Email;
-using Microsoft.IdentityModel.Tokens;
-using Repository.Persistency.Abstractions;
-using System.IdentityModel.Tokens.Jwt;
-using __mock__.Entities;
-using System.Linq.Expressions;
+﻿using __mock__.Entities;
 using AutoMapper;
+using Despesas.Application.Abstractions;
+using Despesas.Application.Authentication;
+using Despesas.Application.CommonDependenceInject;
+using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Abstractions;
+using Despesas.Application.Dtos.Core;
+using Despesas.Application.Dtos.Profile;
+using Despesas.Application.Implementations;
+using Despesas.Backend.CommonDependenceInject;
+using Despesas.Infrastructure.Email;
 using EasyCryptoSalt;
 using Microsoft.AspNetCore.Builder;
-using Despesas.Backend.CommonDependenceInject;
 using Microsoft.Extensions.DependencyInjection;
-using Despesas.Application.Implementations;
-using Despesas.Application.Authentication;
-using Despesas.Application.Dtos;
-using Despesas.Application.Dtos.Profile;
-using Despesas.Application.CommonDependenceInject;
-using Despesas.Application.Abstractions;
-using Despesas.Application.Dtos.Abstractions;
+using Microsoft.IdentityModel.Tokens;
+using Repository.Persistency.Abstractions;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Expressions;
 
 namespace Application;
 public sealed class AcessoBusinessImplTest
@@ -68,7 +70,7 @@ public sealed class AcessoBusinessImplTest
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(acesso);
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(acesso);
         var mockAcessoBusiness = new Mock<IAcessoBusiness<AcessoDto, LoginDto>>(MockBehavior.Strict);
-        mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(new BaseAuthenticationDto() { Authenticated = true, AccessToken = Guid.NewGuid().ToString() });
+        mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(new AuthenticationDto() { Authenticated = true, AccessToken = Guid.NewGuid().ToString() });
 
         // Act
         var result = mockAcessoBusiness.Object.ValidateCredentials(loginDto);
@@ -99,12 +101,9 @@ public sealed class AcessoBusinessImplTest
         acesso.Usuario = usuarioInativo;
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(acesso);
 
-        // Act
-        var result = _acessoBusiness.ValidateCredentials(new LoginDto { Email = acesso.Login, Senha = acesso.Senha });
-
-        // Assert
-        Assert.False(result.Authenticated);
-        Assert.Contains("Usuário Inativo!", result.Message);
+        // Act && Assert
+        var exception = Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials(new LoginDto { Email = acesso.Login, Senha = acesso.Senha }));
+        Assert.Contains("Usuário Inativo!", exception.Message);
     }
 
     [Fact]
@@ -133,15 +132,12 @@ public sealed class AcessoBusinessImplTest
         acesso.Usuario.StatusUsuario = StatusUsuario.Ativo;
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(acesso);
         var mockAcessoBusiness = new Mock<IAcessoBusiness<AcessoDto, LoginDto>>(MockBehavior.Strict);
-        mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(new BaseAuthenticationDto() { Authenticated = false, AccessToken = Guid.NewGuid().ToString(), Message = "Senha inválida!" });
+        mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Throws(new ArgumentException("Senha inválida!"));
         var loginDto = new LoginDto() { Email = acesso.Login, Senha = Guid.NewGuid().ToString() };
 
-        // Act
-        var result = mockAcessoBusiness.Object.ValidateCredentials(loginDto);
-
-        // Assert
-        Assert.False(result.Authenticated);
-        Assert.Contains("Senha inválida!", result.Message);
+        // Act && Assert
+        var exception = Assert.Throws<ArgumentException>(() => mockAcessoBusiness.Object.ValidateCredentials(loginDto));
+        Assert.Contains("Senha inválida!", exception.Message);
     }
 
     [Fact]
@@ -159,7 +155,9 @@ public sealed class AcessoBusinessImplTest
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Throws(new ArgumentException("Usuário Inválido!"));
 
         // Act &  Assert
-        Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials(loginDto));
+        var exception = Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials(loginDto));
+        Assert.Contains("Usuário Inválido!", exception.Message);
+
     }
 
     [Fact]
@@ -221,7 +219,7 @@ public sealed class AcessoBusinessImplTest
         });
         var validToken = handler.WriteToken(securityToken);
         baseLogin.RefreshToken = validToken;
-        var authenticationDto = new BaseAuthenticationDto
+        var authenticationDto = new AuthenticationDto
         {
             RefreshToken = validToken
         };
@@ -246,34 +244,31 @@ public sealed class AcessoBusinessImplTest
             RefreshTokenExpiry = DateTime.UtcNow.AddHours(-1), // Token expirado
             RefreshToken = "expired_refresh_token"
         };
-        var authenticationDto = new BaseAuthenticationDto
+        var authenticationDto = new AuthenticationDto
         {
             RefreshToken = "expired_refresh_token"
         };
         _repositorioMock.Setup(repo => repo.FindByRefreshToken(It.IsAny<string>())).Returns(baseLogin);
 
-        // Act
-        _acessoBusiness.ValidateCredentials("expired_refresh_token");
-
-        // Assert
+        // Act && Assert
+        var exception = Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials("expired_refresh_token"));
+                
         _repositorioMock.Verify(repo => repo.RevokeRefreshToken(idUsuario), Times.Once);
+        Assert.Equal("Refresh Token Inválido!", exception.Message);
     }
 
     [Fact]
     public void ValidateCredentials_Should_Return_Authentication_Exception_When_RefreshToken_Is_Invalid()
     {
         // Arrange
-        var authenticationDto = new BaseAuthenticationDto
+        var authenticationDto = new AuthenticationDto
         {
             RefreshToken = "invalid_refresh_token"
         };
 
-        // Act
-        var result = _acessoBusiness.ValidateCredentials("invalid_refresh_token");
-
-        // Assert
-        Assert.False(result.Authenticated);
-        Assert.Equal("Refresh Token Inválido!", result.Message);
+        // Act && Assert 
+        var exception = Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials("invalid_refresh_token"));
+        Assert.Equal("Refresh Token Inválido!", exception.Message);
     }
 
     [Fact]
@@ -283,11 +278,10 @@ public sealed class AcessoBusinessImplTest
         var mockAcesso = AcessoFaker.Instance.GetNewFaker();
         _repositorioMock.Setup(repo => repo.FindByRefreshToken(It.IsAny<string>())).Returns(mockAcesso);
 
-        // Act
-        _acessoBusiness.ValidateCredentials("invalid_refresh_token");
-
-        // Assert
+        // Act && Assert
+        var exception = Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials("invalid_refresh_token"));
         _repositorioMock.Verify(repo => repo.RevokeRefreshToken(It.IsAny<Guid>()), Times.Once);
+        Assert.Equal("Refresh Token Inválido!", exception.Message);
     }
 
 }

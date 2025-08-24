@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { AlertComponent, AlertType } from '../../../shared/components';
-import { ICategoria, IAction } from '../../../shared/models';
-import { CategoriaService } from '../../../shared/services/api';
+import { AlertComponent, AlertType } from '../../../components';
+import { ICategoria, Action } from '../../../models';
+import { CategoriaService } from '../../../services/api';
 
 @Component({
   selector: 'app-categorias-form',
@@ -18,8 +18,8 @@ export class CategoriasFormComponent implements OnInit {
     this.categoriatForm.patchValue(categoria);
   }
 
-  private action: IAction = IAction.Create;
-  setAction(_action: IAction) {
+  private action: Action = Action.Create;
+  setAction(_action: Action) {
     this.action = _action;
   }
 
@@ -51,7 +51,7 @@ export class CategoriasFormComponent implements OnInit {
     };
 
     try {
-      if (this.action === IAction.Create) {
+      if (this.action === Action.Create) {
 
         this.categoriaService.postCategoria(categoria)
           .subscribe({
@@ -67,7 +67,7 @@ export class CategoriasFormComponent implements OnInit {
             }
           });
       }
-      else if (this.action === IAction.Edit) {
+      else if (this.action === Action.Edit) {
         this.categoriaService.putCategoria(categoria)
           .subscribe({
             next: (response: any) => {

@@ -1,4 +1,4 @@
-﻿using Domain.Entities.ValueObjects;
+﻿using Domain.Core.ValueObject;
 using __mock__.Repository;
 using Repository.Persistency.Implementations.Fixtures;
 

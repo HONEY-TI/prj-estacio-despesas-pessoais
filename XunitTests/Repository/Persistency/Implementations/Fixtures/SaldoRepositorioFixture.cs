@@ -1,7 +1,7 @@
-﻿using Domain.Entities.ValueObjects;
-using __mock__.Repository;
+﻿using __mock__.Repository;
 using Repository.Persistency.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Domain.Core.ValueObject;
 
 namespace Repository.Persistency.Implementations.Fixtures;
 public sealed class SaldoRepositorioFixture : IDisposable

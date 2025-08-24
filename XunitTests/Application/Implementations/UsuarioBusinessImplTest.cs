@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using __mock__.Entities;
-using Domain.Entities.ValueObjects;
 using System.Linq.Expressions;
 using Repository.Persistency.Generic;
 using Despesas.Application.Implementations;
 using Despesas.Application.Dtos.Profile;
 using Despesas.Application.Dtos;
+using Domain.Core.ValueObject;
 
 namespace Application;
 public sealed class UsuarioBusinessImplTest

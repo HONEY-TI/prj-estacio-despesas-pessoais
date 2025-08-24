@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using Despesas.Application.Dtos;
-using Despesas.Application.Dtos.Abstractions;
-using Domain.Entities.ValueObjects;
+using Despesas.Application.Dtos.Core;
+using Domain.Core.ValueObject;
 
 namespace __mock__.Entities;
 public sealed class CategoriaFaker
@@ -38,22 +38,22 @@ public sealed class CategoriaFaker
         return categoriaFaker;
     }
 
-    public CategoriaDto GetNewFakerVM(BaseUsuarioDto BaseUsuarioDto, BaseTipoCategoriaDto? tipoCategoria = null, Guid? idUsuario = null)
+    public CategoriaDto GetNewFakerVM(UsuarioDto UsuarioDto, TipoCategoriaDto? tipoCategoria = null, Guid? idUsuario = null)
     {
         if (idUsuario == null)
-            BaseUsuarioDto = UsuarioFaker.Instance.GetNewFakerVM();
+            UsuarioDto = UsuarioFaker.Instance.GetNewFakerVM();
 
         var categoriaFaker = new Faker<CategoriaDto>()
         .RuleFor(c => c.Id, Guid.NewGuid())
         .RuleFor(c => c.Descricao, f => f.Commerce.ProductName())
-        .RuleFor(c => c.UsuarioId, f => BaseUsuarioDto.Id)
+        .RuleFor(c => c.UsuarioId, f => UsuarioDto.Id)
         .Generate();
-        categoriaFaker.IdTipoCategoria = tipoCategoria.Equals(null) ? counter % 2 == 0 ? BaseTipoCategoriaDto.Despesa : BaseTipoCategoriaDto.Receita : (BaseTipoCategoriaDto)tipoCategoria;
+        categoriaFaker.IdTipoCategoria = tipoCategoria.Equals(null) ? counter % 2 == 0 ? TipoCategoriaDto.Despesa : TipoCategoriaDto.Receita : (TipoCategoriaDto)tipoCategoria;
         counterVM++;
         return categoriaFaker;
     }
 
-    public List<CategoriaDto> CategoriasVMs(BaseUsuarioDto? baseUsuarioDto = null, BaseTipoCategoriaDto tipoCategoria = BaseTipoCategoriaDto.Todas, Guid? idUsuario = null)
+    public List<CategoriaDto> CategoriasVMs(UsuarioDto? baseUsuarioDto = null, TipoCategoriaDto tipoCategoria = TipoCategoriaDto.Todas, Guid? idUsuario = null)
     {
         var listCategoriaDto = new List<CategoriaDto>();
         for (int i = 0; i < 10; i++)

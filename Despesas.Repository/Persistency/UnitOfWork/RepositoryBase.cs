@@ -1,10 +1,10 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Aggreggates;
 using Microsoft.EntityFrameworkCore;
 using Repository.Persistency.UnitOfWork.Abstractions;
 using System.Linq.Expressions;
 
 namespace Repository.UnitOfWork;
-public sealed class UnitOfWork<T> : IRepositoy<T> where T : BaseModel
+public sealed class UnitOfWork<T> : IRepositoy<T> where T : BaseDomain
 {
     private RegisterContext Context { get; set; }
 

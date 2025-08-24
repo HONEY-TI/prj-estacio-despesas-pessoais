@@ -1,7 +1,7 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Aggreggates;
 
 namespace Domain.Entities;
-public class ImagemPerfilUsuario : BaseModel
+public class ImagemPerfilUsuario : BaseDomain
 {
     public string Url { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;

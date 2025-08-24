@@ -1,6 +1,6 @@
 ﻿using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
-using Despesas.Application.Dtos.Abstractions;
+using Despesas.Application.Dtos.Core;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,9 +56,9 @@ public class CategoriaController : AuthController
     [ProducesResponseType(200, Type = typeof(List<CategoriaDto>))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult GetByTipoCategoria([FromRoute] BaseTipoCategoriaDto tipoCategoria)
+    public IActionResult GetByTipoCategoria([FromRoute] TipoCategoriaDto tipoCategoria)
     {
-        if (tipoCategoria == BaseTipoCategoriaDto.Todas)
+        if (tipoCategoria == TipoCategoriaDto.Todas)
         {
             var _categoria = _categoriaBusiness.FindAll(UserIdentity).Where(prop => prop.UsuarioId.Equals(UserIdentity)).ToList();
             return Ok(_categoria);
@@ -80,7 +80,7 @@ public class CategoriaController : AuthController
     {
         try
         {
-            if (categoria.IdTipoCategoria == (int)BaseTipoCategoriaDto.Todas)
+            if (categoria.IdTipoCategoria == (int)TipoCategoriaDto.Todas)
                 throw new ArgumentException("Nenhum tipo de Categoria foi selecionado!");
 
             categoria.UsuarioId = UserIdentity;
@@ -105,7 +105,7 @@ public class CategoriaController : AuthController
     {
         try
         {
-            if (categoria.IdTipoCategoria == BaseTipoCategoriaDto.Todas)
+            if (categoria.IdTipoCategoria == TipoCategoriaDto.Todas)
                 throw new ArgumentException("Nenhum tipo de Categoria foi selecionado!");
 
             categoria.UsuarioId = UserIdentity;

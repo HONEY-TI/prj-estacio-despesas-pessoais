@@ -47,4 +47,3 @@ obj/**
 **/www
 **/client_secret.json
 **/app-android/android/app/build
-**/.angular

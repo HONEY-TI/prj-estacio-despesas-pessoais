@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using Domain.Core;
+using Domain.Core.Aggreggates;
 using Repository.Persistency.Generic;
 
 namespace Despesas.Application.Abstractions.Generic;
 
-public class GenericBusiness<Dto, Entity> : IBusiness<Dto, Entity> where Dto : class where Entity : BaseModel, new()
+public class GenericBusiness<Dto, Entity> : IBusiness<Dto, Entity> where Dto : class where Entity : BaseDomain, new()
 {
     private readonly IRepositorio<Entity> _repositorio;
     private readonly IMapper _mapper;

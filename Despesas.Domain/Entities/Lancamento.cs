@@ -1,7 +1,7 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Aggreggates;
 
 namespace Domain.Entities;
-public class Lancamento : BaseModel
+public class Lancamento : BaseDomain
 {
     public decimal Valor { get; set; }
     public DateTime Data { get; set; }

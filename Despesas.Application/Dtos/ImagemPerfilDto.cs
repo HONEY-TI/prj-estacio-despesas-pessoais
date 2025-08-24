@@ -1,20 +1,20 @@
-﻿using Despesas.Application.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos.Core;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Despesas.Application.Dtos;
-public class ImagemPerfilDto : BaseImagemPerfilDto
+public class ImagemPerfilDto : BaseDto
 {
     [Url(ErrorMessage = "Url inválida.")]
-    public override string? Url { get; set; }
+    public string? Url { get; set; }
 
     [JsonIgnore]
-    public override string? Name { get; set; }
+    public string? Name { get; set; }
     [JsonIgnore]
-    public override string? Type { get; set; }
+    public string? Type { get; set; }
     [JsonIgnore]
-    public override string? ContentType { get; set; }
+    public string? ContentType { get; set; }
 
     [JsonIgnore]
-    public override byte[]? Arquivo { get; set; }    
+    public byte[]? Arquivo { get; set; }    
 }

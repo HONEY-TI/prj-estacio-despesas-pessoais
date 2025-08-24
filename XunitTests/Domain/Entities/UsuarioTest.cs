@@ -1,4 +1,4 @@
-﻿using Domain.Entities.ValueObjects;
+﻿using Domain.Core.ValueObject;
 
 namespace Domain.Entities;
 public sealed class UsuarioTest

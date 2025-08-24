@@ -42,7 +42,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\AngularApp\AngularApp.esproj" />
 		<ProjectReference Include="..\Despesas.Backend\Despesas.Backend.csproj" />
 		<ProjectReference Include="..\Despesas.Domain\Despesas.Domain.csproj" />
 		<ProjectReference Include="..\Despesas.Infrastructure\Despesas.Infrastructure.csproj" />

@@ -13,6 +13,7 @@ using Despesas.Application.Abstractions.Generic;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 using Despesas.Application.Implementations;
+using Despesas.Application.Dtos.Core;
 
 namespace CommonDependenceInject;
 public sealed class ServicesDependenceInjectTest

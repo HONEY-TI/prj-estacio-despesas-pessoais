@@ -58,14 +58,14 @@
               loginForm.get('senha')?.touched
             "></i>
         </mat-form-field>
-        <div class="input-group mt-3 d-flex flex-column align-items-center justify-content-center">
+        <div class="input-group d-flex flex-column align-items-center justify-content-center">
           <button type="submit" class="btn btn-primary w-100" [ngClass]="{ disabled: !loginForm.valid }"
             [disabled]="!loginForm.valid">
             Entrar
           </button>
         </div>
       </form>
-      <div class="px-4 input-group mb-2 d-flex flex-column align-items-center justify-content-center"  >
+      <div class="g_signin px-4 input-group mb-2 d-flex flex-column align-items-center justify-content-center"  >
           <button id="googleSignInButton" class="btn btn-google" (click)="onGoogleLoginClick()">
             <img  src="../../../assets/googleIcon.png" alt="Google" class="google-icon" />
             Entrar com Google

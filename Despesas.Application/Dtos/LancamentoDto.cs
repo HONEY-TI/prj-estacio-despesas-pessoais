@@ -1,13 +1,13 @@
-﻿using Despesas.Application.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos.Core;
 
 namespace Despesas.Application.Dtos;
-public class LancamentoDto : BaseLancamentoDto
+public class LancamentoDto : BaseDto
 {
-    public override Guid IdDespesa { get; set; }
-    public override Guid IdReceita { get; set; }
-    public override decimal Valor { get; set; }
-    public override string? Data { get; set; }
-    public override string? Descricao { get; set; }
-    public override string? TipoCategoria { get; set; }
-    public override string? Categoria { get; set; }
+    public Guid IdDespesa { get; set; }
+    public Guid IdReceita { get; set; }
+    public decimal Valor { get; set; }
+    public string? Data { get; set; }
+    public string? Descricao { get; set; }
+    public string? TipoCategoria { get; set; }
+    public string? Categoria { get; set; }
 }

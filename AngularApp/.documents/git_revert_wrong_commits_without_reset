@@ -8,3 +8,15 @@ git log
 git revert <hash--commit>
 
 
+
+
+keytool -keystore "$env:USERPROFILE\.android\production-keystore" -list -v
+
+keytool -keystore  "$env:USERPROFILE\.android\debug.keystore"  -list -v
+
+keytool -list -v -keystore "%USERPROFILE%\.android\prdocution.keystore" -alias productionkey -storepass masterMind81 -keypass masterMind81
+
+keytool -list -v -alias production-keystore "$env:USERPROFILE\.android\production-keystore"
+
+keytool -list -v -alias androiddebugkey -keystore "$env:USERPROFILE\.android\debug.keystore"
+keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android

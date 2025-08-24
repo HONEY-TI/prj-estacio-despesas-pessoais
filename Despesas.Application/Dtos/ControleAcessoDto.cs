@@ -1,36 +1,36 @@
-﻿using Despesas.Application.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos.Core;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Despesas.Application.Dtos;
-public class AcessoDto : BaseAcessoDto, IValidatableObject
+public class AcessoDto : BaseDto, IValidatableObject
 {
     [Required(ErrorMessage = "O campo Nome é obrigatório.")]
-    public override string? Nome { get; set; }
+    public string? Nome { get; set; }
 
-    public override string? SobreNome { get; set; }
+    public string? SobreNome { get; set; }
 
     [Required(ErrorMessage = "O campo Telefone é obrigatório.")]
-    public override string? Telefone { get; set; }
+    public string? Telefone { get; set; }
 
     [EmailAddress(ErrorMessage = "O campo Email é inválido.")]
     [Required(ErrorMessage = "O campo Email é obrigatório.")]
-    public override string? Email { get; set; }
+    public string? Email { get; set; }
 
     [Required(ErrorMessage = "O campo Senha é obrigatório.")]
     [PasswordPropertyText]
-    public override string? Senha { get; set; }
+    public string? Senha { get; set; }
 
     [Required(ErrorMessage = "O campo Confirma Senha é obrigatório.")]
     [PasswordPropertyText]
-    public override string? ConfirmaSenha { get; set; }
+    public string? ConfirmaSenha { get; set; }
 
     [JsonIgnore]
-    public override string? ExternalProvider { get; set; }
+    public string? ExternalProvider { get; set; }
 
     [JsonIgnore]
-    public override string? ExternalId { get; set; }
+    public string? ExternalId { get; set; }
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
 

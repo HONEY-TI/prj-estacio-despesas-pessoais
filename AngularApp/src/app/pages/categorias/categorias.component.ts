@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { CategoriasFormComponent } from './categorias-form/categorias.form.component';
-import { ICategoria, ITipoCategoria, IAction } from '../../shared/models';
-import { BarraFerramentaClass, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from '../../shared/components';
-import { CategoriaDataSet, CategoriaColumns } from '../../shared/datatable-config/categorias';
-import { MenuService } from '../../shared/services';
-import { CategoriaService } from '../../shared/services/api';
+import { ICategoria, ITipoCategoria, Action } from '../../models';
+import { BarraFerramentaClass, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from '../../components';
+import { MenuService } from '../../services';
+import { CategoriaService } from '../../services/api';
+import { CategoriaDataSet, CategoriaColumns } from '../../models/datatable-config/categorias';
 
 @Component({
   selector: 'app-categorias',
@@ -77,7 +77,7 @@ export class CategoriasComponent implements BarraFerramentaClass, OnInit {
   onClickNovo = () => {
     const modalRef = this.modalForm.modalService.open(CategoriasFormComponent, { centered: true });
     modalRef.shown.subscribe(() => {
-      modalRef.componentInstance.setAction(IAction.Create);
+      modalRef.componentInstance.setAction(Action.Create);
       modalRef.componentInstance.setRefresh(this.updateDatatable);
     });
   }
@@ -98,7 +98,7 @@ export class CategoriasComponent implements BarraFerramentaClass, OnInit {
   editCategoria = (categoria: ICategoria) => {
     const modalRef = this.modalForm.modalService.open(CategoriasFormComponent, { centered: true });
     modalRef.shown.subscribe(() => {
-      modalRef.componentInstance.setAction(IAction.Edit);
+      modalRef.componentInstance.setAction(Action.Edit);
       modalRef.componentInstance.setRefresh(this.updateDatatable);
       modalRef.componentInstance.setCategoria(categoria);
     });

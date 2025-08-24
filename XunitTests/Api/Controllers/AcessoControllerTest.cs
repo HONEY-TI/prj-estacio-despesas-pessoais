@@ -4,6 +4,7 @@ using Despesas.Backend.Controllers;
 using Despesas.Application.Dtos;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos.Abstractions;
+using Despesas.Application.Dtos.Core;
 
 namespace Api.Controllers;
 public sealed class AcessoControllerTest
@@ -179,7 +180,7 @@ public sealed class AcessoControllerTest
     {
         // Arrange
         var loginVM = new LoginDto { Email = "teste@teste.com", Senha = "password" };
-        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(new BaseAuthenticationDto());
+        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(new AuthenticationDto());
 
         // Act
         var result = _acessoController.SignIn(loginVM) as ObjectResult;
@@ -374,8 +375,8 @@ public sealed class AcessoControllerTest
     public void Refresh_With_ValidData_Returns_OkResult()
     {
         // Arrange
-        var authenticationDto = new BaseAuthenticationDto();
-        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(new BaseAuthenticationDto());
+        var authenticationDto = new AuthenticationDto();
+        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(new AuthenticationDto());
 
         // Act
         var result = _acessoController.Refresh("fakeRefreshToken") as ObjectResult;
@@ -389,7 +390,7 @@ public sealed class AcessoControllerTest
     public void Refresh_With_InvalidData_Returns_BadRequest()
     {
         // Arrange
-        var authenticationDto = new BaseAuthenticationDto();
+        var authenticationDto = new AuthenticationDto();
         _acessoController.ModelState.AddModelError("Key", "Error");
         _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(() => null);
         // Act
@@ -404,7 +405,7 @@ public sealed class AcessoControllerTest
     public void Refresh_With_Null_Result_Returns_BadRequest()
     {
         // Arrange
-        var authenticationDto = new BaseAuthenticationDto();
+        var authenticationDto = new AuthenticationDto();
         _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(() => null);
 
         // Act

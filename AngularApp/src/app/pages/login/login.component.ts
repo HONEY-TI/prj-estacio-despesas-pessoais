@@ -1,12 +1,14 @@
-import { Component, ElementRef, OnInit, Renderer2 } from "@angular/core";
-import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from "@angular/forms";
+﻿import { Component, OnInit } from "@angular/core";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { map, catchError } from "rxjs";
-import { AlertComponent, AlertType } from "../../shared/components";
-import { ILogin, IAuth } from "../../shared/models";
-import { AuthService } from "../../shared/services";
-import { AcessoService } from "../../shared/services/api";
-import { AuthGoogleService } from "../../shared/services/auth/auth.google.service";
+import { AlertComponent, AlertType } from "../../components";
+import { ILogin, IAuth } from "../../models";
+import { AuthService } from "../../services";
+import { AcessoService } from "../../services/api";
+import { AuthGoogleService } from "../../services/auth/auth.google.service";
+import { isNativeMobile } from "../../utils/platform.utils";
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -16,26 +18,32 @@ import { AuthGoogleService } from "../../shared/services/auth/auth.google.servic
 })
 
 export class LoginComponent implements OnInit {
-  loginForm: FormGroup & ILogin;
+  loginForm: FormGroup;
   showPassword = false;
   eyeIconClass: string = 'bi-eye';
 
   constructor(
-    private renderer: Renderer2,
-    private el: ElementRef,
+    private platform: Platform,
     private formbuilder: FormBuilder,
     public router: Router,
     public acessoService: AcessoService,
     public authProviderService: AuthService,
     public authProviderGoogleService: AuthGoogleService,
-    public modalALert: AlertComponent) { }
+    public modalALert: AlertComponent) {
+    this.platform.ready().then(() => {
+      if (isNativeMobile()) {
+        const elements = document.querySelectorAll('.g_signin');
+        elements.forEach(el => el.remove());
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.loginForm = this.formbuilder.group({
       email: ['teste@teste.com', [Validators.required, Validators.email]],
       senha: ['12345T!', [Validators.required, Validators.nullValidator]]
-    }) as FormGroup & ILogin;
-    this.renderer.setAttribute(this.el.nativeElement, 'aria-hidden', 'false');
+    }) as FormGroup;
+
   }
 
   onLoginClick() {

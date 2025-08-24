@@ -1,8 +1,8 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Aggreggates;
 using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace Repository.Persistency.UnitOfWork;
-public class UnitOfWork<T> : IUnitOfWork<T> where T : BaseModel
+public class UnitOfWork<T> : IUnitOfWork<T> where T : BaseDomain
 {
     private IRepositoy<T>? _repository;
     private readonly RegisterContext _context;

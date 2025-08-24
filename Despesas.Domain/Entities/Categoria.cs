@@ -1,9 +1,9 @@
-﻿using Domain.Core;
-using Domain.Entities.ValueObjects;
+﻿using Domain.Core.Aggreggates;
+using Domain.Core.ValueObject;
 using System.Text.Json.Serialization;
 
 namespace Domain.Entities;
-public class Categoria : BaseModel
+public class Categoria : BaseDomain
 {
     public string Descricao { get; set; } = String.Empty;
     public Guid UsuarioId { get; set; }

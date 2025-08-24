@@ -1,4 +1,4 @@
-﻿using Domain.Entities.ValueObjects;
+﻿using Domain.Core.ValueObject;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

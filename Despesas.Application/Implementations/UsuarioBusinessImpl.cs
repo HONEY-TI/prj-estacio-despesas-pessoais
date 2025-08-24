@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Despesas.Application.Abstractions;
-using Despesas.Application.Dtos.Abstractions;
+using Despesas.Application.Dtos;
+using Domain.Core.ValueObject;
 using Domain.Entities;
-using Domain.Entities.ValueObjects;
 using Repository.Persistency.Generic;
 using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace Despesas.Application.Implementations;
-public class UsuarioBusinessImpl<Dto> : BusinessBase<Dto, Usuario>, IUsuarioBusiness<Dto> where Dto : BaseUsuarioDto, new()
+public class UsuarioBusinessImpl<Dto> : BusinessBase<Dto, Usuario>, IUsuarioBusiness<Dto> where Dto : UsuarioDto, new()
 {
     private readonly IRepositorio<Usuario> _repositorio;
     private readonly IMapper _mapper;

@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Domain.Core;
+using Domain.Core.Aggreggates;
 using MediatR;
 using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace CrossCutting.CQRS.Queries;
 
-public sealed class GetByIdQueryHandler<T> : IRequestHandler<GetByIdQuery<T>, T> where T : BaseModel, new()
+public sealed class GetByIdQueryHandler<T> : IRequestHandler<GetByIdQuery<T>, T> where T : BaseDomain, new()
 {
     private readonly IUnitOfWork<T> _unitOfWork;
     private readonly IMapper _mapper;

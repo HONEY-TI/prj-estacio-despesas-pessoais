@@ -1,5 +1,5 @@
-﻿using Domain.Entities.ValueObjects;
-using __mock__.Entities;
+﻿using __mock__.Entities;
+using Domain.Core.ValueObject;
 
 namespace Domain.Entities;
 public sealed class CategoriaTest

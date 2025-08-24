@@ -1,4 +1,4 @@
-﻿using Despesas.Application.Dtos;
+﻿using Despesas.Application.Dtos.Core;
 
 namespace Application.Dtos;
 public sealed class LoginDtoTest

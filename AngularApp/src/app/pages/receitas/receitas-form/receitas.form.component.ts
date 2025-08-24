@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import dayjs from 'dayjs';
-import { AlertComponent, AlertType } from '../../../shared/components';
-import { ICategoria, IReceita, IAction } from '../../../shared/models';
-import { ReceitaService } from '../../../shared/services/api';
-import { CustomValidators } from '../../../shared/validators';
+import { AlertComponent, AlertType } from '../../../components';
+import { ICategoria, IReceita, Action } from '../../../models';
+import { ReceitaService } from '../../../services/api';
+import { CustomValidators } from '../../validators';
 
 @Component({
   selector: 'app-receitas-form',
@@ -17,7 +17,7 @@ import { CustomValidators } from '../../../shared/validators';
 export class ReceitasFormComponent {
   categorias: ICategoria[] = [];
   receitaForm: FormGroup & IReceita;
-  action: IAction = IAction.Create;
+  action: Action = Action.Create;
   refresh: Function = () => { };
   setRefresh(_refresh: Function): void {
     this.refresh = _refresh;
@@ -43,10 +43,10 @@ export class ReceitasFormComponent {
 
   onSaveClick = () => {
     switch (this.action) {
-      case IAction.Create:
+      case Action.Create:
         this.saveCreateReceita();
         break;
-      case IAction.Edit:
+      case Action.Edit:
         this.saveEditReceita();
         break;
       default:

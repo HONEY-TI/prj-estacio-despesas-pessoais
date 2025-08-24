@@ -1,10 +1,10 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Aggreggates;
 using MediatR;
 using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace CrossCutting.CQRS.Queries;
 
-public sealed class GetAllQueryHandler<T> : IRequestHandler<GetAllQuery<T>, IEnumerable<T>> where T : BaseModel, new()
+public sealed class GetAllQueryHandler<T> : IRequestHandler<GetAllQuery<T>, IEnumerable<T>> where T : BaseDomain, new()
 {
     private readonly IUnitOfWork<T> _unitOfWork;
     

@@ -25,9 +25,6 @@
 		<PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Despesas.Application\Despesas.Application.csproj" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\.dockerignore" Link=".dockerignore">
@@ -51,8 +48,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="certificate\" />
 		<Folder Include="wwwroot\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Despesas.Application\Despesas.Application.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>

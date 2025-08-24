@@ -1,14 +1,13 @@
-﻿using Despesas.Application.Dtos.Abstractions;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Despesas.Application.Dtos;
-public class ChangePasswordDto : BaseChangePasswordDto, IValidatableObject
+public class ChangePasswordDto : IValidatableObject
 {
     [Required(ErrorMessage = "O campo Senha é obrigatório.")]
-    public override string? Senha { get; set; }
+    public string? Senha { get; set; }
 
     [Required(ErrorMessage = "O campo Confirma Senha é obrigatório.")]
-    public override string? ConfirmaSenha { get; set; }
+    public string? ConfirmaSenha { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

@@ -1,5 +1,5 @@
-﻿using Domain.Entities;
-using Domain.Entities.ValueObjects;
+﻿using Domain.Core.ValueObject;
+using Domain.Entities;
 using Repository;
 
 namespace Migrations.DataSeeders.Implementations;

@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using __mock__.Entities;
-using Domain.Entities.ValueObjects;
 using Repository.Persistency.UnitOfWork.Abstractions;
 using Repository.Persistency.Generic;
 using Despesas.Application.Implementations;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Profile;
+using Domain.Core.ValueObject;
 
 namespace Application;
 

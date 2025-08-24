@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+﻿import { Component, OnInit, ViewChild } from "@angular/core";
 import dayjs from "dayjs";
 import { DespesasFormComponent } from "./despesas-form/despesas.form.component";
-import { BarraFerramentaClass, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../shared/components";
-import { DespesaDataSet, DespesaColumns } from "../../shared/datatable-config/despesas";
-import { IDespesa, IAction } from "../../shared/models";
-import { MenuService } from "../../shared/services";
-import { DespesaService } from "../../shared/services/api";
+import { BarraFerramentaClass, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../components";
+import { DespesaDataSet, DespesaColumns } from "../../models/datatable-config/despesas";
+import { IDespesa, Action } from "../../models";
+import { MenuService } from "../../services";
+import { DespesaService } from "../../services/api";
 @Component({
   selector: 'app-despesas',
   templateUrl: './despesas.component.html',
@@ -80,7 +80,7 @@ export class DespesasComponent implements BarraFerramentaClass, OnInit {
   onClickNovo = () => {
     const modalRef = this.modalForm.modalService.open(DespesasFormComponent, { centered: true });
     modalRef.shown.subscribe(() => {
-      modalRef.componentInstance.action = IAction.Create;
+      modalRef.componentInstance.action = Action.Create;
       modalRef.componentInstance.setRefresh(this.updateDatatable);
     });
   }
@@ -88,7 +88,7 @@ export class DespesasComponent implements BarraFerramentaClass, OnInit {
   onClickEdit = (idDespesa: number) => {
     const modalRef = this.modalForm.modalService.open(DespesasFormComponent, { centered: true });
     modalRef.shown.subscribe(() => {
-      modalRef.componentInstance.action = IAction.Edit;
+      modalRef.componentInstance.action = Action.Edit;
       modalRef.componentInstance.setRefresh(this.updateDatatable);
       modalRef.componentInstance.editDespesa(idDespesa);
     });

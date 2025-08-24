@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Despesas.Application.Abstractions;
-using Despesas.Application.Dtos.Abstractions;
+using Despesas.Application.Dtos;
 using Despesas.Infrastructure.Amazon.Abstractions;
 using Domain.Entities;
 using Repository.Persistency.Generic;
 
 namespace Despesas.Application.Implementations;
-public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsuarioBusiness<Dto, DtoUsuario> where Dto : BaseImagemPerfilDto, new() where DtoUsuario : BaseUsuarioDto, new()
+public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsuarioBusiness<Dto, DtoUsuario> where Dto : ImagemPerfilDto, new() where DtoUsuario : UsuarioDto, new()
 {
     private readonly IMapper _mapper;
     private readonly IRepositorio<ImagemPerfilUsuario> _repositorio;
