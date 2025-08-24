@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "add:android": "npx cap add android",
     "build:mobile": "ng build --configuration=production-android --output-path=www",
+    "build:mobile-dev": "ng build --configuration=development-android --output-path=www",
     "start:android": "npx cap sync android && npx cap run android"
   },
   "keywords": [],
@@ -13,13 +13,14 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@capacitor/android": "5.7.8",
-    "@capacitor/app": "5.0.8",
-    "@capacitor/cli": "5.7.8",
-    "@capacitor/core": "5.7.8",
-    "@capacitor/haptics": "5.0.8",
-    "@capacitor/keyboard": "5.0.9",
-    "@capacitor/status-bar": "5.0.8"
+    "@capacitor/android": "6.2.1",
+    "@capacitor/app": "6.0.2",
+    "@capacitor/cli": "6.2.1",
+    "@capacitor/core": "6.2.1",
+    "@capacitor/haptics": "6.0.1",
+    "@capacitor/keyboard": "6.0.1",
+    "@capacitor/status-bar": "6.0.1",
+    "@ionic/angular": "^8.7.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^20.1.5"

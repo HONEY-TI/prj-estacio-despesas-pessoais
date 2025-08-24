@@ -1,12 +1,12 @@
-﻿using Despesas.Application.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos.Core;
 using System.ComponentModel.DataAnnotations;
 
 namespace Despesas.Application.Dtos;
-public class CategoriaDto : BaseCategoriaDto
+public class CategoriaDto : BaseDto
 {
     [Required(ErrorMessage = "O campo Descrição é obrigatório.")]
-    public override string? Descricao { get; set; }
+    public string? Descricao { get; set; }
 
     [Required(ErrorMessage = "O campo Tipo de categoria é obrigatório.")]
-    public BaseTipoCategoriaDto IdTipoCategoria { get; set; }
+    public TipoCategoriaDto IdTipoCategoria { get; set; }
 }

@@ -1,7 +1,7 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Aggreggates;
 
 namespace Despesas.Application.Abstractions.Generic;
-public interface IBusiness<Dto, Entity> where Dto : class where Entity : BaseModel, new()
+public interface IBusiness<Dto, Entity> where Dto : class where Entity : BaseDomain, new()
 {
     Dto Create(Dto obj);
     Dto FindById(Guid id, Guid idUsuario);

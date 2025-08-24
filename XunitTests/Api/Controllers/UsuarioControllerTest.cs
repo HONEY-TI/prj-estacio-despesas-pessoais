@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using __mock__.Entities;
-using Domain.Entities.ValueObjects;
 using AutoMapper;
 using Despesas.Backend.Controllers;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Profile;
+using Domain.Core.ValueObject;
 
 namespace Api.Controllers;
 public sealed class UsuarioControllerTest

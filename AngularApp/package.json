@@ -2,8 +2,8 @@
   "name": "despesas-frontend",
   "version": "3.0.0",
   "workspaces": [
-    "app-android",
-    "app-ios"
+    "app-ios",
+    "app-android"
   ],
   "scripts": {
     "ng": "ng",
@@ -19,11 +19,8 @@
     "prestart": "node aspnetcore-https",
     "start:windows": "ng serve --ssl --configuration local-development --ssl-cert \"%LOCALAPPDATA%\\ASP.NET\\https\\%npm_package_name%.pem\" --ssl-key \"%LOCALAPPDATA%\\ASP.NET\\https\\%npm_package_name%.key\" --host=localhost",
     "start:default": "ng serve --ssl --configuration local-development --ssl-cert \"$HOME/.aspnet/https/${npm_package_name}.pem\" --ssl-key \"$HOME/.aspnet/https/${npm_package_name}.key\" --host=localhost",
-    "add:android": "npm run add:android --workspace=app-android",
-    "add:ios": "npm run add:ios --workspace=app-ios",
-    "install:android": "npm install --workspace=app-android",
-    "install:ios": "npm install --workspace=app-ios",
     "build:android": "npm run build:mobile --workspace=app-android",
+    "build:android-dev": "npm run build:mobile-dev --workspace=app-android",
     "build:ios": "npm run build:mobile --workspace=app-ios",
     "start:android": "npm run start:android --workspace=app-android",
     "start:ios": "npm run start:ios --workspace=app-ios"

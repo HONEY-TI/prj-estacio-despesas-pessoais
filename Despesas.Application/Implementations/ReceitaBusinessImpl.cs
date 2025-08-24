@@ -4,11 +4,11 @@ using Domain.Entities;
 using Repository.Persistency.Generic;
 using Despesas.Application.Abstractions.Generic;
 using Repository.Persistency.UnitOfWork.Abstractions;
-using Domain.Entities.ValueObjects;
-using Despesas.Application.Dtos.Abstractions;
+using Despesas.Application.Dtos;
+using Domain.Core.ValueObject;
 
 namespace Despesas.Application.Implementations;
-public class ReceitaBusinessImpl<Dto> : BusinessBase<Dto, Receita>, IBusiness<Dto, Receita> where Dto : BaseReceitaDto, new()
+public class ReceitaBusinessImpl<Dto> : BusinessBase<Dto, Receita>, IBusiness<Dto, Receita> where Dto : ReceitaDto, new()
 {
     private readonly IRepositorio<Receita> _repositorio;
     private readonly IRepositorio<Categoria> _repoCategoria;

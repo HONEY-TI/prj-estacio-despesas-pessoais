@@ -1,7 +1,7 @@
-﻿using Despesas.Application.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos;
 
 namespace Despesas.Application.Abstractions;
-public interface IUsuarioBusiness<Dto> where Dto : BaseUsuarioDto, new()
+public interface IUsuarioBusiness<Dto> where Dto : UsuarioDto, new()
 {
     Dto Create(Dto dto);
     Dto FindById(Guid id);

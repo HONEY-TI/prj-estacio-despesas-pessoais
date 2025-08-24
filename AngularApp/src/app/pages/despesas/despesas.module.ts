@@ -9,7 +9,7 @@ import { MatInputModule } from "@angular/material/input";
 import { DespesasFormComponent } from "./despesas-form/despesas.form.component";
 import { DespesasComponent } from "./despesas.component";
 import { DespesasRoutingModule } from "./despesas.routing.module";
-import { SharedModule } from "../../shared/shared.module";
+import { SharedModule } from "../../app.shared.module";
 
 @NgModule({
   declarations: [DespesasComponent, DespesasFormComponent ],

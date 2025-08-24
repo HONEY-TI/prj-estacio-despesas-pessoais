@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using Domain.Entities.ValueObjects;
+using Domain.Core.ValueObject;
 
 namespace __mock__.Repository;
 public sealed class MockUsuario

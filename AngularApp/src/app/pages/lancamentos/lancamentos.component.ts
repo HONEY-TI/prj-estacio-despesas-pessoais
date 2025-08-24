@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+﻿import { Component, OnInit, ViewChild } from "@angular/core";
 import dayjs from "dayjs";
-import { BarraFerramentaComponent, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../shared/components";
-import { LancamentoDataSet, LancamentoColumns } from "../../shared/datatable-config/lancamentos";
-import { ILancamento, IAction } from "../../shared/models";
-import { MenuService, FilterMesAnoService } from "../../shared/services";
-import { LancamentoService } from "../../shared/services/api";
+import { BarraFerramentaComponent, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../components";
+import { LancamentoDataSet, LancamentoColumns } from "../../models/datatable-config/lancamentos";
+import { ILancamento, Action } from "../../models";
+import { MenuService, FilterMesAnoService } from "../../services";
+import { LancamentoService } from "../../services/api";
 import { DespesasFormComponent } from "../despesas/despesas-form/despesas.form.component";
 import { ReceitasFormComponent } from "../receitas/receitas-form/receitas.form.component";
 
@@ -90,7 +90,7 @@ export class LancamentosComponent implements OnInit {
     if (tipoCategoria === 'Despesa') {
       modalRef = this.modalForm.modalService.open(DespesasFormComponent, { centered: true });
       modalRef.shown.subscribe(() => {
-        modalRef.componentInstance.action = IAction.Edit;
+        modalRef.componentInstance.action = Action.Edit;
         modalRef.componentInstance.setRefresh(this.updateDatatable);
         modalRef.componentInstance.editDespesa(id);
       });
@@ -98,7 +98,7 @@ export class LancamentosComponent implements OnInit {
     else {
       modalRef = this.modalForm.modalService.open(ReceitasFormComponent, { centered: true });
       modalRef.shown.subscribe(() => {
-        modalRef.componentInstance.action = IAction.Edit;
+        modalRef.componentInstance.action = Action.Edit;
         modalRef.componentInstance.setRefresh(this.updateDatatable);
         modalRef.componentInstance.editReceita(id);
       });

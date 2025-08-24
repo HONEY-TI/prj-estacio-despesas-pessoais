@@ -3,9 +3,9 @@ using MediatR;
 using AutoMapper;
 using Repository.Persistency.UnitOfWork.Abstractions;
 using Repository.Persistency.Generic;
-using Domain.Entities.ValueObjects;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Abstractions.Generic;
+using Domain.Core.ValueObject;
 
 namespace Despesas.Application.Implementations;
 public class CategoriaBusinessImpl<Dto> : BusinessBase<Dto, Categoria>, IBusiness<Dto, Categoria> where Dto : class, new()

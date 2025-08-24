@@ -1,10 +1,10 @@
 ﻿using Despesas.Infrastructure.Email;
-using Domain.Entities.ValueObjects;
 using __mock__.Repository;
 using Repository.Persistency.Abstractions;
 using Repository.Persistency.Implementations.Fixtures;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Domain.Core.ValueObject;
 
 namespace Repository.Persistency.Implementations;
 

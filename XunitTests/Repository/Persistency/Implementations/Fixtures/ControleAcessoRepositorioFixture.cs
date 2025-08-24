@@ -1,7 +1,7 @@
-﻿using Domain.Entities.ValueObjects;
-using Repository.Persistency.Abstractions;
+﻿using Repository.Persistency.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using __mock__.Repository;
+using Domain.Core.ValueObject;
 
 namespace Repository.Persistency.Implementations.Fixtures;
 

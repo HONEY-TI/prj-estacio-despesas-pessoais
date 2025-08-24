@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { MenuService } from "../../shared/services";
+import { MenuService } from "../../services";
 
 @Component({
   selector: 'app-configuracoes',

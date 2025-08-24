@@ -3,6 +3,7 @@ using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Despesas.Application.Dtos.Core;
 
 namespace Despesas.Backend.Controllers;
 
@@ -36,7 +37,7 @@ public class AcessoController : AuthController
 
     [AllowAnonymous]
     [HttpPost("SignIn")]
-    [ProducesResponseType(200, Type = typeof(BaseAuthenticationDto))]
+    [ProducesResponseType(200, Type = typeof(AuthenticationDto))]
     [ProducesResponseType(400, Type = typeof(string))]
     public IActionResult SignIn([FromBody] LoginDto login)
     {
@@ -57,7 +58,7 @@ public class AcessoController : AuthController
     [ApiExplorerSettings(IgnoreApi = true)]
     [AllowAnonymous]
     [HttpPost("SignInWithGoogle")]
-    [ProducesResponseType(200, Type = typeof(BaseAuthenticationDto))]
+    [ProducesResponseType(200, Type = typeof(AuthenticationDto))]
     [ProducesResponseType(400, Type = typeof(string))]
     public async Task<IActionResult> GoogleSignIn([FromBody] GoogleAuthenticationDto authentication)
     {
@@ -118,7 +119,7 @@ public class AcessoController : AuthController
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet("refresh/{refreshToken}")]
     [Authorize("Bearer", Roles = "User, Admin")]
-    [ProducesResponseType(200, Type = typeof(BaseAuthenticationDto))]
+    [ProducesResponseType(200, Type = typeof(AuthenticationDto))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(403)]
     public IActionResult Refresh([FromRoute] string refreshToken)

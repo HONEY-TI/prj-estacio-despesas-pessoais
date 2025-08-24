@@ -1,7 +1,6 @@
-﻿using Despesas.Application.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos.Core;
+using Domain.Core.ValueObject;
 using Domain.Entities;
-
-using Domain.Entities.ValueObjects;
 
 namespace Despesas.Application.Dtos.Profile;
 public class CategoriaProfile : AutoMapper.Profile
@@ -27,6 +26,6 @@ public class CategoriaProfile : AutoMapper.Profile
             .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao))
             .ReverseMap();
 
-        CreateMap<BaseTipoCategoriaDto, TipoCategoria>().ReverseMap();
+        CreateMap<TipoCategoriaDto, TipoCategoria>().ReverseMap();
     }
 }

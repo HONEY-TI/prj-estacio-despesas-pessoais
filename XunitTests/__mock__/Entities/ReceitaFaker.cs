@@ -1,7 +1,8 @@
 ﻿using Bogus;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Abstractions;
-using Domain.Entities.ValueObjects;
+using Despesas.Application.Dtos.Core;
+using Domain.Core.ValueObject;
 
 namespace __mock__.Entities;
 public sealed class ReceitaFaker
@@ -50,13 +51,13 @@ public sealed class ReceitaFaker
             .RuleFor(r => r.Descricao, f => f.Commerce.ProductName())
             .RuleFor(r => r.Valor, f => f.Random.Decimal(1, 900000))
             .RuleFor(r => r.UsuarioId, idUsuario)
-            .RuleFor(r => r.IdCategoria, CategoriaFaker.Instance.GetNewFakerVM(UsuarioFaker.Instance.GetNewFakerVM(idUsuario), BaseTipoCategoriaDto.Receita, idUsuario).Id)
+            .RuleFor(r => r.IdCategoria, CategoriaFaker.Instance.GetNewFakerVM(UsuarioFaker.Instance.GetNewFakerVM(idUsuario), TipoCategoriaDto.Receita, idUsuario).Id)
             .Generate();
         counterVM++;
         return receitaFaker;
     }
 
-    public List<ReceitaDto> ReceitasVMs(BaseUsuarioDto? usuarioDto = null, Guid? idUsuario = null)
+    public List<ReceitaDto> ReceitasVMs(UsuarioDto? usuarioDto = null, Guid? idUsuario = null)
     {
         var listReceitaDto = new List<ReceitaDto>();
         for (int i = 0; i < 10; i++)

@@ -1,6 +1,7 @@
 ﻿using Despesas.Application.Abstractions;
 using Despesas.Application.Abstractions.Generic;
 using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Core;
 using Despesas.Application.Implementations;
 using Despesas.Infrastructure.Email;
 using Despesas.Infrastructure.Email.Abstractions;
@@ -24,6 +25,7 @@ public static class ServicesDependenceInject
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+
         services.AddScoped(typeof(IBusiness<CategoriaDto, Categoria>), typeof(CategoriaBusinessImpl<CategoriaDto>));
         services.AddScoped(typeof(IBusiness<DespesaDto, Despesa>), typeof(DespesaBusinessImpl<DespesaDto>));
         services.AddScoped(typeof(IBusiness<ReceitaDto, Receita>), typeof(ReceitaBusinessImpl<ReceitaDto>));

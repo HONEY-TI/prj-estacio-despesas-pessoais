@@ -1,9 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+﻿import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { AlertComponent, AlertType } from "../../shared/components";
-import { IUsuario } from "../../shared/models";
-import { MenuService } from "../../shared/services";
-import { UsuarioService } from "../../shared/services/api";
+import { AlertComponent, AlertType } from "../../components";
+import { IUsuario } from "../../models";
+import { MenuService } from "../../services";
+import { UsuarioService } from "../../services/api";
 
 @Component({
   selector: 'app-perfil',

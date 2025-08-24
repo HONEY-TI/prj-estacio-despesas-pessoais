@@ -1,5 +1,5 @@
-﻿using Despesas.Application.Dtos;
-using Despesas.Application.Dtos.Abstractions;
+﻿using Despesas.Application.Dtos.Abstractions;
+using Despesas.Application.Dtos.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -82,7 +82,7 @@ internal class HideDtosFilter : ISchemaFilter
 {
     public void Apply(OpenApiSchema schema, SchemaFilterContext context)
     {
-        if (context.Type == typeof(BaseAuthenticationDto))
+        if (context.Type == typeof(AuthenticationDto))
         {
             schema.Description = "DTO contendo informações de autenticação.";
             schema.Type = "object";

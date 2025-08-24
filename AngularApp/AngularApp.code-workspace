@@ -58,7 +58,7 @@
         "name": "Chrome Attach Debugger",
         "type": "chrome",
         "request": "launch",
-        "url": "https://127.0.0.1:4200",
+        "url": "https://localhost:4200", 
         "webRoot": "${workspaceFolder}",
         "sourceMaps": true,
         "sourceMapPathOverrides": {

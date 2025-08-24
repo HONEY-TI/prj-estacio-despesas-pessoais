@@ -9,7 +9,7 @@ import { MatInputModule } from "@angular/material/input";
 import { ReceitasFormComponent } from "./receitas-form/receitas.form.component";
 import { ReceitasComponent } from "./receitas.component";
 import { ReceitasRoutingModule } from "./receitas.routing.module";
-import { SharedModule } from "../../shared/shared.module";
+import { SharedModule } from "../../app.shared.module";
 @NgModule({
   declarations: [ReceitasComponent, ReceitasFormComponent ],
   imports: [CommonModule, ReceitasRoutingModule, ReactiveFormsModule, SharedModule, MatIconModule, MatInputModule, MatFormFieldModule, MatNativeDateModule, MatDatepickerModule],

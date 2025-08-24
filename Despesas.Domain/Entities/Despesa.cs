@@ -1,7 +1,7 @@
-﻿using Domain.Core;
+﻿using Domain.Core.Aggreggates;
 
 namespace Domain.Entities;
-public class Despesa : BaseModel
+public class Despesa : BaseDomain
 {
     public DateTime Data { get; set; }
     public string Descricao { get; set; } = String.Empty;

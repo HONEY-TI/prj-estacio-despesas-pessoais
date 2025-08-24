@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Domain.Entities.ValueObjects;
 using Domain.Entities;
 using Repository.Mapping;
+using Domain.Core.ValueObject;
 
 namespace Repository.Abastractions;
 

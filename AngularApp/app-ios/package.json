@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "add:ios": "npx cap add ios",
     "build:prod": "ng build --configuration=production-ios --output-path=www",
     "build:dev": "ng build --configuration=development-ios --output-path=www",
     "start:ios": "npx cap sync ios && npx cap run ios"

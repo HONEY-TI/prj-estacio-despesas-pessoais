@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
-import { SharedModule } from '../../shared/shared.module';
+import { SharedModule } from '../../app.shared.module';
 
 @NgModule({
   declarations: [PerfilComponent ],

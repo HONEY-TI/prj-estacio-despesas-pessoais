@@ -1,11 +1,11 @@
-import { Component, ViewChild } from "@angular/core";
+﻿import { Component, ViewChild } from "@angular/core";
 import dayjs from "dayjs";
 import { ReceitasFormComponent } from "./receitas-form/receitas.form.component";
-import { BarraFerramentaClass, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../shared/components";
-import { ReceitaDataSet, ReceitaColumns } from "../../shared/datatable-config/receitas";
-import { IReceita, IAction } from "../../shared/models";
-import { MenuService } from "../../shared/services";
-import { ReceitaService } from "../../shared/services/api";
+import { BarraFerramentaClass, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../components";
+import { ReceitaDataSet, ReceitaColumns } from "../../models/datatable-config/receitas";
+import { IReceita, Action } from "../../models";
+import { MenuService } from "../../services";
+import { ReceitaService } from "../../services/api";
 
 @Component({
   selector: 'app-receitas',
@@ -82,7 +82,7 @@ export class ReceitasComponent implements BarraFerramentaClass {
   onClickNovo = () => {
     const modalRef = this.modalForm.modalService.open(ReceitasFormComponent, { centered: true });
     modalRef.shown.subscribe(() => {
-      modalRef.componentInstance.action = IAction.Create;
+      modalRef.componentInstance.action = Action.Create;
       modalRef.componentInstance.setRefresh(this.updateDatatable);
     });
   }
@@ -90,7 +90,7 @@ export class ReceitasComponent implements BarraFerramentaClass {
   onClickEdit = (idReceita: number) => {
     const modalRef = this.modalForm.modalService.open(ReceitasFormComponent, { centered: true });
     modalRef.shown.subscribe(() => {
-      modalRef.componentInstance.action = IAction.Edit;
+      modalRef.componentInstance.action = Action.Edit;
       modalRef.componentInstance.setRefresh(this.updateDatatable);
       modalRef.componentInstance.editReceita(idReceita);
     });
