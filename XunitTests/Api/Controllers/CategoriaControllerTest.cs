@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using __mock__.Entities;
 using Despesas.Backend.Controllers;
 using Despesas.Application.Abstractions;
