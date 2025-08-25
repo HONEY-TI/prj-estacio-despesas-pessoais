@@ -7,7 +7,7 @@ on:
 jobs:
   trigger_build_and_test:
     name: Triggered Deploy Dev
-    uses: alexribeirofaria/prj-despesas-pessoais/.github/workflows/build_and_test.yml@main
+    uses: alexribeirofaria/prj-despesas-pessoais/.github/workflows/build_development.yml@staging
     secrets: inherit     
         
   deploy:
