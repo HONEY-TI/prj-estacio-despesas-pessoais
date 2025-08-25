@@ -5,13 +5,11 @@ on:
 
   push:
     branches: 
-      - main 
       - develop
 
   pull_request:
     types: [opened]
     branches:       
-      - main
       - staging
 
 permissions:
@@ -76,10 +74,3 @@ jobs:
       - name: Test Angular App
         run: npm run test:coverage
         working-directory: AngularApp
-
-
-  trigger_tests_sonarcloud:
-    needs: build_and_test_angular
-    name: Triggered Test and Analysis Code
-    uses: alexribeirofaria/prj-despesas-pessoais/.github/workflows/test_analyse_in_Sonar_Cloud.yml@main
-    secrets: inherit

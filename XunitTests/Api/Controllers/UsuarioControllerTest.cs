@@ -54,7 +54,7 @@ public sealed class UsuarioControllerTest
     {
         // Arrange
         var usuarioDto = _usuarioDtos[4];
-        Guid idUsuario = usuarioDto.Id;
+        Guid idUsuario = usuarioDto.Id.Value;
         Usings.SetupBearerToken(idUsuario, _usuarioController);
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Returns(usuarioDto);
 
@@ -76,7 +76,7 @@ public sealed class UsuarioControllerTest
         var usuarioDto = _mapper.Map<UsuarioDto>(usaurios.FindAll(u => u.PerfilUsuario == PerfilUsuario.Perfil.Admin).First());
         usuarioDto.Telefone = null;
         var usauriosDtos = _mapper.Map<List<UsuarioDto>>(usaurios);
-        Guid idUsuario = usuarioDto.Id;
+        Guid idUsuario = usuarioDto.Id.Value;
         Usings.SetupBearerToken(idUsuario, _usuarioController);
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Throws(new ArgumentException("Erro ao atualizar Usuário!"));
 
@@ -97,7 +97,7 @@ public sealed class UsuarioControllerTest
         // Arrange
         var usuarioDto = _usuarioDtos.First();
         usuarioDto.Email = string.Empty;
-        Guid idUsuario = usuarioDto.Id;
+        Guid idUsuario = usuarioDto.Id.Value;
         Usings.SetupBearerToken(idUsuario, _usuarioController);
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Throws(new ArgumentException("Campo Login não pode ser em branco"));
 
@@ -118,7 +118,7 @@ public sealed class UsuarioControllerTest
         // Arrange
         var usuarioDto = _usuarioDtos.First();
         usuarioDto.Email = " ";
-        Guid idUsuario = usuarioDto.Id;
+        Guid idUsuario = usuarioDto.Id.Value;
         Usings.SetupBearerToken(idUsuario, _usuarioController);
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Throws(new ArgumentException("Campo Login não pode ser em branco"));
 
@@ -139,7 +139,7 @@ public sealed class UsuarioControllerTest
         // Arrange
         var usuarioDto = _usuarioDtos.First();
         usuarioDto.Email = "invalidEmail.com";
-        Guid idUsuario = usuarioDto.Id;
+        Guid idUsuario = usuarioDto.Id.Value;
         Usings.SetupBearerToken(idUsuario, _usuarioController);
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Throws(new ArgumentException("Email inválido!"));
 
@@ -159,7 +159,7 @@ public sealed class UsuarioControllerTest
     {
         // Arrange
         var usuarioDto = usuarioNormal;
-        Guid idUsuario = usuarioDto.Id;
+        Guid idUsuario = usuarioDto.Id.Value;
         Usings.SetupBearerToken(idUsuario, _usuarioController);
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Throws(new ArgumentException("Usuário não encontrado!"));
 

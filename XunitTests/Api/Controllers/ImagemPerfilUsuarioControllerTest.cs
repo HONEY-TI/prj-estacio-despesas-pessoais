@@ -33,7 +33,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
         var _imagemPerfilUsuarios = ImagemPerfilUsuarioFaker.Instance.ImagensPerfilUsuarios();
         var _imagemPerfilUsuarioDtos = _mapperImagemPerfil.Map<List<ImagemPerfilDto>>(_imagemPerfilUsuarios);
         var usuarioDto = _mapperUsuario.Map<UsuarioDto>(_imagemPerfilUsuarios.First().Usuario);
-        Guid idUsuario = usuarioDto.Id;
+        Guid idUsuario = usuarioDto.Id.Value;
         Usings.SetupBearerToken(idUsuario, _imagePerfilUsuarioController);
         _mockImagemPerfilBusiness.Setup(business => business.FindAll(idUsuario)).Returns(_imagemPerfilUsuarioDtos);
 

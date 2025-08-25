@@ -76,7 +76,7 @@ public sealed class DespesaFaker
             usuarioDto = usuarioDto ?? new UsuarioDto();
             var categoriaDto = CategoriaFaker.Instance.GetNewFakerVM(usuarioDto, TipoCategoriaDto.Despesa);
 
-            var despesaDto = GetNewFakerVM(usuarioDto.Id, categoriaDto.Id);
+            var despesaDto = GetNewFakerVM(usuarioDto.Id.Value, categoriaDto.Id.Value);
             listDespesaDto.Add(despesaDto);
         }
 

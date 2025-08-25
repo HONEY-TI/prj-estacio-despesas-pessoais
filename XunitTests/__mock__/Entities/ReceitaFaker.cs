@@ -68,7 +68,7 @@ public sealed class ReceitaFaker
             usuarioDto = usuarioDto ?? new UsuarioDto();
             var categoriaDto = CategoriaFaker.Instance.GetNewFakerVM(usuarioDto);
 
-            var receitaDto = GetNewFakerVM(usuarioDto.Id, categoriaDto.Id);
+            var receitaDto = GetNewFakerVM(usuarioDto.Id.Value, categoriaDto.Id.Value);
             listReceitaDto.Add(receitaDto);
         }
         return listReceitaDto;

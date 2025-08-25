@@ -80,10 +80,10 @@ public sealed class ImagemPerfilUsuarioBusinessImplTests
     {
         // Arrange
         var imagemPerfilVM = _mapper.Map<ImagemPerfilDto>(_imagensPerfil.First());
-        _repositorioMock.Setup(repo => repo.Get(imagemPerfilVM.Id)).Returns(_imagensPerfil.Find(obj => obj.Id == imagemPerfilVM.Id) ?? new());
+        _repositorioMock.Setup(repo => repo.Get(imagemPerfilVM.Id.Value)).Returns(_imagensPerfil.Find(obj => obj.Id == imagemPerfilVM.Id) ?? new());
 
         // Act
-        var result = _imagemPerfilUsuarioBusiness.FindById(imagemPerfilVM.Id, imagemPerfilVM.UsuarioId);
+        var result = _imagemPerfilUsuarioBusiness.FindById(imagemPerfilVM.Id.Value, imagemPerfilVM.UsuarioId);
 
         // Assert
         Assert.NotNull(result);
@@ -99,7 +99,7 @@ public sealed class ImagemPerfilUsuarioBusinessImplTests
         _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(imagem);
 
         // Act
-        var result = _imagemPerfilUsuarioBusiness.FindById(imagemPerfilVM.Id, Guid.Empty);
+        var result = _imagemPerfilUsuarioBusiness.FindById(imagemPerfilVM.Id.Value, Guid.Empty);
 
         // Assert
         Assert.Null(result);

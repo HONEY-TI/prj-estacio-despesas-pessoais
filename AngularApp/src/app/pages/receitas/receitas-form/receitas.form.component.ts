@@ -33,7 +33,7 @@ export class ReceitasFormComponent {
   ngOnInit(): void {
     this.getCatgeoriasFromReceitas();
     this.receitaForm = this.formbuilder.group({
-      id: [0],
+      id: [null],
       categoria: [null, Validators.required],
       data: [dayjs().format('YYYY-MM-DD'), Validators.required],
       descricao: ['', Validators.required],

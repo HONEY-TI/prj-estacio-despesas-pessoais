@@ -37,7 +37,7 @@ export class CategoriasFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoriatForm = this.formbuilder.group({
-      id: [0],
+      id: [null],
       descricao: ['', Validators.required],
       idTipoCategoria: [null, Validators.required]
     }) as FormGroup & ICategoria;
