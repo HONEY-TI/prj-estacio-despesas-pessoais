@@ -1,5 +1,4 @@
 ﻿using Domain.Entities;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,5 +18,6 @@ public class UsuarioMap : IEntityTypeConfiguration<Usuario>
         builder.Property(u => u.SobreNome).HasMaxLength(50).IsRequired();
         builder.Property(u => u.Telefone).HasMaxLength(15).IsRequired(false);
         builder.HasOne(u => u.PerfilUsuario).WithMany();
+        builder.Property(u => u.Profile).HasColumnType("LONGBLOB").IsRequired(false);
     }
 }
