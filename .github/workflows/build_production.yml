@@ -1,5 +1,4 @@
-﻿
-name: Build and Test Production
+﻿name: Build and Test Production
 on:
   workflow_call:
 
