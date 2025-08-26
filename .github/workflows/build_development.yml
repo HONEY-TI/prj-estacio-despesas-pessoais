@@ -1,5 +1,5 @@
 ﻿
-name: Build and Test
+name: Build and Test Development
 on:
   workflow_call:
 
