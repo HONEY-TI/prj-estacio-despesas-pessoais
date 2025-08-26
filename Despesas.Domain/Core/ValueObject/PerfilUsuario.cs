@@ -27,7 +27,7 @@ public sealed record PerfilUsuario
     {
         if (Perfil.Admin == perfilUsuario)
             return "Administrador";
-        else if (Perfil.User == perfilUsuario)
+        else if (Perfil.User == perfilUsuario || perfilUsuario == 0)
             return "Usuario";
 
         throw new ArgumentException("Perfil de usuário inexistente!");
