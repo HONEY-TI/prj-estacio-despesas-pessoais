@@ -1,12 +1,12 @@
 ﻿using Despesas.Application.Dtos.Core;
-using Domain.Core.ValueObject;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace Despesas.Application.Dtos;
 
 public class UsuarioDto : BaseDto
 {
+    public override Guid? Id { get; set; } = null;
+
     [Required(ErrorMessage = "O campo Nome é obrigatório.")]
     public string? Nome { get; set; }
 
@@ -19,6 +19,5 @@ public class UsuarioDto : BaseDto
     [Required(ErrorMessage = "O campo Email é obrigatório.")]
     public string? Email { get; set; }
 
-    [JsonIgnore]
-    public PerfilUsuario? PerfilUsuario { get; set; }
+    public int? PerfilUsuario { get; set; }
 }

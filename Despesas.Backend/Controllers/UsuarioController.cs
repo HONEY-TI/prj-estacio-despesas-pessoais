@@ -38,7 +38,6 @@ public class UsuarioController : AuthController
         }
     }
 
-
     [HttpPost]
     [Authorize("Bearer", Roles = "Admin")]
     [ProducesResponseType(200, Type = typeof(UsuarioDto))]
