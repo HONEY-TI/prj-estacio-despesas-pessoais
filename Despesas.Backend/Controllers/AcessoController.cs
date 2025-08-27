@@ -60,17 +60,26 @@ public class AcessoController : AuthController
     [HttpPost("SignInWithGoogle")]
     [ProducesResponseType(200, Type = typeof(AuthenticationDto))]
     [ProducesResponseType(400, Type = typeof(string))]
-    public async Task<IActionResult> GoogleSignIn([FromBody] GoogleAuthenticationDto authentication)
+    public IActionResult GoogleSignIn([FromBody] GoogleAuthenticationDto authentication)
     {
-       
-        if (!authentication.Authenticated)
+        try
+        {
+            if (!authentication.Authenticated)
+                throw  new ArgumentException("Erro ao autenticar com o Google.");
+
+            var authResult = _acessoBusiness.ValidateExternalCredentials(authentication);
+            if (authResult == null)
+                return Unauthorized("Usuário não autorizado.");
+
+            return Ok(authResult);
+        }
+        catch (Exception ex)
+        {
+            if (ex is ArgumentException argEx)
+                return BadRequest(argEx.Message);
+
             return BadRequest("Erro ao autenticar com o Google.");
-               
-        var authResult = _acessoBusiness.ValidateExternalCredentials(authentication);
-        if (authResult == null)
-            return Unauthorized("Usuário não autorizado.");
-           
-        return Ok(authResult);
+        }
     }
     
     [ApiExplorerSettings(IgnoreApi = true)]
