@@ -5,7 +5,7 @@
 namespace Migrations.MySqlServer.Migrations.Application
 {
     /// <inheritdoc />
-    public partial class Profile_in_Usuario_as_LongBlob : Migration
+    public partial class Profile_in_Usuario_as_LongText : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
