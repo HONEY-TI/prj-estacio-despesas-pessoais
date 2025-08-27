@@ -3,10 +3,12 @@ using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 using Domain.Core.ValueObject;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Repository.Persistency.Generic;
 using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace Despesas.Application.Implementations;
+
 public class UsuarioBusinessImpl<Dto> : BusinessBase<Dto, Usuario>, IUsuarioBusiness<Dto> where Dto : UsuarioDto, new()
 {
     private readonly IRepositorio<Usuario> _repositorio;
@@ -16,6 +18,34 @@ public class UsuarioBusinessImpl<Dto> : BusinessBase<Dto, Usuario>, IUsuarioBusi
     {
         _mapper = mapper;
         _repositorio = repositorio;
+    }
+
+    private void IsValidPrefilAdministratdor(Dto dto)
+    {
+        var adm = _repositorio.Get(dto.UsuarioId);
+        if (adm.PerfilUsuario != PerfilUsuario.Perfil.Admin)
+            throw new ArgumentException("Usuário não permitido a realizar operação!");
+    }
+
+    private void IsValidPrefilAdministratdor(Usuario usuario)
+    {
+        var adm = _repositorio.Get(usuario.Id);
+        if (adm.PerfilUsuario != PerfilUsuario.Perfil.Admin)
+            throw new ArgumentException("Usuário não permitido a realizar operação!");
+    }
+
+    public byte[] ConvertToImage(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            throw new ArgumentException("Arquivo inválido.");
+
+        var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+            throw new ArgumentException("Apenas arquivos jpg, jpeg ou png são aceitos.");
+
+        using var memoryStream = new MemoryStream();
+        file.CopyTo(memoryStream);
+        return memoryStream.ToArray(); // bytes do arquivo
     }
 
     public override Dto Create(Dto dto)
@@ -55,17 +85,26 @@ public class UsuarioBusinessImpl<Dto> : BusinessBase<Dto, Usuario>, IUsuarioBusi
         return _repositorio.Delete(usuario);
     }
 
-    private void IsValidPrefilAdministratdor(Dto dto)
+    public byte[] GetProfileImage(Guid userIdentity)
     {
-        var adm = _repositorio.Get(dto.UsuarioId);
-        if (adm.PerfilUsuario != PerfilUsuario.Perfil.Admin)
-            throw new ArgumentException("Usuário não permitido a realizar operação!");
+        var usuario = _repositorio.Get(userIdentity);                
+        return usuario.Profile;
     }
 
-    private void IsValidPrefilAdministratdor(Usuario usuario)
+    public byte[] UpdateProfileImage(Guid userIdentity, IFormFile file)
     {
-        var adm = _repositorio.Get(usuario.Id);
-        if (adm.PerfilUsuario != PerfilUsuario.Perfil.Admin)
-            throw new ArgumentException("Usuário não permitido a realizar operação!");
+        var usuario = _repositorio.Get(userIdentity);
+        usuario.Profile = FormFileToByteArray(file);
+        _repositorio.Update(usuario);
+        return ConvertToImage(file);
+    }
+
+    private static byte[]? FormFileToByteArray(IFormFile? file)
+    {
+        if (file == null) return null;
+
+        using var ms = new MemoryStream();
+        file.CopyTo(ms);
+        return ms.ToArray();
     }
 }

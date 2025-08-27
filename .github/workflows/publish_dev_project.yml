@@ -1,4 +1,4 @@
-﻿name: Deploy Development Project in AWS
+﻿name: Deploy Development Project
 on:
   push:
     branches: 

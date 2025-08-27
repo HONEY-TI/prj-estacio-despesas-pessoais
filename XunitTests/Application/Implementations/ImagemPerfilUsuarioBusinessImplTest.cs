@@ -106,36 +106,6 @@ public sealed class ImagemPerfilUsuarioBusinessImplTests
     }
 
     [Fact]
-    public void FindByIdUsuario_Should_Return_Usuario()
-    {
-        // Arrange
-        var imagem = _imagensPerfil.Last();
-        var usuario = imagem.Usuario;
-        _repositorioMock.Setup(repo => repo.GetAll()).Returns(_imagensPerfil);
-
-        // Act
-        var result = _imagemPerfilUsuarioBusiness.FindByIdUsuario(usuario.Id);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<UsuarioDto>(result);
-    }
-
-    [Fact]
-    public void FindByIdUsuario_Throws_Exception_And_Returns_Null()
-    {
-        // Arrange
-        var usuario = new Usuario { Id = Guid.Empty };
-        _repositorioMock.Setup(repo => repo.GetAll()).Throws<Exception>(() => null);
-
-        // Act
-        var result = _imagemPerfilUsuarioBusiness.FindByIdUsuario(usuario.Id);
-
-        // Assert
-        Assert.Null(result);
-    }
-
-    [Fact]
     public void Update_Should_Return_ImagemPerfilUsuarioDto()
     {
         // Arrange

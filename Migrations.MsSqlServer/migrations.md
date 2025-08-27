@@ -1,5 +1,7 @@
-### MsSqlSever Add Migrations 
-## … nesser·ro setar a variavel de ambiente para Migratiosn antes de Usar o Migrations 
+Ôªø### MsSqlSever Add Migrations 
+
+## √â nesser√°ro setar a variavel de ambiente para Migratiosn antes de Usar o Migrations 
+
 ## Set-Item -Path Env:DOTNET_ENVIRONMENT -Value "Migrations"
 
 ## Migrations.Application

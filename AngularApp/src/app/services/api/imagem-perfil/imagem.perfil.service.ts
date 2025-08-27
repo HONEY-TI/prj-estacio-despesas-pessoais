@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AbstractService } from '../base/AbstractService';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,27 +9,17 @@ import { AbstractService } from '../base/AbstractService';
 
 export class ImagemPerfilService extends AbstractService {
   constructor(public httpClient: HttpClient) {
-    const ROUTE = 'ImagemPerfilUsuario';
+    const ROUTE = 'Usuario';
     super(ROUTE);
   }
 
-  getImagemPerfilUsuario(): any {
-    return this.httpClient.get(`${ this.routeUrl }`);
+  getImagemPerfilUsuario(): Observable<ArrayBuffer> {
+    return this.httpClient.get(`${ this.routeUrl }/GetProfileImage`, { responseType: 'arraybuffer' });
   }
 
-  createImagemPerfilUsuario(file: File): any {
+  updateImagemPerfilUsuario(file: File): Observable<ArrayBuffer> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.httpClient.post(`${ this.routeUrl }`, formData);
-  }
-
-  updateImagemPerfilUsuario(file: File): any {
-    const formData = new FormData();
-    formData.append('file', file);
-    return this.httpClient.put(`${ this.routeUrl }`, formData);
-  }
-
-  deleteImagemPerfilUsuario(): any {
-    return this.httpClient.delete(`${ this.routeUrl }`);
+    return this.httpClient.put(`${ this.routeUrl }/UpdateProfileImage`, formData, { responseType: 'arraybuffer' });
   }
 }

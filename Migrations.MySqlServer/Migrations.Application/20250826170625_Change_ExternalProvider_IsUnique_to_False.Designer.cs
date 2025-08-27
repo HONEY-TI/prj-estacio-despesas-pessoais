@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
@@ -10,9 +11,11 @@ using Repository;
 namespace Migrations.MySqlServer.Migrations.Application
 {
     [DbContext(typeof(RegisterContext))]
-    partial class RegisterContextModelSnapshot : ModelSnapshot
+    [Migration("20250826170625_Change_ExternalProvider_IsUnique_to_False")]
+    partial class Change_ExternalProvider_IsUnique_to_False
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -330,9 +333,6 @@ namespace Migrations.MySqlServer.Migrations.Application
 
                     b.Property<int?>("PerfilUsuarioId")
                         .HasColumnType("int");
-
-                    b.Property<byte[]>("Profile")
-                        .HasColumnType("LONGBLOB");
 
                     b.Property<string>("SobreNome")
                         .IsRequired()

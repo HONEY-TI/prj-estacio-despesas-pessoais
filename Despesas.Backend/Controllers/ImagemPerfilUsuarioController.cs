@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Despesas.Backend.Controllers;
 
+[ApiExplorerSettings(IgnoreApi = true)]
+[Authorize(Roles = "Disabled")]
 public class ImagemPerfilUsuarioController : AuthController
 {
     private readonly IImagemPerfilUsuarioBusiness<ImagemPerfilDto, UsuarioDto> _imagemPerfilBussiness;

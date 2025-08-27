@@ -1,4 +1,4 @@
-﻿name: Deploy Production Project in AWS
+﻿name: Deploy Production Project
 on:
   push:
     tags:

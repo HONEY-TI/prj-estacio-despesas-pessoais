@@ -3,7 +3,7 @@
 namespace Despesas.Application.Dtos.Core;
 public abstract class BaseDto
 {
-    public Guid? Id { get; set; }
+    public virtual Guid? Id { get; set; }
 
     [JsonIgnore]
     public Guid UsuarioId { get; set; }

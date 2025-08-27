@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { MenuService } from "../../services/utils/menu-service/menu.service";
 import { AuthService } from "../../services/auth/auth.service";
 import { ImagemPerfilService } from "../../services/api";
-import { IImagemPerfil } from "../../models";
+
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
@@ -27,9 +27,10 @@ export class LayoutComponent implements OnInit {
   initialize = (): void => {
     this.imagemPerfilService.getImagemPerfilUsuario()
       .subscribe({
-        next: (response: IImagemPerfil) => {
-          if (response && response !== undefined && response!== null && response.url !== "" && response.url !== undefined && response.url !== null) {
-            this.urlPerfilImage = response.url;
+        next: (response: ArrayBuffer) => {
+          if (response && response !== undefined && response!== null ) {
+              const blob = new Blob([response], { type: 'image/png' });
+              this.urlPerfilImage = URL.createObjectURL(blob);      
           }
           else {
             this.urlPerfilImage = '../../../../assets/perfil_static.png';
