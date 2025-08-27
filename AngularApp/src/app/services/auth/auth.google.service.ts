@@ -97,7 +97,7 @@ export class AuthGoogleService {
       nome: userData.given_name,
       sobreNome: userData.family_name,
       telefone: null,
-      email: userData.email
+      email: userData.email      
     };
 
     return this.acessoService.signInWithGoogleAccount(authData).pipe(
