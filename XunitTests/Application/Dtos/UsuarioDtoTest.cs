@@ -21,7 +21,7 @@ public sealed class UsuarioDtoTest
             SobreNome = sobreNome,
             Telefone = telefone,
             Email = email,
-            PerfilUsuario = new PerfilUsuario()
+            PerfilUsuario = (int)PerfilUsuario.Perfil.User
         };
 
         // Assert
@@ -48,7 +48,7 @@ public sealed class UsuarioDtoTest
             SobreNome = sobreNome,
             Telefone = telefone,
             Email = email,
-            PerfilUsuario = new PerfilUsuario()
+            PerfilUsuario = (int)PerfilUsuario.Perfil.User
         };
 
         // Assert
