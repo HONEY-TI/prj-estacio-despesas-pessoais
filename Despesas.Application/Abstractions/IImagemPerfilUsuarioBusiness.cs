@@ -6,5 +6,4 @@ public interface IImagemPerfilUsuarioBusiness<Dto, DtoUsuario> where Dto : class
     List<Dto> FindAll(Guid idUsuario);
     Dto Update(Dto obj);
     bool Delete(Guid idUsuario);
-    DtoUsuario FindByIdUsuario(Guid idUsuario);
 }

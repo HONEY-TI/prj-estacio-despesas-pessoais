@@ -53,19 +53,6 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
         return imagemPerfilUsuario;
     }
 
-    public DtoUsuario FindByIdUsuario(Guid idUsuario)
-    {
-        try
-        {
-            var usuario = _repositorio?.GetAll()?.Find(u => u.UsuarioId == idUsuario)?.Usuario;
-            return _mapper.Map<DtoUsuario>(usuario);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
     public Dto Update(Dto dto)
     {
         try
