@@ -89,7 +89,7 @@
 	
 	<Target Name="PublishRunWebpackDevelopment" AfterTargets="ComputeFilesToPublish" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Staging'">
 		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:dev" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:staging" />
 
 		<ItemGroup>
 			<DistFiles Include="$(SpaRoot)\dist\**; $(SpaRoot)\dist-server\angular-app\**" />
@@ -99,7 +99,6 @@
 				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			</ResolvedFileToPublish>
 		</ItemGroup>
-
 	</Target>
 	
 	<Target Name="PublishRunWebpackLocal" AfterTargets="ComputeFilesToPublish" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Development'">

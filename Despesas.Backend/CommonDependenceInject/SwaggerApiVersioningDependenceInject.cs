@@ -40,15 +40,14 @@ public static class SwaggerApiVersioningDependenceInject
                 }
             });
 
-            c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                In = ParameterLocation.Header,
                 Name = "Authorization",
-                Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-                Description = "Adicione o token JWT para fazer as requisições na APIs",
-                Scheme = "Bearer"
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                Description = "Adicione o token JWT (ex: Bearer {seu token})"
             });
-
             c.SchemaFilter<HideDtosFilter>();
 
 

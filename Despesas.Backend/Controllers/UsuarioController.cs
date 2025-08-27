@@ -109,7 +109,8 @@ public class UsuarioController : AuthController
 
     [HttpGet("GetProfileImage")]
     [Authorize("Bearer", Roles = "User, Admin")]
-    [ProducesResponseType(200, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
@@ -117,22 +118,26 @@ public class UsuarioController : AuthController
     {
         try
         {
-          var image = _usuarioBusiness.GetProfileImage(UserIdentity);
-          return File(image!, "image/png");
+            var image = _usuarioBusiness.GetProfileImage(UserIdentity);
 
+            if(image == null || image.Length == 0)
+                return NoContent();
+
+            return File(image!, "image/png");
         }
         catch (Exception ex)
         {
             if (ex is ArgumentException argEx)
                 return BadRequest(argEx.Message);
-
+            
             return BadRequest("Erro ao incluir imagem de perfil!");
         }
     }
 
     [HttpPut("UpdateProfileImage")]
     [Authorize("Bearer", Roles = "User, Admin")]
-    [ProducesResponseType(200, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
@@ -141,6 +146,10 @@ public class UsuarioController : AuthController
         try
         {
             var image = _usuarioBusiness.UpdateProfileImage(UserIdentity, file);
+
+            if (image == null || image.Length == 0)
+                return NoContent();
+
             return File(image!, file.ContentType);
 
         }
