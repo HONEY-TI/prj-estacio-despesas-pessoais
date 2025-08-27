@@ -1,5 +1,7 @@
 ﻿using Despesas.Application.Dtos.Core;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Despesas.Application.Dtos;
 
@@ -20,4 +22,7 @@ public class UsuarioDto : BaseDto
     public string? Email { get; set; }
 
     public int? PerfilUsuario { get; set; }
+
+    [JsonIgnore]
+    public IFormFile? Profile { get; set; }
 }
