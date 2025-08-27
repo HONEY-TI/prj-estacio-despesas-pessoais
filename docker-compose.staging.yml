@@ -4,10 +4,10 @@
     image: alexfariakof/api-despesas-backend-netcore-dev-img
     build:
       context: .
-      dockerfile: Despesas.Backend/Dockerfile.development
+      dockerfile: Despesas.Backend/Dockerfile.staging
     environment:
       TZ: America/Sao_Paulo
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Staging
     ports:
       - 42535:42535
       - 42536:42536

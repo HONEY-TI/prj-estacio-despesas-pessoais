@@ -9,7 +9,7 @@
     "ng": "ng",
     "start": "run-script-os",
     "build": "ng build",
-    "build:dev": "ng build --configuration=development",
+    "build:staging": "ng build --configuration=development",
     "build:local": "ng build --configuration=local-development",
     "watch": "ng build --watch --configuration development",
     "test": "set BROWSER=ChromeHeadless && ng test --browsers=ChromeHeadless --no-watch",
