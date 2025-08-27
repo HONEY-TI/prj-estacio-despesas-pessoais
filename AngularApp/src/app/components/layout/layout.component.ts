@@ -28,12 +28,11 @@ export class LayoutComponent implements OnInit {
     this.imagemPerfilService.getImagemPerfilUsuario()
       .subscribe({
         next: (response: ArrayBuffer) => {
-          if (response && response !== undefined && response!== null ) {
-              const blob = new Blob([response], { type: 'image/png' });
-              this.urlPerfilImage = URL.createObjectURL(blob);      
-          }
-          else {
-            this.urlPerfilImage = '../../../../assets/perfil_static.png';
+          if (!response || response.byteLength === 0) {
+            this.urlPerfilImage = '../../../../assets/perfil_static.png'; // usa padrão
+          } else {
+            const blob = new Blob([response], { type: 'image/png' });
+            this.urlPerfilImage = URL.createObjectURL(blob);
           }
         },
         error: () => {
