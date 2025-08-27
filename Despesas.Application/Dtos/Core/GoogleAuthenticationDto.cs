@@ -10,5 +10,4 @@ public class GoogleAuthenticationDto : AuthenticationDto
     public virtual string? Email { get; set; }
     public string? ExternalProvider { get; set; }
     public string? ExternalId { get; set; }
-
 }
