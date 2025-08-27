@@ -12,7 +12,7 @@ namespace Migrations.MySqlServer.Migrations.Application
 {
     [DbContext(typeof(RegisterContext))]
     [Migration("20250826172355_Profile_in_Usuario_as_LongBlob")]
-    partial class Profile_in_Usuario_as_LongBlob
+    partial class Profile_in_Usuario_as_LongText
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
