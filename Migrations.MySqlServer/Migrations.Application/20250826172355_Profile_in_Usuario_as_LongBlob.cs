@@ -13,7 +13,7 @@ namespace Migrations.MySqlServer.Migrations.Application
             migrationBuilder.AddColumn<byte[]>(
                 name: "Profile",
                 table: "Usuario",
-                type: "LONGBLOB",
+                type: "LONGTEXT",
                 nullable: true);
         }
 
