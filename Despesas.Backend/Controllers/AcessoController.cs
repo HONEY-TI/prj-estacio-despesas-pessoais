@@ -1,6 +1,5 @@
 ﻿using Despesas.Application.Dtos;
 using Despesas.Application.Abstractions;
-using Despesas.Application.Dtos.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Despesas.Application.Dtos.Core;
@@ -37,7 +36,7 @@ public class AcessoController : AuthController
 
     [AllowAnonymous]
     [HttpPost("SignIn")]
-    [ProducesResponseType(200, Type = typeof(AuthenticationDto))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(400, Type = typeof(string))]
     public IActionResult SignIn([FromBody] LoginDto login)
     {
@@ -58,7 +57,7 @@ public class AcessoController : AuthController
     [ApiExplorerSettings(IgnoreApi = true)]
     [AllowAnonymous]
     [HttpPost("SignInWithGoogle")]
-    [ProducesResponseType(200, Type = typeof(AuthenticationDto))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(400, Type = typeof(string))]
     public IActionResult GoogleSignIn([FromBody] GoogleAuthenticationDto authentication)
     {
@@ -85,7 +84,7 @@ public class AcessoController : AuthController
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPost("ChangePassword")]
     [Authorize("Bearer", Roles = "User, Admin")]
-    [ProducesResponseType(200, Type = typeof(bool))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
@@ -108,7 +107,7 @@ public class AcessoController : AuthController
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPost("RecoveryPassword")]
     [Authorize("Bearer", Roles = "User, Admin")]
-    [ProducesResponseType(200, Type = typeof(bool))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
@@ -128,7 +127,7 @@ public class AcessoController : AuthController
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpGet("refresh/{refreshToken}")]
     [Authorize("Bearer", Roles = "User, Admin")]
-    [ProducesResponseType(200, Type = typeof(AuthenticationDto))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(403)]
     public IActionResult Refresh([FromRoute] string refreshToken)
