@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { ILogin } from '../../../models/ILogin';
 import { AbstractService } from '../base/AbstractService';
 import { Observable } from 'rxjs';
-import { IAcesso } from '../../../models';
+import { IAcesso, IAuth } from '../../../models';
 import { IGoogleAuth } from '../../../models/IGoogleAuth';
 
 @Injectable({
@@ -20,7 +20,7 @@ export class AcessoService extends AbstractService {
     return this.httpClient.post<ILogin>(`${this.routeUrl}/SignIn`, login);
   }
 
-  signInWithGoogleAccount(auth: IGoogleAuth): Observable<any> {
+  signInWithGoogleAccount(auth: IGoogleAuth): Observable<IAuth> {
     return this.httpClient.post<IGoogleAuth>(`${this.routeUrl}/SignInWithGoogle`, auth);
 
   }
