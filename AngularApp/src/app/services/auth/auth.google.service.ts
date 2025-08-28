@@ -44,7 +44,49 @@ export class AuthGoogleService {
     }
   }
 
-  handleGoogleLogin(): Observable<any> {
+  private handleCredentialResponse(response: any): Observable<IAuth> {
+    const userData = this.decodeJwt(response.credential);
+    if (!userData.sub || !userData.email) {
+      throw new Error('Erro de autenticação!');
+    }
+    const authData: IGoogleAuth = {
+      authenticated: true,
+      created: new Date().toISOString(),
+      expiration: this.calculateExpiration(),
+      accessToken: response.credential,
+      refreshToken: '',
+      externalId: userData.sub,
+      externalProvider: "Google",
+      nome: userData.given_name,
+      sobreNome: userData.family_name,
+      telefone: null,
+      email: userData.email
+    };
+
+    return this.acessoService.signInWithGoogleAccount(authData).pipe(
+      catchError(err => throwError(() => new Error(err?.message || 'Erro de autenticação, atualize a págína tente novamente!')))
+    );
+  }
+
+  private calculateExpiration(): string {
+    const expirationDate = new Date();
+    expirationDate.setHours(expirationDate.getHours() + 1);
+    return expirationDate.toISOString();
+  }
+
+  private decodeJwt(token: string): any {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  }
+
+  public handleGoogleLogin(): Observable<any> {
     return new Observable<IAuth>((observer) => {
       if (!this.isGoogleScriptLoaded()) {
         observer.error(new Error('Google API não carregada.'));
@@ -79,47 +121,5 @@ export class AuthGoogleService {
 
       google.accounts.id.prompt();
     });
-  }
-
-  private handleCredentialResponse(response: any): Observable<IAuth> {
-    const userData = this.decodeJwt(response.credential);
-    if (!userData.sub || !userData.email) {
-      throw new Error('Erro de autenticação!');
-    }
-    const authData: IGoogleAuth = {
-      authenticated: true,
-      created: new Date().toISOString(),
-      expiration: this.calculateExpiration(),
-      accessToken: response.credential,
-      refreshToken: '',
-      externalId: userData.sub,
-      externalProvider: "Google",
-      nome: userData.given_name,
-      sobreNome: userData.family_name,
-      telefone: null,
-      email: userData.email      
-    };
-
-    return this.acessoService.signInWithGoogleAccount(authData).pipe(
-      catchError(err => throwError(() => new Error(err?.message || 'Erro de autenticação, atualize a págína tente novamente!')))
-    );
-  }
-
-  private calculateExpiration(): string {
-    const expirationDate = new Date();
-    expirationDate.setHours(expirationDate.getHours() + 1);
-    return expirationDate.toISOString();
-  }
-
-  private decodeJwt(token: string): any {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
-    );
-    return JSON.parse(jsonPayload);
   }
 }
