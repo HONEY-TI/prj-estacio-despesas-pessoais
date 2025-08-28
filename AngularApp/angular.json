@@ -90,7 +90,6 @@
               "progress": true,
               "aot": true,
               "namedChunks": true,
-              "outputHashing": "all",
               "budgets": [
                 {
                   "type": "initial",
@@ -117,6 +116,7 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true,
+              "outputHashing": "all",
               "budgets": [
                 {
                   "type": "initial",
