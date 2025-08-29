@@ -1,4 +1,4 @@
-export abstract class BarraFerramentaClass {
+export abstract class BarraFerramentaBase {
   onClickNovo?: Function;
   btnNovo?: boolean;
   clickBtnVoltar? = () => {};
