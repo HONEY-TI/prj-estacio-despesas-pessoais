@@ -1,12 +1,12 @@
-﻿import { FilterMesService } from '../../services/utils/filter-mes.service/filter.mes.service';
-import { Component, OnInit } from '@angular/core';
-import { SaldoService } from '../../services/api';
-import dayjs from 'dayjs';
-import 'dayjs/locale/pt-br';
-import { Dayjs } from 'dayjs';
-import { CommonModule } from '@angular/common';
-import { ISaldo } from '../../models';
+﻿import { CommonModule } from "@angular/common";
+import { Component, OnInit } from "@angular/core";
+import dayjs, { Dayjs } from "dayjs";
+import { ISaldo } from "../../../models";
+import { FilterMesService } from "../../../services";
+import { SaldoService } from "../../../services/api";
+
 dayjs.locale('pt-br');
+
 @Component({
   selector: 'app-saldo',
   standalone: true,
@@ -14,6 +14,7 @@ dayjs.locale('pt-br');
   styleUrls: ['./saldo.component.scss'],
   imports: [CommonModule]
 })
+
 export class SaldoComponent implements OnInit {
   saldoAnual: number | string;
   saldoMensal: number | string;
@@ -22,11 +23,7 @@ export class SaldoComponent implements OnInit {
 
   constructor(private saldoService: SaldoService, public filterMesService: FilterMesService) { }
 
-  ngOnInit(): void {
-    this.initialize();
-  }
-
-  initialize = (): void => {
+  private initialize = (): void => {
     this.saldoService.getSaldoAnual(dayjs(dayjs().format('YYYY-01-01')))
       .subscribe({
         next: (response: ISaldo) => {
@@ -47,8 +44,16 @@ export class SaldoComponent implements OnInit {
 
     this.handleSaldoMesAno(this.filterMesService.dayJs);
   }
+  
+  private isSaldoNegativo = (saldo: number): boolean => {
+    return saldo < 0;
+  }
+  
+  public ngOnInit(): void {
+    this.initialize();
+  }
 
-  handleSaldoMesAno = (mes: Dayjs): void => {
+  public handleSaldoMesAno = (mes: Dayjs): void => {
     this.saldoService.getSaldoByMesANo(mes)
       .subscribe({
         next: (response: ISaldo) => {
@@ -68,13 +73,9 @@ export class SaldoComponent implements OnInit {
       });
   }
 
-  handleSelectMes = (mes: string): void => {
+  public handleSelectMes = (mes: string): void => {
     this.filterMesService.selectMonth = Number(mes);
     this.handleSaldoMesAno(dayjs(dayjs().format(`YYYY-${mes}-01`)));
 
-  }
-
-  private isSaldoNegativo = (saldo: number): boolean => {
-    return saldo < 0;
   }
 }

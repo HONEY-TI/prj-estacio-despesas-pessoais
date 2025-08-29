@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { FilterAnoService, FilterMesAnoService } from "../../services";
-import { BarraFerramentaClass } from "./barra-ferramenta.abstract";
+import { BarraFerramentaBase } from "./barra-ferramenta.abstract";
 
 @Component({
   selector: 'app-barra-ferramenta',
@@ -9,7 +9,7 @@ import { BarraFerramentaClass } from "./barra-ferramenta.abstract";
   standalone: false
 })
 
-export class BarraFerramentaComponent implements BarraFerramentaClass {
+export class BarraFerramentaComponent implements BarraFerramentaBase {
   @Input() onClickNovo: Function = () => {};
   @Input() btnNovo: boolean =  false;
   @Input() dtAno: boolean = false;
@@ -25,15 +25,16 @@ export class BarraFerramentaComponent implements BarraFerramentaClass {
     this.onChangeDataMesAno = onChangeMesAno;
   }
 
-  constructor(public filterAnoService: FilterAnoService,  public filterMesAnoService: FilterMesAnoService) {}
+  constructor(public filterAnoService: FilterAnoService,
+              public filterMesAnoService: FilterMesAnoService) {}
 
-  clickBtnNovo = () => {
+  public clickBtnNovo = () => {
     if (this.onClickNovo) {
       this.onClickNovo();
     }
   }
 
-  clickBtnVoltar = () => {
+  public clickBtnVoltar = () => {
     window.history.back();
   }
 }
