@@ -1,4 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 const ACCESS_TOKEN_KEY = '@access-token';
 const REFRESH_TOKEN_KEY = '@refresh-token';
@@ -9,10 +10,11 @@ const REFRESH_TOKEN_KEY = '@refresh-token';
 
 export class TokenStorageService {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   public signOut(): void {
     sessionStorage.clear();
+    this.router.navigate(["/"]);
   }
 
   public saveToken(accessToken: string): void {

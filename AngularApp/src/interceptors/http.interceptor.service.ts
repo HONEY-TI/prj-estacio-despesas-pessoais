@@ -20,9 +20,7 @@ export class CustomInterceptor implements HttpInterceptor {
   constructor(
     private tokenService: TokenStorageService,
     private authService: AuthService,
-    private modalService: NgbModal,
-    private router: Router
-  ) {}
+    private modalService: NgbModal) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.showLoader();
@@ -50,8 +48,10 @@ export class CustomInterceptor implements HttpInterceptor {
     if (error.ok === false && error.status === 0) return throwError(() => 'Erro de conexão, tente mais tarde.');
     if (error.status === 400) return throwError(() => error.error);
     if (error.status === 403) return throwError(() => 'Acesso não autorizado!');
-    if (error.status === 404) return throwError(() => 'Recurso não encontrado.');
-    this.router.navigate(['/']);
+    if (error.status === 404) { 
+      this.tokenService.signOut();
+      return throwError(() => 'Recurso não encontrado.');
+    }
     return throwError(() => 'Erro inesperado, atualize a página ou faça login novamente.');
   }
 
@@ -64,7 +64,7 @@ export class CustomInterceptor implements HttpInterceptor {
     if (!refreshToken) {
       this.tokenService.revokeRefreshToken();
       this.tokenService.signOut();
-      this.router.navigate(['/']);
+      this.tokenService.signOut();
       return throwError(() => 'Sessão expirada, faça login novamente.');
     }
 
