@@ -6,9 +6,8 @@ import { AcessoComponent } from './pages/acesso/acesso.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 const routes: Routes = [
-  { path: '',  pathMatch: 'full', redirectTo: 'login' },
-  { path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule), },
-  { path: "createAccount", component: AcessoComponent},
+  { path: '', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule), pathMatch: 'full' },
+  { path: "register", component: AcessoComponent},
   { path: 'dashboard',  canActivate: [AuthProvider],  component: DashboardComponent,},
   { path: 'categoria', canActivate: [AuthProvider], loadChildren: () => import('./pages/categorias/categorias.module').then(m => m.CategoriasModule), },
   { path: 'despesa', canActivate: [AuthProvider], loadChildren: () => import('./pages/despesas/despesas.module').then(m => m.DespesasModule), },

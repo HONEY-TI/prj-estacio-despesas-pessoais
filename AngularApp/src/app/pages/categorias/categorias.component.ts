@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { CategoriasFormComponent } from './categorias-form/categorias.form.component';
 import { ICategoria, ITipoCategoria, Action } from '../../models';
-import { BarraFerramentaClass, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from '../../components';
+import { BarraFerramentaBase, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from '../../components';
 import { MenuService } from '../../services';
 import { CategoriaService } from '../../services/api';
 import { CategoriaDataSet, CategoriaColumns } from '../../models/datatable-config/categorias';
@@ -13,7 +13,7 @@ import { CategoriaDataSet, CategoriaColumns } from '../../models/datatable-confi
   standalone: false
 })
 
-export class CategoriasComponent implements BarraFerramentaClass, OnInit {
+export class CategoriasComponent implements BarraFerramentaBase, OnInit {
   @ViewChild(DataTableComponent) dataTable: DataTableComponent;
   catgoriasData: CategoriaDataSet[] = [];
   columns = CategoriaColumns;

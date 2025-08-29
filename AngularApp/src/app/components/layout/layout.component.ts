@@ -20,11 +20,7 @@ export class LayoutComponent implements OnInit {
     private imagemPerfilService: ImagemPerfilService
   ) { }
 
-  ngOnInit(): void {
-    this.initialize();
-  }
-
-  initialize = (): void => {
+  private initialize = (): void => {
     this.imagemPerfilService.getImagemPerfilUsuario()
       .subscribe({
         next: (response: ArrayBuffer) => {
@@ -40,13 +36,17 @@ export class LayoutComponent implements OnInit {
         }
       });
   }
-
-  selectMenu(menu: number) {
+  
+  protected selectMenu(menu: number) {
     this.menuService.selectMenu(menu, this.router);
   }
 
-  onLogoutClick() {
+  protected onLogoutClick() {
     this.authService.clearSessionStorage();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
+  }
+
+  public ngOnInit(): void {
+    this.initialize();
   }
 }
