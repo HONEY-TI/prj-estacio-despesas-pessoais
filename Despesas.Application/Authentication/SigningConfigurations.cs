@@ -97,6 +97,6 @@ public class SigningConfigurations : ISigningConfigurations
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var jwtToken = tokenHandler.ReadToken(refreshToken.Replace("Bearer ", "")) as JwtSecurityToken;
-        return jwtToken?.ValidTo >= DateTime.UtcNow;
+        return jwtToken?.ValidTo <= DateTime.UtcNow;
     }
 }

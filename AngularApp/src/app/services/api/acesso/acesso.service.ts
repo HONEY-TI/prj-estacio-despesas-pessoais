@@ -16,21 +16,24 @@ export class AcessoService extends AbstractService {
     super(ROUTE);
   }
 
-  signIn(login: ILogin): Observable<any> {
+  public signIn(login: ILogin): Observable<any> {
     return this.httpClient.post<ILogin>(`${this.routeUrl}/SignIn`, login);
   }
 
-  signInWithGoogleAccount(auth: IGoogleAuth): Observable<IAuth> {
+  public signInWithGoogleAccount(auth: IGoogleAuth): Observable<IAuth> {
     return this.httpClient.post<IGoogleAuth>(`${this.routeUrl}/SignInWithGoogle`, auth);
 
   }
 
-  createUsuario(acesso: IAcesso): Observable<any> {
+  public createUsuario(acesso: IAcesso): Observable<any> {
     return this.httpClient.post<IAcesso>(`${this.routeUrl}`, acesso);
   }
 
-  changePassword(login: ILogin): Observable<any> {
+  public changePassword(login: ILogin): Observable<any> {
     return this.httpClient.post<ILogin>(`${this.routeUrl}/ChangePassword`, login);
   }
 
+  public refreshToken(refreshToken: string): Observable<any> {
+    return this.httpClient.get(`${this.routeUrl}/refreshtoken/${refreshToken}`);
+  }
 }

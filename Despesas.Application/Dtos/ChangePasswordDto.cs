@@ -2,6 +2,8 @@
 
 namespace Despesas.Application.Dtos;
 public class ChangePasswordDto : IValidatableObject
+
+
 {
     [Required(ErrorMessage = "O campo Senha é obrigatório.")]
     public string? Senha { get; set; }

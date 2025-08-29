@@ -5,94 +5,113 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService, TokenStorageService } from '../app/services';
 import { IAuth } from '../app/models';
 import { LoadingComponent } from '../app/components';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomInterceptor implements HttpInterceptor {
-  private activeRequests: number = 0;
-  private isModalOpen$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private activeRequests = 0;
+  private isModalOpen$ = new BehaviorSubject<boolean>(false);
+  private refreshInProgress = false;
+  private refreshCall$: Observable<IAuth> | null = null;
   private loadingModalRef: any = null;
 
   constructor(
     private tokenService: TokenStorageService,
     private authService: AuthService,
-    private modalService: NgbModal
-  ) { }
+    private modalService: NgbModal,
+    private router: Router
+  ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.showLoader();
-    const modifiedRequest = this.setModifiedRequest(request);
+
+    // 🔹 Identifica se a requisição é para refresh token
+    const isRefreshRequest = request.url.includes('/refreshtoken/');
+    const modifiedRequest = isRefreshRequest ? request : this.setModifiedRequest(request);
 
     return next.handle(modifiedRequest).pipe(
-      map((response: HttpResponse<any>) => {
-        if (response.status === 200) {
-          return response;
-        }
-        return response;
-      }),
       catchError((error: HttpErrorResponse) => {
-        if (error.ok === false && error.status === 0) {
-          return throwError(() => 'Erro de conexão tente mais tarde.');
-        } else if (error.status === 400) {
-          return throwError(() => error.error);
-        } else if (error.status === 401) {
-          return this.handleError(request, next);
-        } else if (error.status === 403) {
-          return throwError(() => 'Acesso não autorizado!');
-        } else if (error.status === 404) {
-          return this.handleError(request, next);
+        // 🔹 Tenta refresh apenas se for 401 e não for o próprio endpoint de refresh
+        if (error.status === 401 && !isRefreshRequest) {
+          return this.handleRefreshToken(request, next);
         }
-        return throwError(() => 'Erro tente atualizar a página ou realize novamente o login.');
+        return this.handleStandardError(error);
       }),
-      finalize(() => {
-        this.hideLoader();
-      })
+      finalize(() => this.hideLoader())
     );
   }
 
-  private handleError(request: HttpRequest<any>, next: HttpHandler) {
-    this.refreshTokenSubject.next(null);
+  /**
+   * 🔹 Trata apenas erros normais (400, 403, 404 etc.)
+   */
+  private handleStandardError(error: HttpErrorResponse) {
+    if (error.ok === false && error.status === 0) return throwError(() => 'Erro de conexão, tente mais tarde.');
+    if (error.status === 400) return throwError(() => error.error);
+    if (error.status === 403) return throwError(() => 'Acesso não autorizado!');
+    if (error.status === 404) return throwError(() => 'Recurso não encontrado.');
+    this.router.navigate(['/']);
+    return throwError(() => 'Erro inesperado, atualize a página ou faça login novamente.');
+  }
 
-    const auth = this.tokenService.getRefreshToken();
-    if (auth) {
-      return this.authService.refreshToken(auth).pipe(
-        switchMap((auth: IAuth) => {
-          this.tokenService.saveToken(auth.accessToken);
-          this.tokenService.saveRefreshToken(auth.refreshToken);
-          this.refreshTokenSubject.next(auth.refreshToken);
-          this.hideLoader();
-          return next.handle(this.setModifiedRequest(request));
-        }),
-        catchError(() => {
-          sessionStorage.clear();
-          this.tokenService.signOut();
-          return throwError(
-            () =>
-              'Erro de autenticação, tente atualizar a página ou realize novamente o login.'
-          );
+  /**
+   * 🔹 Trata especificamente erro 401 (AccessToken inválido/expirado)
+   * 🔹 Aguarda a conclusão de qualquer refresh em andamento antes de refazer a requisição
+   */
+  private handleRefreshToken(request: HttpRequest<any>, next: HttpHandler) {
+    const refreshToken = this.tokenService.getRefreshToken();
+    if (!refreshToken) {
+      this.tokenService.revokeRefreshToken();
+      this.tokenService.signOut();
+      this.router.navigate(['/']);
+      return throwError(() => 'Sessão expirada, faça login novamente.');
+    }
+
+    const isRefreshRequest = request.url.includes('/refreshtoken/');
+
+    // 🔹 Se não existe refresh em andamento, inicia
+    if (!this.refreshInProgress) {
+      this.refreshInProgress = true;
+      this.refreshCall$ = this.authService.refreshToken(refreshToken).pipe(
+        finalize(() => {
+          this.refreshInProgress = false;
+          this.refreshCall$ = null;
         })
       );
     }
 
-    return this.refreshTokenSubject.pipe(
-      filter((token) => token !== null),
-      take(1),
-      switchMap((token) => next.handle(this.setModifiedRequest(request)))
+    // 🔹 Todas as requisições aguardam a mesma chamada de refresh
+    return this.refreshCall$!.pipe(
+      switchMap((auth: IAuth) => {
+        this.tokenService.updateAccessToken(auth.accessToken);
+        this.tokenService.saveRefreshToken(auth.refreshToken);
+
+        // 🔹 Refaz a requisição original com novo accessToken, se não for refresh
+        const req = isRefreshRequest ? request : this.setModifiedRequest(request);
+        return next.handle(req);
+      }),
+      catchError(() => {
+        this.tokenService.revokeRefreshToken();
+        return throwError(() => 'Sessão expirada, faça login novamente.');
+      })
     );
   }
 
+  /**
+   * 🔹 Clona a request e adiciona o Authorization Header
+   */
   private setModifiedRequest(request: HttpRequest<any>) {
-
     return request.clone({
-      url: `${request.url}`,
       setHeaders: {
-        Authorization: `Bearer ${sessionStorage.getItem('@access-token')}`
+        Authorization: `Bearer ${this.tokenService.getAccessToken()}`
       }
     });
   }
 
+  /**
+   * 🔹 Mostra o modal de Loading enquanto houver requests ativas
+   */
   private showLoader(): void {
     this.activeRequests++;
     if (!this.isModalOpen$.value) {
@@ -107,14 +126,15 @@ export class CustomInterceptor implements HttpInterceptor {
     }
   }
 
+  /**
+   * 🔹 Esconde o modal de Loading quando todas requests finalizarem
+   */
   private hideLoader(): void {
-    if (this.activeRequests > 0) {
-      this.activeRequests--;
-    }
+    if (this.activeRequests > 0) this.activeRequests--;
     if (this.activeRequests === 0 && this.isModalOpen$.value) {
       this.isModalOpen$.next(false);
       if (this.loadingModalRef) {
-        this.loadingModalRef.close(); 
+        this.loadingModalRef.close();
         this.loadingModalRef = null;
       }
     }

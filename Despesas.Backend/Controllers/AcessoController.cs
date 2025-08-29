@@ -80,7 +80,7 @@ public class AcessoController : AuthController
             return BadRequest("Erro ao autenticar com o Google.");
         }
     }
-    
+
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPost("ChangePassword")]
     [Authorize("Bearer", Roles = "User, Admin")]
@@ -106,7 +106,7 @@ public class AcessoController : AuthController
 
     [ApiExplorerSettings(IgnoreApi = true)]
     [HttpPost("RecoveryPassword")]
-    [Authorize("Bearer", Roles = "User, Admin")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(401)]
@@ -125,11 +125,10 @@ public class AcessoController : AuthController
     }
 
     [ApiExplorerSettings(IgnoreApi = true)]
-    [HttpGet("refresh/{refreshToken}")]
-    [Authorize("Bearer", Roles = "User, Admin")]
+    [HttpGet("refreshToken/{refreshToken}")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(403)]
     public IActionResult Refresh([FromRoute] string refreshToken)
     {
         try
