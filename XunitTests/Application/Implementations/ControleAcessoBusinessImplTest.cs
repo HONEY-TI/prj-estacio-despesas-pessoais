@@ -201,8 +201,8 @@ public sealed class AcessoBusinessImplTest
         var baseLogin = new Acesso
         {
             Id = idUsuario,
-            RefreshTokenExpiry = DateTime.UtcNow.AddHours(1),            
-            Usuario = UsuarioFaker.Instance.GetNewFaker()
+            RefreshTokenExpiry = DateTime.UtcNow.AddDays(2),            
+            Usuario = UsuarioFaker.Instance.GetNewFaker()           
         };
 
         JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
@@ -212,15 +212,16 @@ public sealed class AcessoBusinessImplTest
             Issuer = "Issuer",
             Claims = new Dictionary<string, object> { { "KEY", idUsuario } },
             SigningCredentials = _singingConfiguration.SigningCredentials,
-            Expires = DateTime.UtcNow.AddSeconds(60),
+            Expires = DateTime.UtcNow.AddDays(1),
             NotBefore = DateTime.UtcNow,
-            IssuedAt = DateTime.UtcNow,
 
         });
         var validToken = handler.WriteToken(securityToken);
         baseLogin.RefreshToken = validToken;
         var authenticationDto = new AuthenticationDto
         {
+            Authenticated = true,
+            Expiration = DateTime.UtcNow.AddDays(1).ToString(),
             RefreshToken = validToken
         };
         _repositorioMock.Setup(repo => repo.FindByRefreshToken(It.IsAny<string>())).Returns(baseLogin);
