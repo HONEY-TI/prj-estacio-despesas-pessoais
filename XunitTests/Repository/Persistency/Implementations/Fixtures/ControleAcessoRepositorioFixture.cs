@@ -13,7 +13,7 @@ public sealed class AcessoRepositorioFixture : IDisposable
 
     public AcessoRepositorioFixture()
     {
-        var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "AcessoRepositorioImpl").Options;
+        var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "AcessoRepositorioImpl_Test").Options;
         Context = new RegisterContext(options);
         Context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         Context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));

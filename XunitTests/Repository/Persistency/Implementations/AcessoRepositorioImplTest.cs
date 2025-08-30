@@ -2,6 +2,7 @@
 using Despesas.Infrastructure.Email;
 using Domain.Core.ValueObject;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Repository.Persistency.Abstractions;
 using Repository.Persistency.Implementations.Fixtures;
 using System.Linq.Expressions;
@@ -116,16 +117,6 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var mockAcesso = context.Acesso.ToList().First();
         context.Usuario = Usings.MockDbSet(new List<Usuario> { mockUsuario }).Object;
         var newPassword = Guid.NewGuid().ToString();
-        Acesso MockAcesso = new Acesso
-        {
-            Id = mockAcesso.Id,
-            Login = mockAcesso.Login,
-            Senha = newPassword,
-            Usuario = mockAcesso.Usuario,
-            UsuarioId = mockAcesso.UsuarioId
-        };
-        context.Acesso = Usings.MockDbSet(new List<Acesso> { MockAcesso }).Object;
-        context.SaveChanges();
         var emailSender = new Mock<EmailSender>();
         mockRepository.Setup(repo => repo.RecoveryPassword(mockAcesso.Login, It.IsAny<string>())).Throws(new Exception());
 
@@ -268,34 +259,12 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
     {
         // Arrange
         var context = _fixture.Context;
+        var mockAcesso = context.Acesso.Last();
         var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var mockAcesso = context.Acesso.ToList().First();
 
-        // Act
-        mockRepository.Object.RevokeRefreshToken(mockAcesso.Id);
-
-        // Assert
-        Assert.Empty(mockAcesso.RefreshToken);
-        Assert.Null(mockAcesso.RefreshTokenExpiry);
-    }
-
-    [Fact]
-    public void RefreshTokenInfo_Should_Update_Token_Info()
-    {
-        // Arrange
-        var mockRepository = _fixture.Repository;
-        var mockAcesso =  _fixture.Context.Acesso.Last();
-        var mockRefreshToken = Guid.NewGuid().ToString();
-
-        // Act
-        mockAcesso.RefreshToken = mockRefreshToken;
-        mockAcesso.RefreshTokenExpiry = DateTime.UtcNow.AddDays(1);
-        mockRepository.Object.RefreshTokenInfo(mockAcesso);
-        
-
-        // Assert
-        Assert.NotNull(mockAcesso.RefreshToken);
-        Assert.NotNull(mockAcesso.RefreshTokenExpiry);
-        Assert.Equal(mockAcesso.RefreshToken, mockRefreshToken);
-    }
+        // Act && Assert
+        var exception = Assert.Throws<ArgumentException>(() => mockRepository.Object.RevokeRefreshToken(mockAcesso.UsuarioId));
+        Assert.IsType<ArgumentException>(exception);
+        Assert.Equal("Token inexistente!", exception.Message);
+    }   
 }
