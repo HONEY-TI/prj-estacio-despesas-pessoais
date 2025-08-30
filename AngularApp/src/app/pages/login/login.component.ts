@@ -38,15 +38,14 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.loginForm = this.formbuilder.group({
-      email: ['teste@teste.com', [Validators.required, Validators.email]],
-      senha: ['12345T!', [Validators.required, Validators.nullValidator]]
+      email: [null, [Validators.required, Validators.email]],
+      senha: [null, [Validators.required, Validators.nullValidator]]
     }) as FormGroup;
-
   }
 
-  onLoginClick() {
+  public onLoginClick(): void {
 
     let login: ILogin = this.loginForm.getRawValue();
 
@@ -81,7 +80,7 @@ export class LoginComponent implements OnInit {
       });
   }
 
-  onGoogleLoginClick() {
+  public onGoogleLoginClick(): void {
     this.authProviderGoogleService.handleGoogleLogin().pipe(
       map((response: IAuth) => {
         if (response.authenticated) {
@@ -107,9 +106,8 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  onTooglePassword() {
+  public onTooglePassword(): void {
     this.showPassword = !this.showPassword;
     this.eyeIconClass = (this.eyeIconClass === 'bi-eye') ? 'bi-eye-slash' : 'bi-eye';
   }
-
 }

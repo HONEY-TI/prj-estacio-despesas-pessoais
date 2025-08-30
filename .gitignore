@@ -408,3 +408,4 @@ FodyWeavers.xsd
 *.key
 *.crt
 /Despesas.Backend/Program.cs
+**/src/app/pages/login/login.component.ts
