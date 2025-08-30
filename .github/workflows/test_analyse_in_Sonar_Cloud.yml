@@ -62,12 +62,10 @@ jobs:
         shell: powershell
         run: |          
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"alexribeirofaria_prj-despesas-pessoais" /o:"alexribeirofaria" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"  /d:sonar.exclusions="**/XunitTests/**,  **/Migrations.MsSqlServer/**, **/Migrations.MySqlServer/**, **/Despesas.Application\HyperMedia/**, **/.documents/**, *.sql, **/Program.cs, **/Despesas.DataSeeders/**, **/Despesas.CrossCutting/**, **/*.spec.ts, **/main.ts, **/environment.*, **/app.routing.module.ts, **/__mock__/*.ts, **/*.js, **/*Dockerfile*, **/docker-compose*, **/AngularApp/app-android/**, **/AngularApp/app-ios/**, **/appsettings*, **/Properties/**, **/CommonDependenceInject/**" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.cs.lcov.reportPaths="**/coveragereport/lcov.info"  /d:sonar.typescript.opencover.reportsPaths="**/coverage/clover.xml" /d:sonar.typescript.lcov.reportPaths="**/coverage/lcov.info"
-            #Invoke-WebRequest -Uri "https://nodejs.org/dist/v20.14.0/node-v20.14.0-x64.msi" -OutFile "nodejs.msi"
-            #Start-Process -FilePath "msiexec.exe" -ArgumentList "/i nodejs.msi /quiet" -Wait
-
+            npm install -g @angular/core @angular/cli > $null 2>&1
             dotnet tool install -g dotnet-reportgenerator-globaltool
             $baseDirectory = Get-Location
-            $projectTestPath = Join-Path -Path (Get-Location) -ChildPath "XunitTests"            
+            $projectTestPath = Join-Path -Path (Get-Location) -ChildPath "XunitTests"            s
             $projectAngular = Join-Path -Path ($baseDirectory) -ChildPath "AngularApp"
             $sourceDirs = "$baseDirectory\Despesas.Application;$baseDirectory\Despesas.Domain;$baseDirectory\Despesas.Repository;$baseDirectory\Despesas.Backend;"
             $filefilters = "$baseDirectory\Migrations.DataSeeders\**;-$baseDirectory\Migrations.MySqlServer\**;-$baseDirectory\Migrations.MsSqlServer\**;-$baseDirectory\Despesas.CrossCutting\**;-$baseDirectory\Despesas.Application\HyperMedia\**"
