@@ -47,3 +47,4 @@ obj/**
 **/www
 **/client_secret.json
 **/app-android/android/app/build
+**/AngularApp/src/app/pages/login/login.component.ts
