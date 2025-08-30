@@ -1,5 +1,4 @@
-﻿using Domain.Core.ValueObject;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repository.Persistency.Abstractions;
 using System.Linq.Expressions;
@@ -8,6 +7,7 @@ namespace Repository.Persistency.Implementations;
 public class AcessoRepositorioImpl : IAcessoRepositorioImpl
 {
     public RegisterContext Context { get; }
+
     public AcessoRepositorioImpl(RegisterContext context)
     {
         Context = context;
@@ -15,13 +15,18 @@ public class AcessoRepositorioImpl : IAcessoRepositorioImpl
 
     public void Create(Acesso acesso)
     {
-        var existingEntity = Context.Set<Acesso>().SingleOrDefault(c => c.Login.Equals(acesso.Login));
-        if (existingEntity != null) throw new ArgumentException("Usuário já cadastrado!");
-
         try
         {
-            acesso.Usuario.PerfilUsuario = Context.Set<PerfilUsuario>().First(perfil => perfil.Id.Equals(acesso.Usuario.PerfilUsuario.Id));
-            acesso.Usuario.Categorias.ToList().ForEach(c => c.TipoCategoria = Context.Set<TipoCategoria>().First(tc => tc.Id.Equals(c.TipoCategoria.Id)));
+            var existingEntity = Context.Acesso
+                .Include(a => a.Usuario) 
+                .ThenInclude(u => u.PerfilUsuario) 
+                .Include(a => a.Usuario.Categorias) 
+                .ThenInclude(c => c.TipoCategoria) 
+                .SingleOrDefault(c => c.Login.Equals(acesso.Login))
+                ?? throw new();
+
+            acesso.Usuario.PerfilUsuario = existingEntity.Usuario.PerfilUsuario;
+            acesso.Usuario.Categorias.ToList().ForEach(c => c.TipoCategoria = Context.TipoCategoria.First(tc => tc.Id.Equals(c.TipoCategoria.Id)));
             Context.Add(acesso);
             Context.SaveChanges();
         }
@@ -32,35 +37,35 @@ public class AcessoRepositorioImpl : IAcessoRepositorioImpl
 
     }
 
-    public bool RecoveryPassword(string email, string newPassword)
+    public void RecoveryPassword(string email, string newPassword)
     {
         try
         {
-            var entity = Context.Set<Acesso>().First(c => c.Login.Equals(email));
-            var acesso = entity as Acesso;
-            acesso.Senha = newPassword;
-            Context.Acesso.Entry(entity).CurrentValues.SetValues(acesso);
+            var entity = Context.Acesso.First(c => c.Login.Equals(email));
+            entity.Senha = newPassword;
+            Context.Update(entity);
             Context.SaveChanges();
-            return true;
         }
-        catch
+        catch (Exception ex)
         {
-            return false;
+            throw new Exception("RecoveryPassword_Erro", ex);
         }
     }
 
-    public bool ChangePassword(Guid idUsuario, string password)
+    public void ChangePassword(Guid idUsuario, string password)
     {
-        var usuario = Context.Set<Usuario>().SingleOrDefault(prop => prop.Id.Equals(idUsuario));
-        if (usuario is null) return false;
-
         try
         {
-            var acesso = Context.Set<Acesso>().First(c => c.Login.Equals(usuario.Email));
+            var usuario = Context.Acesso
+                .Include(u => u.Usuario)
+                .SingleOrDefault(prop => prop.UsuarioId
+                .Equals(idUsuario))
+                ?? throw new();
+
+            var acesso = Context.Acesso.First(c => c.Login.Equals(usuario.Login));
             acesso.Senha = password;
             Context.Acesso.Update(acesso);
             Context.SaveChanges();
-            return true;
         }
         catch (Exception ex)
         {
@@ -70,7 +75,7 @@ public class AcessoRepositorioImpl : IAcessoRepositorioImpl
 
     public void RevokeRefreshToken(Guid idUsuario)
     {
-        var acesso = Context.Acesso.SingleOrDefault(prop => prop.Id.Equals(idUsuario));
+        var acesso = Context.Set<Acesso>().SingleOrDefault(prop => prop.Id.Equals(idUsuario));
         if (acesso is null) throw new ArgumentException("Token inexistente!");
         acesso.RefreshToken = String.Empty;
         acesso.RefreshTokenExpiry = null;

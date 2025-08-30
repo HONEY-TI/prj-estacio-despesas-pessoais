@@ -14,9 +14,9 @@ COPY . .
 WORKDIR /src/XunitTests
 RUN dotnet test "./XUnit.Tests.csproj" -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura --collect:"XPlat Code Coverage;Format=opencover" 
 
-RUN baseDirectory=$(realpath ..) \
-    sourceDirs="$baseDirectory/Despesas.Business:$baseDirectory/Despesas.Domain:$baseDirectory/Despesas.Repository:$baseDirectory/Despesas.Backend:$baseDirectory/AngularApp" \ 
-    filefilters="$baseDirectory/Despesas.DataSeeders/**;- $baseDirectory/Migrations.MySqlServer/**;- $baseDirectory/Migrations.MsSqlServer/**;- $baseDirectory/Despesas.CrossCutting/**;- $baseDirectory/Despesas.Business/HyperMedia/**" \
+RUN baseDirectory=$(realpath ..) && \
+    sourceDirs="$baseDirectory/Despesas.Application;$baseDirectory/Despesas.Domain;$baseDirectory/Despesas.Repository;$baseDirectory/Despesas.Backend;" && \
+    filefilters="$baseDirectory/Migrations.DataSeeders/**;-$baseDirectory/Migrations.MySqlServer/**;-$baseDirectory/Migrations.MsSqlServer/**;-$baseDirectory/Despesas.CrossCutting/**;-$baseDirectory/Despesas.Infrastructure/**" && \
     /tools/reportgenerator -reports:**/coverage.cobertura.xml -targetdir:/app/test -reporttypes:Html -sourcedirs:$sourceDirs -filefilters:-$filefilters
 
 WORKDIR /src/Despesas.Backend

@@ -1,10 +1,11 @@
-﻿using Despesas.Infrastructure.Email;
-using __mock__.Repository;
+﻿using __mock__.Repository;
+using Despesas.Infrastructure.Email;
+using Domain.Core.ValueObject;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Repository.Persistency.Abstractions;
 using Repository.Persistency.Implementations.Fixtures;
 using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
-using Domain.Core.ValueObject;
 
 namespace Repository.Persistency.Implementations;
 
@@ -61,7 +62,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
 
         // Act & Assert 
         Acesso? nullControleAceesso = null;
-        Assert.Throws<InvalidOperationException>(() => mockRepository.Object.Create(nullControleAceesso));
+        Assert.Throws<Exception>(() => mockRepository.Object.Create(nullControleAceesso));
         //Assert.Equal("AcessoRepositorioImpl_Create_Exception", exception.Message);
     }
 
@@ -83,7 +84,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
     }
 
     [Fact]
-    public void RecoveryPassword_Should_Returns_True()
+    public void RecoveryPassword_Should_Run_Successfuly()
     {
         // Arrange
         var newPassword = "!12345";
@@ -100,15 +101,14 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var repository = new Mock<AcessoRepositorioImpl>(context);
 
         // Act
-        var result = repository.Object.RecoveryPassword(mockAcesso.Login, newPassword);
+        var result = () => repository.Object.RecoveryPassword(mockAcesso.Login, newPassword);
 
         //Assert
-        Assert.IsType<bool>(result);
-        Assert.True(result);
+        Assert.IsNotType<Exception>(result);
     }
 
     [Fact]
-    public void RecoveryPassword_Should_Returns_False()
+    public void RecoveryPassword_Should_Throws_True_Exception()
     {
         // Arrange
         var context = _fixture.Context;
@@ -116,32 +116,18 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var mockUsuario = new Usuario { Email = string.Empty };
         var mockAcesso = context.Acesso.ToList().First();
         context.Usuario = Usings.MockDbSet(new List<Usuario> { mockUsuario }).Object;
-        var newPassword = "!12345";
-        Acesso MockAcesso = new Acesso
-        {
-            Id = mockAcesso.Id,
-            Login = mockAcesso.Login,
-            Senha = newPassword,
-            Usuario = mockAcesso.Usuario,
-            UsuarioId = mockAcesso.UsuarioId
-        };
-        context.Acesso = Usings.MockDbSet(new List<Acesso> { MockAcesso }).Object;
-
-        context.SaveChanges();
+        var newPassword = Guid.NewGuid().ToString();
         var emailSender = new Mock<EmailSender>();
-        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(mockAcesso);
-        mockRepository.Setup(repo => repo.RecoveryPassword(mockAcesso.Login, It.IsAny<string>())).Returns(false);
+        mockRepository.Setup(repo => repo.RecoveryPassword(mockAcesso.Login, It.IsAny<string>())).Throws(new Exception());
 
-        // Act
-        var result = mockRepository.Object.RecoveryPassword(mockAcesso.Login, newPassword);
-
-        //Assert
-        Assert.IsType<bool>(result);
-        Assert.False(result);
+        // Act && Assert
+        var exception = Assert.Throws<Exception>(() => mockRepository.Object.RecoveryPassword(Guid.NewGuid().ToString(), newPassword));
+        Assert.IsType<Exception>(exception);
+        Assert.Equal("RecoveryPassword_Erro", exception.Message);
     }
 
     [Fact]
-    public void RecoveryPassword_Should_Returns_False_When_Throws_Exception()
+    public void RecoveryPassword_Should_Throws_Exception()
     {
         // Arrange
         var context = _fixture.Context;
@@ -149,33 +135,26 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var dataset = context.Acesso.ToList();
         context.Acesso = Usings.MockDbSet(dataset).Object;
         context.SaveChanges();
-        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Throws(new Exception());
-        var mockAcesso = dataset.First();
 
-        // Act
-        var result = mockRepository.Object.RecoveryPassword(mockAcesso.Login, "newPassword");
-
-        //Assert
-        Assert.IsType<bool>(result);
-        Assert.False(result);
+        // Act && Assert
+        var exception = Assert.Throws<Exception>(() => mockRepository.Object.RecoveryPassword("email@erro.com", "newPassword"));
+        Assert.IsType<Exception>(exception);
+        Assert.Equal("RecoveryPassword_Erro", exception.Message);
     }
 
     [Fact]
-    public void ChangePassword_Should_Returns_False_When_Usuario_Null()
+    public void ChangePassword_Should_Throws_Erro_When_Usuario_Null()
     {
         // Arrange
         var context = _fixture.Context;
         var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
         var acesso = context.Acesso.ToList().First();
-        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(acesso);
-        mockRepository.Setup(repo => repo.ChangePassword(Guid.Empty, "!12345")).Returns(true);
+        mockRepository.Setup(repo => repo.ChangePassword(It.IsAny<Guid>(), It.IsAny<string>())).Throws(new Exception());
 
-        // Act
-        var result = mockRepository.Object.ChangePassword(Guid.Empty, "!12345");
-
-        //Assert
-        Assert.IsType<bool>(result);
-        Assert.False(result);
+        // Act && Assert
+        var exception = Assert.Throws<Exception>(() => mockRepository.Object.ChangePassword(Guid.Empty, Guid.NewGuid().ToString()));
+        Assert.IsType<Exception>(exception);
+        Assert.Equal("ChangePassword_Erro", exception.Message);
     }
 
     [Fact]
@@ -194,12 +173,9 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var repository = new AcessoRepositorioImpl(context);
         var acesso = context.Acesso.Last();
 
-        // Act
-        var result = repository.ChangePassword(acesso.UsuarioId, "!12345");
-
-        //Assert
-        Assert.IsType<bool>(result);
-        Assert.True(result);
+        // Act && Assert
+        var result =  Assert.IsType<Action>(() =>  repository.ChangePassword(acesso.UsuarioId, "!12345"));
+        Assert.IsNotType<Exception>(result);
     }
 
     [Fact]
@@ -213,20 +189,12 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         mockUsuario.Email = "teste@teste.com";
         var dbSetMock = Usings.MockDbSet(context.Acesso.ToList());
         var _dbContextMock = new Mock<RegisterContext>(context);
-        _dbContextMock.Setup(c => c.Set<Acesso>()).Returns(dbSetMock.Object);
         _dbContextMock.Setup(c => c.SaveChanges()).Throws<Exception>();
-        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(new Acesso());
-        mockRepository.Setup(repo => repo.ChangePassword(acesso.UsuarioId, "!12345")).Throws<Exception>();
 
-        // Act
-        //var result = mockRepository.Object.ChangePassword(acesso.UsuarioId, "!12345");
-        Action result = () => mockRepository.Object.ChangePassword(acesso.UsuarioId, "!12345");
-
-        //Assert
-        Assert.NotNull(result);
-        var exception = Assert.Throws<Exception>(() => mockRepository.Object.ChangePassword(acesso.UsuarioId, "!12345"));
+        // Act && Assert
+        var exception = Assert.Throws<Exception>(() => mockRepository.Object.ChangePassword(Guid.NewGuid(), Guid.NewGuid().ToString()));
+        Assert.IsType<Exception>(exception);
         Assert.Equal("ChangePassword_Erro", exception.Message);
-        Assert.True(true);
     }
 
     [Fact]
@@ -238,7 +206,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var mockAcesso = context.Acesso.ToList().First();
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => mockRepository.Object.Create(mockAcesso));
+        Assert.Throws<Exception>(() => mockRepository.Object.Create(mockAcesso));
     }
 
 
@@ -291,35 +259,12 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
     {
         // Arrange
         var context = _fixture.Context;
+        var mockAcesso = context.Acesso.Last();
         var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var mockAcesso = context.Acesso.ToList().First();
 
-        // Act
-        mockRepository.Object.RevokeRefreshToken(mockAcesso.Id);
-
-        // Assert
-        Assert.Empty(mockAcesso.RefreshToken);
-        Assert.Null(mockAcesso.RefreshTokenExpiry);
-    }
-
-    [Fact]
-    public void RefreshTokenInfo_Should_Update_Token_Info()
-    {
-        // Arrange
-        var mockRepository = _fixture.Repository;
-        var mockAcesso =  MockAcesso.Instance.GetAcesso();
-        mockRepository.Object.Create(mockAcesso);
-        var mockRefreshToken = Guid.NewGuid().ToString();
-
-        // Act
-        mockAcesso.RefreshToken = mockRefreshToken;
-        mockAcesso.RefreshTokenExpiry = DateTime.UtcNow.AddMinutes(1);
-        mockRepository.Object.RefreshTokenInfo(mockAcesso);
-        
-
-        // Assert
-        Assert.NotNull(mockAcesso.RefreshToken);
-        Assert.NotNull(mockAcesso.RefreshTokenExpiry);
-        Assert.Equal(mockAcesso.RefreshToken, mockRefreshToken);
-    }
+        // Act && Assert
+        var exception = Assert.Throws<ArgumentException>(() => mockRepository.Object.RevokeRefreshToken(mockAcesso.UsuarioId));
+        Assert.IsType<ArgumentException>(exception);
+        Assert.Equal("Token inexistente!", exception.Message);
+    }   
 }

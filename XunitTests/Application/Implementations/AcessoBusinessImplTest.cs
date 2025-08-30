@@ -178,12 +178,11 @@ public sealed class AcessoBusinessImplTest
     }
 
     [Fact]
-    public void ChangePassword_Should_Execute_And_Returns_True()
+    public void ChangePassword_Should_Execute_Successfuly()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
         string newPassword = "123456789";
-        _repositorioMock.Setup(repo => repo.ChangePassword(It.IsAny<Guid>(), newPassword)).Returns(true);
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(() => null);
 
         // Act

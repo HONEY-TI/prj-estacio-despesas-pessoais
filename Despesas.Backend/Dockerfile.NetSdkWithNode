@@ -5,7 +5,17 @@ RUN apt-get update && \
     apt-get install -y curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
+# Instala o dotnet-reportgenerator-globaltool
+RUN dotnet tool install --global dotnet-reportgenerator-globaltool
+
+# Adiciona o diretório global de ferramentas .NET ao PATH
+ENV PATH="${PATH}:/root/.dotnet/tools"
+
 # Instala Node.js v22.15.0
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g npm@latest
+
+# Cria o diretório /tools e faz o link simbólico para o reportgenerator
+RUN mkdir -p /tools && \
+    ln -s /root/.dotnet/tools/reportgenerator /tools/reportgenerator

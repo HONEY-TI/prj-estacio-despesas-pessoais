@@ -13,7 +13,7 @@ public sealed class AcessoRepositorioFixture : IDisposable
 
     public AcessoRepositorioFixture()
     {
-        var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "AcessoRepositorioImpl").Options;
+        var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "AcessoRepositorioImpl_Test").Options;
         Context = new RegisterContext(options);
         Context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         Context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));
@@ -21,6 +21,10 @@ public sealed class AcessoRepositorioFixture : IDisposable
 
         var lstAcesso = MockAcesso.Instance.GetAcessos();
         lstAcesso.ForEach(c => c.Usuario.PerfilUsuario = Context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id));
+        lstAcesso.Select(c => c.Usuario).ToList()
+            .SelectMany(u => u.Categorias).ToList()
+            .ForEach(c => c.TipoCategoria = Context.TipoCategoria.First(tc => tc.Id == c.TipoCategoria.Id));
+
         Context.AddRange(lstAcesso);
         Context.SaveChanges();
 
