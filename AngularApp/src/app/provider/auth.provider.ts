@@ -2,6 +2,7 @@
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { IAuth } from '../models';
+import { TokenStorageService } from '../services';
 
 @Injectable({
   providedIn: 'root',
@@ -12,16 +13,16 @@ export class AuthProvider implements CanActivate {
 
   accessToken$ = this.accessTokenSubject.asObservable();
 
-  constructor() {
+  constructor(private tokenStorage: TokenStorageService ) {
     try {
-      const accessToken = sessionStorage.getItem('@access-token');
+      const accessToken = this.tokenStorage.getAccessToken();
       if (accessToken) {
-        this.setAccessToken(accessToken);
+        this.tokenStorage.saveToken(accessToken);
       } else {
-        this.clearsessionStorage();
+        this.tokenStorage.signOut();
       }
     } catch {
-      this.clearsessionStorage();
+      this.tokenStorage.signOut();
     }
   }
 
@@ -39,15 +40,15 @@ export class AuthProvider implements CanActivate {
   }
 
   isAuthenticated(): boolean {
-    const accessToken = this.accessTokenSubject.getValue() ?? sessionStorage.getItem('@access-token');
+    const accessToken = this.accessTokenSubject.getValue() ?? this.tokenStorage.getAccessToken();
     if (accessToken === null || accessToken === undefined) {
-      this.clearsessionStorage();
+      this.tokenStorage.signOut();
       return false;
     }
     return true;
   }
 
   createAccessToken(auth: IAuth): void {
-    this.setAccessToken(auth.accessToken);
+    this.tokenStorage.saveToken(auth.accessToken);
   }
 }

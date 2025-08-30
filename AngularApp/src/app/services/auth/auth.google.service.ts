@@ -3,18 +3,19 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 import { IAuth, IGoogleAuth } from '../../models';
 import { environment } from '../../../environments/environment';
 import { AcessoService } from '../api';
+import { AuthServiceBase } from './auth.abstract.service';
 
 declare const google: any;
 
 @Injectable({
   providedIn: 'root'
 })
-
-export class AuthGoogleService {
+export class AuthGoogleService extends AuthServiceBase {
   private clientId: string = environment.client_id;
   private initialized = false;
 
-  constructor(private acessoService: AcessoService) {
+  constructor(protected override acessoService: AcessoService) {
+    super(acessoService, {} as any, {} as any); 
     this.initializeGoogleLogin();
   }
 
@@ -31,7 +32,10 @@ export class AuthGoogleService {
         callback: (response: any) => {
           if (response.credential) {
             this.handleCredentialResponse(response).subscribe({
-              next: () => { },
+              next: (auth) => {
+                this.accessTokenSubject.next(auth.accessToken);
+                this.isAuthenticated$.next(true);
+              },
               error: (err) => console.error('Erro ao processar credencial:', err)
             });
           }
@@ -49,6 +53,7 @@ export class AuthGoogleService {
     if (!userData.sub || !userData.email) {
       throw new Error('Erro de autenticação!');
     }
+
     const authData: IGoogleAuth = {
       authenticated: true,
       created: new Date().toISOString(),
@@ -64,7 +69,9 @@ export class AuthGoogleService {
     };
 
     return this.acessoService.signInWithGoogleAccount(authData).pipe(
-      catchError(err => throwError(() => new Error(err?.message || 'Erro de autenticação, atualize a págína tente novamente!')))
+      catchError(err =>
+        throwError(() => new Error(err?.message || 'Erro de autenticação, atualize a página e tente novamente!'))
+      )
     );
   }
 
@@ -86,40 +93,17 @@ export class AuthGoogleService {
     return JSON.parse(jsonPayload);
   }
 
-  public handleGoogleLogin(): Observable<any> {
+  public handleGoogleLogin(): Observable<IAuth> {
     return new Observable<IAuth>((observer) => {
       if (!this.isGoogleScriptLoaded()) {
         observer.error(new Error('Google API não carregada.'));
         return;
       }
 
-      google.accounts.id.initialize({
-        client_id: this.clientId,
-        callback: (response: any) => {
-          if (response.credential) {
-            this.handleCredentialResponse(response)
-              .pipe(
-                map((res) => {
-                  if (res.authenticated) return res;
-                  throw new Error('Autenticação falhou');
-                }),
-                catchError((err) => throwError(() => new Error(err?.message || 'Erro de autenticação!')))
-              )
-              .subscribe({
-                next: (auth) => {
-                  observer.next(auth);
-                  observer.complete();
-                },
-                error: (err) => observer.error(err)
-              });
-          } else {
-            observer.error(new Error('Erro de autenticação!'));
-            observer.complete();
-          }
-        }
+      google.accounts.id.prompt((notification: any) => {
+        // callback é tratado no initializeGoogleLogin
+        observer.complete();
       });
-
-      google.accounts.id.prompt();
     });
   }
 }

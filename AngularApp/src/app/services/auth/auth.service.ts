@@ -1,34 +1,33 @@
 ﻿import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { TokenStorageService } from '..';
-import { IAuth } from '../../models';
-import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { TokenStorageService } from '../token/token.storage.service';
 import { AcessoService } from '../api';
+import { IAuth } from '../../models';
+import { AuthServiceBase } from './auth.abstract.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
+export class AuthService extends AuthServiceBase {
+  public accessToken$ = this.accessTokenSubject.asObservable();
 
-export class AuthService {
-  private accessTokenSubject = new BehaviorSubject<string | undefined>(undefined);
-  private route: string =  'Acesso';
+  constructor(
+    protected override tokenStorage: TokenStorageService,
+    protected override acessoService: AcessoService,
+    protected override router: Router) {
+      super(acessoService, tokenStorage, router);
 
-  accessToken$ = this.accessTokenSubject.asObservable();
-
-  constructor(private tokenStorage: TokenStorageService, private acessoService: AcessoService) {
-    try {
-      const accessToken = this.tokenStorage.getAccessToken();
-      if (accessToken) {
-        this.setAccessToken(accessToken);
+      const token = this.tokenStorage.getAccessToken();
+      if (token) {
+        this.accessTokenSubject.next(token);
+        this.isAuthenticated$.next(true);
       } else {
         this.clearSessionStorage();
       }
-    } catch {
-      this.clearSessionStorage();
-    }
   }
 
-  private setAccessToken(token: string | undefined) {
+  private setAccessToken(token?: string) {
     this.accessTokenSubject.next(token);
   }
 
@@ -38,8 +37,8 @@ export class AuthService {
   }
 
   public isAuthenticated(): boolean {
-    const accessToken = this.tokenStorage.getAccessToken() ?? this.accessTokenSubject.getValue();
-    if (accessToken === null || accessToken === undefined) {
+    const token = this.tokenStorage.getAccessToken() ?? this.accessTokenSubject.getValue();
+    if (!token) {
       this.clearSessionStorage();
       return false;
     }
@@ -51,13 +50,14 @@ export class AuthService {
       this.tokenStorage.saveToken(auth.accessToken);
       this.tokenStorage.saveRefreshToken(auth.refreshToken);
       this.setAccessToken(auth.accessToken);
+      this.isAuthenticated$.next(true);
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
 
-  public refreshToken(token: string): Observable<IAuth>{
+  public override refreshToken(token: string): Observable<IAuth> {
     return this.acessoService.refreshToken(token);
   }
 }

@@ -14,6 +14,7 @@ export class TokenStorageService {
 
   public signOut(): void {
     sessionStorage.clear();
+    localStorage.clear();
     this.router.navigate(["/"]);
   }
 
