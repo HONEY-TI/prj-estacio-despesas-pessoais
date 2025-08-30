@@ -79,7 +79,10 @@ public class AcessoRepositorioImpl : IAcessoRepositorioImpl
 
     public Acesso FindByRefreshToken(string refreshToken)
     {
-        return Context.Set<Acesso>().Include(x => x.Usuario).First(prop => prop.RefreshToken.Equals(refreshToken));
+        return Context.Acesso
+            .Include(x => x.Usuario)
+            .ThenInclude(u => u.PerfilUsuario)
+            .First(prop => prop.RefreshToken.Equals(refreshToken));
     }
 
     public void RefreshTokenInfo(Acesso acesso)

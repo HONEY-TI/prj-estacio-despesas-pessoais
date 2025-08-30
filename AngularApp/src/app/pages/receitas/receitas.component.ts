@@ -1,7 +1,7 @@
 ﻿import { Component, ViewChild } from "@angular/core";
 import dayjs from "dayjs";
 import { ReceitasFormComponent } from "./receitas-form/receitas.form.component";
-import { BarraFerramentaClass, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../components";
+import { BarraFerramentaBase, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../components";
 import { ReceitaDataSet, ReceitaColumns } from "../../models/datatable-config/receitas";
 import { IReceita, Action } from "../../models";
 import { MenuService } from "../../services";
@@ -13,7 +13,7 @@ import { ReceitaService } from "../../services/api";
   styleUrls: ['./receitas.component.scss'],
   standalone: false
 })
-export class ReceitasComponent implements BarraFerramentaClass {
+export class ReceitasComponent implements BarraFerramentaBase {
   @ViewChild(DataTableComponent) dataTable: DataTableComponent;
   receitasData: ReceitaDataSet[] = [];
   columns = ReceitaColumns;

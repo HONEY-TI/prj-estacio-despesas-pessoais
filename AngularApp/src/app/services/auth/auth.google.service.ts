@@ -3,18 +3,19 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 import { IAuth, IGoogleAuth } from '../../models';
 import { environment } from '../../../environments/environment';
 import { AcessoService } from '../api';
+import { AuthServiceBase } from './auth.abstract.service';
 
 declare const google: any;
 
 @Injectable({
   providedIn: 'root'
 })
-
-export class AuthGoogleService {
+export class AuthGoogleService extends AuthServiceBase {
   private clientId: string = environment.client_id;
   private initialized = false;
 
-  constructor(private acessoService: AcessoService) {
+  constructor(protected override acessoService: AcessoService) {
+    super(acessoService, {} as any, {} as any); 
     this.initializeGoogleLogin();
   }
 
@@ -31,7 +32,10 @@ export class AuthGoogleService {
         callback: (response: any) => {
           if (response.credential) {
             this.handleCredentialResponse(response).subscribe({
-              next: () => { },
+              next: (auth) => {
+                this.accessTokenSubject.next(auth.accessToken);
+                this.isAuthenticated$.next(true);
+              },
               error: (err) => console.error('Erro ao processar credencial:', err)
             });
           }
@@ -40,52 +44,16 @@ export class AuthGoogleService {
 
       this.initialized = true;
     } else {
-      console.error('Google API não carregada corretamente.');
+      console.error('Atualize a página e tente novamente!');
     }
-  }
-
-  handleGoogleLogin(): Observable<any> {
-    return new Observable<IAuth>((observer) => {
-      if (!this.isGoogleScriptLoaded()) {
-        observer.error(new Error('Google API não carregada.'));
-        return;
-      }
-
-      google.accounts.id.initialize({
-        client_id: this.clientId,
-        callback: (response: any) => {
-          if (response.credential) {
-            this.handleCredentialResponse(response)
-              .pipe(
-                map((res) => {
-                  if (res.authenticated) return res;
-                  throw new Error('Autenticação falhou');
-                }),
-                catchError((err) => throwError(() => new Error(err?.message || 'Erro desconhecido')))
-              )
-              .subscribe({
-                next: (auth) => {
-                  observer.next(auth);
-                  observer.complete();
-                },
-                error: (err) => observer.error(err)
-              });
-          } else {
-            observer.error(new Error('Erro ao fazer login com o Google: credencial inválida'));
-            observer.complete();
-          }
-        }
-      });
-
-      google.accounts.id.prompt();
-    });
   }
 
   private handleCredentialResponse(response: any): Observable<IAuth> {
     const userData = this.decodeJwt(response.credential);
     if (!userData.sub || !userData.email) {
-      throw new Error('Token JWT inválido ou incompleto');
+      throw new Error('Erro de autenticação!');
     }
+
     const authData: IGoogleAuth = {
       authenticated: true,
       created: new Date().toISOString(),
@@ -97,11 +65,13 @@ export class AuthGoogleService {
       nome: userData.given_name,
       sobreNome: userData.family_name,
       telefone: null,
-      email: userData.email      
+      email: userData.email
     };
 
     return this.acessoService.signInWithGoogleAccount(authData).pipe(
-      catchError(err => throwError(() => new Error(err?.message || 'Erro desconhecido handleCredentialResponse')))
+      catchError(err =>
+        throwError(() => new Error(err?.message || 'Erro de autenticação, atualize a página e tente novamente!'))
+      )
     );
   }
 
@@ -121,5 +91,19 @@ export class AuthGoogleService {
         .join('')
     );
     return JSON.parse(jsonPayload);
+  }
+
+  public handleGoogleLogin(): Observable<IAuth> {
+    return new Observable<IAuth>((observer) => {
+      if (!this.isGoogleScriptLoaded()) {
+        observer.error(new Error('Google API não carregada.'));
+        return;
+      }
+
+      google.accounts.id.prompt((notification: any) => {
+        // callback é tratado no initializeGoogleLogin
+        observer.complete();
+      });
+    });
   }
 }

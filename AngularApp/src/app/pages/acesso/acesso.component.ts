@@ -19,6 +19,7 @@ import { MatIconModule } from "@angular/material/icon";
   styleUrls: ['./acesso.component.scss'],
 
 })
+
 export class AcessoComponent  implements OnInit {
   createAccountFrom : FormGroup & IAcesso;
   eyeIconClass: string = 'bi-eye';
@@ -30,10 +31,9 @@ export class AcessoComponent  implements OnInit {
     public formbuilder: FormBuilder,
     public router: Router,
     public acessoService: AcessoService,
-    public modalALert: AlertComponent) {
-  }
+    public modalALert: AlertComponent) {}
 
-  ngOnInit(): void{
+  public ngOnInit(): void{
     this.createAccountFrom = this.formbuilder.group({
       email: ['', [Validators.required, Validators.email]],
       nome: ['', [Validators.required]],
@@ -46,7 +46,7 @@ export class AcessoComponent  implements OnInit {
     })as FormGroup & IAcesso;
   }
 
-  onSaveClick() {
+  public onSaveClick() {
     let acesso: IAcesso = this.createAccountFrom.getRawValue();
     this.acessoService.createUsuario(acesso).pipe(
       map((response: boolean) => {
@@ -72,21 +72,20 @@ export class AcessoComponent  implements OnInit {
       next: (result: boolean) => {
         if (result){
           this.modalALert.open(AlertComponent, "Cadastro realizado com sucesso!", AlertType.Success);
-          this.router.navigate(['/login']);
+          this.router.navigate(['/']);
         }
       },
       error: (errorMessage: string) =>  this.modalALert.open(AlertComponent, errorMessage, AlertType.Warning)
     });
   }
 
-  onToogleSenha() {
+  public onToogleSenha() {
     this.showSenha = !this.showSenha;
     this.eyeIconClass = (this.eyeIconClass === 'bi-eye') ? 'bi-eye-slash' : 'bi-eye';
   }
 
-  onToogleConfirmaSenha(){
+  public onToogleConfirmaSenha(){
     this.showConfirmaSenha = !this.showConfirmaSenha;
     this.eyeIconClassConfirmaSenha = (this.eyeIconClassConfirmaSenha === 'bi-eye') ? 'bi-eye-slash' : 'bi-eye';
   }
-
 }

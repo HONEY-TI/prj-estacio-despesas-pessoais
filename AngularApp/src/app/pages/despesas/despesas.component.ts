@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit, ViewChild } from "@angular/core";
 import dayjs from "dayjs";
 import { DespesasFormComponent } from "./despesas-form/despesas.form.component";
-import { BarraFerramentaClass, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../components";
+import { BarraFerramentaBase, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../components";
 import { DespesaDataSet, DespesaColumns } from "../../models/datatable-config/despesas";
 import { IDespesa, Action } from "../../models";
 import { MenuService } from "../../services";
@@ -12,7 +12,7 @@ import { DespesaService } from "../../services/api";
   styleUrls: ['./despesas.component.scss'],
   standalone: false
 })
-export class DespesasComponent implements BarraFerramentaClass, OnInit {
+export class DespesasComponent implements BarraFerramentaBase, OnInit {
   @ViewChild(DataTableComponent) dataTable: DataTableComponent;
   despesasData: DespesaDataSet[] = [];
   columns = DespesaColumns;

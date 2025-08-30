@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,6 +26,11 @@ import { DespesasModule } from './pages/despesas/despesas.module';
 import { ReceitasModule } from './pages/receitas/receitas.module';
 import { LancamentosModule } from './pages/lancamentos/lancamentos.module';
 
+
+export function initializeAuth(authService: AuthService) {
+  return () => authService.autoLogin();
+}
+
 @NgModule({
   declarations: [AppComponent],
   bootstrap: [AppComponent],
@@ -33,6 +38,12 @@ import { LancamentosModule } from './pages/lancamentos/lancamentos.module';
     MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, BrowserAnimationsModule, MomentDateModule, NgbDropdownModule,
     NgxMaskDirective, NgxMaskPipe],
   providers: [AuthService, AcessoService, MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent, NgbActiveModal,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAuth,
+      deps: [AuthService],
+      multi: true
+    },
     { provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor, multi: true, },
     { provide: MAT_DATE_LOCALE, useValue: 'pt-br' },
     {
@@ -41,7 +52,8 @@ import { LancamentosModule } from './pages/lancamentos/lancamentos.module';
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
     },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
-    provideNgxMask(), provideHttpClient(withInterceptorsFromDi()), provideAnimationsAsync()]
+    provideNgxMask(), provideHttpClient(withInterceptorsFromDi()), provideAnimationsAsync()],
+    
 })
 
 export class AppModule { }

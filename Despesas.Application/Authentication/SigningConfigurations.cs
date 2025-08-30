@@ -87,7 +87,7 @@ public class SigningConfigurations : ISigningConfigurations
             Issuer = TokenConfiguration.Issuer,
             Claims = new Dictionary<string, object> { { "KEY", Guid.NewGuid() } },
             NotBefore = DateTime.UtcNow,
-            Expires = DateTime.UtcNow.AddSeconds(TokenConfiguration.Seconds),
+            Expires = DateTime.UtcNow.AddDays(TokenConfiguration.DaysToExpiry),
         });
 
         return handler.WriteToken(securityToken);
