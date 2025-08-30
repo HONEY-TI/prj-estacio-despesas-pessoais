@@ -113,14 +113,22 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
 
     public void RecoveryPassword(string email)
     {
-        CheckIfUserIsTeste(_repositorio.Find(accout => accout.Login.Equals(email)).Id);
-        IsValidEmail(email);
-        var newPassword = Guid.NewGuid().ToString().Substring(0, 8);
-        var result = _repositorio.RecoveryPassword(email, newPassword);
-        var acesso = _repositorio.Find(c => c.Login.Equals(email));
+        string? newPassword = null;
+        Acesso? acesso = null;
 
-        if (result && _emailSender.SendEmailPassword(acesso?.Usuario, newPassword))
+        try
+        {
+            CheckIfUserIsTeste(_repositorio.Find(accout => accout.Login.Equals(email)).Id);
+            IsValidEmail(email);
+            newPassword = Guid.NewGuid().ToString().Substring(0, 8);
+            _repositorio.RecoveryPassword(email, newPassword);
+            acesso = _repositorio.Find(c => c.Login.Equals(email));
+        }
+        catch
+        {
+            _emailSender.SendEmailPassword(acesso?.Usuario, newPassword);
             throw new ArgumentException("Erro ao enviar email de recuperação de senha!");
+        }
     }
 
     public void ChangePassword(Guid idUsuario, string password)

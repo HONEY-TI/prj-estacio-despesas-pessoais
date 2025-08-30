@@ -27,7 +27,9 @@ public sealed class MockAcesso
             .RuleFor(ca => ca.Login, usuario.Email)
             .RuleFor(ca => ca.Senha, "!12345")
             .RuleFor(ca => ca.UsuarioId, usuario.Id)
-            .RuleFor(ca => ca.Usuario, usuario);
+            .RuleFor(ca => ca.Usuario, usuario)
+            .RuleFor(ca => ca.RefreshTokenExpiry, DateTime.UtcNow)
+            ;
 
             return mockAcesso.Generate();
         }
@@ -48,3 +50,4 @@ public sealed class MockAcesso
         }
     }
 }
+
