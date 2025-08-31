@@ -8,7 +8,7 @@ namespace Repository.Persistency.Implementations.Fixtures;
 public sealed class AcessoRepositorioFixture : IDisposable
 {
     public RegisterContext Context { get; private set; }
-    public Mock<AcessoRepositorioImpl> Repository { get; set; }
+    public Mock<AcessoRepositorioImpl> Repository { get; private set; }
     public Mock<IAcessoRepositorioImpl> MockRepository { get; private set; }
 
     public AcessoRepositorioFixture()
@@ -17,9 +17,11 @@ public sealed class AcessoRepositorioFixture : IDisposable
         Context = new RegisterContext(options);
         Context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         Context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));
+        Context.TipoCategoria.Add(new TipoCategoria(1));
+        Context.TipoCategoria.Add(new TipoCategoria(2));
         Context.SaveChanges();
 
-        var lstAcesso = MockAcesso.Instance.GetAcessos();
+        var lstAcesso = MockAcesso.Instance.GetAcessos(2);
         lstAcesso.ForEach(c => c.Usuario.PerfilUsuario = Context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id));
         lstAcesso.Select(c => c.Usuario).ToList()
             .SelectMany(u => u.Categorias).ToList()

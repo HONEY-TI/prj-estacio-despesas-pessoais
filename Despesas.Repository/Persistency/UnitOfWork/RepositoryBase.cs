@@ -25,27 +25,17 @@ public sealed class UnitOfWork<T> : IRepositoy<T> where T : BaseDomain
 
     public Task Insert(T entity)
     {
-        if (entity == null)
-            throw new ArgumentNullException(nameof(entity));
-
         return Context.AddAsync(entity).AsTask();
     }
 
     public Task? Update(T entity)
     {
-        if (entity == null)
-            throw new ArgumentNullException(nameof(entity));
-
-        return Context.Update(entity) as Task;
+          return Context.Update(entity) as Task;
     }
 
     public async void Delete(Guid entityId)
     {
         var entity = await GetById(entityId);
-
-        if (entity == null)
-            throw new ArgumentNullException(nameof(entity));
-
         this.Context.Remove(entity);
     }
 
@@ -56,13 +46,6 @@ public sealed class UnitOfWork<T> : IRepositoy<T> where T : BaseDomain
 
     public async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> expression)
     {
-        try
-        {
-            return await this.Context.Set<T>().Where(expression).ToListAsync();
-        }
-        catch
-        {
-            throw;
-        }
+        return await this.Context.Set<T>().Where(expression).ToListAsync();
     }
 }

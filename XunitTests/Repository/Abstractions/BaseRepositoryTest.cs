@@ -56,9 +56,7 @@ public sealed class BaseRepositoryTest : IClassFixture<BaseRepositoryFixture>
         var repository = new BaseRepositoryClassTest(_fixture.Context);
         var receita = _fixture.Context.Receita.First();
 
-        bool result = repository.Delete(receita);
-
-        Assert.True(result);
+        repository.Delete(receita);                
         Assert.DoesNotContain(_fixture.Context.Receita, r => r.Id == receita.Id);
     }
 

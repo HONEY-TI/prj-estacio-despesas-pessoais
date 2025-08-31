@@ -4,7 +4,7 @@
 $baseDirectory = Get-Location
 $projectTestPath = Join-Path -Path (Get-Location) -ChildPath "XunitTests"
 $sourceDirs = "$baseDirectory\Despesas.Application;$baseDirectory\Despesas.Domain;$baseDirectory\Despesas.Repository;$baseDirectory\Despesas.Backend;"
-$filefilters = "$baseDirectory\Migrations.DataSeeders\**;-$baseDirectory\Migrations.MySqlServer\**;-$baseDirectory\Migrations.MsSqlServer\**;-$baseDirectory\Despesas.CrossCutting\**;-$baseDirectory\Despesas.Application\HyperMedia\**"
+$filefilters = "$baseDirectory\Migrations.DataSeeders\**;-$baseDirectory\Migrations.MySqlServer\**;-$baseDirectory\Migrations.MsSqlServer\**;-$baseDirectory\Despesas.CrossCutting\**;-$baseDirectory\Despesas.Infrastructure\**"
 $reportPath = Join-Path -Path (Get-Location) -ChildPath "XunitTests\TestResults"
 $coverageXmlPath = Join-Path -Path $reportPath -ChildPath "coveragereport"
 

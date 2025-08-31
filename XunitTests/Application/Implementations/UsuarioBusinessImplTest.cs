@@ -107,8 +107,8 @@ public sealed class UsuarioBusinessImplTest
         var usuario = _usuarios.First();
         var usuarioDto = _mapper.Map<UsuarioDto>(usuario);
         usuario.Nome = "Teste Usuario Update";
-
         _repositorioMock.Setup(repo => repo.Update(It.IsAny<Usuario>()));
+        _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(usuario);
 
         // Act
         var result = _usuarioBusiness.Update(usuarioDto);
@@ -126,7 +126,8 @@ public sealed class UsuarioBusinessImplTest
         // Arrange
         var usuario = _usuarios.First(u => u.PerfilUsuario == PerfilUsuario.Perfil.Admin);
         var usuarioDto = _mapper.Map<UsuarioDto>(usuario);
-        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Usuario>())).Returns(true);
+        usuarioDto.PerfilUsuario = 2;
+        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Usuario>()));
         _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(usuario);
 
         // Act
@@ -145,7 +146,7 @@ public sealed class UsuarioBusinessImplTest
         // Arrange
         var usuario = _usuarios.First(u => u.PerfilUsuario == PerfilUsuario.Perfil.User);
         var usuarioDto = _mapper.Map<UsuarioDto>(usuario);
-        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Usuario>())).Returns(false);
+        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Usuario>()));
         _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(usuario);
 
         // Act & Assert 

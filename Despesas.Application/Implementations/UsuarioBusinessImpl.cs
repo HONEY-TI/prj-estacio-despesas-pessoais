@@ -54,6 +54,7 @@ public class UsuarioBusinessImpl<Dto> : BusinessBase<Dto, Usuario>, IUsuarioBusi
         var usuario = _mapper.Map<Usuario>(dto);
         usuario = usuario.CreateUsuario(usuario);
         _repositorio.Insert(usuario);
+        usuario = _repositorio.Get(dto.UsuarioId);
         return _mapper.Map<Dto>(usuario);
     }
 
@@ -68,6 +69,7 @@ public class UsuarioBusinessImpl<Dto> : BusinessBase<Dto, Usuario>, IUsuarioBusi
     {
         var usuario = _mapper.Map<Usuario>(dto);
         _repositorio.Update(usuario);
+        usuario = _repositorio.Get(usuario.Id);
         if (usuario is null) throw new ArgumentException("Usuário não encontrado!");
         return _mapper.Map<Dto>(usuario);
     }
@@ -82,7 +84,8 @@ public class UsuarioBusinessImpl<Dto> : BusinessBase<Dto, Usuario>, IUsuarioBusi
     {
         IsValidPrefilAdministratdor(dto);
         var usuario = _mapper.Map<Usuario>(dto);
-        return _repositorio.Delete(usuario);
+        _repositorio.Delete(usuario);
+        return true;
     }
 
     public byte[] GetProfileImage(Guid userIdentity)

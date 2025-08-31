@@ -44,7 +44,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         Assert.True(result == 0);
     }
 
-    [Fact]
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void GetSaldo_Throws_Exception_When_Despesa_Execute_Where()
     {
         // Arrange
@@ -68,7 +68,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         Assert.Equal("SaldoRepositorioImpl_GetSaldo_Erro", exception.Message);
     }
 
-    [Fact]
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void GetSaldo_Throws_Exception_When_Receita_Execute_Where()
     {
         // Arrange            
@@ -124,7 +124,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         Assert.True(result == 0);
     }
 
-    [Fact]
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void GetSaldoByAno_Throws_Exception_When_Despesa_Execute_Where()
     {
         // Arrange
@@ -145,7 +145,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         Assert.Equal("SaldoRepositorioImpl_GetSaldoByAno_Erro", exception.Message);
     }
 
-    [Fact]
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void GetSaldoByAno_Throws_Exception_When_Receita_Execute_Where()
     {
         // Arrange            
@@ -200,7 +200,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         Assert.True(result == 0);
     }
 
-    [Fact]
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void GetSaldoByMesAno_Throws_Exception_When_Despesa_Execute_Where()
     {
         // Arrange
@@ -221,7 +221,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         Assert.Equal("SaldoRepositorioImpl_GetSaldoByMesAno_Erro", exception.Message);
     }
 
-    [Fact]
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void GetSaldoByMesAno_Throws_Exception_When_Receita_Execute_Where()
     {
         // Arrange            

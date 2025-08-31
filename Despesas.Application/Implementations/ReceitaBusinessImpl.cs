@@ -57,7 +57,8 @@ public class ReceitaBusinessImpl<Dto> : BusinessBase<Dto, Receita>, IBusiness<Dt
     {
         Receita receita = _mapper.Map<Receita>(dto);
         IsValidReceita(receita);
-        return _repositorio.Delete(receita);
+        _repositorio.Delete(receita);
+        return true;
     }
 
     private void IsValidCategoria(Receita dto)

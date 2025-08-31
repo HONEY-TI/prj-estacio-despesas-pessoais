@@ -58,7 +58,8 @@ public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusiness<Dt
     {
         Despesa despesa = _mapper.Map<Despesa>(dto);
         IsValidDespesa(despesa);
-        return _repositorio.Delete(despesa);
+        _repositorio.Delete(despesa);
+        return true;
     }
 
     private void IsValidCategoria(Despesa dto)

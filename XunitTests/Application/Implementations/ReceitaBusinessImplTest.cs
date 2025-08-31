@@ -126,7 +126,7 @@ public sealed class ReceitaBusinessImplTest
         var receitas = ReceitaFaker.Instance.Receitas();
         var receita = receitas.First();
         var receitaDto = _mapper.Map<ReceitaDto>(receita);
-        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Receita>())).Returns(true);
+        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Receita>()));
         _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(receita);
         _repositorioMockCategoria.Setup(repo => repo.GetAll()).Returns(receitas.Select(r => r.Categoria ?? new()).ToList());
 

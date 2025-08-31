@@ -71,19 +71,13 @@ public sealed class Usings
             .Setup(repo => repo.Update(It.Ref<T>.IsAny));
         _mock
             .Setup(repo => repo.Delete(It.IsAny<T>()))
-            .Returns(
-                (Guid id) =>
-                {
-                    var itemToRemove = _dataSet.FirstOrDefault(item => item.Id == id);
-                    if (itemToRemove != null)
-                    {
-                        _dataSet.Remove(itemToRemove);
-                        return true;
-                    }
-
-                    return false;
-                }
-            );
+            .Callback<T>(entity =>
+            {
+                var itemToRemove = _dataSet.FirstOrDefault(item => item.Id == entity.Id);
+                if (itemToRemove != null)
+                    if (itemToRemove is Usuario usuario)                    
+                        usuario.StatusUsuario = StatusUsuario.Inativo;
+        });
         return _mock;
     }
 

@@ -24,12 +24,12 @@ public sealed class MockAcesso
             if (usuario == null) usuario = MockUsuario.Instance.GetUsuario();
 
             var mockAcesso = new Faker<Acesso>()
+            .RuleFor(ca => ca.Id, Guid.NewGuid())
             .RuleFor(ca => ca.Login, usuario.Email)
             .RuleFor(ca => ca.Senha, "!12345")
             .RuleFor(ca => ca.UsuarioId, usuario.Id)
             .RuleFor(ca => ca.Usuario, usuario)
-            .RuleFor(ca => ca.RefreshTokenExpiry, DateTime.UtcNow)
-            ;
+            .RuleFor(ca => ca.RefreshTokenExpiry, DateTime.UtcNow);
 
             return mockAcesso.Generate();
         }
@@ -44,6 +44,7 @@ public sealed class MockAcesso
             {
                 var usuario = MockUsuario.Instance.GetUsuario();
                 var acesso = GetAcesso(usuario);
+                acesso.UsuarioId = usuario.Id;
                 listAcesso.Add(acesso);
             }
             return listAcesso;

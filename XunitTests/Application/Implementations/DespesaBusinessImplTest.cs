@@ -131,7 +131,7 @@ public sealed class DespesaBusinessImplTest
     {
         // Arrange
         var despesa = DespesaFaker.Instance.Despesas().First();
-        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Despesa>())).Returns(true);
+        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Despesa>()));
         _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(despesa);
         var despesaDto = _mapper.Map<DespesaDto>(despesa);
 

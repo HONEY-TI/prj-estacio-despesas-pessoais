@@ -41,6 +41,7 @@ public class GenericBusiness<Dto, Entity> : IBusiness<Dto, Entity> where Dto : c
     public bool Delete(Dto obj)
     {
         var entity = _mapper.Map<Entity>(obj);
-        return _repositorio.Delete(entity);
+        _repositorio.Delete(entity);
+        return true;
     }
 }

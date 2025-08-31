@@ -157,7 +157,7 @@ public sealed class ImagemPerfilUsuarioBusinessImplTests
         // Arrange
         var imagemPerfilVM = _mapper.Map<ImagemPerfilDto>(_imagensPerfil.First());
         _repositorioMock.Setup(repo => repo.GetAll()).Returns(_imagensPerfil.FindAll(obj => obj.Usuario.Id == imagemPerfilVM.UsuarioId));
-        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<ImagemPerfilUsuario>())).Returns(true);
+        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<ImagemPerfilUsuario>()));
         _mockAmazonS3Bucket.Setup(s => s.DeleteObjectNonVersionedBucketAsync(It.IsAny<ImagemPerfilUsuario>())).ReturnsAsync(true);
 
         // Act
@@ -173,7 +173,7 @@ public sealed class ImagemPerfilUsuarioBusinessImplTests
         // Arrange
         var imagemPerfilVM = _mapper.Map<ImagemPerfilDto>(_imagensPerfil.First());
         _repositorioMock.Setup(repo => repo.GetAll()).Returns(_imagensPerfil.FindAll(obj => obj.Usuario.Id == imagemPerfilVM.UsuarioId));
-        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<ImagemPerfilUsuario>())).Returns(true);
+        _repositorioMock.Setup(repo => repo.Delete(It.IsAny<ImagemPerfilUsuario>()));
         _mockAmazonS3Bucket.Setup(s => s.DeleteObjectNonVersionedBucketAsync(It.IsAny<ImagemPerfilUsuario>())).ReturnsAsync(false);
 
         // Act

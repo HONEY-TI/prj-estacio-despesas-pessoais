@@ -15,70 +15,46 @@ public class AcessoRepositorioImpl : IAcessoRepositorioImpl
 
     public void Create(Acesso acesso)
     {
-        try
+        acesso.Usuario.PerfilUsuario = Context.PerfilUsuario.First(p => p.Id == acesso.Usuario.PerfilUsuario.Id);
+        acesso.Usuario.Categorias.ToList().ForEach(c =>
         {
-            var existingEntity = Context.Acesso
-                .Include(a => a.Usuario) 
-                .ThenInclude(u => u.PerfilUsuario) 
-                .Include(a => a.Usuario.Categorias) 
-                .ThenInclude(c => c.TipoCategoria) 
-                .SingleOrDefault(c => c.Login.Equals(acesso.Login))
-                ?? throw new();
-
-            acesso.Usuario.PerfilUsuario = existingEntity.Usuario.PerfilUsuario;
-            acesso.Usuario.Categorias.ToList().ForEach(c => c.TipoCategoria = Context.TipoCategoria.First(tc => tc.Id.Equals(c.TipoCategoria.Id)));
-            Context.Add(acesso);
-            Context.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("AcessoRepositorioImpl_Create_Exception", ex);
-        }
-
+            var tipoCategoria = Context.TipoCategoria.FirstOrDefault(tc => tc.Id == c.TipoCategoria.Id);
+            if (tipoCategoria != null)
+                c.TipoCategoria = tipoCategoria;
+        }); 
+        Context.Acesso.Add(acesso);
+        Context.SaveChanges();
     }
 
     public void RecoveryPassword(string email, string newPassword)
     {
-        try
-        {
-            var entity = Context.Acesso.First(c => c.Login.Equals(email));
-            entity.Senha = newPassword;
-            Context.Update(entity);
-            Context.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("RecoveryPassword_Erro", ex);
-        }
+        var entity = Context.Acesso.First(c => c.Login.Equals(email));
+        entity.Senha = newPassword;
+        Context.Update(entity);
+        Context.SaveChanges();
     }
 
     public void ChangePassword(Guid idUsuario, string password)
     {
-        try
-        {
-            var usuario = Context.Acesso
-                .Include(u => u.Usuario)
-                .SingleOrDefault(prop => prop.UsuarioId
-                .Equals(idUsuario))
-                ?? throw new();
+        var usuario = Context.Acesso
+            .Include(u => u.Usuario)
+            .SingleOrDefault(prop => prop.UsuarioId
+            .Equals(idUsuario))
+            ?? throw new();
 
-            var acesso = Context.Acesso.First(c => c.Login.Equals(usuario.Login));
-            acesso.Senha = password;
-            Context.Acesso.Update(acesso);
-            Context.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("ChangePassword_Erro", ex);
-        }
+        var acesso = Context.Acesso.First(c => c.Login.Equals(usuario.Login));
+        acesso.Senha = password;
+        Context.Acesso.Update(acesso);
+        Context.SaveChanges();
     }
 
     public void RevokeRefreshToken(Guid idUsuario)
     {
-        var acesso = Context.Set<Acesso>().SingleOrDefault(prop => prop.Id.Equals(idUsuario));
+        var acesso = Context.Acesso.FirstOrDefault(prop => prop.Id.Equals(idUsuario));
         if (acesso is null) throw new ArgumentException("Token inexistente!");
         acesso.RefreshToken = String.Empty;
         acesso.RefreshTokenExpiry = null;
+        Context.Acesso.Update(acesso);
         Context.SaveChanges();
     }
 

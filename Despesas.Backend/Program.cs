@@ -1,9 +1,11 @@
 ﻿using CrossCutting.CommonDependenceInject;
 using Despesas.Application.CommonDependenceInject;
 using Despesas.Backend.CommonDependenceInject;
+using Repository.CommonDependenceInject;
+using Despesas.Infrastructure.CommonDependenceInject;
 using Microsoft.EntityFrameworkCore;
 using Repository;
-using Repository.CommonDependenceInject;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,8 +1,8 @@
-﻿using __mock__.Repository;
+﻿using __mock__.Entities;
+using __mock__.Repository;
 using Despesas.Infrastructure.Email;
 using Domain.Core.ValueObject;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Repository.Persistency.Abstractions;
 using Repository.Persistency.Implementations.Fixtures;
 using System.Linq.Expressions;
@@ -19,39 +19,23 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
     }
 
     [Fact]
-    public void Create_Should_Return_True()
+    public void Create_Should_Insert_Acesso_When_New()
     {
-        // Arrange and Setup mock repository
+        // Arrange 
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        mockRepository.Setup(repo => repo.Create(It.IsAny<Acesso>()));
-        var mockAcesso = MockAcesso.Instance.GetAcesso();
+        var mockRepository = _fixture.Repository.Object;
+        var mockAcesso = AcessoFaker.Instance.GetNewFaker();
 
         // Act
-        Action result = () => mockRepository.Object.Create(mockAcesso);
+        mockRepository.Create(mockAcesso);
 
         // Assert
-        Assert.IsNotType<Exception>(result);
-    }
-
-    [Fact]
-    public void Create_Should_Return_False()
-    {
-        // Arrange and Setup mock repository
-        var context = _fixture.Context;
-        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        mockRepository.Setup(repo => repo.Create(It.IsAny<Acesso>()));
-        var mockAcesso = context.Acesso.ToList().First();
-
-        // Act
-        Action result = () => mockRepository.Object.Create(mockAcesso);
-
-        // Assert
-        Assert.NotNull(result);
-        mockRepository.Verify(repo => repo.Create(It.IsAny<Acesso>()), Times.Never);
-    }
-
-    [Fact]
+        var acesso = mockRepository.Find(c => c.Login == mockAcesso.Login);
+        Assert.NotNull(acesso);
+        Assert.Equal(mockAcesso.Login, acesso.Login);
+    }    
+    
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void Create_Should_Throws_Exception()
     {
         // Arrange and Setup mock repository
@@ -107,7 +91,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         Assert.IsNotType<Exception>(result);
     }
 
-    [Fact]
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void RecoveryPassword_Should_Throws_True_Exception()
     {
         // Arrange
@@ -126,7 +110,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         Assert.Equal("RecoveryPassword_Erro", exception.Message);
     }
 
-    [Fact]
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void RecoveryPassword_Should_Throws_Exception()
     {
         // Arrange
@@ -142,7 +126,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         Assert.Equal("RecoveryPassword_Erro", exception.Message);
     }
 
-    [Fact]
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void ChangePassword_Should_Throws_Erro_When_Usuario_Null()
     {
         // Arrange
@@ -178,7 +162,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         Assert.IsNotType<Exception>(result);
     }
 
-    [Fact]
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void ChangePassword_Should_Throws_Exception()
     {
         // Arrange
@@ -197,7 +181,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         Assert.Equal("ChangePassword_Erro", exception.Message);
     }
 
-    [Fact]
+    [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void Create_Should_Throw_Exception_When_User_Already_Exists()
     {
         // Arrange
@@ -266,5 +250,140 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var exception = Assert.Throws<ArgumentException>(() => mockRepository.Object.RevokeRefreshToken(mockAcesso.UsuarioId));
         Assert.IsType<ArgumentException>(exception);
         Assert.Equal("Token inexistente!", exception.Message);
-    }   
+    }
+
+
+    [Fact]
+    public void Create_Should_Throw_When_Login_Already_Exists()
+    {
+        // Arrange
+        var context = _fixture.Context;
+        var repository = new AcessoRepositorioImpl(context);
+        var mockAcesso = context.Acesso.First();
+
+        // Act & Assert
+        Assert.ThrowsAny<Exception>(() => repository.Create(mockAcesso));
+    }
+
+    [Fact]
+    public void RecoveryPassword_Should_Update_Senha()
+    {
+        // Arrange
+        var context = _fixture.Context;
+        var repository = new AcessoRepositorioImpl(context);
+        var mockAcesso = context.Acesso.First();
+        var newPassword = "!12345";
+
+        // Act
+        repository.RecoveryPassword(mockAcesso.Login, newPassword);
+
+        // Assert
+        var result = context.Acesso.First(c => c.Login == mockAcesso.Login);
+        Assert.Equal(newPassword, result.Senha);
+    }
+
+    [Fact]
+    public void ChangePassword_Should_Update_Senha()
+    {
+        // Arrange
+        var context = _fixture.Context;
+        var repository = new AcessoRepositorioImpl(context);
+        var mockAcesso = context.Acesso.First();
+        var newPassword = "!54321";
+
+        // Act
+        repository.ChangePassword(mockAcesso.UsuarioId, newPassword);
+
+        // Assert
+        var result = context.Acesso.First(c => c.Id == mockAcesso.Id);
+        Assert.Equal(newPassword, result.Senha);
+    }
+
+    [Fact]
+    public void RevokeToken_Should_Clear_Token_When_User_Exists()
+    {
+        // Arrange
+        var context = _fixture.Context;
+        var repository = _fixture.MockRepository.Object;
+        var mockAcesso = context.Acesso.First();
+        mockAcesso.RefreshToken = "valid-token";
+        mockAcesso.RefreshTokenExpiry = DateTime.UtcNow.AddHours(1);
+
+        // Act
+        repository.RevokeRefreshToken(mockAcesso.Id);
+
+        // Assert
+        var result = context.Acesso.First(c => c.Id == mockAcesso.Id);
+        Assert.Equal(string.Empty, result.RefreshToken);
+        Assert.Null(result.RefreshTokenExpiry);
+    }
+
+    [Fact]
+    public void FindByRefreshToken_Should_Return_Acesso()
+    {
+        // Arrange
+        var context = _fixture.Context;
+        var repository = _fixture.MockRepository.Object;
+        var mockAcesso = context.Acesso.First();
+        mockAcesso.RefreshToken = "refresh-123";
+        context.SaveChanges();
+
+        // Act
+        var result = repository.FindByRefreshToken("refresh-123");
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(mockAcesso.Login, result.Login);
+    }
+
+    [Fact]
+    public void Find_Should_Return_Acesso_When_Exists()
+    {
+        // Arrange
+        var context = _fixture.Context;
+        var repository = new AcessoRepositorioImpl(context);
+        var mockAcesso = context.Acesso.First();
+
+        // Act
+        var result = repository.Find(c => c.Id == mockAcesso.Id);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(mockAcesso.Id, result.Id);
+    }
+
+    [Fact]
+    public void Find_Should_Return_Null_When_Not_Exists()
+    {
+        // Arrange
+        var context = _fixture.Context;
+        var repository = new AcessoRepositorioImpl(context);
+
+        // Act
+        var result = repository.Find(c => c.Id == Guid.NewGuid());
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void RefreshTokenInfo_Should_Update_Acesso()
+    {
+        // Arrange
+        var context = _fixture.Context;
+        var repository = new AcessoRepositorioImpl(context);
+        var mockAcesso = context.Acesso.First();
+        var originalToken = mockAcesso.RefreshToken;
+
+        mockAcesso.RefreshToken = "new-refresh-token";
+
+        // Act
+        repository.RefreshTokenInfo(mockAcesso);
+
+        // Assert
+        var updatedAcesso = context.Acesso.First(c => c.Id == mockAcesso.Id);
+        Assert.Equal("new-refresh-token", updatedAcesso.RefreshToken);
+        Assert.NotEqual(originalToken, updatedAcesso.RefreshToken);
+    }
+
 }

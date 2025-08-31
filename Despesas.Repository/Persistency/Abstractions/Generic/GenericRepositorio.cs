@@ -1,5 +1,4 @@
 ﻿using Domain.Core.Aggreggates;
-using Domain.Entities;
 using System.Linq.Expressions;
 
 namespace Repository.Persistency.Generic;
@@ -9,32 +8,18 @@ public class GenericRepositorio<T> : IRepositorio<T> where T : BaseDomain, new()
 
     public GenericRepositorio(RegisterContext context)
     {
-        _context = context;
+        this._context = context;
     }
 
     public virtual void Insert(T item)
     {
-        try
-        {
-            this._context.Add(item);
-            this._context.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("GenericRepositorio_Insert", ex); ;
-        }
+        this._context.Add(item);
+        this._context.SaveChanges();
     }
 
     public virtual List<T> GetAll()
     {
-        try
-        {
-            return this._context.Set<T>().ToList();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("GenericRepositorio_GetAll", ex);
-        }
+        return this._context.Set<T>().ToList();
     }
 
     public virtual T Get(Guid id)
@@ -44,48 +29,15 @@ public class GenericRepositorio<T> : IRepositorio<T> where T : BaseDomain, new()
 
     public virtual void Update(T entity)
     {
-        try
-        {
-            var existingEntity = _context.Set<T>().Find(entity.Id) ?? throw new NullReferenceException();
-            _context.Entry(existingEntity).CurrentValues.SetValues(entity);
-            _context.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("GenericRepositorio_Update", ex);
-        }
+        var existingEntity = _context.Set<T>().Find(entity.Id);
+        this._context.Set<T>().Entry(existingEntity).CurrentValues.SetValues(entity);
+        this._context.SaveChanges();
     }
 
-    public virtual bool Delete(T entity)
+    public virtual void Delete(T entity)
     {
-        try
-        {
-            T? result = this._context.Set<T>().SingleOrDefault(prop => prop.Id.Equals(entity.Id));
-            if (result != null)
-            {
-                if (result.GetType().Equals(typeof(Usuario)))
-                {
-                    var dataSet = _context.Set<Usuario>();
-                    Usuario usaurio = new Usuario
-                    {
-                        Id = entity.Id,
-                        StatusUsuario = StatusUsuario.Inativo
-                    };
-                    _context.Entry(result).CurrentValues.SetValues(usaurio);
-                }
-                else
-                {
-                    _context.Remove(result);
-                }
-                _context.SaveChanges();
-                return true;
-            }
-            return false;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("GenericRepositorio_Delete", ex);
-        }
+        this._context.Set<T>().Remove(entity);
+        this._context.SaveChanges();
     }
 
     public virtual bool Exists(Guid id)

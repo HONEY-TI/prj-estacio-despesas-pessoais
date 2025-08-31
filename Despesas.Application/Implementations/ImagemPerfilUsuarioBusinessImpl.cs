@@ -80,7 +80,8 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
             var result = _amazonS3Bucket.DeleteObjectNonVersionedBucketAsync(imagemPerfilUsuario).GetAwaiter().GetResult();
             if (result)
             {
-                return _repositorio.Delete(new ImagemPerfilUsuario { Id = imagemPerfilUsuario.Id });
+                _repositorio.Delete(new ImagemPerfilUsuario { Id = imagemPerfilUsuario.Id });
+                return true;
             }
         }
         return false;

@@ -107,7 +107,7 @@ public sealed class GenericBusinessTests
         var objects = UsuarioFaker.Instance.GetNewFakersUsuarios();
         var obj = objects.First();
         var repositoryMock = Usings.MockRepositorio(objects);
-        repositoryMock.Setup(repo => repo.Delete(It.IsAny<Usuario>())).Returns(true);
+        repositoryMock.Setup(repo => repo.Delete(It.IsAny<Usuario>()));
         _mapper = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<UsuarioProfile>(); }));
         var business = new GenericBusiness<UsuarioDto, Usuario>(_mapper, repositoryMock.Object);
 

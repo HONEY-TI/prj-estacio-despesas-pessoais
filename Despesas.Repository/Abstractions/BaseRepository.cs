@@ -24,26 +24,10 @@ public abstract class BaseRepository<T> where T : BaseDomain, new()
         Context.SaveChanges();
     }
 
-    public virtual bool Delete(T entity)
+    public virtual void Delete(T entity)
     {
-        try
-        {
-            var existingEntity = this.Context.Set<T>().Find(entity.Id);
-            if (existingEntity != null)
-            {
-                this.Context.Remove(existingEntity);
-                this.Context.SaveChanges();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        catch
-        {
-            return false;
-        }
+        Context.Remove(entity);
+        Context.SaveChanges();
     }
 
     public virtual IEnumerable<T> GetAll()

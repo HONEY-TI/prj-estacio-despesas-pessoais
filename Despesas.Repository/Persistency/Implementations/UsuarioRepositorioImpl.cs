@@ -39,17 +39,12 @@ public class UsuarioRepositorioImpl : BaseRepository<Usuario>, IRepositorio<Usua
             .Single(prop => prop.Id.Equals(id));
     }
 
-    public override bool Delete(Usuario obj)
+    public override void Delete(Usuario obj)
     {
         var result = Context.Usuario.SingleOrDefault(prop => prop.Id.Equals(obj.Id));
-        if (result != null)
-        {
-            result.StatusUsuario = StatusUsuario.Inativo;
-            Context.Entry(result).CurrentValues.SetValues(result);
-            Context.SaveChanges();
-            return true;
-        }
-        return false;
+        result.StatusUsuario = StatusUsuario.Inativo;
+        Context.Update(result);
+        Context.SaveChanges();
     }
 
     public override bool Exists(Guid id)
