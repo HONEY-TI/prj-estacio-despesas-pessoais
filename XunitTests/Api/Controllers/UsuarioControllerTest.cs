@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using __mock__.Entities;
+﻿using __mock__.Entities;
 using AutoMapper;
-using Despesas.Backend.Controllers;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Profile;
+using Despesas.Backend.Controllers;
 using Domain.Core.ValueObject;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 public sealed class UsuarioControllerTest
@@ -29,7 +30,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Get_Returns__OkObjectResult_With_Usuario()
+    public void Get_Returns_OkObjectResult_With_Usuario()
     {
         // Arrange
         var usaurios = UsuarioFaker.Instance.GetNewFakersUsuarios(10);
@@ -173,4 +174,148 @@ public sealed class UsuarioControllerTest
         Assert.Equal("Usuário não encontrado!", message);
         _mockUsuarioBusiness.Verify(b => b.Update(It.IsAny<UsuarioDto>()), Times.Once);
     }
+
+    [Fact]
+    public void Get_Should_Returns_BadRequest_When_User_NotFound()
+    {
+        // Arrange
+        Guid idUsuario = Guid.NewGuid();
+        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        _mockUsuarioBusiness.Setup(b => b.FindById(It.IsAny<Guid>())).Returns((UsuarioDto?)null);
+
+        // Act
+        var result = _usuarioController.Get() as ObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal("Usuário não encontrado!", result.Value);
+    }
+
+    [Fact]
+    public void Post_Should_Create_UsuarioDto()
+    {
+        // Arrange
+        var usuarioDto = _usuarioDtos.First();
+        Guid idUsuario = usuarioDto.Id.Value;
+        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        _mockUsuarioBusiness.Setup(b => b.Create(It.IsAny<UsuarioDto>())).Returns(usuarioDto);
+
+        // Act
+        var result = _usuarioController.Post(usuarioDto) as ObjectResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.IsType<OkObjectResult>(result);
+        Assert.IsType<UsuarioDto>(result.Value);
+        _mockUsuarioBusiness.Verify(b => b.Create(It.IsAny<UsuarioDto>()), Times.Once);
+    }
+
+    [Fact]
+    public void Post_Should_Returns_BadRequest_When_Exception()
+    {
+        var usuarioDto = _usuarioDtos.First();
+        Guid idUsuario = usuarioDto.Id.Value;
+        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        _mockUsuarioBusiness.Setup(b => b.Create(It.IsAny<UsuarioDto>()))
+            .Throws(new ArgumentException("Erro ao cadastrar Usuário!"));
+
+        var result = _usuarioController.Post(usuarioDto) as ObjectResult;
+
+        Assert.NotNull(result);
+        Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal("Erro ao cadastrar Usuário!", result.Value);
+    }
+
+    [Fact]
+    public void Delete_Should_Return_Ok_When_Success()
+    {
+        var usuarioDto = _usuarioDtos.First();
+        Usings.SetupBearerToken(usuarioDto.Id.Value, _usuarioController);
+        _mockUsuarioBusiness.Setup(b => b.Delete(It.IsAny<UsuarioDto>())).Returns(true);
+
+        var result = _usuarioController.Delete(usuarioDto) as ObjectResult;
+
+        Assert.NotNull(result);
+        Assert.IsType<OkObjectResult>(result);
+        Assert.True((bool)result.Value!);
+    }
+
+    [Fact]
+    public void Delete_Should_Return_BadRequest_When_Fails()
+    {
+        var usuarioDto = _usuarioDtos.First();
+        Usings.SetupBearerToken(usuarioDto.Id.Value, _usuarioController);
+        _mockUsuarioBusiness.Setup(b => b.Delete(It.IsAny<UsuarioDto>()))
+            .Throws(new ArgumentException("Não foi possivél excluir este usuário."));
+
+        var result = _usuarioController.Delete(usuarioDto) as ObjectResult;
+
+        Assert.NotNull(result);
+        Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal("Não foi possivél excluir este usuário.", result.Value);
+    }
+
+    [Fact]
+    public void GetProfileImage_Should_Return_File_When_ImageExists()
+    {
+        var imageBytes = new byte[] { 1, 2, 3 };
+        Guid idUsuario = Guid.NewGuid();
+        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        _mockUsuarioBusiness.Setup(b => b.GetProfileImage(It.IsAny<Guid>())).Returns(imageBytes);
+
+        var result = _usuarioController.GetProfileImage();
+
+        var fileResult = Assert.IsType<FileContentResult>(result);
+        Assert.Equal("image/png", fileResult.ContentType);
+        Assert.Equal(imageBytes, fileResult.FileContents);
+    }
+
+    [Fact]
+    public void GetProfileImage_Should_Return_NoContent_When_Image_IsNull()
+    {
+        Guid idUsuario = Guid.NewGuid();
+        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        _mockUsuarioBusiness.Setup(b => b.GetProfileImage(It.IsAny<Guid>())).Returns((byte[]?)null);
+
+        var result = _usuarioController.GetProfileImage();
+
+        Assert.IsType<NoContentResult>(result);
+    }
+
+    [Fact]
+    public void PutProfileImage_Should_Return_File_When_Success()
+    {
+        var fileMock = new Mock<IFormFile>();
+        var content = new byte[] { 1, 2, 3 };
+        var ms = new MemoryStream(content);
+        fileMock.Setup(f => f.OpenReadStream()).Returns(ms);
+        fileMock.Setup(f => f.Length).Returns(ms.Length);
+        fileMock.Setup(f => f.ContentType).Returns("image/png");
+
+        Guid idUsuario = Guid.NewGuid();
+        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        _mockUsuarioBusiness.Setup(b => b.UpdateProfileImage(It.IsAny<Guid>(), It.IsAny<IFormFile>())).Returns(content);
+
+        var result = _usuarioController.PutProfileImage(fileMock.Object);
+
+        var fileResult = Assert.IsType<FileContentResult>(result);
+        Assert.Equal("image/png", fileResult.ContentType);
+        Assert.Equal(content, fileResult.FileContents);
+    }
+
+    [Fact]
+    public void PutProfileImage_Should_Return_NoContent_When_Image_IsEmpty()
+    {
+        var fileMock = new Mock<IFormFile>();
+        Guid idUsuario = Guid.NewGuid();
+        Usings.SetupBearerToken(idUsuario, _usuarioController);
+        _mockUsuarioBusiness.Setup(b => b.UpdateProfileImage(It.IsAny<Guid>(), It.IsAny<IFormFile>()))
+            .Returns((byte[]?)Array.Empty<byte>());
+
+        var result = _usuarioController.PutProfileImage(fileMock.Object);
+
+        Assert.IsType<NoContentResult>(result);
+    }
+
 }

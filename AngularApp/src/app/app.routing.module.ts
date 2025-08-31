@@ -5,6 +5,7 @@ import { AuthProvider } from './services';
 import { AcessoComponent } from './pages/acesso/acesso.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { PrivacyComponent } from './pages/privacy/privacy/privacy.component';
 
 const routes: Routes = [
   { path: '', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule), pathMatch: 'full' },
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'lancamento', canActivate: [AuthProvider], loadChildren: () => import('./pages/lancamentos/lancamentos.module').then(m => m.LancamentosModule),},
   { path: 'perfil', canActivate: [AuthProvider], loadChildren: () => import('./pages/perfil/perfil.module').then(m => m.PerfilModule), },
   { path: 'configuracoes', canActivate: [AuthProvider], loadChildren: () => import('./pages/configuracoes/configuracoes.module').then(m => m.ConfiguracoesModule),},
+  { path: 'privacy', component: PrivacyComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 
