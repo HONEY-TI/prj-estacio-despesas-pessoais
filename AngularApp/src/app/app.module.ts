@@ -25,9 +25,10 @@ import { CategoriasModule } from './pages/categorias/categorias.module';
 import { DespesasModule } from './pages/despesas/despesas.module';
 import { ReceitasModule } from './pages/receitas/receitas.module';
 import { LancamentosModule } from './pages/lancamentos/lancamentos.module';
+import { AuthServiceBase } from './services/auth/auth.abstract.service';
 
 
-export function initializeAuth(authService: AuthService) {
+export function initializeAuth(authService: AuthServiceBase) {
   return () => authService.autoLogin();
 }
 

@@ -28,19 +28,19 @@ export abstract class AuthServiceBase {
     try {
       const result: IAuth = await firstValueFrom(this.refreshToken(refreshToken));
 
-      // Salva os novos tokens retornados
       if (result.accessToken) this.tokenStorage.saveToken(result.accessToken);
       if (result.refreshToken) this.tokenStorage.saveRefreshToken(result.refreshToken);
 
       this.accessTokenSubject.next(result.accessToken);
       this.isAuthenticated$.next(true);
+      this.router.navigate(['/dashboard']);
     } catch (error) {
       this.logout();
     }
   }
 
-  protected refreshToken(token: string): Observable<IAuth> {
-    return this.acessoService.refreshToken(token);
+  protected setAccessToken(token?: string) {
+    this.accessTokenSubject.next(token);
   }
 
   protected logout(): void {
@@ -48,5 +48,37 @@ export abstract class AuthServiceBase {
     this.accessTokenSubject.next(undefined);
     this.isAuthenticated$.next(false);
     this.router.navigate(['/']);
+  }
+
+
+  public createAccessToken(auth: IAuth): boolean {
+    try {
+      this.tokenStorage.saveToken(auth.accessToken);
+      this.tokenStorage.saveRefreshToken(auth.refreshToken);
+      this.setAccessToken(auth.accessToken);
+      this.isAuthenticated$.next(true);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  public clearSessionStorage() {
+    this.setAccessToken(undefined);
+    sessionStorage.clear();
+  }
+
+  public refreshToken(token: string): Observable<IAuth> {
+    return this.acessoService.refreshToken(token);
+  }
+
+
+  public isAuthenticated(): boolean {
+    const token = this.tokenStorage.getAccessToken() ?? this.accessTokenSubject.getValue();
+    if (!token) {
+      this.clearSessionStorage();
+      return false;
+    }
+    return true;
   }
 }
