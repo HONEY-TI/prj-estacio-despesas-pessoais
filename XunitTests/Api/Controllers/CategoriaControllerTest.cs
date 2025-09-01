@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using __mock__.Entities;
 using Despesas.Backend.Controllers;
 using Despesas.Application.Abstractions;
@@ -19,7 +19,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Get_Returns_Ok_Result()
+    public async Task Get_Returns_Ok_Result()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -30,7 +30,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.FindAll(UsuarioId)).Returns(categoriaDtos.FindAll(c => c.UsuarioId == UsuarioId));
 
         // Act
-        var result = _categoriaController.Get() as OkObjectResult;
+        var result = await _categoriaController.Get() as OkObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -40,7 +40,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Get_Returns_Ok_Result_When_TryCatch_ThrowError()
+    public async Task Get_Returns_Ok_Result_When_TryCatch_ThrowError()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -51,7 +51,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.FindAll(UsuarioId)).Throws<Exception>();
 
         // Act
-        var result = _categoriaController.Get() as OkObjectResult;
+        var result = await _categoriaController.Get() as OkObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -64,7 +64,7 @@ public sealed class CategoriaControllerTest
 
 
     [Fact]
-    public void GetById_Returns_Ok_Result()
+    public async Task GetById_Returns_Ok_Result()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -75,7 +75,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.FindById(idCategoria, categoriaDto.UsuarioId)).Returns(categoriaDto);
 
         // Act
-        var result = _categoriaController.GetById(idCategoria) as OkObjectResult;
+        var result = await _categoriaController.GetById(idCategoria) as OkObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -84,7 +84,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void GetById_Returns_Ok_Result_When_TryCatch_ThrowError()
+    public async Task GetById_Returns_Ok_Result_When_TryCatch_ThrowError()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -98,7 +98,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.FindById(idCategoria, categoriaDto.UsuarioId)).Throws<Exception>();
 
         // Act
-        var result = _categoriaController.GetById(idCategoria) as OkObjectResult;
+        var result = await _categoriaController.GetById(idCategoria) as OkObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -107,7 +107,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void GetByTipoCategoria_Returns_Ok_Result_TipoCategoria_Todas()
+    public async Task GetByTipoCategoria_Returns_Ok_Result_TipoCategoria_Todas()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -121,7 +121,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.FindAll(UsuarioId.Value)).Returns(listCategoriaDto);
 
         // Act
-        var result = _categoriaController.GetByTipoCategoria(tipoCategoria) as ObjectResult;
+        var result = await _categoriaController.GetByTipoCategoria(tipoCategoria) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -130,7 +130,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void GetByTipoCategoria_Returns_Ok_Result()
+    public async Task GetByTipoCategoria_Returns_Ok_Result()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -142,7 +142,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.FindAll(UsuarioId.Value)).Returns(listCategoriaDto);
 
         // Act
-        var result = _categoriaController.GetByTipoCategoria(tipoCategoria) as ObjectResult;
+        var result = await _categoriaController.GetByTipoCategoria(tipoCategoria) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -151,7 +151,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Post_Returns_Ok_Result()
+    public async Task Post_Returns_Ok_Result()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -168,7 +168,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.Create(categoriaDto)).Returns(categoriaDto);
 
         // Act
-        var result = _categoriaController.Post(categoriaDto) as ObjectResult;
+        var result = await _categoriaController.Post(categoriaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -178,7 +178,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Post_Returns_Bad_Request_When_TipoCategoria_Todas()
+    public async Task Post_Returns_Bad_Request_When_TipoCategoria_Todas()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -196,7 +196,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.Create(categoriaDto)).Returns(categoriaDto);
 
         // Act
-        var result = _categoriaController.Post(categoriaDto) as ObjectResult;
+        var result = await _categoriaController.Post(categoriaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -206,7 +206,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Post_Returns_Bad_Request_When_TryCatch_ThrowError()
+    public async Task Post_Returns_Bad_Request_When_TryCatch_ThrowError()
     {
         // Arrange Para ocorrer esta situação o tipo de categotia não pode ser == Todas
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -218,7 +218,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.Create(categoriaDto)).Throws(new Exception());
 
         // Act
-        var result = _categoriaController.Post(categoriaDto) as ObjectResult;
+        var result = await _categoriaController.Post(categoriaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -228,7 +228,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Put_Returns_Ok_Result()
+    public async Task Put_Returns_Ok_Result()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -245,7 +245,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.Update(categoriaDto)).Returns(categoriaDto);
 
         // Act
-        var result = _categoriaController.Put(categoriaDto) as ObjectResult;
+        var result = await _categoriaController.Put(categoriaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -254,7 +254,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Put_Returns_Bad_Request_TipoCategoria_Todas()
+    public async Task Put_Returns_Bad_Request_TipoCategoria_Todas()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -265,7 +265,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.Update(categoriaDto)).Returns(categoriaDto);
 
         // Act
-        var result = _categoriaController.Put(categoriaDto) as BadRequestObjectResult;
+        var result = await _categoriaController.Put(categoriaDto) as BadRequestObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -275,7 +275,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Put_Returns_Bad_Request_Categoria_Null()
+    public async Task Put_Returns_Bad_Request_Categoria_Null()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -286,7 +286,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.Update(categoriaDto)).Returns(() => null);
 
         // Act
-        var result = _categoriaController.Put(categoriaDto) as BadRequestObjectResult;
+        var result = await _categoriaController.Put(categoriaDto) as BadRequestObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -296,7 +296,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Delete_Returns_Ok_Result()
+    public async Task Delete_Returns_Ok_Result()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -315,7 +315,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.FindById(categoriaDto.Id.Value, categoriaDto.UsuarioId)).Returns(categoriaDto);
 
         // Act
-        var result = _categoriaController.Delete(categoriaDto.Id.Value) as ObjectResult;
+        var result = await _categoriaController.Delete(categoriaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -327,7 +327,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Delete_Returns_OK_Result_Message_False()
+    public async Task Delete_Returns_OK_Result_Message_False()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -346,7 +346,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.FindById(categoriaDto.Id.Value, categoriaDto.UsuarioId)).Returns(categoriaDto);
 
         // Act
-        var result = _categoriaController.Delete(categoriaDto.Id.Value) as ObjectResult;
+        var result = await _categoriaController.Delete(categoriaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -358,7 +358,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Delete_Returns_BadRequest()
+    public async Task Delete_Returns_BadRequest()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -369,7 +369,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.FindById(categoriaDto.Id.Value, categoriaDto.UsuarioId)).Returns(categoriaDto);
 
         // Act
-        var result = _categoriaController.Delete(categoriaDto.Id.Value) as BadRequestObjectResult;
+        var result = await _categoriaController.Delete(categoriaDto.Id.Value) as BadRequestObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -379,7 +379,7 @@ public sealed class CategoriaControllerTest
     }
 
     [Fact]
-    public void Delete_Returns_BadRequest_When_TryCatch_ThrowError()
+    public async Task Delete_Returns_BadRequest_When_TryCatch_ThrowError()
     {
         // Arrange
         _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
@@ -390,7 +390,7 @@ public sealed class CategoriaControllerTest
         _mockCategoriaBusiness.Setup(b => b.Delete(It.IsAny<CategoriaDto>())).Throws<Exception>();
 
         // Act
-        var result = _categoriaController.Delete(categoriaDto.Id.Value) as BadRequestObjectResult;
+        var result = await _categoriaController.Delete(categoriaDto.Id.Value) as BadRequestObjectResult;
 
         // Assert
         Assert.NotNull(result);

@@ -27,7 +27,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
     }
 
     [Fact]
-    public void Get_ImagemPerfilUsuario_Should_Returns_OkResults_With_ImagemPerfilUsuario()
+    public async Task Get_ImagemPerfilUsuario_Should_Returns_OkResults_With_ImagemPerfilUsuario()
     {
         // Arrange
         var _imagemPerfilUsuarios = ImagemPerfilUsuarioFaker.Instance.ImagensPerfilUsuarios();
@@ -38,7 +38,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
         _mockImagemPerfilBusiness.Setup(business => business.FindAll(idUsuario)).Returns(_imagemPerfilUsuarioDtos);
 
         // Act
-        var result = _imagePerfilUsuarioController.GetImagemPerfil() as ObjectResult;
+        var result = await _imagePerfilUsuarioController.GetImagemPerfil() as ObjectResult;
         // Assert
         Assert.NotNull(result);
         Assert.IsType<OkObjectResult>(result);
@@ -49,7 +49,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
     }
 
     [Fact]
-    public void Get_ImagemPerfilUsuario_Should_Returns_OkResult_When_ImagemPerfilUsuario_NotFound()
+    public async Task Get_ImagemPerfilUsuario_Should_Returns_OkResult_When_ImagemPerfilUsuario_NotFound()
     {
         // Arrange
         var _imagemPerfilUsuarios = ImagemPerfilUsuarioFaker.Instance.ImagensPerfilUsuarios();
@@ -60,7 +60,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
         _mockImagemPerfilBusiness.Setup(business => business.FindAll(idUsuario)).Returns(_imagemPerfilUsuarioDtos);
 
         // Act
-        var result = _imagePerfilUsuarioController.GetImagemPerfil() as ObjectResult;
+        var result = await _imagePerfilUsuarioController.GetImagemPerfil() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -315,7 +315,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
     }
 
     [Fact]
-    public void Delete_Should_Returns_OkResults()
+    public async Task Delete_Should_Returns_OkResults()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -323,7 +323,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
         _mockImagemPerfilBusiness.Setup(business => business.Delete(It.IsAny<Guid>())).Returns(true);
 
         // Act
-        var result = _imagePerfilUsuarioController.DeleteImagemPerfil() as ObjectResult;
+        var result = await _imagePerfilUsuarioController.DeleteImagemPerfil() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -335,7 +335,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
     }
 
     [Fact]
-    public void Delete_Should_Returns_BadRequest_When_Try_To_Delete()
+    public async Task Delete_Should_Returns_BadRequest_When_Try_To_Delete()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -343,7 +343,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
         _mockImagemPerfilBusiness.Setup(business => business.Delete(It.IsAny<Guid>())).Returns(false);
 
         // Act
-        var result = _imagePerfilUsuarioController.DeleteImagemPerfil() as ObjectResult;
+        var result = await _imagePerfilUsuarioController.DeleteImagemPerfil() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -354,7 +354,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
     }
 
     [Fact]
-    public void Delete_Throws_Erro_And_Retuns_BadRequestResult()
+    public async Task Delete_Throws_Erro_And_Retuns_BadRequestResult()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -362,7 +362,7 @@ public sealed class ImagemPerfilUsuarioControllerTest
         _mockImagemPerfilBusiness.Setup(business => business.Delete(It.IsAny<Guid>())).Throws<Exception>();
 
         // Act
-        var result = _imagePerfilUsuarioController.DeleteImagemPerfil() as ObjectResult;
+        var result = await _imagePerfilUsuarioController.DeleteImagemPerfil() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);

@@ -20,7 +20,7 @@ public class GraficosController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult GetByAnoByIdUsuario([FromRoute] DateTime ano)
+    public async Task<IActionResult> GetByAnoByIdUsuario([FromRoute] DateTime ano)
     {
         try
         {

@@ -23,7 +23,7 @@ public class ImagemPerfilUsuarioController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult GetImagemPerfil()
+    public async Task<IActionResult> GetImagemPerfil()
     {
         try
         {
@@ -103,7 +103,7 @@ public class ImagemPerfilUsuarioController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult DeleteImagemPerfil()
+    public async Task<IActionResult> DeleteImagemPerfil()
     {
         try
         {

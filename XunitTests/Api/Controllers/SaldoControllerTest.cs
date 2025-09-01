@@ -16,7 +16,7 @@ public sealed class SaldoControllerTest
     }
 
     [Fact]
-    public void GetSaldo_Should_Return_Saldo()
+    public async Task GetSaldo_Should_Return_Saldo()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -25,7 +25,7 @@ public sealed class SaldoControllerTest
         _mockSaldoBusiness.Setup(business => business.GetSaldo(idUsuario)).Returns(saldo);
 
         // Act
-        var result = _SaldoController.Get() as ObjectResult;
+        var result = await _SaldoController.Get() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -36,7 +36,7 @@ public sealed class SaldoControllerTest
     }
 
     [Fact]
-    public void GetSaldo_Returns_BadRequest_When_Throws_Error()
+    public async Task GetSaldo_Returns_BadRequest_When_Throws_Error()
     {
         // Arrange
         var idUsuario = Guid.Empty;
@@ -44,7 +44,7 @@ public sealed class SaldoControllerTest
         _mockSaldoBusiness.Setup(business => business.GetSaldo(idUsuario)).Throws(new Exception());
 
         // Act
-        var result = _SaldoController.Get() as ObjectResult;
+        var result = await _SaldoController.Get() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -55,7 +55,7 @@ public sealed class SaldoControllerTest
     }
 
     [Fact]
-    public void GetSaldoByAno_Should_Return_Saldo()
+    public async Task GetSaldoByAno_Should_Return_Saldo()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -64,7 +64,7 @@ public sealed class SaldoControllerTest
         _mockSaldoBusiness.Setup(business => business.GetSaldoAnual(DateTime.Today, idUsuario)).Returns(saldo);
 
         // Act
-        var result = _SaldoController.GetSaldoByAno(DateTime.Today) as ObjectResult;
+        var result = await _SaldoController.GetSaldoByAno(DateTime.Today) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -75,7 +75,7 @@ public sealed class SaldoControllerTest
     }
 
     [Fact]
-    public void GetSaldoByAno_Returns_BadRequest_When_Throws_Error()
+    public async Task GetSaldoByAno_Returns_BadRequest_When_Throws_Error()
     {
         // Arrange
         var idUsuario = Guid.Empty;
@@ -83,7 +83,7 @@ public sealed class SaldoControllerTest
         _mockSaldoBusiness.Setup(business => business.GetSaldoAnual(DateTime.Today, idUsuario)).Throws(new Exception());
 
         // Act
-        var result = _SaldoController.GetSaldoByAno(DateTime.Today) as ObjectResult;
+        var result = await _SaldoController.GetSaldoByAno(DateTime.Today) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -94,7 +94,7 @@ public sealed class SaldoControllerTest
     }
 
     [Fact]
-    public void GetSaldoByMesAno_Should_Return_Saldo()
+    public async Task GetSaldoByMesAno_Should_Return_Saldo()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -103,7 +103,7 @@ public sealed class SaldoControllerTest
         _mockSaldoBusiness.Setup(business => business.GetSaldoByMesAno(DateTime.Today, idUsuario)).Returns(saldo);
 
         // Act
-        var result = _SaldoController.GetSaldoByMesAno(DateTime.Today) as ObjectResult;
+        var result = await _SaldoController.GetSaldoByMesAno(DateTime.Today) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -114,7 +114,7 @@ public sealed class SaldoControllerTest
     }
 
     [Fact]
-    public void GetSaldoByMesAno_Returns_BadRequest_When_Throws_Error()
+    public async Task GetSaldoByMesAno_Returns_BadRequest_When_Throws_Error()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -122,7 +122,7 @@ public sealed class SaldoControllerTest
         _mockSaldoBusiness.Setup(business => business.GetSaldoByMesAno(DateTime.Today, idUsuario)).Throws(new Exception());
 
         // Act
-        var result = _SaldoController.GetSaldoByMesAno(DateTime.Today) as ObjectResult;
+        var result = await _SaldoController.GetSaldoByMesAno(DateTime.Today) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);

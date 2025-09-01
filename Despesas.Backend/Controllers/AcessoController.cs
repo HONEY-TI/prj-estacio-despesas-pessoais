@@ -18,7 +18,7 @@ public class AcessoController : AuthController
     [HttpPost]
     [ProducesResponseType(200, Type = typeof(bool))]
     [ProducesResponseType(400, Type = typeof(string))]
-    public IActionResult Post([FromBody] AcessoDto acessoDto)
+    public async Task<IActionResult> Post([FromBody] AcessoDto acessoDto)
     {
         try
         {
@@ -38,7 +38,7 @@ public class AcessoController : AuthController
     [HttpPost("SignIn")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(400, Type = typeof(string))]
-    public IActionResult SignIn([FromBody] LoginDto login)
+    public async Task<IActionResult> SignIn([FromBody] LoginDto login)
     {
         try
         {
@@ -59,7 +59,7 @@ public class AcessoController : AuthController
     [HttpPost("SignInWithGoogle")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(400, Type = typeof(string))]
-    public IActionResult GoogleSignIn([FromBody] GoogleAuthenticationDto authentication)
+    public async Task<IActionResult> GoogleSignIn([FromBody] GoogleAuthenticationDto authentication)
     {
         try
         {
@@ -88,7 +88,7 @@ public class AcessoController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult ChangePassword([FromBody] ChangePasswordDto changePasswordVM)
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordVM)
     {
         try
         {
@@ -111,7 +111,7 @@ public class AcessoController : AuthController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult RecoveryPassword([FromBody] string email)
+    public async Task<IActionResult> RecoveryPassword([FromBody] string email)
     {
         try
         {
@@ -129,7 +129,7 @@ public class AcessoController : AuthController
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public IActionResult Refresh([FromRoute] string refreshToken)
+    public async Task<IActionResult> Refresh([FromRoute] string refreshToken)
     {
         try
         {

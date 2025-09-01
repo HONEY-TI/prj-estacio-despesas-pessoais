@@ -19,7 +19,7 @@ public class SaldoController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
         try
         {
@@ -38,7 +38,7 @@ public class SaldoController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult GetSaldoByAno([FromRoute] DateTime ano)
+    public async Task<IActionResult> GetSaldoByAno([FromRoute] DateTime ano)
     {
         try
         {
@@ -57,7 +57,7 @@ public class SaldoController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult GetSaldoByMesAno([FromRoute] DateTime anoMes)
+    public async Task<IActionResult> GetSaldoByMesAno([FromRoute] DateTime anoMes)
     {
         try
         {

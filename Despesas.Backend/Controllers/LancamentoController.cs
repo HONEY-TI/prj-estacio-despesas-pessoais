@@ -18,7 +18,7 @@ public class LancamentoController : AuthController
     [ProducesResponseType(200, Type = typeof(List<LancamentoDto>))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Get([FromRoute] DateTime anoMes)
+    public async Task<IActionResult> Get([FromRoute] DateTime anoMes)
     {
         try
         {

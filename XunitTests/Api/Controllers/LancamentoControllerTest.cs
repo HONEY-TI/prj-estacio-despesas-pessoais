@@ -20,7 +20,7 @@ public sealed class LancamentoControllerTest
     }
 
     [Fact]
-    public void Get_Should_Return_LancamentoDtos()
+    public async Task Get_Should_Return_LancamentoDtos()
     {
         // Arrange
         var lancamentoDtos = _lancamentoDtos;
@@ -30,7 +30,7 @@ public sealed class LancamentoControllerTest
         _mockLancamentoBusiness.Setup(business => business.FindByMesAno(anoMes, idUsuario)).Returns(lancamentoDtos.FindAll(l => l.UsuarioId == idUsuario));
 
         // Act
-        var result = _lancamentoController.Get(anoMes) as ObjectResult;
+        var result = await _lancamentoController.Get(anoMes) as ObjectResult;
 
         // Assert
         // Assert
@@ -45,7 +45,7 @@ public sealed class LancamentoControllerTest
     }
 
     [Fact]
-    public void Get_Returns_OkResult_With_Empty_List_When_Lancamento_IsNull()
+    public async Task Get_Returns_OkResult_With_Empty_List_When_Lancamento_IsNull()
     {
         // Arrange
         var lancamentoDtos = _lancamentoDtos;
@@ -55,7 +55,7 @@ public sealed class LancamentoControllerTest
         _mockLancamentoBusiness.Setup(business => business.FindByMesAno(anoMes, idUsuario)).Returns(() => null);
 
         // Act
-        var result = _lancamentoController.Get(anoMes) as ObjectResult;
+        var result = await _lancamentoController.Get(anoMes) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -67,7 +67,7 @@ public sealed class LancamentoControllerTest
     }
 
     [Fact]
-    public void Get_Returns_OkResult_With_Empty_List_When_Lancamento_List_Count0()
+    public async Task Get_Returns_OkResult_With_Empty_List_When_Lancamento_List_Count0()
     {
         // Arrange
         var lancamentoDtos = _lancamentoDtos;
@@ -77,7 +77,7 @@ public sealed class LancamentoControllerTest
         _mockLancamentoBusiness.Setup(business => business.FindByMesAno(anoMes, idUsuario)).Returns(new List<LancamentoDto>());
 
         // Act
-        var result = _lancamentoController.Get(anoMes) as ObjectResult;
+        var result = await _lancamentoController.Get(anoMes) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -89,7 +89,7 @@ public sealed class LancamentoControllerTest
     }
 
     [Fact]
-    public void Get_Returns_OkResults_With_Empty_List_When_Throws_Error()
+    public async Task Get_Returns_OkResults_With_Empty_List_When_Throws_Error()
     {
         // Arrange
         var lancamentoDtos = _lancamentoDtos;
@@ -99,7 +99,7 @@ public sealed class LancamentoControllerTest
         _mockLancamentoBusiness.Setup(business => business.FindByMesAno(anoMes, idUsuario)).Throws(new Exception());
 
         // Act
-        var result = _lancamentoController.Get(anoMes) as ObjectResult;
+        var result = await _lancamentoController.Get(anoMes) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);

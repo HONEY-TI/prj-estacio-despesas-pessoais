@@ -22,7 +22,7 @@ public sealed class DespesaControllerTest
     }
 
     [Fact]
-    public void Get_Should_Return_All_Despesas_From_Usuario()
+    public async Task Get_Should_Return_All_Despesas_From_Usuario()
     {
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
@@ -31,7 +31,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.FindAll(idUsuario)).Returns(_despesaDtos);
 
         // Act
-        var result = _despesaController.Get() as ObjectResult;
+        var result = await _despesaController.Get() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -41,7 +41,7 @@ public sealed class DespesaControllerTest
     }
 
     [Fact]
-    public void Get_Should_Returns_OkResults_With_Null_List_When_TryCatch_ThrowsError()
+    public async Task Get_Should_Returns_OkResults_With_Null_List_When_TryCatch_ThrowsError()
     {
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
@@ -50,7 +50,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.FindAll(idUsuario)).Throws<Exception>();
 
         // Act
-        var result = _despesaController.Get() as ObjectResult;
+        var result = await _despesaController.Get() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -65,7 +65,7 @@ public sealed class DespesaControllerTest
 
 
     [Fact]
-    public void GetById_Should_Returns_BadRequest_When_Despesa_NULL()
+    public async Task GetById_Should_Returns_BadRequest_When_Despesa_NULL()
     {
         // Arrange
         var despesaDto = DespesaFaker.Instance.DespesasVMs().First();
@@ -74,7 +74,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.FindById(despesaDto.Id.Value, idUsuario)).Returns(() => null);
 
         // Act
-        var result = _despesaController.Get(despesaDto.Id.Value) as ObjectResult;
+        var result = await _despesaController.Get(despesaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -85,7 +85,7 @@ public sealed class DespesaControllerTest
     }
 
     [Fact]
-    public void GetById_Should_Returns_OkResults_With_Despesas()
+    public async Task GetById_Should_Returns_OkResults_With_Despesas()
     {
         // Arrange
         var despesa = DespesaFaker.Instance.Despesas().First();
@@ -96,7 +96,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.FindById(despesaId, idUsuario)).Returns(despesaDto);
 
         // Act
-        var result = _despesaController.Get(despesaId) as ObjectResult;
+        var result = await _despesaController.Get(despesaId) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -108,7 +108,7 @@ public sealed class DespesaControllerTest
     }
 
     [Fact]
-    public void GetById_Should_Returns_BadRequest_When_Throws_Error()
+    public async Task GetById_Should_Returns_BadRequest_When_Throws_Error()
     {
         // Arrange
         var despesaDto = DespesaFaker.Instance.DespesasVMs().First();
@@ -117,7 +117,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.FindById(despesaDto.Id.Value, idUsuario)).Throws(new Exception());
 
         // Act
-        var result = _despesaController.Get(despesaDto.Id.Value) as ObjectResult;
+        var result = await _despesaController.Get(despesaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -128,7 +128,7 @@ public sealed class DespesaControllerTest
     }
 
     [Fact]
-    public void Post_Should_Create_Despesa()
+    public async Task Post_Should_Create_Despesa()
     {
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
@@ -138,7 +138,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.Create(despesaDto)).Returns(despesaDto);
 
         // Act
-        var result = _despesaController.Post(despesaDto) as ObjectResult;
+        var result = await _despesaController.Post(despesaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -150,7 +150,7 @@ public sealed class DespesaControllerTest
     }
 
     [Fact]
-    public void Post_Should_Returns_BadRequest_When_Throws_Error()
+    public async Task Post_Should_Returns_BadRequest_When_Throws_Error()
     {
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
@@ -161,7 +161,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.Create(despesaDto)).Throws(new Exception());
 
         // Act
-        var result = _despesaController.Post(despesaDto) as ObjectResult;
+        var result = await _despesaController.Post(despesaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -172,7 +172,7 @@ public sealed class DespesaControllerTest
     }
 
     [Fact]
-    public void Put_Should_Update_Despesa()
+    public async Task Put_Should_Update_Despesa()
     {
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
@@ -182,7 +182,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.Update(despesaDto)).Returns(despesaDto);
 
         // Act
-        var result = _despesaController.Put(despesaDto) as ObjectResult;
+        var result = await _despesaController.Put(despesaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -194,7 +194,7 @@ public sealed class DespesaControllerTest
     }
 
     [Fact]
-    public void Put_Should_Returns_BadRequest_When_Despesa_Return_Null()
+    public async Task Put_Should_Returns_BadRequest_When_Despesa_Return_Null()
     {
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
@@ -204,7 +204,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.Update(despesaDto)).Returns(() => null);
 
         // Act
-        var result = _despesaController.Put(despesaDto) as ObjectResult;
+        var result = await _despesaController.Put(despesaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -215,7 +215,7 @@ public sealed class DespesaControllerTest
     }
 
     [Fact]
-    public void Delete_Should_Returns_OkResult()
+    public async Task Delete_Should_Returns_OkResult()
     {
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
@@ -226,7 +226,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.FindById(despesaDto.Id.Value, idUsuario)).Returns(despesaDto);
 
         // Act
-        var result = _despesaController.Delete(despesaDto.Id.Value) as ObjectResult;
+        var result = await _despesaController.Delete(despesaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -238,7 +238,7 @@ public sealed class DespesaControllerTest
     }
 
     [Fact]
-    public void Delete__With_InvalidToken_Returns_BadRequest()
+    public async Task Delete__With_InvalidToken_Returns_BadRequest()
     {
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
@@ -249,7 +249,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.FindById(despesaDto.Id.Value, idUsuario)).Returns(despesaDto);
 
         // Act
-        var result = _despesaController.Delete(despesaDto.Id.Value) as ObjectResult;
+        var result = await _despesaController.Delete(despesaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -261,7 +261,7 @@ public sealed class DespesaControllerTest
     }
 
     [Fact]
-    public void Delete_Should_Returns_BadResquest_When_Despesa_Not_Deleted()
+    public async Task Delete_Should_Returns_BadResquest_When_Despesa_Not_Deleted()
     {
         // Arrange
         var _despesaDtos = DespesaFaker.Instance.DespesasVMs();
@@ -272,7 +272,7 @@ public sealed class DespesaControllerTest
         _mockDespesaBusiness.Setup(business => business.FindById(despesaDto.Id.Value, idUsuario)).Returns(despesaDto);
 
         // Act
-        var result = _despesaController.Delete(despesaDto.Id.Value) as ObjectResult;
+        var result = await _despesaController.Delete(despesaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);

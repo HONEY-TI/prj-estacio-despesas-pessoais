@@ -30,7 +30,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Get_Returns_OkObjectResult_With_Usuario()
+    public async Task Get_Returns_OkObjectResult_With_Usuario()
     {
         // Arrange
         var usaurios = UsuarioFaker.Instance.GetNewFakersUsuarios(10);
@@ -40,7 +40,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(business => business.FindById(It.IsAny<Guid>())).Returns(usauriosDtos.Find(u => u.Id == idUsuario) ?? new());
 
         // Act
-        var result = _usuarioController.Get() as ObjectResult;
+        var result = await _usuarioController.Get() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -51,7 +51,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Put_Should_Update_UsuarioDto()
+    public async Task Put_Should_Update_UsuarioDto()
     {
         // Arrange
         var usuarioDto = _usuarioDtos[4];
@@ -60,7 +60,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Returns(usuarioDto);
 
         // Act
-        var result = _usuarioController.Put(usuarioDto) as ObjectResult;
+        var result = await _usuarioController.Put(usuarioDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -70,7 +70,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Put_Should_Returns_BadRequest_When_Telefone_IsNull()
+    public async Task Put_Should_Returns_BadRequest_When_Telefone_IsNull()
     {
         var usaurios = UsuarioFaker.Instance.GetNewFakersUsuarios(10);
         
@@ -82,7 +82,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Throws(new ArgumentException("Erro ao atualizar Usuário!"));
 
         // Act
-        var result = _usuarioController.Put(usuarioDto) as ObjectResult;
+        var result = await _usuarioController.Put(usuarioDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -93,7 +93,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Put_Should_Returns_BadRequest_When_Email_IsNull()
+    public async Task Put_Should_Returns_BadRequest_When_Email_IsNull()
     {
         // Arrange
         var usuarioDto = _usuarioDtos.First();
@@ -103,7 +103,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Throws(new ArgumentException("Campo Login não pode ser em branco"));
 
         // Act
-        var result = _usuarioController.Put(usuarioDto) as ObjectResult;
+        var result = await _usuarioController.Put(usuarioDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -114,7 +114,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Put_Should_Returns_BadRequest_When_Email_IsNullOrWhiteSpace()
+    public async Task Put_Should_Returns_BadRequest_When_Email_IsNullOrWhiteSpace()
     {
         // Arrange
         var usuarioDto = _usuarioDtos.First();
@@ -124,7 +124,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Throws(new ArgumentException("Campo Login não pode ser em branco"));
 
         // Act
-        var result = _usuarioController.Put(usuarioDto) as ObjectResult;
+        var result = await _usuarioController.Put(usuarioDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -135,7 +135,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Put_Should_Returns_BadRequest_When_Email_IsInvalid()
+    public async Task Put_Should_Returns_BadRequest_When_Email_IsInvalid()
     {
         // Arrange
         var usuarioDto = _usuarioDtos.First();
@@ -145,7 +145,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Throws(new ArgumentException("Email inválido!"));
 
         // Act
-        var result = _usuarioController.Put(usuarioDto) as ObjectResult;
+        var result = await _usuarioController.Put(usuarioDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -156,7 +156,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Put_Should_Returns_OkObjectResult_with_Empty_Result_When_Usuario_IsNull()
+    public async Task Put_Should_Returns_OkObjectResult_with_Empty_Result_When_Usuario_IsNull()
     {
         // Arrange
         var usuarioDto = usuarioNormal;
@@ -165,7 +165,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Throws(new ArgumentException("Usuário não encontrado!"));
 
         // Act
-        var result = _usuarioController.Put(usuarioDto) as ObjectResult;
+        var result = await _usuarioController.Put(usuarioDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -176,7 +176,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Get_Should_Returns_BadRequest_When_User_NotFound()
+    public async Task Get_Should_Returns_BadRequest_When_User_NotFound()
     {
         // Arrange
         Guid idUsuario = Guid.NewGuid();
@@ -184,7 +184,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(b => b.FindById(It.IsAny<Guid>())).Returns((UsuarioDto?)null);
 
         // Act
-        var result = _usuarioController.Get() as ObjectResult;
+        var result = await _usuarioController.Get() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -193,7 +193,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Post_Should_Create_UsuarioDto()
+    public async Task Post_Should_Create_UsuarioDto()
     {
         // Arrange
         var usuarioDto = _usuarioDtos.First();
@@ -202,7 +202,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(b => b.Create(It.IsAny<UsuarioDto>())).Returns(usuarioDto);
 
         // Act
-        var result = _usuarioController.Post(usuarioDto) as ObjectResult;
+        var result = await _usuarioController.Post(usuarioDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -212,7 +212,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Post_Should_Returns_BadRequest_When_Exception()
+    public async Task Post_Should_Returns_BadRequest_When_Exception()
     {
         var usuarioDto = _usuarioDtos.First();
         Guid idUsuario = usuarioDto.Id.Value;
@@ -220,7 +220,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(b => b.Create(It.IsAny<UsuarioDto>()))
             .Throws(new ArgumentException("Erro ao cadastrar Usuário!"));
 
-        var result = _usuarioController.Post(usuarioDto) as ObjectResult;
+        var result = await _usuarioController.Post(usuarioDto) as ObjectResult;
 
         Assert.NotNull(result);
         Assert.IsType<BadRequestObjectResult>(result);
@@ -228,13 +228,13 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Delete_Should_Return_Ok_When_Success()
+    public async Task Delete_Should_Return_Ok_When_Success()
     {
         var usuarioDto = _usuarioDtos.First();
         Usings.SetupBearerToken(usuarioDto.Id.Value, _usuarioController);
         _mockUsuarioBusiness.Setup(b => b.Delete(It.IsAny<UsuarioDto>())).Returns(true);
 
-        var result = _usuarioController.Delete(usuarioDto) as ObjectResult;
+        var result = await _usuarioController.Delete(usuarioDto) as ObjectResult;
 
         Assert.NotNull(result);
         Assert.IsType<OkObjectResult>(result);
@@ -242,14 +242,14 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void Delete_Should_Return_BadRequest_When_Fails()
+    public async Task Delete_Should_Return_BadRequest_When_Fails()
     {
         var usuarioDto = _usuarioDtos.First();
         Usings.SetupBearerToken(usuarioDto.Id.Value, _usuarioController);
         _mockUsuarioBusiness.Setup(b => b.Delete(It.IsAny<UsuarioDto>()))
             .Throws(new ArgumentException("Não foi possivél excluir este usuário."));
 
-        var result = _usuarioController.Delete(usuarioDto) as ObjectResult;
+        var result = await _usuarioController.Delete(usuarioDto) as ObjectResult;
 
         Assert.NotNull(result);
         Assert.IsType<BadRequestObjectResult>(result);
@@ -257,14 +257,14 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void GetProfileImage_Should_Return_File_When_ImageExists()
+    public async Task GetProfileImage_Should_Return_File_When_ImageExists()
     {
         var imageBytes = new byte[] { 1, 2, 3 };
         Guid idUsuario = Guid.NewGuid();
         Usings.SetupBearerToken(idUsuario, _usuarioController);
         _mockUsuarioBusiness.Setup(b => b.GetProfileImage(It.IsAny<Guid>())).Returns(imageBytes);
 
-        var result = _usuarioController.GetProfileImage();
+        var result = await _usuarioController.GetProfileImage();
 
         var fileResult = Assert.IsType<FileContentResult>(result);
         Assert.Equal("image/png", fileResult.ContentType);
@@ -272,19 +272,19 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void GetProfileImage_Should_Return_NoContent_When_Image_IsNull()
+    public async Task GetProfileImage_Should_Return_NoContent_When_Image_IsNull()
     {
         Guid idUsuario = Guid.NewGuid();
         Usings.SetupBearerToken(idUsuario, _usuarioController);
         _mockUsuarioBusiness.Setup(b => b.GetProfileImage(It.IsAny<Guid>())).Returns((byte[]?)null);
 
-        var result = _usuarioController.GetProfileImage();
+        var result = await _usuarioController.GetProfileImage();
 
         Assert.IsType<NoContentResult>(result);
     }
 
     [Fact]
-    public void PutProfileImage_Should_Return_File_When_Success()
+    public async Task PutProfileImage_Should_Return_File_When_Success()
     {
         var fileMock = new Mock<IFormFile>();
         var content = new byte[] { 1, 2, 3 };
@@ -297,7 +297,7 @@ public sealed class UsuarioControllerTest
         Usings.SetupBearerToken(idUsuario, _usuarioController);
         _mockUsuarioBusiness.Setup(b => b.UpdateProfileImage(It.IsAny<Guid>(), It.IsAny<IFormFile>())).Returns(content);
 
-        var result = _usuarioController.PutProfileImage(fileMock.Object);
+        var result = await _usuarioController.PutProfileImage(fileMock.Object);
 
         var fileResult = Assert.IsType<FileContentResult>(result);
         Assert.Equal("image/png", fileResult.ContentType);
@@ -305,7 +305,7 @@ public sealed class UsuarioControllerTest
     }
 
     [Fact]
-    public void PutProfileImage_Should_Return_NoContent_When_Image_IsEmpty()
+    public async Task PutProfileImage_Should_Return_NoContent_When_Image_IsEmpty()
     {
         var fileMock = new Mock<IFormFile>();
         Guid idUsuario = Guid.NewGuid();
@@ -313,7 +313,7 @@ public sealed class UsuarioControllerTest
         _mockUsuarioBusiness.Setup(b => b.UpdateProfileImage(It.IsAny<Guid>(), It.IsAny<IFormFile>()))
             .Returns((byte[]?)Array.Empty<byte>());
 
-        var result = _usuarioController.PutProfileImage(fileMock.Object);
+        var result = await _usuarioController.PutProfileImage(fileMock.Object);
 
         Assert.IsType<NoContentResult>(result);
     }

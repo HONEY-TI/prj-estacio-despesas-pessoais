@@ -22,7 +22,7 @@ public class UsuarioController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
         try
         {
@@ -45,7 +45,7 @@ public class UsuarioController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Post([FromBody] UsuarioDto usuarioDto)
+    public async Task<IActionResult> Post([FromBody] UsuarioDto usuarioDto)
     {
         try
         {
@@ -67,7 +67,7 @@ public class UsuarioController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Put([FromBody] UsuarioDto usuarioDto)
+    public async Task<IActionResult> Put([FromBody] UsuarioDto usuarioDto)
     {
         try
         {
@@ -89,7 +89,7 @@ public class UsuarioController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Delete([FromBody] UsuarioDto usuarioDto)
+    public async Task<IActionResult> Delete([FromBody] UsuarioDto usuarioDto)
     {
         try
         {
@@ -114,7 +114,7 @@ public class UsuarioController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult GetProfileImage()
+    public async Task<IActionResult> GetProfileImage()
     {
         try
         {
@@ -141,7 +141,7 @@ public class UsuarioController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult PutProfileImage(IFormFile file)
+    public async Task<IActionResult> PutProfileImage(IFormFile file)
     {
         try
         {

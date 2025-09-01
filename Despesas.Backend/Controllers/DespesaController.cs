@@ -19,7 +19,7 @@ public class DespesaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
         try
         {
@@ -40,7 +40,7 @@ public class DespesaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Get([FromRoute] Guid id)
+    public async Task<IActionResult> Get([FromRoute] Guid id)
     {
         try
         {
@@ -62,7 +62,7 @@ public class DespesaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Post([FromBody] DespesaDto despesa)
+    public async Task<IActionResult> Post([FromBody] DespesaDto despesa)
     {
         try
         {
@@ -84,7 +84,7 @@ public class DespesaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Put([FromBody] DespesaDto despesa)
+    public async Task<IActionResult> Put([FromBody] DespesaDto despesa)
     {
         try
         {
@@ -107,7 +107,7 @@ public class DespesaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Delete(Guid idDespesa)
+    public async Task<IActionResult> Delete(Guid idDespesa)
     {
         try
         {

@@ -20,7 +20,7 @@ public class ReceitaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
         try
         {
@@ -41,7 +41,7 @@ public class ReceitaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult GetById([FromRoute] Guid id)
+    public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
         try
         {
@@ -63,7 +63,7 @@ public class ReceitaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Post([FromBody] ReceitaDto receita)
+    public async Task<IActionResult> Post([FromBody] ReceitaDto receita)
     {
         try
         {
@@ -85,7 +85,7 @@ public class ReceitaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Put([FromBody] ReceitaDto receita)
+    public async Task<IActionResult> Put([FromBody] ReceitaDto receita)
     {
         try
         {
@@ -108,7 +108,7 @@ public class ReceitaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Delete(Guid idReceita)
+    public async Task<IActionResult> Delete(Guid idReceita)
     {
         try
         {

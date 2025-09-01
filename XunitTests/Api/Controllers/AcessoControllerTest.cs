@@ -19,7 +19,7 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void Post_With_ValidData_Returns_OkResult()
+    public async Task Post_With_ValidData_Returns_OkResult()
     {
         // Arrange
         var acesso = AcessoFaker.Instance.GetNewFaker();
@@ -27,7 +27,7 @@ public sealed class AcessoControllerTest
         _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>()));
 
         // Act
-        var result = _acessoController.Post(acessoDto) as ObjectResult;
+        var result = await _acessoController.Post(acessoDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -37,14 +37,14 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void Post_With_ValidData_Returns_BadRequest()
+    public async Task Post_With_ValidData_Returns_BadRequest()
     {
         // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
         _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Throws<Exception>();
 
         // Act
-        var result = _acessoController.Post(acessoDto) as ObjectResult;
+        var result = await _acessoController.Post(acessoDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -54,7 +54,7 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void Post_With_Null_Telefone_Returns_BadRequest()
+    public async Task Post_With_Null_Telefone_Returns_BadRequest()
     {
         // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
@@ -62,7 +62,7 @@ public sealed class AcessoControllerTest
         _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Throws(new ArgumentException("Campo Telefone não pode ser em branco"));
 
         // Act
-        var result = _acessoController.Post(acessoDto) as ObjectResult;
+        var result = await _acessoController.Post(acessoDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -72,7 +72,7 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void Post_With_NUll_Email_Returns_BadRequest()
+    public async Task Post_With_NUll_Email_Returns_BadRequest()
     {
         // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
@@ -80,7 +80,7 @@ public sealed class AcessoControllerTest
         acessoDto.Email = string.Empty;
 
         // Act
-        var result = _acessoController.Post(acessoDto) as ObjectResult;
+        var result = await _acessoController.Post(acessoDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -90,7 +90,7 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void Post_With_InvalidEmail_Returns_BadRequest()
+    public async Task Post_With_InvalidEmail_Returns_BadRequest()
     {
         // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
@@ -98,7 +98,7 @@ public sealed class AcessoControllerTest
         acessoDto.Email = "email";
 
         // Act
-        var result = _acessoController.Post(acessoDto) as ObjectResult;
+        var result = await _acessoController.Post(acessoDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -108,14 +108,14 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void Post_With_NUll_Password_Returns_BadRequest()
+    public async Task Post_With_NUll_Password_Returns_BadRequest()
     {
         // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
         acessoDto.Senha = string.Empty;
         _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Throws(new ArgumentException("Campo Senha não pode ser em branco ou nulo"));
         // Act
-        var result = _acessoController.Post(acessoDto) as ObjectResult;
+        var result = await _acessoController.Post(acessoDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -125,7 +125,7 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void Post_With_NUll_ConfirmedPassword_Returns_BadRequest()
+    public async Task Post_With_NUll_ConfirmedPassword_Returns_BadRequest()
     {
         // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
@@ -133,7 +133,7 @@ public sealed class AcessoControllerTest
         acessoDto.ConfirmaSenha = string.Empty;
 
         // Act
-        var result = _acessoController.Post(acessoDto) as ObjectResult;
+        var result = await _acessoController.Post(acessoDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -143,7 +143,7 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void Post_With_Password_Mismatch_Returns_BadRequest()
+    public async Task Post_With_Password_Mismatch_Returns_BadRequest()
     {
         // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
@@ -151,7 +151,7 @@ public sealed class AcessoControllerTest
         _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Throws(new ArgumentException("Senha e Confirma Senha são diferentes!"));
 
         // Act
-        var result = _acessoController.Post(acessoDto) as ObjectResult;
+        var result = await _acessoController.Post(acessoDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -161,14 +161,14 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void SignIn_BadRequest_When_TryCatch_Throws_ArgumentException()
+    public async Task SignIn_BadRequest_When_TryCatch_Throws_ArgumentException()
     {
         // Arrange
         var loginVM = new LoginDto { Email = "teste@teste.com", Senha = "password" };
         _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Throws<ArgumentException>();
 
         // Act
-        var result = _acessoController.SignIn(loginVM) as ObjectResult;
+        var result = await _acessoController.SignIn(loginVM) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -176,14 +176,14 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void SignIn_With_ValidData_Returns_ObjectResult()
+    public async Task SignIn_With_ValidData_Returns_ObjectResult()
     {
         // Arrange
         var loginVM = new LoginDto { Email = "teste@teste.com", Senha = "password" };
         _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(new AuthenticationDto());
 
         // Act
-        var result = _acessoController.SignIn(loginVM) as ObjectResult;
+        var result = await _acessoController.SignIn(loginVM) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -192,13 +192,13 @@ public sealed class AcessoControllerTest
 
 
     [Fact]
-    public void SignIn_With_InvalidEmail_Returns_BadRequest_EmailInvalido()
+    public async Task SignIn_With_InvalidEmail_Returns_BadRequest_EmailInvalido()
     {
         // Arrange
         var loginVM = new LoginDto { Email = "email@invalido.com", Senha = "password" };
 
         // Act
-        var result = _acessoController.SignIn(loginVM) as ObjectResult;
+        var result = await _acessoController.SignIn(loginVM) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -206,13 +206,13 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void SignIn_With_InvalidEmail_Returns_BadRequest_Login_Erro()
+    public async Task SignIn_With_InvalidEmail_Returns_BadRequest_Login_Erro()
     {
         // Arrange
         var loginVM = new LoginDto { Email = "email", Senha = "password" };
 
         // Act
-        var result = _acessoController.SignIn(loginVM) as ObjectResult;
+        var result = await _acessoController.SignIn(loginVM) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -222,7 +222,7 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void ChangePassword_With_ValidData_Returns_OkResult()
+    public async Task ChangePassword_With_ValidData_Returns_OkResult()
     {
         // Arrange
         var changePasswordVM = new ChangePasswordDto { Senha = "!12345", ConfirmaSenha = "!12345" };
@@ -230,7 +230,7 @@ public sealed class AcessoControllerTest
         _mockAcessoBusiness.Setup(b => b.ChangePassword(It.IsAny<Guid>(), "!12345"));
 
         // Act
-        var result = _acessoController.ChangePassword(changePasswordVM) as ObjectResult;
+        var result = await _acessoController.ChangePassword(changePasswordVM) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -240,7 +240,7 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void ChangePassword_With_NULL_Password_Returns_BadRequest()
+    public async Task ChangePassword_With_NULL_Password_Returns_BadRequest()
     {
         // Arrange
         var changePasswordVM = new ChangePasswordDto { Senha = null, ConfirmaSenha = "!12345" };
@@ -248,7 +248,7 @@ public sealed class AcessoControllerTest
         ChangePasswordDto? nullChangePasswordDto = null;
 
         // Act
-        var result = _acessoController.ChangePassword(nullChangePasswordDto) as ObjectResult;
+        var result = await _acessoController.ChangePassword(nullChangePasswordDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -258,7 +258,7 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void ChangePassword_With_NULL_ConfirmedPassword_Returns_BadRequest()
+    public async Task ChangePassword_With_NULL_ConfirmedPassword_Returns_BadRequest()
     {
         // Arrange
         var changePasswordVM = new ChangePasswordDto { Senha = "!12345", ConfirmaSenha = null };
@@ -266,7 +266,7 @@ public sealed class AcessoControllerTest
         ChangePasswordDto? nullChangePasswordDto = null;
 
         // Act
-        var result = _acessoController.ChangePassword(nullChangePasswordDto) as ObjectResult;
+        var result = await _acessoController.ChangePassword(nullChangePasswordDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -276,7 +276,7 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void ChangePassword_With_ValidData_Returns_BadRequest()
+    public async Task ChangePassword_With_ValidData_Returns_BadRequest()
     {
         // Arrange
         var changePasswordVM = new ChangePasswordDto { Senha = "!12345", ConfirmaSenha = "!12345" };
@@ -285,7 +285,7 @@ public sealed class AcessoControllerTest
         _mockAcessoBusiness.Setup(b => b.ChangePassword(It.IsAny<Guid>(), "!12345")).Throws(new Exception());
 
         // Act
-        var result = _acessoController.ChangePassword(changePasswordVM) as ObjectResult;
+        var result = await _acessoController.ChangePassword(changePasswordVM) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -295,7 +295,7 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void RecoveryPassword_WithValidEmail_ReturnsOkResult()
+    public async Task RecoveryPassword_WithValidEmail_ReturnsOkResult()
     {
         // Arrange
         var email = "teste@teste.com";
@@ -304,7 +304,7 @@ public sealed class AcessoControllerTest
         Usings.SetupBearerToken(Guid.NewGuid(), _acessoController);
 
         // Act
-        var result = _acessoController.RecoveryPassword(email) as ObjectResult;
+        var result = await _acessoController.RecoveryPassword(email) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -314,13 +314,13 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void RecoveryPassword_With_NUll_Email_Returns_BadRequest()
+    public async Task RecoveryPassword_With_NUll_Email_Returns_BadRequest()
     {
         // Arrange
         var email = string.Empty;
         _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>())).Throws<Exception>();
         // Act
-        var result = _acessoController.RecoveryPassword(email) as NoContentResult;
+        var result = await _acessoController.RecoveryPassword(email) as NoContentResult;
 
         // Assert
         Assert.NotNull(result);
@@ -328,14 +328,14 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void RecoveryPassword_Lenght_Bigger_Than_256_Email_Returns_BadRequest()
+    public async Task RecoveryPassword_Lenght_Bigger_Than_256_Email_Returns_BadRequest()
     {
         // Arrange
         var email = new string('A', 257);
         _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>())).Throws<Exception>();
 
         // Act
-        var result = _acessoController.RecoveryPassword(email) as NoContentResult;
+        var result = await _acessoController.RecoveryPassword(email) as NoContentResult;
 
         // Assert
         Assert.NotNull(result);
@@ -343,13 +343,13 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void RecoveryPassword_With_Invalid_Email_Returns_BadRequest()
+    public async Task RecoveryPassword_With_Invalid_Email_Returns_BadRequest()
     {
         // Arrange
         var email = "email Invalido";
         _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>())).Throws<Exception>();
         // Act
-        var result = _acessoController.RecoveryPassword(email) as NoContentResult;
+        var result = await _acessoController.RecoveryPassword(email) as NoContentResult;
 
         // Assert
         Assert.NotNull(result);
@@ -357,14 +357,14 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void RecoveryPassword_WithInvalid_Email_Returns_BadRequest_Email_Nao_Enviado()
+    public async Task RecoveryPassword_WithInvalid_Email_Returns_BadRequest_Email_Nao_Enviado()
     {
         // Arrange
         var email = "email@invalido.com";
         _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>())).Throws<Exception>();
 
         // Act
-        var result = _acessoController.RecoveryPassword(email) as NoContentResult;
+        var result = await _acessoController.RecoveryPassword(email) as NoContentResult;
 
         // Assert
         Assert.NotNull(result);
@@ -372,14 +372,14 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void Refresh_With_ValidData_Returns_OkResult()
+    public async Task Refresh_With_ValidData_Returns_OkResult()
     {
         // Arrange
         var authenticationDto = new AuthenticationDto();
         _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(new AuthenticationDto());
 
         // Act
-        var result = _acessoController.Refresh("fakeRefreshToken") as ObjectResult;
+        var result = await _acessoController.Refresh("fakeRefreshToken") as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -387,14 +387,14 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void Refresh_With_InvalidData_Returns_BadRequest()
+    public async Task Refresh_With_InvalidData_Returns_BadRequest()
     {
         // Arrange
         var authenticationDto = new AuthenticationDto();
         _acessoController.ModelState.AddModelError("Key", "Error");
         _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(() => null);
         // Act
-        var result = _acessoController.Refresh("fakeRefreshToken") as NoContentResult;
+        var result = await _acessoController.Refresh("fakeRefreshToken") as NoContentResult;
 
         // Assert
         Assert.NotNull(result);
@@ -402,14 +402,14 @@ public sealed class AcessoControllerTest
     }
 
     [Fact]
-    public void Refresh_With_Null_Result_Returns_BadRequest()
+    public async Task Refresh_With_Null_Result_Returns_BadRequest()
     {
         // Arrange
         var authenticationDto = new AuthenticationDto();
         _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(() => null);
 
         // Act
-        var result = _acessoController.Refresh("fakeRefreshToken") as NoContentResult;
+        var result = await _acessoController.Refresh("fakeRefreshToken") as NoContentResult;
 
         // Assert
         Assert.NotNull(result);

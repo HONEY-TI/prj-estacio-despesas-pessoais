@@ -17,7 +17,7 @@ public sealed class GraficosControllerTest
     }
 
     [Fact]
-    public void GetDadosGraficoPorAno_Should_Return_GraficoData()
+    public async Task GetDadosGraficoPorAno_Should_Return_GraficoData()
     {
         // Arrange
         var dadosGrafico = GraficoFaker.GetNewFaker();
@@ -27,7 +27,7 @@ public sealed class GraficosControllerTest
         _mockGraficoBusiness.Setup(business => business.GetDadosGraficoByAnoByIdUsuario(idUsuario, anoMes)).Returns(dadosGrafico);
 
         // Act
-        var result = _GraficoController.GetByAnoByIdUsuario(anoMes);
+        var result = await _GraficoController.GetByAnoByIdUsuario(anoMes);
 
         // Assert
         Assert.NotNull(result);
@@ -36,7 +36,7 @@ public sealed class GraficosControllerTest
     }
 
     [Fact]
-    public void GetDadosGraficoPorAno_Returns_BadRequest_When_Throws_Error()
+    public async Task GetDadosGraficoPorAno_Returns_BadRequest_When_Throws_Error()
     {
         // Arrange
         var dadosGrafico = GraficoFaker.GetNewFaker();
@@ -45,7 +45,7 @@ public sealed class GraficosControllerTest
         _mockGraficoBusiness.Setup(business => business.GetDadosGraficoByAnoByIdUsuario(It.IsAny<Guid>(), It.IsAny<DateTime>())).Throws(new Exception());
 
         // Act
-        var result = _GraficoController.GetByAnoByIdUsuario(anoMes) as ObjectResult;
+        var result = await _GraficoController.GetByAnoByIdUsuario(anoMes) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);

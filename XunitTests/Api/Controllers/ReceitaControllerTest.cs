@@ -24,7 +24,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void Get_Should_Returns_OkResults_With_Null_List_When_TryCatch_ThrowsError()
+    public async Task Get_Should_Returns_OkResults_With_Null_List_When_TryCatch_ThrowsError()
     {
         // Arrange
         Guid idUsuario = _receitaDtos.First().UsuarioId;
@@ -32,7 +32,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.FindAll(idUsuario)).Throws<Exception>();
 
         // Act
-        var result = _receitaController.Get() as ObjectResult;
+        var result = await _receitaController.Get() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -46,7 +46,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void Get_Should_Return_All_Receitas_From_Usuario()
+    public async Task Get_Should_Return_All_Receitas_From_Usuario()
     {
         // Arrange
         Guid idUsuario = _receitaDtos.First().UsuarioId;
@@ -54,7 +54,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.FindAll(idUsuario)).Returns(_receitaDtos);
 
         // Act
-        var result = _receitaController.Get() as ObjectResult;
+        var result = await _receitaController.Get() as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -64,7 +64,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void GetById_Should_Returns_BadRequest_When_Receita_NULL()
+    public async Task GetById_Should_Returns_BadRequest_When_Receita_NULL()
     {
         // Arrange
         var receitaDto = _receitaDtos.First();
@@ -73,7 +73,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Returns(() => null);
 
         // Act
-        var result = _receitaController.GetById(receitaDto.Id.Value) as ObjectResult;
+        var result = await _receitaController.GetById(receitaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -84,7 +84,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void GetById_Should_Returns_OkResults_With_Despesas()
+    public async Task GetById_Should_Returns_OkResults_With_Despesas()
     {
         // Arrange
         var receita = _receitaDtos.Last();
@@ -94,7 +94,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.FindById(receitaId.Value, idUsuario)).Returns(receita);
 
         // Act
-        var result = _receitaController.GetById(receitaId.Value) as ObjectResult;
+        var result = await _receitaController.GetById(receitaId.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -106,7 +106,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void GetById_Should_Returns_BadRequest_When_Throws_Error()
+    public async Task GetById_Should_Returns_BadRequest_When_Throws_Error()
     {
         // Arrange
         var receitaDto = _receitaDtos.First();
@@ -115,7 +115,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Throws(new Exception());
 
         // Act
-        var result = _receitaController.GetById(receitaDto.Id.Value) as ObjectResult;
+        var result = await _receitaController.GetById(receitaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -126,7 +126,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void Post_Should_Create_Receita()
+    public async Task Post_Should_Create_Receita()
     {
         // Arrange
         var receitaDto = _receitaDtos[3];
@@ -135,7 +135,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.Create(receitaDto)).Returns(receitaDto);
 
         // Act
-        var result = _receitaController.Post(receitaDto) as ObjectResult;
+        var result = await _receitaController.Post(receitaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -147,7 +147,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void Post_Should_Returns_BadRequest_When_Throws_Error()
+    public async Task Post_Should_Returns_BadRequest_When_Throws_Error()
     {
         // Arrange
         var receitaDto = _receitaDtos[3];
@@ -156,7 +156,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.Create(receitaDto)).Throws(new Exception());
 
         // Act
-        var result = _receitaController.Post(receitaDto) as ObjectResult;
+        var result = await _receitaController.Post(receitaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -167,7 +167,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void Put_Should_Update_Receita()
+    public async Task Put_Should_Update_Receita()
     {
         // Arrange
         var receitaDto = _receitaDtos[4];
@@ -176,7 +176,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.Update(receitaDto)).Returns(receitaDto);
 
         // Act
-        var result = _receitaController.Put(receitaDto) as ObjectResult;
+        var result = await _receitaController.Put(receitaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -188,7 +188,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void Put_Should_Returns_BadRequest_When_Receita_Return_Null()
+    public async Task Put_Should_Returns_BadRequest_When_Receita_Return_Null()
     {
         // Arrange
         var receitaDto = _receitaDtos[3];
@@ -197,7 +197,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.Update(receitaDto)).Returns(() => null);
 
         // Act
-        var result = _receitaController.Put(receitaDto) as ObjectResult;
+        var result = await _receitaController.Put(receitaDto) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -208,7 +208,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void Delete_Should_Returns_OkResult()
+    public async Task Delete_Should_Returns_OkResult()
     {
         // Arrange
         var receitaDto = _receitaDtos[2];
@@ -218,7 +218,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Returns(receitaDto);
 
         // Act
-        var result = _receitaController.Delete(receitaDto.Id.Value) as ObjectResult;
+        var result = await _receitaController.Delete(receitaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -230,7 +230,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void Delete_With_InvalidToken_Returns_BadRequest()
+    public async Task Delete_With_InvalidToken_Returns_BadRequest()
     {
         // Arrange
         var receitaDto = _receitaDtos[2];
@@ -240,7 +240,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Returns(receitaDto);
 
         // Act
-        var result = _receitaController.Delete(receitaDto.Id.Value) as ObjectResult;
+        var result = await _receitaController.Delete(receitaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);
@@ -252,7 +252,7 @@ public sealed class ReceitaControllerTest
     }
 
     [Fact]
-    public void Delete_Should_Returns_BadResquest_When_Receita_Not_Deleted()
+    public async Task Delete_Should_Returns_BadResquest_When_Receita_Not_Deleted()
     {
         // Arrange
         var receitaDto = _receitaDtos[2];
@@ -262,7 +262,7 @@ public sealed class ReceitaControllerTest
         _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Returns(receitaDto);
 
         // Act
-        var result = _receitaController.Delete(receitaDto.Id.Value) as ObjectResult;
+        var result = await _receitaController.Delete(receitaDto.Id.Value) as ObjectResult;
 
         // Assert
         Assert.NotNull(result);

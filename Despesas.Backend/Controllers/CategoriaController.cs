@@ -20,7 +20,7 @@ public class CategoriaController : AuthController
     [ProducesResponseType(200, Type = typeof(List<CategoriaDto>))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
         try
         {
@@ -38,7 +38,7 @@ public class CategoriaController : AuthController
     [ProducesResponseType(200, Type = typeof(CategoriaDto))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult GetById([FromRoute] Guid idCategoria)
+    public async Task<IActionResult> GetById([FromRoute] Guid idCategoria)
     {
         try
         {
@@ -56,7 +56,7 @@ public class CategoriaController : AuthController
     [ProducesResponseType(200, Type = typeof(List<CategoriaDto>))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult GetByTipoCategoria([FromRoute] TipoCategoriaDto tipoCategoria)
+    public async Task<IActionResult> GetByTipoCategoria([FromRoute] TipoCategoriaDto tipoCategoria)
     {
         if (tipoCategoria == TipoCategoriaDto.Todas)
         {
@@ -76,7 +76,7 @@ public class CategoriaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Post([FromBody] CategoriaDto categoria)
+    public async Task<IActionResult> Post([FromBody] CategoriaDto categoria)
     {
         try
         {
@@ -101,7 +101,7 @@ public class CategoriaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Put([FromBody] CategoriaDto categoria)
+    public async Task<IActionResult> Put([FromBody] CategoriaDto categoria)
     {
         try
         {
@@ -127,7 +127,7 @@ public class CategoriaController : AuthController
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
-    public IActionResult Delete(Guid idCategoria)
+    public async Task<IActionResult> Delete(Guid idCategoria)
     {
         try
         {
