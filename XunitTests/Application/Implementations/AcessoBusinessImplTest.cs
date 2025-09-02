@@ -15,17 +15,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Persistency.Abstractions;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq.Expressions;
 
 namespace Application;
+
 public sealed class AcessoBusinessImplTest
 {
     private readonly Mock<IAcessoRepositorioImpl> _repositorioMock;
     private readonly AcessoBusinessImpl<AcessoDto, LoginDto> _acessoBusiness;
     private readonly SigningConfigurations _singingConfiguration;
-
     private Mapper _mapper;
 
     public AcessoBusinessImplTest()
@@ -45,7 +44,7 @@ public sealed class AcessoBusinessImplTest
     }
 
     [Fact]
-    public void Create_Should_Acesso_Returns_True()
+    public async Task Create_Should_Acesso_Returns_True()
     {
         // Arrange
         var acesso = AcessoFaker.Instance.GetNewFakerVM();
@@ -53,27 +52,27 @@ public sealed class AcessoBusinessImplTest
         _repositorioMock.Setup(repo => repo.Create(It.IsAny<Acesso>()));
 
         // Act
-        _acessoBusiness.Create(acesso);
+        await _acessoBusiness.Create(acesso);
 
         // Assert        
         _repositorioMock.Verify(repo => repo.Create(It.IsAny<Acesso>()), Times.Once);
     }
 
     [Fact]
-    public void ValidateCredentials_Should_Return_Valid_Credentials_And_AccessToken()
+    public async Task ValidateCredentials_Should_Return_Valid_Credentials_And_AccessToken()
     {
         // Arrange
         var acesso = AcessoFaker.Instance.GetNewFaker();
         var loginDto = new LoginDto { Email = acesso.Login, Senha = "teste" };
         acesso.Senha = loginDto.Senha;
         acesso.Usuario.StatusUsuario = StatusUsuario.Ativo;
-        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(acesso);
-        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(acesso);
+        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(Task.Run(() => acesso));
+        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(Task.Run(() => acesso));
         var mockAcessoBusiness = new Mock<IAcessoBusiness<AcessoDto, LoginDto>>(MockBehavior.Strict);
-        mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(new AuthenticationDto() { Authenticated = true, AccessToken = Guid.NewGuid().ToString() });
+        mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(Task.Run(() => new AuthenticationDto() { Authenticated = true, AccessToken = Guid.NewGuid().ToString() }));
 
         // Act
-        var result = mockAcessoBusiness.Object.ValidateCredentials(loginDto);
+        var result = await mockAcessoBusiness.Object.ValidateCredentials(loginDto);
 
         // Assert
         Assert.True(result.Authenticated);
@@ -81,33 +80,34 @@ public sealed class AcessoBusinessImplTest
     }
 
     [Fact]
-    public void ValidateCredentials_Should_Returns_Usaurio_Inexistente()
+    public async Task ValidateCredentials_Should_Returns_Usaurio_Inexistente()
     {
         // Arrange
         var loginDto = new LoginDto { Email = "teste@teste.com" };
-        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(() => null);
+        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).ReturnsAsync(() => null);
 
         // Act & Assert 
-        Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials(loginDto));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await _acessoBusiness.ValidateCredentials(loginDto));
+        Assert.Contains("Usuário Inexistente!", exception.Message);
     }
 
     [Fact]
-    public void ValidateCredentials_Should_Returns_Usuario_Inativo()
+    public async Task ValidateCredentials_Should_Returns_Usuario_Inativo()
     {
         // Arrange
         var acesso = AcessoFaker.Instance.GetNewFaker();
         var usuarioInativo = UsuarioFaker.Instance.GetNewFaker();
         usuarioInativo.StatusUsuario = StatusUsuario.Inativo;
         acesso.Usuario = usuarioInativo;
-        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(acesso);
+        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).ReturnsAsync(acesso);
 
         // Act && Assert
-        var exception = Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials(new LoginDto { Email = acesso.Login, Senha = acesso.Senha }));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await _acessoBusiness.ValidateCredentials(new LoginDto { Email = acesso.Login, Senha = acesso.Senha }));
         Assert.Contains("Usuário Inativo!", exception.Message);
     }
 
     [Fact]
-    public void ValidateCredentials_Should_Returns_Email_Inexistente()
+    public async Task ValidateCredentials_Should_Returns_Email_Inexistente()
     {
         // Arrange
         var loginDto = new LoginDto { Email = "teste@teste.com", Senha = "teste", };
@@ -118,10 +118,12 @@ public sealed class AcessoBusinessImplTest
             StatusUsuario = StatusUsuario.Ativo
         };
 
-        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(() => null);
+        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).ReturnsAsync(() => null);
 
         // Act & Assert 
-        Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials(loginDto));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(async () =>  await _acessoBusiness.ValidateCredentials(loginDto));
+        Assert.Contains("Usuário Inexistente!", exception.Message);
+
     }
 
     [Fact]
@@ -130,18 +132,18 @@ public sealed class AcessoBusinessImplTest
         // Arrange
         var acesso = AcessoFaker.Instance.GetNewFaker();
         acesso.Usuario.StatusUsuario = StatusUsuario.Ativo;
-        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(acesso);
+        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(Task.Run(() => acesso));
         var mockAcessoBusiness = new Mock<IAcessoBusiness<AcessoDto, LoginDto>>(MockBehavior.Strict);
         mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Throws(new ArgumentException("Senha inválida!"));
         var loginDto = new LoginDto() { Email = acesso.Login, Senha = Guid.NewGuid().ToString() };
 
         // Act && Assert
-        var exception = Assert.Throws<ArgumentException>(() => mockAcessoBusiness.Object.ValidateCredentials(loginDto));
+        var exception = Assert.Throws<ArgumentException>(() => mockAcessoBusiness.Object.ValidateCredentials(loginDto).Result);
         Assert.Contains("Senha inválida!", exception.Message);
     }
 
     [Fact]
-    public void ValidateCredentials_Should_Returns_Usuario_Invalido()
+    public async Task ValidateCredentials_Should_Returns_Usuario_Invalido()
     {
         // Arrange
         var loginDto = new LoginDto { Email = "teste@teste.com", Senha = "teste", };
@@ -152,29 +154,11 @@ public sealed class AcessoBusinessImplTest
             Email = "teste@teste.com",
             StatusUsuario = StatusUsuario.Ativo
         };
-        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Throws(new ArgumentException("Usuário Inválido!"));
+        _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).ThrowsAsync(new ArgumentException("Usuário Inválido!"));
 
         // Act &  Assert
-        var exception = Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials(loginDto));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await _acessoBusiness.ValidateCredentials(loginDto));
         Assert.Contains("Usuário Inválido!", exception.Message);
-
-    }
-
-    [Fact]
-    public void RecoveryPassword_Should_Execute_And_Returns_True()
-    {
-        /*
-        // Arrange
-        string email = "teste@example.com";
-        _repositorioMock.Setup(repo => repo.RecoveryPassword(email)).Returns(true);
-
-        // Act
-        bool result = _acessoBusiness.RecoveryPassword(email);
-
-        // Assert
-        Assert.True(result);
-        _repositorioMock.Verify(repo => repo.RecoveryPassword(email), Times.Once);
-        */
     }
 
     [Fact]
@@ -193,7 +177,7 @@ public sealed class AcessoBusinessImplTest
     }
 
     [Fact]
-    public void ValidateCredentials_Should_Return_Authentication_Success_When_Credentials_Are_Valid()
+    public async Task ValidateCredentials_Should_Return_Authentication_Success_When_Credentials_Are_Valid()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -223,10 +207,10 @@ public sealed class AcessoBusinessImplTest
             Expiration = DateTime.UtcNow.AddDays(1).ToString(),
             RefreshToken = validToken
         };
-        _repositorioMock.Setup(repo => repo.FindByRefreshToken(It.IsAny<string>())).Returns(baseLogin);
+        _repositorioMock.Setup(repo => repo.FindByRefreshToken(It.IsAny<string>())).ReturnsAsync(baseLogin);
 
         // Act
-        var result = _acessoBusiness.ValidateCredentials(validToken);
+        var result = await _acessoBusiness.ValidateCredentials(validToken);
 
         // Assert
         Assert.True(result.Authenticated);
@@ -234,7 +218,7 @@ public sealed class AcessoBusinessImplTest
     }
 
     [Fact]
-    public void ValidateCredentials_Should_Revoke_Token_When_RefreshToken_Expires()
+    public async Task ValidateCredentials_Should_Revoke_Token_When_RefreshToken_Expires()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -248,38 +232,38 @@ public sealed class AcessoBusinessImplTest
         {
             RefreshToken = "expired_refresh_token"
         };
-        _repositorioMock.Setup(repo => repo.FindByRefreshToken(It.IsAny<string>())).Returns(baseLogin);
+        _repositorioMock.Setup(repo => repo.FindByRefreshToken(It.IsAny<string>())).ReturnsAsync(baseLogin);
 
         // Act && Assert
-        var exception = Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials("expired_refresh_token"));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await _acessoBusiness.ValidateCredentials("expired_refresh_token"));
                 
         _repositorioMock.Verify(repo => repo.RevokeRefreshToken(idUsuario), Times.Once);
         Assert.Equal("Refresh Token Inválido!", exception.Message);
     }
 
     [Fact]
-    public void ValidateCredentials_Should_Return_Authentication_Exception_When_RefreshToken_Is_Invalid()
+    public async Task ValidateCredentials_Should_Return_Authentication_Exception_When_RefreshToken_Is_Invalid()
     {
         // Arrange
-        var authenticationDto = new AuthenticationDto
-        {
-            RefreshToken = "invalid_refresh_token"
-        };
+        var refreshToken = "invalid_refresh_token";
 
-        // Act && Assert 
-        var exception = Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials("invalid_refresh_token"));
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<ArgumentException>(
+            async () => await _acessoBusiness.ValidateCredentials(refreshToken)
+        );
+
         Assert.Equal("Refresh Token Inválido!", exception.Message);
     }
 
     [Fact]
-    public void ValidateCredentials_Should_Revoke_Token_When_RefreshToken_Is_Invalid()
+    public async Task ValidateCredentials_Should_Revoke_Token_When_RefreshToken_Is_Invalid()
     {
         // Arrange
         var mockAcesso = AcessoFaker.Instance.GetNewFaker();
-        _repositorioMock.Setup(repo => repo.FindByRefreshToken(It.IsAny<string>())).Returns(mockAcesso);
+        _repositorioMock.Setup(repo => repo.FindByRefreshToken(It.IsAny<string>())).ReturnsAsync(mockAcesso);
 
         // Act && Assert
-        var exception = Assert.Throws<ArgumentException>(() => _acessoBusiness.ValidateCredentials("invalid_refresh_token"));
+        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await _acessoBusiness.ValidateCredentials("invalid_refresh_token"));
         _repositorioMock.Verify(repo => repo.RevokeRefreshToken(It.IsAny<Guid>()), Times.Once);
         Assert.Equal("Refresh Token Inválido!", exception.Message);
     }
