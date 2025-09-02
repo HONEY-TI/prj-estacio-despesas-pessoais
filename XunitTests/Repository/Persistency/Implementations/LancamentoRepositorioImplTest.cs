@@ -14,14 +14,14 @@ public sealed class LancamentoRepositorioImplTest : IClassFixture<LancamentoRepo
     }
 
     [Fact]
-    public void FindByMesAno_Should_Returns_List_lancamentos()
+    public async Task FindByMesAno_Should_Returns_List_lancamentos()
     {
         // Arrange
         var data = _fixture.MockAnoMes;
         var idUsuario = _fixture.Context.Usuario.First().Id;
 
         // Act
-        var result = _repository.FindByMesAno(data, idUsuario);
+        var result = await _repository.FindByMesAno(data, idUsuario);
 
         // Assert            
         Assert.NotNull(result);
@@ -47,7 +47,7 @@ public sealed class LancamentoRepositorioImplTest : IClassFixture<LancamentoRepo
     }*/
 
     [Fact]
-    public void FindByMesAno_Throws_Exception_When_Despesa_Execute_Where()
+    public async Task FindByMesAno_Throws_Exception_When_Despesa_Execute_Where()
     {
         // Arrange
         var data = _fixture.MockAnoMes;
@@ -60,16 +60,16 @@ public sealed class LancamentoRepositorioImplTest : IClassFixture<LancamentoRepo
         context.Despesa = despesaDbSetMock.Object;
 
         // Act
-        Action result = () => _fixture.MockRepository.FindByMesAno(data, idUsuario);
+        Action result = async () => await _fixture.MockRepository.FindByMesAno(data, idUsuario);
 
         // Assert
         Assert.NotNull(result);
-        var exception = Assert.Throws<Exception>(() => _fixture.MockRepository.FindByMesAno(data, idUsuario));
+        var exception = await Assert.ThrowsAsync<Exception>(async () => await _fixture.MockRepository.FindByMesAno(data, idUsuario));
         Assert.Equal("LancamentoRepositorioImpl_FindByMesAno_Erro", exception.Message);
     }
 
     [Fact]
-    public void FindByMesAno_Throws_Exception_When_Receita_Execute_Where()
+    public async Task FindByMesAno_Throws_Exception_When_Receita_Execute_Where()
     {
         // Arrange
         var data = _fixture.MockAnoMes;
@@ -82,11 +82,11 @@ public sealed class LancamentoRepositorioImplTest : IClassFixture<LancamentoRepo
         _fixture.MockRepository = new LancamentoRepositorioImpl(context);
 
         // Act
-        Action result = () => _fixture.MockRepository.FindByMesAno(data, idUsuario);
+        Action result = async () => await _fixture.MockRepository.FindByMesAno(data, idUsuario);
 
         // Assert
         Assert.NotNull(result);
-        var exception = Assert.Throws<Exception>(() => _fixture.MockRepository.FindByMesAno(data, idUsuario));
+        var exception = await Assert.ThrowsAsync<Exception>(async () => await _fixture.MockRepository.FindByMesAno(data, idUsuario));
         Assert.Equal("LancamentoRepositorioImpl_FindByMesAno_Erro", exception.Message);
     }
 }
