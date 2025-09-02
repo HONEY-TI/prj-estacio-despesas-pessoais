@@ -37,12 +37,15 @@ builder.Services.AddSwaggerApiVersioning();
 
 if (builder.Environment.IsStaging() || builder.Environment.IsDevelopment())
 {
-    builder.Services.AddDbContext<RegisterContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("Dev.SqlConnectionString") ?? 
+    builder.Services.AddDbContext<RegisterContext>(options => options
+    .UseLazyLoadingProxies()
+    .UseMySQL(builder.Configuration.GetConnectionString("Dev.SqlConnectionString") ?? 
         throw new NullReferenceException("SqlConnectionString not defined.")));
 }
 else
 {
-    builder.Services.AddDbContext<RegisterContext>(options => options.UseMySQL(builder.Configuration.GetConnectionString("SqlConnectionString") ?? 
+    builder.Services.AddDbContext<RegisterContext>(options => options
+    .UseMySQL(builder.Configuration.GetConnectionString("SqlConnectionString") ?? 
         throw new NullReferenceException("SqlConnectionString not defined.")));
 }
 
