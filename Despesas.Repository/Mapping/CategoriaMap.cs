@@ -8,13 +8,30 @@ public class CategoriaMap : IEntityTypeConfiguration<Categoria>
     public void Configure(EntityTypeBuilder<Categoria> builder)
     {
         builder.ToTable(nameof(Categoria));
-        builder.Property(c => c.Id).HasColumnType("binary(16)")
+
+        builder.Property(c => c.Id)
+            .HasColumnType("binary(16)")
             .HasConversion(v => v.ToByteArray(), v => new Guid(v))
             .ValueGeneratedOnAdd().IsRequired();
         builder.HasKey(c => c.Id);
-        builder.Property(c => c.Descricao).IsRequired(false).HasMaxLength(100);
-        builder.Property(ca => ca.UsuarioId).HasColumnType("binary(16)")
-            .HasConversion(v => v.ToByteArray(), v => new Guid(v)).IsRequired();
-        builder.HasOne(c => c.TipoCategoria).WithMany();
+        builder.Property(c => c.Descricao)
+            .IsRequired(false)
+            .HasMaxLength(100);
+        builder.Property(ca => ca.UsuarioId)
+            .HasColumnType("binary(16)")
+            .HasConversion(v => v.ToByteArray(), v => new Guid(v))
+            .IsRequired();
+        builder.Property(ca => ca.TipoCategoriaId)            
+            .IsRequired();
+
+
+        builder.HasOne(c => c.Usuario)
+            .WithMany(u => u.Categorias)
+            .HasForeignKey(c => c.UsuarioId);
+
+        builder.HasOne(c => c.TipoCategoria)
+            .WithMany()
+            .HasForeignKey(c => c.TipoCategoriaId);
+
     }
 }

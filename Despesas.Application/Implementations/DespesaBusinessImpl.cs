@@ -1,76 +1,88 @@
 ﻿using AutoMapper;
 using Despesas.Application.Abstractions;
-using Despesas.Application.Abstractions.Generic;
 using Despesas.Application.Dtos;
+using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.ValueObject;
 using Domain.Entities;
 using Repository.Persistency.Generic;
-using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace Despesas.Application.Implementations;
-public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusiness<Dto, Despesa> where Dto : DespesaDto, new()
+public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusinessBase<Dto, Despesa> where Dto : DespesaDto, new()
 {
     private readonly IRepositorio<Despesa> _repositorio;
-    private readonly IRepositorio<Categoria> _repoCategoria;
+    private readonly IUnitOfWork<Categoria> _unitOfWorkCategoria;
     private readonly IMapper _mapper;
-    public DespesaBusinessImpl(IMapper mapper, IUnitOfWork<Despesa> unitOfWork, IRepositorio<Despesa> repositorio, IRepositorio<Categoria> repoCategoria) : base(mapper, repositorio, unitOfWork)
+
+    public DespesaBusinessImpl(IMapper mapper, IRepositorio<Despesa> repositorio, IUnitOfWork<Despesa> unitOfWork, IUnitOfWork<Categoria> unitOfWorkCategoria = null) : base(mapper, repositorio, unitOfWork)
     {
         _repositorio = repositorio;
-        _repoCategoria = repoCategoria;
         _mapper = mapper;
+        _unitOfWorkCategoria =  unitOfWorkCategoria;
     }
 
-    public override Dto Create(Dto dto)
+    public override async Task<Dto> Create(Dto dto)
     {
-        Despesa despesa = _mapper.Map<Despesa>(dto);
-        IsValidCategoria(despesa);
-        _repositorio.Insert(despesa);
+        var despesa = _mapper.Map<Despesa>(dto);
+        await IsValidCategoria(despesa);
+        await UnitOfWork.Repository.Insert(despesa);
+        await UnitOfWork.CommitAsync();
+        despesa = await UnitOfWork.Repository.Get(despesa.Id);
         return _mapper.Map<Dto>(despesa);
     }
 
-    public override List<Dto> FindAll(Guid idUsuario)
+    public override async Task<List<Dto>> FindAll(Guid idUsuario)
     {
-        var despesas = _repositorio.GetAll().FindAll(d => d.UsuarioId == idUsuario);
+        var result = await UnitOfWork.Repository.Find(repo => repo.UsuarioId == idUsuario);
+        var despesas = result.ToList();
         var dtos = _mapper.Map<List<Dto>>(despesas);
         return dtos;
     }
 
-    public override Dto FindById(Guid id, Guid idUsuario)
+    public override async Task<Dto> FindById(Guid id, Guid idUsuario)
     {
-        var despesa = _repositorio.Get(id);
+        var despesa = await UnitOfWork.Repository.Get(id);
         if (despesa is null) return null;
         despesa.UsuarioId = idUsuario;
-        IsValidDespesa(despesa);
+        await IsValidDespesa(despesa);
         var despesaDto = _mapper.Map<Dto>(despesa);
         return despesaDto;
     }
 
-    public override Dto Update(Dto dto)
+    public override async Task<Dto> Update(Dto dto)
     {
-        Despesa despesa = _mapper.Map<Despesa>(dto);
-        IsValidDespesa(despesa);
-        IsValidCategoria(despesa);
-        _repositorio.Update(despesa);
+        var despesa = _mapper.Map<Despesa>(dto);
+        await IsValidDespesa(despesa);
+        await IsValidCategoria(despesa);
+        await UnitOfWork.Repository.Update(despesa);
+        await UnitOfWork.CommitAsync();
+        despesa = await UnitOfWork.Repository.Get(dto.Id.Value);
         return _mapper.Map<Dto>(despesa);
     }
 
-    public override bool Delete(Dto dto)
+    public override async Task<bool> Delete(Dto dto)
     {
         Despesa despesa = _mapper.Map<Despesa>(dto);
-        IsValidDespesa(despesa);
-        _repositorio.Delete(despesa);
+        await IsValidDespesa(despesa);
+        await UnitOfWork.Repository.Delete(despesa.Id);
+        await UnitOfWork.CommitAsync();
         return true;
     }
 
-    private void IsValidCategoria(Despesa dto)
+    private async Task IsValidCategoria(Despesa dto)
     {
-        if (_repoCategoria.GetAll().Find(c => c.UsuarioId == dto.UsuarioId && c.TipoCategoria == TipoCategoria.CategoriaType.Despesa && c.Id == dto.CategoriaId) == null)
+        var categoria = await _unitOfWorkCategoria.Repository.Get(dto.CategoriaId);
+        if (categoria == null 
+            || categoria.UsuarioId != dto.UsuarioId 
+            || categoria == null 
+            || categoria.TipoCategoria != TipoCategoria.CategoriaType.Despesa 
+            || categoria.Id != dto.CategoriaId) 
             throw new ArgumentException("Categoria inválida para este usuário!");
     }
 
-    private void IsValidDespesa(Despesa dto)
+    private async Task IsValidDespesa(Despesa dto)
     {
-        if (_repositorio.Get(dto.Id)?.Usuario?.Id != dto.UsuarioId)
+        var despesa = await UnitOfWork!.Repository.Get(dto.Id);
+        if (despesa == null || despesa.UsuarioId != dto.UsuarioId)
             throw new ArgumentException("Despesa inválida para este usuário!");
     }
 }

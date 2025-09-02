@@ -1,6 +1,6 @@
-﻿using Domain.Core.Aggreggates;
+﻿using Despesas.Repository.UnitOfWork.Abstractions;
+using Domain.Core.Aggreggates;
 using MediatR;
-using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace CrossCutting.CQRS.Queries;
 

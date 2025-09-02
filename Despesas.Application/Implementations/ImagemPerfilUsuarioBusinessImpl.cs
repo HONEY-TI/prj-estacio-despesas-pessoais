@@ -20,7 +20,7 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
         _amazonS3Bucket = amazonS3Bucket;
     }
 
-    public Dto Create(Dto dto)
+    public async Task<Dto> Create(Dto dto)
     {
         ImagemPerfilUsuario? perfilFile = _mapper.Map<ImagemPerfilUsuario>(dto);        
         try
@@ -28,7 +28,7 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
             perfilFile.Url = _amazonS3Bucket.WritingAnObjectAsync(perfilFile, dto.Arquivo).GetAwaiter().GetResult();
             perfilFile.Usuario = _repositorioUsuario.Get(perfilFile.UsuarioId) ?? throw new();
             _repositorio.Insert(perfilFile);
-            return _mapper.Map<Dto>(perfilFile);
+            return await Task.FromResult(_mapper.Map<Dto>(perfilFile));
         }
         catch (Exception ex) 
         {
@@ -38,22 +38,22 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
         }
     }
 
-    public List<Dto> FindAll(Guid idUsuario)
+    public async Task<List<Dto>> FindAll(Guid idUsuario)
     {
         var lstPerfilFile = _repositorio.GetAll();
-        return _mapper.Map<List<Dto>>(lstPerfilFile);
+        return await Task.FromResult(_mapper.Map<List<Dto>>(lstPerfilFile));
     }
 
-    public Dto FindById(Guid id, Guid idUsuario)
+    public async Task<Dto> FindById(Guid id, Guid idUsuario)
     {
         var imagemPerfilUsuario = _mapper.Map<Dto>(_repositorio.Get(id));
         if (imagemPerfilUsuario.UsuarioId != idUsuario)
             return null;
 
-        return imagemPerfilUsuario;
+        return await Task.FromResult(imagemPerfilUsuario);
     }
 
-    public Dto Update(Dto dto)
+    public async Task<Dto> Update(Dto dto)
     {
         try
         {
@@ -64,7 +64,7 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
             _amazonS3Bucket.DeleteObjectNonVersionedBucketAsync(validImagemPerfil).GetAwaiter().GetResult();
             validImagemPerfil.Url = _amazonS3Bucket.WritingAnObjectAsync(validImagemPerfil, dto.Arquivo).GetAwaiter().GetResult();
             _repositorio.Update(validImagemPerfil);
-            return _mapper.Map<Dto>(validImagemPerfil);
+            return await Task.FromResult(_mapper.Map<Dto>(validImagemPerfil));
         }
         catch
         {
@@ -72,7 +72,7 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
         }
     }
 
-    public bool Delete(Guid idUsuario)
+    public async Task<bool> Delete(Guid idUsuario)
     {
         var imagemPerfilUsuario = _repositorio.GetAll().Find(prop => prop.UsuarioId.Equals(idUsuario));
         if (imagemPerfilUsuario != null)
@@ -81,7 +81,7 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
             if (result)
             {
                 _repositorio.Delete(new ImagemPerfilUsuario { Id = imagemPerfilUsuario.Id });
-                return true;
+                await Task.FromResult(true);
             }
         }
         return false;

@@ -28,7 +28,8 @@ public class ImagemPerfilUsuarioController : AuthController
         try
         {
 
-            var imagemPerfilUsuario = _imagemPerfilBussiness.FindAll(UserIdentity).Find(prop => prop.UsuarioId.Equals(UserIdentity));
+            var result = await _imagemPerfilBussiness.FindAll(UserIdentity);
+             var imagemPerfilUsuario  = result.Find(prop => prop.UsuarioId.Equals(UserIdentity));
 
             if (imagemPerfilUsuario != null)
                 return Ok(imagemPerfilUsuario);
@@ -82,7 +83,7 @@ public class ImagemPerfilUsuarioController : AuthController
         try
         {
             ImagemPerfilDto imagemPerfilUsuario = await ConvertFileToImagemPerfilUsuarioDtoAsync(file, UserIdentity);
-            imagemPerfilUsuario = _imagemPerfilBussiness.Update(imagemPerfilUsuario);
+            imagemPerfilUsuario = await _imagemPerfilBussiness.Update(imagemPerfilUsuario);
             if (imagemPerfilUsuario != null)
                 return Ok(imagemPerfilUsuario);
             else
@@ -107,7 +108,7 @@ public class ImagemPerfilUsuarioController : AuthController
     {
         try
         {
-            if (_imagemPerfilBussiness.Delete(UserIdentity))
+            if (await _imagemPerfilBussiness.Delete(UserIdentity))
                 return Ok(true);
             else
                 throw new();

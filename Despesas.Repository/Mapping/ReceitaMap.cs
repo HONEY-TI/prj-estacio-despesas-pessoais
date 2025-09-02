@@ -25,6 +25,11 @@ public class ReceitaMap : IEntityTypeConfiguration<Receita>
         // MsSqlServer
         //builder.Property(r => r.Data).HasColumnType("datetime").HasDefaultValueSql<DateTime>("GetDate()").IsRequired();        
 
+        builder.HasOne(d => d.Categoria)   // Receita -> Categoria
+            .WithMany(c => c.Receitas)  // Categoria -> Receitas
+            .HasForeignKey(d => d.CategoriaId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.Property(r => r.Valor).HasColumnType("decimal(10, 2)").HasDefaultValue(0);
         builder.HasOne(r => r.Usuario).WithMany().HasForeignKey(r => r.UsuarioId).OnDelete(DeleteBehavior.NoAction);
     }

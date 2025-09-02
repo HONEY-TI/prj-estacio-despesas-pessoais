@@ -22,7 +22,7 @@ public class LancamentoController : AuthController
     {
         try
         {
-            var list = _lancamentoBusiness.FindByMesAno(anoMes, UserIdentity);
+            var list = await _lancamentoBusiness.FindByMesAno(anoMes, UserIdentity);
             if (list == null || list.Count == 0)
                 return Ok(new List<LancamentoDto>());
 

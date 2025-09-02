@@ -1,31 +1,24 @@
-﻿using Despesas.Application.Dtos.Core;
+﻿using Despesas.Application.Dtos;
+using Despesas.Application.Dtos.Core;
 using Domain.Core.ValueObject;
 using Domain.Entities;
 
-namespace Despesas.Application.Dtos.Profile;
 public class CategoriaProfile : AutoMapper.Profile
 {
     public CategoriaProfile()
     {
+        // DTO -> Entidade
         CreateMap<CategoriaDto, Categoria>()
-            .ForMember(dest => dest.TipoCategoria, opt => opt.MapFrom(src => src.IdTipoCategoria))
-            .ReverseMap();
+            .ForMember(dest => dest.TipoCategoriaId, opt => opt.MapFrom(src => (int)src.IdTipoCategoria))
+            .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao));
 
+        // Entity <-> Dto para Entidade
         CreateMap<Categoria, CategoriaDto>()
-            .ForMember(dest => dest.IdTipoCategoria, opt => opt.MapFrom(src => src.TipoCategoria.Id))
-            .ReverseMap();
-
-        CreateMap<CategoriaDto, Categoria>()
-            .ForMember(dest => dest.TipoCategoria, opt => opt.MapFrom(src => src.IdTipoCategoria))
-            .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao))
-            .ReverseMap();
+            .ForMember(dest => dest.IdTipoCategoria, opt => opt.MapFrom(src => src.TipoCategoriaId))
+            .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao));
 
 
-        CreateMap<Categoria, CategoriaDto>()
-            .ForMember(dest => dest.IdTipoCategoria, opt => opt.MapFrom(src => src.TipoCategoria.Id))
-            .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao))
-            .ReverseMap();
-
-        CreateMap<TipoCategoriaDto, TipoCategoria>().ReverseMap();
+        CreateMap<TipoCategoria, TipoCategoriaDto>()
+            .ConvertUsing(src => (TipoCategoriaDto)src.Id);
     }
 }

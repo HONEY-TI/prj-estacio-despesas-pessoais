@@ -9,8 +9,8 @@ namespace Despesas.Backend.Controllers;
 
 public class CategoriaController : AuthController
 {
-    private readonly IBusinessBase<CategoriaDto, Categoria> _categoriaBusiness;
-    public CategoriaController(IBusinessBase<CategoriaDto, Categoria> categoriaBusiness)
+    private readonly ICategoriaBusiness<CategoriaDto, Categoria> _categoriaBusiness;
+    public CategoriaController(ICategoriaBusiness<CategoriaDto, Categoria> categoriaBusiness)
     {
         _categoriaBusiness = categoriaBusiness;
     }
@@ -24,7 +24,7 @@ public class CategoriaController : AuthController
     {
         try
         {
-            IList<CategoriaDto> _categoria = _categoriaBusiness.FindAll(UserIdentity);
+            var _categoria = await _categoriaBusiness.FindAll(UserIdentity);
             return Ok(_categoria);
         }
         catch
@@ -42,7 +42,7 @@ public class CategoriaController : AuthController
     {
         try
         {
-            CategoriaDto _categoria = _categoriaBusiness.FindById(idCategoria, UserIdentity);
+            CategoriaDto _categoria = await _categoriaBusiness.FindById(idCategoria, UserIdentity);
             return Ok(_categoria);
         }
         catch
@@ -58,16 +58,8 @@ public class CategoriaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> GetByTipoCategoria([FromRoute] TipoCategoriaDto tipoCategoria)
     {
-        if (tipoCategoria == TipoCategoriaDto.Todas)
-        {
-            var _categoria = _categoriaBusiness.FindAll(UserIdentity).Where(prop => prop.UsuarioId.Equals(UserIdentity)).ToList();
-            return Ok(_categoria);
-        }
-        else
-        {
-            var _categoria = _categoriaBusiness.FindAll(UserIdentity).Where(prop => prop.IdTipoCategoria.Equals(tipoCategoria)).ToList();
-            return Ok(_categoria);
-        }
+        var _categoria = await _categoriaBusiness.FindByTipocategoria(UserIdentity, (int)tipoCategoria);
+        return Ok(_categoria);
     }
 
     [HttpPost]
@@ -84,7 +76,7 @@ public class CategoriaController : AuthController
                 throw new ArgumentException("Nenhum tipo de Categoria foi selecionado!");
 
             categoria.UsuarioId = UserIdentity;
-            return Ok(_categoriaBusiness.Create(categoria));
+            return Ok(await _categoriaBusiness.Create(categoria));
         }
         catch (Exception ex)
         {
@@ -109,7 +101,7 @@ public class CategoriaController : AuthController
                 throw new ArgumentException("Nenhum tipo de Categoria foi selecionado!");
 
             categoria.UsuarioId = UserIdentity;
-            CategoriaDto updateCategoria = _categoriaBusiness.Update(categoria) ?? throw new();
+            CategoriaDto updateCategoria = await _categoriaBusiness.Update(categoria) ?? throw new();
             return Ok(updateCategoria);
         }
         catch (Exception ex)
@@ -131,11 +123,11 @@ public class CategoriaController : AuthController
     {
         try
         {
-            CategoriaDto categoria = _categoriaBusiness.FindById(idCategoria, UserIdentity);
+            CategoriaDto categoria = await _categoriaBusiness.FindById(idCategoria, UserIdentity);
             if (categoria == null || UserIdentity != categoria.UsuarioId)
                 throw new ArgumentException("Usuário não permitido a realizar operação!");
 
-            if (_categoriaBusiness.Delete(categoria))
+            if (await _categoriaBusiness.Delete(categoria))
                 return Ok(true);
 
             return Ok(false);

@@ -21,8 +21,6 @@ public class UsuarioProfile : AutoMapper.Profile
                     ? 2
                     : src.PerfilUsuario.Id))
             .ForMember(dest => dest.Profile, opt => opt.Ignore());
-
-
     }
 
     private static byte[]? FormFileToByteArray(IFormFile? file)

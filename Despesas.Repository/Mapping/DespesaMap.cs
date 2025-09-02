@@ -26,6 +26,11 @@ public class DespesaMap : IEntityTypeConfiguration<Despesa>
         //builder.Property(d => d.Data).HasColumnType("datetime").HasDefaultValueSql<DateTime>("GetDate()").IsRequired();
         //builder.Property(d => d.DataVencimento).HasColumnType("datetime").HasDefaultValueSql(null);
 
+        builder.HasOne(d => d.Categoria)   // Despesa -> Categoria
+               .WithMany(c => c.Despesas)  // Categoria -> Despesas
+               .HasForeignKey(d => d.CategoriaId)
+               .OnDelete(DeleteBehavior.Restrict);
+
         builder.Property(d => d.Valor).HasColumnType("decimal(10, 2)").HasDefaultValue(0);
         builder.HasOne(d => d.Usuario).WithMany().HasForeignKey(d => d.UsuarioId).OnDelete(DeleteBehavior.NoAction);
     }

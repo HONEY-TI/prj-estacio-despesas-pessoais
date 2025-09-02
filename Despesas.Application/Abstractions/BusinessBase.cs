@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Despesas.Repository.UnitOfWork.Abstractions;
 using Repository.Persistency.Generic;
-using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace Despesas.Application.Abstractions;
 public abstract class BusinessBase<Dto, Entity> : IBusinessBase<Dto, Entity> where Dto : class where Entity : class, new()
@@ -10,25 +10,25 @@ public abstract class BusinessBase<Dto, Entity> : IBusinessBase<Dto, Entity> whe
 
     protected IRepositorio<Entity> Repository { get; }
 
-    protected BusinessBase(IMapper mapper, IRepositorio<Entity> repository, IUnitOfWork<Entity>? unitOfWork = null)
+    protected BusinessBase(IMapper mapper, IRepositorio<Entity> repository, IUnitOfWork<Entity> unitOfWork = null)
     {
         Repository = repository;
         Mapper = mapper;
         UnitOfWork = unitOfWork;
     }
 
-    public abstract Dto Create(Dto dto);
+    public abstract Task<Dto> Create(Dto dto);
 
-    public virtual Dto FindById(Guid id)
+    public virtual Task<Dto> FindById(Guid id)
     {
         throw new NotImplementedException("Este método não foi implementado.");
     }
 
-    public virtual Dto FindById(Guid id, Guid idUsuario) { return null; }
+    public virtual Task<Dto> FindById(Guid id, Guid idUsuario) { return null; }
 
-    public abstract List<Dto> FindAll(Guid idUsuario);
+    public abstract Task<List<Dto>> FindAll(Guid idUsuario);
 
-    public abstract Dto Update(Dto dto);
+    public abstract Task<Dto> Update(Dto dto);
 
-    public abstract bool Delete(Dto dto);
+    public abstract Task<bool> Delete(Dto dto);
 }

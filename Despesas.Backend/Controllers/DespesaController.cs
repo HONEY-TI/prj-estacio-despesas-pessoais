@@ -23,7 +23,7 @@ public class DespesaController : AuthController
     {
         try
         {
-            return Ok(_despesaBusiness.FindAll(UserIdentity));
+            return Ok(await _despesaBusiness.FindAll(UserIdentity));
         }
         catch (Exception ex)
         {
@@ -44,7 +44,7 @@ public class DespesaController : AuthController
     {
         try
         {
-            var _despesa = _despesaBusiness.FindById(id, UserIdentity) ?? throw new ArgumentException("Nenhuma despesa foi encontrada.");
+            var _despesa = await _despesaBusiness.FindById(id, UserIdentity) ?? throw new ArgumentException("Nenhuma despesa foi encontrada.");
             return Ok(_despesa);
         }
         catch (Exception ex)
@@ -67,7 +67,7 @@ public class DespesaController : AuthController
         try
         {
             despesa.UsuarioId = UserIdentity;
-            return Ok(_despesaBusiness.Create(despesa));
+            return Ok(await _despesaBusiness.Create(despesa));
         }
         catch (Exception ex)
         {
@@ -89,7 +89,7 @@ public class DespesaController : AuthController
         try
         {
             despesa.UsuarioId = UserIdentity;
-            var updateDespesa = _despesaBusiness.Update(despesa) ?? throw new();
+            var updateDespesa = await _despesaBusiness.Update(despesa) ?? throw new();
             return Ok(updateDespesa);
         }
         catch (Exception ex)
@@ -111,11 +111,11 @@ public class DespesaController : AuthController
     {
         try
         {
-            DespesaDto despesa = _despesaBusiness.FindById(idDespesa, UserIdentity);
+            DespesaDto despesa = await _despesaBusiness.FindById(idDespesa, UserIdentity);
             if (despesa == null || UserIdentity != despesa.UsuarioId)
                 throw new ArgumentException("Usuário não permitido a realizar operação!");
 
-            return _despesaBusiness.Delete(despesa) ? Ok(true) : throw new();
+            return await _despesaBusiness.Delete(despesa) ? Ok(true) : throw new();
         }
         catch (Exception ex)
         {

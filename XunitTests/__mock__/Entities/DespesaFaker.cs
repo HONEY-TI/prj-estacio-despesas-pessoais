@@ -59,7 +59,7 @@ public sealed class DespesaFaker
         .RuleFor(r => r.Descricao, f => f.Commerce.ProductName())
         .RuleFor(r => r.Valor, f => f.Random.Decimal(1, 900000))
         .RuleFor(r => r.UsuarioId, idUsuario)
-        .RuleFor(r => r.IdCategoria, CategoriaFaker.Instance.GetNewFakerVM(UsuarioFaker.Instance.GetNewFakerVM(idUsuario), TipoCategoriaDto.Despesa, idUsuario).Id)
+        .RuleFor(r => r.CategoriaId, CategoriaFaker.Instance.GetNewFakerVM(UsuarioFaker.Instance.GetNewFakerVM(idUsuario), TipoCategoriaDto.Despesa, idUsuario).Id)
         .Generate();
         counterVM++;
         return despesaFaker;

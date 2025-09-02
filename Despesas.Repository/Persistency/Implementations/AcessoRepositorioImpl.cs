@@ -13,7 +13,7 @@ public class AcessoRepositorioImpl : IAcessoRepositorioImpl
         Context = context;
     }
 
-    public void Create(Acesso acesso)
+    public async Task Create(Acesso acesso)
     {
         acesso.Usuario.PerfilUsuario = Context.PerfilUsuario.First(p => p.Id == acesso.Usuario.PerfilUsuario.Id);
         acesso.Usuario.Categorias.ToList().ForEach(c =>
@@ -23,18 +23,18 @@ public class AcessoRepositorioImpl : IAcessoRepositorioImpl
                 c.TipoCategoria = tipoCategoria;
         }); 
         Context.Acesso.Add(acesso);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
     }
 
-    public void RecoveryPassword(string email, string newPassword)
+    public async Task RecoveryPassword(string email, string newPassword)
     {
         var entity = Context.Acesso.First(c => c.Login.Equals(email));
         entity.Senha = newPassword;
         Context.Update(entity);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
     }
 
-    public void ChangePassword(Guid idUsuario, string password)
+    public async Task ChangePassword(Guid idUsuario, string password)
     {
         var usuario = Context.Acesso
             .Include(u => u.Usuario)
@@ -45,35 +45,35 @@ public class AcessoRepositorioImpl : IAcessoRepositorioImpl
         var acesso = Context.Acesso.First(c => c.Login.Equals(usuario.Login));
         acesso.Senha = password;
         Context.Acesso.Update(acesso);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
     }
 
-    public void RevokeRefreshToken(Guid idUsuario)
+    public async Task RevokeRefreshToken(Guid idUsuario)
     {
         var acesso = Context.Acesso.FirstOrDefault(prop => prop.Id.Equals(idUsuario));
         if (acesso is null) throw new ArgumentException("Token inexistente!");
         acesso.RefreshToken = String.Empty;
         acesso.RefreshTokenExpiry = null;
         Context.Acesso.Update(acesso);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
     }
 
-    public Acesso FindByRefreshToken(string refreshToken)
+    public async Task<Acesso> FindByRefreshToken(string refreshToken)
     {
-        return Context.Acesso
+        return await Context.Acesso
             .Include(x => x.Usuario)
             .ThenInclude(u => u.PerfilUsuario)
-            .First(prop => prop.RefreshToken.Equals(refreshToken));
+            .FirstAsync(prop => prop.RefreshToken.Equals(refreshToken));
     }
 
-    public void RefreshTokenInfo(Acesso acesso)
+    public async Task RefreshTokenInfo(Acesso acesso)
     {
         Context.Acesso.Update(acesso);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
     }
 
-    public Acesso? Find(Expression<Func<Acesso, bool>> expression)
+    public async Task<Acesso?> Find(Expression<Func<Acesso, bool>> expression)
     {
-        return Context.Acesso.Include(c => c.Usuario).Include(c => c.Usuario.PerfilUsuario).SingleOrDefault(expression);
+        return await Context.Acesso.Include(c => c.Usuario).Include(c => c.Usuario.PerfilUsuario).SingleOrDefaultAsync(expression);
     }
 }

@@ -5,13 +5,13 @@ namespace Despesas.Application.Abstractions;
 
 public interface IAcessoBusiness<DtoCa, DtoLogin> where DtoCa : class where DtoLogin : class
 {
-    AuthenticationDto ValidateCredentials(DtoLogin loginDto);
+    Task<AuthenticationDto> ValidateCredentials(DtoLogin loginDto);
 
-    AuthenticationDto ValidateExternalCredentials(GoogleAuthenticationDto authenticationDto);
+    Task<AuthenticationDto> ValidateExternalCredentials(GoogleAuthenticationDto authenticationDto);
     
-    AuthenticationDto ValidateCredentials(string refreshToken);
-    void Create(DtoCa acessoDto);
-    void ChangePassword(Guid idUsuario, string password);
-    void RecoveryPassword(string email);
-    void RevokeToken(Guid idUsurio);
+    Task<AuthenticationDto> ValidateCredentials(string refreshToken);
+    Task Create(DtoCa acessoDto);
+    Task ChangePassword(Guid idUsuario, string password);
+    Task RecoveryPassword(string email);
+    Task RevokeToken(Guid idUsurio);
 }

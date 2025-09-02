@@ -12,8 +12,8 @@ public class GraficosBusinessImpl : IGraficosBusiness
         _repositorio = repositorio;
     }
 
-    public Grafico GetDadosGraficoByAnoByIdUsuario(Guid idUsuario, DateTime data)
+    public async Task<Grafico> GetDadosGraficoByAnoByIdUsuario(Guid idUsuario, DateTime data)
     {
-        return _repositorio.GetDadosGraficoByAno(idUsuario, data);
+        return await Task.FromResult(_repositorio.GetDadosGraficoByAno(idUsuario, data));
     }
 }

@@ -2,7 +2,7 @@
 public record TipoCategoria
 {
     public static implicit operator CategoriaType(TipoCategoria tc) => (CategoriaType)tc.Id;
-    public static implicit operator TipoCategoria(int tipoCategoria) => new TipoCategoria((CategoriaType)tipoCategoria);
+    public static implicit operator TipoCategoria(int tipoCategoria) => new TipoCategoria((int)tipoCategoria);
     public static bool operator ==(TipoCategoria tipoCategoria, CategoriaType tipoCategoriaType) => tipoCategoria?.Id == (int)tipoCategoriaType;
     public static bool operator !=(TipoCategoria tipoCategoria, CategoriaType tipoCategoriaType) => !(tipoCategoria?.Id == (int)tipoCategoriaType);
 
@@ -20,22 +20,22 @@ public record TipoCategoria
     public TipoCategoria(int id)
     {
         Id = id;
-        Name = GetTipoCategoriaName((CategoriaType)id);
+        Name = GetTipoCategoriaName((int)id);
     }
 
     public TipoCategoria(CategoriaType tipoCategoria)
     {
         Id = (int)tipoCategoria;
-        Name = GetTipoCategoriaName(tipoCategoria);
+        Name = GetTipoCategoriaName((int)tipoCategoria);
     }
 
-    private static string GetTipoCategoriaName(CategoriaType tipoCategoria)
+    private static string GetTipoCategoriaName(int tipoCategoria)
     {
-        if (CategoriaType.Despesa == tipoCategoria)
+        if ((int)CategoriaType.Despesa == tipoCategoria)
             return "Despesa";
-        else if (CategoriaType.Receita == tipoCategoria)
+        else if ((int)CategoriaType.Receita == tipoCategoria)
             return "Receita";
-        else if (CategoriaType.Invalid == tipoCategoria)
+        else if ((int)CategoriaType.Invalid == tipoCategoria)
             return "Invalid";
 
 

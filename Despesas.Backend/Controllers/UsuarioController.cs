@@ -26,7 +26,7 @@ public class UsuarioController : AuthController
     {
         try
         {
-            var _usuario = _usuarioBusiness.FindById(UserIdentity);
+            var _usuario = await _usuarioBusiness.FindById(UserIdentity);
             if (_usuario == null) throw new();
             return Ok(_usuario);
         }
@@ -50,7 +50,7 @@ public class UsuarioController : AuthController
         try
         {
             usuarioDto.UsuarioId = UserIdentity;
-            return Ok(_usuarioBusiness.Create(usuarioDto));
+            return Ok(await _usuarioBusiness.Create(usuarioDto));
         }
         catch (Exception ex)
         {
@@ -72,7 +72,7 @@ public class UsuarioController : AuthController
         try
         {
             usuarioDto.UsuarioId = UserIdentity;
-            return Ok(_usuarioBusiness.Update(usuarioDto));
+            return Ok(await _usuarioBusiness.Update(usuarioDto));
         }
         catch (Exception ex)
         {
@@ -93,7 +93,7 @@ public class UsuarioController : AuthController
     {
         try
         {
-            if (_usuarioBusiness.Delete(usuarioDto))
+            if (await _usuarioBusiness.Delete(usuarioDto))
                 return Ok(true);
 
             throw new ArgumentException("Não foi possivél excluir este usuário.");
@@ -118,7 +118,7 @@ public class UsuarioController : AuthController
     {
         try
         {
-            var image = _usuarioBusiness.GetProfileImage(UserIdentity);
+            var image = await _usuarioBusiness.GetProfileImage(UserIdentity);
 
             if(image == null || image.Length == 0)
                 return NoContent();
@@ -145,7 +145,7 @@ public class UsuarioController : AuthController
     {
         try
         {
-            var image = _usuarioBusiness.UpdateProfileImage(UserIdentity, file);
+            var image = await _usuarioBusiness.UpdateProfileImage(UserIdentity, file);
 
             if (image == null || image.Length == 0)
                 return NoContent();

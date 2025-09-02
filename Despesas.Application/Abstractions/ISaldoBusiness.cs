@@ -3,7 +3,7 @@
 namespace Despesas.Application.Abstractions;
 public interface ISaldoBusiness
 {
-    SaldoDto GetSaldo(Guid idUsuario);
-    SaldoDto GetSaldoAnual(DateTime ano, Guid idUsuario);
-    SaldoDto GetSaldoByMesAno(DateTime mesAno, Guid idUsuario);
+    Task<SaldoDto> GetSaldo(Guid idUsuario);
+    Task<SaldoDto> GetSaldoAnual(DateTime ano, Guid idUsuario);
+    Task<SaldoDto> GetSaldoByMesAno(DateTime mesAno, Guid idUsuario);
 }

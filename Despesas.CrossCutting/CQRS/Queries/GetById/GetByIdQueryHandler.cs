@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.Aggreggates;
 using MediatR;
-using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace CrossCutting.CQRS.Queries;
 
@@ -19,6 +19,6 @@ public sealed class GetByIdQueryHandler<T> : IRequestHandler<GetByIdQuery<T>, T>
     public async Task<T> Handle(GetByIdQuery<T> request, CancellationToken cancellationToken)
     {
         var entityToFind = _mapper.Map<T>(request);
-        return await _unitOfWork.Repository.GetById(entityToFind.Id);
+        return await _unitOfWork.Repository.Get(entityToFind.Id);
     }
 }

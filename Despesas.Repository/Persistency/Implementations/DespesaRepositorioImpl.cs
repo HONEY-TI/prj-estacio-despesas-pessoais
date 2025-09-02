@@ -1,7 +1,9 @@
 ﻿using Domain.Entities;
-using Repository.Persistency.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Repository.Abastractions;
+using Repository.Persistency.Generic;
+using System.Linq.Expressions;
 
 namespace Repository.Persistency.Implementations;
 public class DespesaRepositorioImpl : BaseRepository<Despesa>, IRepositorio<Despesa>
@@ -39,5 +41,13 @@ public class DespesaRepositorioImpl : BaseRepository<Despesa>, IRepositorio<Desp
         Context?.Entry(existingEntity).CurrentValues.SetValues(entity);
         Context?.SaveChanges();
         entity = existingEntity;
+    }
+
+    public override IEnumerable<Despesa> Find(Expression<Func<Despesa, bool>> expression)
+    {
+        return Context.Despesa
+            .Include(d => d.Categoria)
+            .ThenInclude(c => c.TipoCategoria)
+            .Where(expression);
     }
 }

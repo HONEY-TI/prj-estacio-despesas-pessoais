@@ -22,7 +22,7 @@ public class AcessoController : AuthController
     {
         try
         {
-            _acessoBusiness.Create(acessoDto);
+            await _acessoBusiness.Create(acessoDto);
             return Ok(true);
         }
         catch (Exception ex)
@@ -42,7 +42,7 @@ public class AcessoController : AuthController
     {
         try
         {
-            var result = _acessoBusiness.ValidateCredentials(login) ?? throw new();
+            var result = await _acessoBusiness.ValidateCredentials(login) ?? throw new();
             return Ok(result);
         }
         catch (Exception ex)
@@ -66,7 +66,7 @@ public class AcessoController : AuthController
             if (!authentication.Authenticated)
                 throw  new ArgumentException("Erro ao autenticar com o Google.");
 
-            var authResult = _acessoBusiness.ValidateExternalCredentials(authentication);
+            var authResult = await _acessoBusiness.ValidateExternalCredentials(authentication);
             if (authResult == null)
                 return Unauthorized("Usuário não autorizado.");
 
@@ -92,7 +92,7 @@ public class AcessoController : AuthController
     {
         try
         {
-            _acessoBusiness.ChangePassword(UserIdentity, changePasswordVM.Senha ?? "");
+            await _acessoBusiness.ChangePassword(UserIdentity, changePasswordVM.Senha ?? "");
             return Ok(true);
         }
         catch (Exception ex)
@@ -115,7 +115,7 @@ public class AcessoController : AuthController
     {
         try
         {
-            _acessoBusiness.RecoveryPassword(email);
+            await _acessoBusiness.RecoveryPassword(email);
             return Ok(true);
         }
         catch
@@ -133,7 +133,7 @@ public class AcessoController : AuthController
     {
         try
         {
-            var result = _acessoBusiness.ValidateCredentials(refreshToken) ?? throw new();
+            var result = await _acessoBusiness.ValidateCredentials(refreshToken) ?? throw new();
             return Ok(result);
         }
         catch

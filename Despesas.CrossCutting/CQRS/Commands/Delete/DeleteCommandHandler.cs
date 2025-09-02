@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.Aggreggates;
 using MediatR;
-using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace CrossCutting.CQRS.Commands;
 
@@ -20,7 +20,7 @@ public sealed class DeleteCommandHandler<T> : IRequestHandler<DeleteCommand<T>, 
     {
         var entityToDelete = _mapper.Map<T>(request);
 
-        var existingEntity = await _unitOfWork.Repository.GetById(entityToDelete.Id);
+        var existingEntity = await _unitOfWork.Repository.Get(entityToDelete.Id);
         if (existingEntity is null)
             throw new InvalidOperationException($"{nameof(existingEntity)} not found !");
 

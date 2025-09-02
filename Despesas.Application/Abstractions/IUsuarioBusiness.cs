@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Http;
 namespace Despesas.Application.Abstractions;
 public interface IUsuarioBusiness<Dto> where Dto : UsuarioDto, new()
 {
-    Dto Create(Dto dto);
-    Dto FindById(Guid id);
-    List<Dto> FindAll(Guid idUsuario);
-    Dto Update(Dto dto);
-    bool Delete(Dto dto);    
-    byte[] GetProfileImage(Guid userIdentity);
-    byte[] UpdateProfileImage(Guid userIdentity, IFormFile file);
+    Task<Dto> Create(Dto dto);
+    Task<Dto> FindById(Guid id);
+    Task<List<Dto>> FindAll(Guid idUsuario);
+    Task<Dto> Update(Dto dto);
+    Task<bool> Delete(Dto dto);
+    Task<byte[]> GetProfileImage(Guid userIdentity);
+    Task<byte[]> UpdateProfileImage(Guid userIdentity, IFormFile file);
 }

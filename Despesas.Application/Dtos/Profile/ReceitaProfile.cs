@@ -3,29 +3,27 @@ using Domain.Core.ValueObject;
 using Domain.Entities;
 
 namespace Despesas.Application.Dtos.Profile;
-
 public class ReceitaProfile : AutoMapper.Profile
 {
     public ReceitaProfile()
     {
-        CreateMap<ReceitaDto, Receita>().ReverseMap();
-        CreateMap<Receita, ReceitaDto>()
-            .ForMember(dest => dest.IdCategoria, opt => opt.MapFrom(src => src.CategoriaId))
-            .ForMember(dest => dest.IdCategoria, opt => opt.MapFrom(src => src.Categoria.Id))
+        // DTO <-> Entidade para Receita
+        CreateMap<ReceitaDto, Receita>()
+            .ForPath(dest => dest.Categoria.UsuarioId, opt => opt.MapFrom(src => src.UsuarioId))
+            .ForPath(dest => dest.Categoria.TipoCategoriaId, opt => opt.MapFrom(src => src.Categoria.IdTipoCategoria))
             .ReverseMap();
 
-        CreateMap<ReceitaDto, Receita>().ReverseMap();
-        CreateMap<Receita, ReceitaDto>()
-            .ForMember(dest => dest.IdCategoria, opt => opt.MapFrom(src => src.CategoriaId))
-            .ForMember(dest => dest.IdCategoria, opt => opt.MapFrom(src => src.Categoria.Id))
-            .ForMember(dest => dest.Categoria, opt => opt.MapFrom(src => src.Categoria))
-            .ForPath(dest => dest.Categoria.IdTipoCategoria, opt => opt.MapFrom(src => TipoCategoria.CategoriaType.Receita))
-            .ReverseMap();
+        // Entity <-> Dto para Entidade
+        CreateMap<Receita, ReceitaDto>();
 
+        // Entity <-> Dto para Entidade
         CreateMap<Categoria, CategoriaDto>()
-            .ForMember(dest => dest.IdTipoCategoria, opt => opt.MapFrom(src => src.TipoCategoria.Id))
+            .ForMember(dest => dest.IdTipoCategoria, opt => opt.MapFrom(src => src.TipoCategoriaId))
+            .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao))
             .ReverseMap();
 
-        CreateMap<TipoCategoriaDto, TipoCategoria>().ReverseMap();
+
+        CreateMap<TipoCategoria, TipoCategoriaDto>()
+            .ConvertUsing(src => (TipoCategoriaDto)src.Id);
     }
 }

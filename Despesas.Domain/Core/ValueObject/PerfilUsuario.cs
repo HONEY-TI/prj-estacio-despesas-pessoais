@@ -1,5 +1,5 @@
 ﻿namespace Domain.Core.ValueObject;
-public sealed record PerfilUsuario
+public record PerfilUsuario
 {
     public static implicit operator Perfil(PerfilUsuario pu) => (Perfil)pu.Id;
     public static implicit operator PerfilUsuario(int perfilType) => new PerfilUsuario((Perfil)perfilType);

@@ -33,18 +33,18 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
         _crypto = crypto;
     }
 
-    public void Create(DtoCa acessoDto)
+    public async Task Create(DtoCa acessoDto)
     {
         var usuario = _mapper.Map<Usuario>(acessoDto);
         usuario = new Usuario().CreateUsuario(usuario);
         Acesso acesso = acessoDto != null ? _mapper.Map<Acesso>(acessoDto) : new Acesso();
         acesso.CreateAccount(usuario, _crypto.Encrypt(acessoDto.Senha));
-        _repositorio.Create(acesso);
+        await Task.FromResult(_repositorio.Create(acesso));
     }
 
-    public AuthenticationDto ValidateCredentials(DtoLogin loginDto)
+    public async Task<AuthenticationDto> ValidateCredentials(DtoLogin loginDto)
     {
-        Acesso baseLogin = _repositorio.Find(c => c.Login.Equals(loginDto.Email)) ?? throw new ArgumentException("Usuário inexistente!");
+        Acesso baseLogin = await _repositorio.Find(c => c.Login.Equals(loginDto.Email)) ?? throw new ArgumentException("Usuário inexistente!");
 
         if (baseLogin?.Usuario?.StatusUsuario == StatusUsuario.Inativo)
             return AuthenticationException("Usuário Inativo!");
@@ -57,15 +57,15 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
         {
             baseLogin.RefreshToken = _singingConfiguration.GenerateRefreshToken();
             baseLogin.RefreshTokenExpiry = DateTime.UtcNow.AddDays(_singingConfiguration.TokenConfiguration.DaysToExpiry);
-            _repositorio.RefreshTokenInfo(baseLogin);
-            return AuthenticationSuccess(baseLogin);
+            await _repositorio.RefreshTokenInfo(baseLogin);
+            return await AuthenticationSuccess(baseLogin);
         }
         return AuthenticationException("Usuário Inválido!");
     }
 
-    public AuthenticationDto ValidateExternalCredentials(GoogleAuthenticationDto authenticationDto)
+    public async Task<AuthenticationDto> ValidateExternalCredentials(GoogleAuthenticationDto authenticationDto)
     {
-        Acesso? baseLogin = _repositorio.Find(c =>
+        Acesso? baseLogin =  await _repositorio.Find(c =>
             (c.ExternalProvider == authenticationDto.ExternalProvider && c.ExternalId == authenticationDto.ExternalId) && c.Login.Equals(authenticationDto.Email)
         );
 
@@ -73,9 +73,9 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
         {
             var dtoCa = this._mapper.Map<DtoCa>(authenticationDto);
             dtoCa.Senha = Guid.NewGuid().ToString("N");
-            Create(dtoCa);
+            await Create(dtoCa);
 
-            baseLogin = _repositorio.Find(c => c.Login.Equals(dtoCa.Email));
+            baseLogin = await _repositorio.Find(c => c.Login.Equals(dtoCa.Email));
         }
 
         bool credentialsValid = baseLogin is not null && authenticationDto.Email == baseLogin.Login;
@@ -83,15 +83,15 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
         {
             baseLogin.RefreshToken = _singingConfiguration.GenerateRefreshToken();
             baseLogin.RefreshTokenExpiry = DateTime.UtcNow.AddDays(_singingConfiguration.TokenConfiguration.DaysToExpiry);
-            _repositorio.RefreshTokenInfo(baseLogin);
-            return AuthenticationSuccess(baseLogin);
+            await Task.FromResult(_repositorio.RefreshTokenInfo(baseLogin));
+            return await AuthenticationSuccess(baseLogin);
         }
         return AuthenticationException("Usuário Inválido!");
     }
 
-    public AuthenticationDto ValidateCredentials(string refreshToken)
+    public async Task<AuthenticationDto> ValidateCredentials(string refreshToken)
     {
-        var baseLogin = _repositorio.FindByRefreshToken(refreshToken);
+        var baseLogin = await _repositorio.FindByRefreshToken(refreshToken);
         var credentialsValid =
             baseLogin is not null
             && baseLogin.RefreshTokenExpiry >= DateTime.UtcNow
@@ -99,30 +99,31 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
             && _singingConfiguration.ValidateRefreshToken(refreshToken);
 
         if (credentialsValid && baseLogin is not null)
-            return AuthenticationSuccess(baseLogin);
+            return await AuthenticationSuccess(baseLogin);
         else if (baseLogin is not null)
-            this.RevokeToken(baseLogin.Id);
+            await this.RevokeToken(baseLogin.Id);
 
         return AuthenticationException("Refresh Token Inválido!");
     }
 
-    public void RevokeToken(Guid idUsuario)
+    public Task RevokeToken(Guid idUsuario)
     {
-        _repositorio.RevokeRefreshToken(idUsuario);
+        return Task.Run(() => _repositorio.RevokeRefreshToken(idUsuario));
     }
 
-    public void RecoveryPassword(string email)
+    public async Task RecoveryPassword(string email)
     {
         string? newPassword = null;
         Acesso? acesso = null;
 
         try
         {
-            CheckIfUserIsTeste(_repositorio.Find(accout => accout.Login.Equals(email)).Id);
+            var result = await _repositorio.Find(accout => accout.Login.Equals(email));
+            CheckIfUserIsTeste(result.Id);
             IsValidEmail(email);
             newPassword = Guid.NewGuid().ToString().Substring(0, 8);
-            _repositorio.RecoveryPassword(email, newPassword);
-            acesso = _repositorio.Find(c => c.Login.Equals(email));
+            await _repositorio.RecoveryPassword(email, newPassword);
+            acesso = await _repositorio.Find(c => c.Login.Equals(email));
         }
         catch
         {
@@ -131,10 +132,10 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
         }
     }
 
-    public void ChangePassword(Guid idUsuario, string password)
+    public async Task ChangePassword(Guid idUsuario, string password)
     {
         CheckIfUserIsTeste(idUsuario);
-        _repositorio.ChangePassword(idUsuario, _crypto.Encrypt(password));
+        await _repositorio.ChangePassword(idUsuario, _crypto.Encrypt(password));
     }
 
     private AuthenticationDto AuthenticationException(string message)
@@ -142,7 +143,7 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
         throw new ArgumentException(message);
     }
 
-    private AuthenticationDto AuthenticationSuccess(Acesso acesso)
+    private Task<AuthenticationDto> AuthenticationSuccess(Acesso acesso)
     {
         ClaimsIdentity identity = new ClaimsIdentity(new[]
         {
@@ -157,7 +158,7 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
         DateTime expirationDate = createDate + TimeSpan.FromSeconds(_singingConfiguration.TokenConfiguration.Seconds);
         string token = _singingConfiguration.CreateAccessToken(identity);
 
-        return new AuthenticationDto
+        var dto = new AuthenticationDto
         {
             Authenticated = true,
             Created = createDate.ToString("yyyy-MM-dd HH:mm:ss"),
@@ -165,6 +166,8 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
             AccessToken = token,
             RefreshToken = acesso.RefreshToken
         };
+
+        return Task.FromResult(dto);
     }
 
     private static void IsValidEmail(string email)

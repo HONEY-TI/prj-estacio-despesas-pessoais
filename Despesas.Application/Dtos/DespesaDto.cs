@@ -16,7 +16,7 @@ public class DespesaDto : BaseDto
     public  DateTime? DataVencimento { get; set; }
 
     [JsonIgnore]
-    public  Guid? IdCategoria
+    public  Guid? CategoriaId
     {
         get
         {
@@ -32,5 +32,5 @@ public class DespesaDto : BaseDto
     }
 
     [Required(ErrorMessage = "A Categoria é obrigatória.")]
-    public CategoriaDto? Categoria { get; set; } = new(); 
+    public CategoriaDto? Categoria { get; set; }
 }

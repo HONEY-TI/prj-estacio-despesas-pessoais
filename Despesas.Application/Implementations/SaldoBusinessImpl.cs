@@ -12,18 +12,18 @@ public class SaldoBusinessImpl : ISaldoBusiness
         _repositorio = repositorio;
     }
 
-    public SaldoDto GetSaldo(Guid idUsuario)
+    public async Task<SaldoDto> GetSaldo(Guid idUsuario)
     {
-        return _repositorio.GetSaldo(idUsuario);
+        return await Task.FromResult(_repositorio.GetSaldo(idUsuario));
     }
 
-    public SaldoDto GetSaldoAnual(DateTime ano, Guid idUsuario)
+    public async Task<SaldoDto> GetSaldoAnual(DateTime ano, Guid idUsuario)
     {
-        return _repositorio.GetSaldoByAno(ano, idUsuario);
+        return await Task.FromResult(_repositorio.GetSaldoByAno(ano, idUsuario));
     }
 
-    public SaldoDto GetSaldoByMesAno(DateTime mesAno, Guid idUsuario)
+    public async Task<SaldoDto> GetSaldoByMesAno(DateTime mesAno, Guid idUsuario)
     {
-        return _repositorio.GetSaldoByMesAno(mesAno, idUsuario);
+        return await Task.FromResult(_repositorio.GetSaldoByMesAno(mesAno, idUsuario));
     }   
 }

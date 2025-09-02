@@ -23,7 +23,7 @@ public class SaldoController : AuthController
     {
         try
         {
-            var saldo = _saldoBusiness.GetSaldo(UserIdentity);
+            var saldo = await _saldoBusiness.GetSaldo(UserIdentity);
             return Ok(saldo);
         }
         catch
@@ -42,7 +42,7 @@ public class SaldoController : AuthController
     {
         try
         {
-            var saldo = _saldoBusiness.GetSaldoAnual(ano, UserIdentity);
+            var saldo = await _saldoBusiness.GetSaldoAnual(ano, UserIdentity);
             return Ok(saldo);
         }
         catch
@@ -61,7 +61,7 @@ public class SaldoController : AuthController
     {
         try
         {
-            var saldo = _saldoBusiness.GetSaldoByMesAno(anoMes, UserIdentity);
+            var saldo = await _saldoBusiness.GetSaldoByMesAno(anoMes, UserIdentity);
             return Ok(saldo);
         }
         catch

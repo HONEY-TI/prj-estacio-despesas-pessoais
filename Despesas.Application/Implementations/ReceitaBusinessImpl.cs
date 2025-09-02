@@ -2,74 +2,85 @@
 using Despesas.Application.Abstractions;
 using Domain.Entities;
 using Repository.Persistency.Generic;
-using Despesas.Application.Abstractions.Generic;
-using Repository.Persistency.UnitOfWork.Abstractions;
 using Despesas.Application.Dtos;
 using Domain.Core.ValueObject;
+using Despesas.Repository.UnitOfWork.Abstractions;
 
 namespace Despesas.Application.Implementations;
-public class ReceitaBusinessImpl<Dto> : BusinessBase<Dto, Receita>, IBusiness<Dto, Receita> where Dto : ReceitaDto, new()
+public class ReceitaBusinessImpl<Dto> : BusinessBase<Dto, Receita> where Dto : ReceitaDto, new()
 {
     private readonly IRepositorio<Receita> _repositorio;
-    private readonly IRepositorio<Categoria> _repoCategoria;
+    private readonly IUnitOfWork<Categoria> _unitOfWorkCategoria;
     private readonly IMapper _mapper;
-    public ReceitaBusinessImpl(IMapper mapper, IUnitOfWork<Receita> unitOfWork, IRepositorio<Receita> repositorio, IRepositorio<Categoria> repoCategoria) : base(mapper, repositorio, unitOfWork)
+    public ReceitaBusinessImpl(IMapper mapper, IRepositorio<Receita> repositorio, IUnitOfWork<Receita> unitOfWork, IUnitOfWork<Categoria> unitOfWorkCategoria = null) : base(mapper, repositorio, unitOfWork)
     {
         _mapper = mapper;
         _repositorio = repositorio;
-        _repoCategoria = repoCategoria;
+        _unitOfWorkCategoria = unitOfWorkCategoria;
     }
 
-    public override Dto Create(Dto dto)
+    public override async Task<Dto> Create(Dto dto)
     {
-        Receita receita = _mapper.Map<Receita>(dto);
-        IsValidCategoria(receita);
-        _repositorio.Insert(receita);
+        var receita = _mapper.Map<Receita>(dto);
+        await IsValidCategoria(receita);
+        await UnitOfWork.Repository.Insert(receita);
+        await UnitOfWork.CommitAsync();
+        receita = await UnitOfWork.Repository.Get(receita.Id);
         return _mapper.Map<Dto>(receita);
     }
 
-    public override List<Dto> FindAll(Guid idUsuario)
+    public override async Task<List<Dto>> FindAll(Guid idUsuario)
     {
-        var receitas = _repositorio.GetAll().FindAll(d => d.UsuarioId == idUsuario);
+        var result = await UnitOfWork.Repository.Find(repo => repo.UsuarioId == idUsuario);
+        var receitas = result.ToList();
         return _mapper.Map<List<Dto>>(receitas);
     }
 
-    public override Dto FindById(Guid id, Guid idUsuario)
+    public override async Task<Dto> FindById(Guid id, Guid idUsuario)
     {
-        var receita = _repositorio.Get(id);
+        var receita = await UnitOfWork.Repository.Get(id);
         if (receita is null) return null;
         receita.UsuarioId = idUsuario;
-        IsValidReceita(receita);
-        var Dto = _mapper.Map<Dto>(receita);
-        return Dto;
+        await IsValidReceita(receita);
+        var receitaDto = _mapper.Map<Dto>(receita);
+        return receitaDto;
     }
 
-    public override Dto Update(Dto dto)
+    public override async Task<Dto> Update(Dto dto)
     {
-        Receita receita = _mapper.Map<Receita>(dto);
-        IsValidReceita(receita);
-        IsValidCategoria(receita);
-        _repositorio.Update(receita);
+        var receita = _mapper.Map<Receita>(dto);
+        await IsValidReceita(receita);
+        await IsValidCategoria(receita);
+        await UnitOfWork.Repository.Update(receita);
+        await UnitOfWork.CommitAsync();
+        receita = await UnitOfWork.Repository.Get(dto.Id.Value);
         return _mapper.Map<Dto>(receita);
     }
 
-    public override bool Delete(Dto dto)
+    public override async Task<bool> Delete(Dto dto)
     {
         Receita receita = _mapper.Map<Receita>(dto);
-        IsValidReceita(receita);
-        _repositorio.Delete(receita);
+        await IsValidReceita(receita);
+        await UnitOfWork.Repository.Delete(receita.Id);
+        await UnitOfWork.CommitAsync();
         return true;
     }
 
-    private void IsValidCategoria(Receita dto)
+    private async Task IsValidCategoria(Receita dto)
     {
-        if (_repoCategoria.GetAll().Find(c => c.UsuarioId == dto.UsuarioId && c.TipoCategoria == TipoCategoria.CategoriaType.Receita && c.Id == dto.CategoriaId) == null)
+        var categoria = await _unitOfWorkCategoria.Repository.Get(dto.CategoriaId);
+        if (categoria == null
+            || categoria.UsuarioId != dto.UsuarioId
+            || categoria== null
+            || categoria.TipoCategoria != TipoCategoria.CategoriaType.Receita
+            || categoria.Id != dto.CategoriaId)
             throw new ArgumentException("Categoria inválida para este usuário!");
     }
 
-    private void IsValidReceita(Receita dto)
+    private async Task IsValidReceita(Receita dto)
     {
-        if (_repositorio.Get(dto.Id)?.Usuario?.Id != dto.UsuarioId)
+        var receita = await UnitOfWork!.Repository.Get(dto.Id);
+        if (receita == null || receita.UsuarioId != dto.UsuarioId)
             throw new ArgumentException("Receita inválida para este usuário!");
     }
 }

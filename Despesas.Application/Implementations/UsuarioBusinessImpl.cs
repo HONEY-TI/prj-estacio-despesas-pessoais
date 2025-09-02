@@ -1,40 +1,42 @@
 ﻿using AutoMapper;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
+using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.ValueObject;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Repository.Persistency.Generic;
-using Repository.Persistency.UnitOfWork.Abstractions;
 
 namespace Despesas.Application.Implementations;
 
-public class UsuarioBusinessImpl<Dto> : BusinessBase<Dto, Usuario>, IUsuarioBusiness<Dto> where Dto : UsuarioDto, new()
+public class UsuarioBusinessImpl<Dto> : BusinessBase<Dto, Usuario>, IUsuarioBusiness<Dto>
+    where Dto : UsuarioDto, new()
 {
     private readonly IRepositorio<Usuario> _repositorio;
     private readonly IMapper _mapper;
 
-    public UsuarioBusinessImpl(IMapper mapper, IRepositorio<Usuario> repositorio, IUnitOfWork<Usuario>? unitOfWork = null) : base(mapper, repositorio, unitOfWork)
+    public UsuarioBusinessImpl(IMapper mapper, IRepositorio<Usuario> repositorio, IUnitOfWork<Usuario>? unitOfWork)
+        : base(mapper, repositorio, unitOfWork)
     {
         _mapper = mapper;
         _repositorio = repositorio;
     }
 
-    private void IsValidPrefilAdministratdor(Dto dto)
+    private async Task IsValidPerfilAdministrador(Dto dto)
     {
-        var adm = _repositorio.Get(dto.UsuarioId);
+        var adm = await UnitOfWork!.Repository.Get(dto.UsuarioId);
         if (adm.PerfilUsuario != PerfilUsuario.Perfil.Admin)
             throw new ArgumentException("Usuário não permitido a realizar operação!");
     }
 
-    private void IsValidPrefilAdministratdor(Usuario usuario)
+    private async Task IsValidPerfilAdministrador(Usuario usuario)
     {
-        var adm = _repositorio.Get(usuario.Id);
+        var adm = await UnitOfWork!.Repository.Get(usuario.Id);
         if (adm.PerfilUsuario != PerfilUsuario.Perfil.Admin)
             throw new ArgumentException("Usuário não permitido a realizar operação!");
     }
 
-    public byte[] ConvertToImage(IFormFile file)
+    public async Task<byte[]> ConvertToImage(IFormFile file)
     {
         if (file == null || file.Length == 0)
             throw new ArgumentException("Arquivo inválido.");
@@ -44,70 +46,65 @@ public class UsuarioBusinessImpl<Dto> : BusinessBase<Dto, Usuario>, IUsuarioBusi
             throw new ArgumentException("Apenas arquivos jpg, jpeg ou png são aceitos.");
 
         using var memoryStream = new MemoryStream();
-        file.CopyTo(memoryStream);
-        return memoryStream.ToArray(); // bytes do arquivo
+        await file.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
     }
 
-    public override Dto Create(Dto dto)
+    public override async Task<Dto> Create(Dto dto)
     {
-        IsValidPrefilAdministratdor(dto);
-        var usuario = _mapper.Map<Usuario>(dto);
-        usuario = usuario.CreateUsuario(usuario);
-        _repositorio.Insert(usuario);
-        usuario = _repositorio.Get(dto.UsuarioId);
-        return _mapper.Map<Dto>(usuario);
+        await IsValidPerfilAdministrador(dto);
+        var usuario = Mapper.Map<Usuario>(dto).CreateUsuario(Mapper.Map<Usuario>(dto));
+        await UnitOfWork!.Repository.Insert(usuario);
+        await UnitOfWork.CommitAsync();
+        var created = await UnitOfWork.Repository.Get(dto.UsuarioId);
+        return Mapper.Map<Dto>(created);
     }
 
-    public override List<Dto> FindAll(Guid idUsuario)
+    public override async Task<List<Dto>> FindAll(Guid idUsuario)
     {
-        var usuario = _repositorio?.Find(u => u.Id == idUsuario)?.FirstOrDefault();
-        IsValidPrefilAdministratdor(usuario);
-        return _mapper.Map<List<Dto>>(_repositorio?.GetAll());
+        var usuario = await UnitOfWork!.Repository.Find(u => u.Id == idUsuario);
+        await IsValidPerfilAdministrador(usuario.FirstOrDefault());
+        var all = await UnitOfWork.Repository.GetAll();
+        return Mapper.Map<List<Dto>>(all);
     }
 
-    public override Dto Update(Dto dto)
+    public override async Task<Dto> Update(Dto dto)
     {
-        var usuario = _mapper.Map<Usuario>(dto);
-        _repositorio.Update(usuario);
-        usuario = _repositorio.Get(usuario.Id);
-        if (usuario is null) throw new ArgumentException("Usuário não encontrado!");
-        return _mapper.Map<Dto>(usuario);
+        var usuario = Mapper.Map<Usuario>(dto);
+        await UnitOfWork!.Repository.Update(usuario);
+        await UnitOfWork.CommitAsync();
+        var updated = await UnitOfWork.Repository.Get(usuario.Id);
+        if (updated is null) throw new ArgumentException("Usuário não encontrado!");
+        return Mapper.Map<Dto>(updated);
     }
 
-    public override Dto FindById(Guid id)
+    public override async Task<Dto> FindById(Guid id)
     {
-        var usuario = _repositorio?.Find(u => u.Id == id)?.FirstOrDefault();
-        return this.Mapper.Map<Dto>(usuario);
+        var usuario = await UnitOfWork!.Repository.Find(u => u.Id == id);
+        return Mapper.Map<Dto>(usuario.FirstOrDefault());
     }
 
-    public override bool Delete(Dto dto)
+    public override async Task<bool> Delete(Dto dto)
     {
-        IsValidPrefilAdministratdor(dto);
-        var usuario = _mapper.Map<Usuario>(dto);
-        _repositorio.Delete(usuario);
+        await IsValidPerfilAdministrador(dto);
+        var usuario = Mapper.Map<Usuario>(dto);
+        await UnitOfWork!.Repository.Delete(usuario.Id);
+        await UnitOfWork.CommitAsync();
         return true;
     }
 
-    public byte[] GetProfileImage(Guid userIdentity)
+    public async Task<byte[]> GetProfileImage(Guid userIdentity)
     {
-        var usuario = _repositorio.Get(userIdentity);                
+        var usuario = await UnitOfWork!.Repository.Get(userIdentity);
         return usuario.Profile;
     }
 
-    public byte[] UpdateProfileImage(Guid userIdentity, IFormFile file)
+    public async Task<byte[]> UpdateProfileImage(Guid userIdentity, IFormFile file)
     {
-        var usuario = _repositorio.Get(userIdentity);
-        usuario.Profile = FormFileToByteArray(file);
-        _repositorio.Update(usuario);
-        return ConvertToImage(file);
-    }
-
-    private static byte[]? FormFileToByteArray(IFormFile? file)
-    {
-        if (file == null) return null;
-
-        using var ms = new MemoryStream();
-        file.CopyTo(ms);
-        return ms.ToArray();
+        var usuario = await UnitOfWork!.Repository.Get(userIdentity);
+        usuario.Profile = await ConvertToImage(file);
+        await UnitOfWork!.Repository.Update(usuario);
+        await UnitOfWork.CommitAsync();
+        return usuario.Profile;
     }
 }

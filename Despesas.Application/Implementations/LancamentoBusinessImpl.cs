@@ -14,8 +14,8 @@ public class LancamentoBusinessImpl<Dto> : ILancamentoBusiness<Dto> where Dto : 
 
     }
 
-    public List<Dto> FindByMesAno(DateTime data, Guid idUsuario)
+    public async Task<List<Dto>> FindByMesAno(DateTime data, Guid idUsuario)
     {
-        return _mapper.Map<List<Dto>>(_repositorio.FindByMesAno(data, idUsuario));
+        return await Task.FromResult(_mapper.Map<List<Dto>>(_repositorio.FindByMesAno(data, idUsuario)));
     }
 }
