@@ -14,14 +14,14 @@ public sealed class GraficoRepositorioImplTest : IClassFixture<GraficoRepositori
     }
 
     [Fact]
-    public void GetDadosGraficoByAno_Should_Return_Grafico()
+    public async Task GetDadosGraficoByAno_Should_Return_Grafico()
     {
         // Arrange
         var data = _fixture.MockAnoMes;
         var idUsuario = _fixture.UsuarioMock.Id;
 
         // Act
-        var result = _fixture.MockRepository.Object.GetDadosGraficoByAno(idUsuario, data);
+        var result = await _fixture.MockRepository.Object.GetDadosGraficoByAno(idUsuario, data);
 
         // Assert
         Assert.NotNull(result);
@@ -31,7 +31,7 @@ public sealed class GraficoRepositorioImplTest : IClassFixture<GraficoRepositori
     }
 
     [Fact]
-    public void GetDadosGraficoByAno_Throws_Exception_And_Returns_Grafico_With_Default_Values()
+    public async Task GetDadosGraficoByAno_Throws_Exception_And_Returns_Grafico_With_Default_Values()
     {
         // Arrange
         var usuario = MockUsuario.Instance.GetUsuario();
@@ -48,7 +48,7 @@ public sealed class GraficoRepositorioImplTest : IClassFixture<GraficoRepositori
         var repository = new GraficosRepositorioImpl(context);
 
         // Act
-        var result = repository.GetDadosGraficoByAno(usuario.Id, data);
+        var result = await repository.GetDadosGraficoByAno(usuario.Id, data);
 
         // Assert
         Assert.NotNull(result);

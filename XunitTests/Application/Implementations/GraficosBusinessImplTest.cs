@@ -15,16 +15,16 @@ public sealed class GraficosBusinessImplTest
     }
 
     [Fact]
-    public void GetDadosGraficoByAnoByIdUsuario_Should_Return_Grafico()
+    public async Task GetDadosGraficoByAnoByIdUsuario_Should_Return_Grafico()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
         var data = new DateTime(2023, 10, 1);
         var graficoData = GraficoFaker.GetNewFaker();
-        _repositorioMock.Setup(r => r.GetDadosGraficoByAno(idUsuario, data)).Returns(graficoData);
+        _repositorioMock.Setup(r => r.GetDadosGraficoByAno(idUsuario, data)).ReturnsAsync(graficoData);
 
         // Act
-        var result = _graficosBusinessImpl.GetDadosGraficoByAnoByIdUsuario(idUsuario, data);
+        var result = await _graficosBusinessImpl.GetDadosGraficoByAnoByIdUsuario(idUsuario, data);
 
         // Assert
         Assert.NotNull(result);

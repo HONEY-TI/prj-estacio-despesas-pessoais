@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Repository.Persistency.Abstractions;
 
 namespace Repository.Persistency.Implementations;
@@ -18,23 +19,23 @@ public class GraficosRepositorioImpl : IGraficosRepositorio
         Context = context;
     }
 
-    public Grafico GetDadosGraficoByAno(Guid idUsuario, DateTime data)
+    public async Task<Grafico> GetDadosGraficoByAno(Guid idUsuario, DateTime data)
     {
         int ano = data.Year;
 
         try
         {
-            var despesas = Context.Despesa
+            var despesas = await Context.Despesa
                 .Where(d => d.UsuarioId == idUsuario && d.Data.Year == ano)
                 .GroupBy(d => d.Data.Month)
                 .Select(g => new { Mes = g.Key, Total = g.Sum(x => x.Valor) })
-                .ToList();
+                .ToListAsync();
 
-            var receitas = Context.Receita
+            var receitas = await Context.Receita
                 .Where(r => r.UsuarioId == idUsuario && r.Data.Year == ano)
                 .GroupBy(r => r.Data.Month)
                 .Select(g => new { Mes = g.Key, Total = g.Sum(x => x.Valor) })
-                .ToList();
+                .ToListAsync();
 
 
             var somatorioDespesas = Enumerable.Range(1, 12)
