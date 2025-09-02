@@ -1,54 +1,59 @@
-﻿using AutoMapper;
-using __mock__.Entities;
-using Repository.Persistency.UnitOfWork.Abstractions;
-using Repository.Persistency.Generic;
-using Despesas.Application.Implementations;
+﻿using __mock__.Entities;
+using AutoMapper;
 using Despesas.Application.Dtos;
-using Despesas.Application.Dtos.Profile;
+using Despesas.Application.Implementations;
+using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.ValueObject;
+using Repository.Persistency.Generic;
+using System.Linq.Expressions;
 
 namespace Application;
 
 public sealed class DespesaBusinessImplTest
 {
     private readonly Mock<IUnitOfWork<Despesa>> _unitOfWork;
+    private readonly Mock<IUnitOfWork<Categoria>> _unitOfWorkCategoria;    
     private readonly Mock<IRepositorio<Despesa>> _repositorioMock;
-    private readonly Mock<IRepositorio<Categoria>> _repositorioCategoria;
     private readonly DespesaBusinessImpl<DespesaDto> _despesaBusiness;
     private Mapper _mapper;
 
     public DespesaBusinessImplTest()
     {
         _unitOfWork = new Mock<IUnitOfWork<Despesa>>(MockBehavior.Default);
+        _unitOfWorkCategoria = new Mock<IUnitOfWork<Categoria>>(MockBehavior.Default);
         _repositorioMock = new Mock<IRepositorio<Despesa>>();
-        _repositorioCategoria = new Mock<IRepositorio<Categoria>>(MockBehavior.Default);
         _mapper = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<DespesaProfile>(); }));
-        _despesaBusiness = new DespesaBusinessImpl<DespesaDto>(_mapper, _unitOfWork.Object, _repositorioMock.Object, _repositorioCategoria.Object);
+        _despesaBusiness = new DespesaBusinessImpl<DespesaDto>(_mapper, _repositorioMock.Object, _unitOfWork.Object, _unitOfWorkCategoria.Object);
     }
 
     [Fact]
-    public void Create_Should_Returns_Parsed_Despesa_VM()
+    public async Task Create_Should_Returns_Parsed_Despesa_VM()
     {
         // Arrange
         var despesa = DespesaFaker.Instance.Despesas().First();
-        var despesaDto = _mapper.Map<DespesaDto>(despesa);
-        _repositorioMock.Setup(repo => repo.Insert(It.IsAny<Despesa>()));
+        var despesaDto = _mapper.Map<DespesaDto>(despesa);        
         var categorias = CategoriaFaker.Instance.Categorias(despesa.Usuario, (int)TipoCategoria.CategoriaType.Despesa, despesa.UsuarioId);
         categorias.Add(despesa.Categoria ?? new());
-        _repositorioCategoria.Setup(repo => repo.GetAll()).Returns(categorias);
+        _unitOfWork.Setup(repo => repo.Repository.Insert(It.IsAny<Despesa>()));
+        _unitOfWork.Setup(repo => repo.Repository.Get(It.IsAny<Guid>())).ReturnsAsync(despesa);
+        _unitOfWorkCategoria.Setup(repo => repo.Repository.Get(It.IsAny<Guid>())).ReturnsAsync(categorias.First(c => c.Id ==despesaDto.CategoriaId));
 
         // Act
-        var result = _despesaBusiness.Create(despesaDto);
+        var result = await _despesaBusiness.Create(despesaDto);
 
         // Assert
         Assert.NotNull(result);
         Assert.IsType<DespesaDto>(result);
         Assert.Equal(despesaDto.Id, result.Id);
-        _repositorioMock.Verify(repo => repo.Insert(It.IsAny<Despesa>()), Times.Once);
+        _repositorioMock.Verify(repo => repo.Insert(It.IsAny<Despesa>()), Times.Never);
+        _unitOfWork.Verify(repo => repo.Repository.Get(It.IsAny<Guid>()), Times.Once);
+        _unitOfWorkCategoria.Verify(repo => repo.Repository.Get(It.IsAny<Guid>()), Times.Once);
+        _unitOfWork.Verify(repo => repo.Repository.Get(It.IsAny<Guid>()), Times.AtLeastOnce);
+        _unitOfWork.Verify(repo => repo.Repository.Insert(It.IsAny<Despesa>()), Times.Once);
     }
 
     [Fact]
-    public void FindAll_Should_Returns_List_Of_DespesaDto()
+    public async Task FindAll_Should_Returns_List_Of_DespesaDto()
     {
         // Arrange                     
         var despesas = DespesaFaker.Instance.Despesas();
@@ -56,105 +61,113 @@ public sealed class DespesaBusinessImplTest
         var idUsuario = despesa.UsuarioId;
         despesas = despesas.FindAll(d => d.UsuarioId == idUsuario);
         _repositorioMock.Setup(repo => repo.GetAll()).Returns(despesas);
+        _unitOfWork.Setup(uow => uow.Repository.Find(It.IsAny<Expression<Func<Despesa, bool>>>())).ReturnsAsync(despesas);
 
         // Act
-        var result = _despesaBusiness.FindAll(idUsuario);
+        var result = await _despesaBusiness.FindAll(idUsuario);
 
         // Assert
         Assert.NotNull(result);
         Assert.IsType<List<DespesaDto>>(result);
         Assert.Equal(despesas.Count, result.Count);
-        _repositorioMock.Verify(repo => repo.GetAll(), Times.Once);
+        _repositorioMock.Verify(repo => repo.GetAll(), Times.Never);
+        _unitOfWork.Verify(uow => uow.Repository.Find(It.IsAny<Expression<Func<Despesa, bool>>>()), Times.Once);
     }
 
     [Fact]
-    public void FindById_Should_Returns_Parsed_DespesaDto()
+    public async Task FindById_Should_Returns_Parsed_DespesaDto()
     {
         // Arrange
         var despesa = DespesaFaker.Instance.Despesas().First();
         var id = despesa.Id;
-
         _repositorioMock.Setup(repo => repo.Get(id)).Returns(despesa);
+        _unitOfWork.Setup(u => u.Repository.Get(It.IsAny<Guid>())).ReturnsAsync(despesa);
 
         // Act
-        var result = _despesaBusiness.FindById(id, despesa.UsuarioId);
+        var result = await _despesaBusiness.FindById(id, despesa.UsuarioId);
 
         // Assert
         Assert.NotNull(result);
         Assert.IsType<DespesaDto>(result);
         Assert.Equal(despesa.Id, result.Id);
-        _repositorioMock.Verify(repo => repo.Get(id), Times.AtLeast(2));
+        _repositorioMock.Verify(repo => repo.Get(id), Times.Never);
+        _unitOfWork.Verify(u => u.Repository.Get(It.IsAny<Guid>()), Times.AtLeast(2));
     }
 
     [Fact]
-    public void FindById_Should_Returns_Null_When_Parsed_DespesaDto()
+    public async Task FindById_Should_Returns_Null_When_Parsed_DespesaDto()
     {
         // Arrange
         var despesa = DespesaFaker.Instance.Despesas().First();
         var id = despesa.Id;
-
         _repositorioMock.Setup(repo => repo.Get(id)).Returns(() => null);
-
+        _unitOfWork.Setup(u => u.Repository.Get(It.IsAny<Guid>())).ReturnsAsync((Despesa)null);
+        
         // Act
-        var result = _despesaBusiness.FindById(id, Guid.Empty);
+        var result = await _despesaBusiness.FindById(id, Guid.Empty);
 
         // Assert
         Assert.Null(result);
-        _repositorioMock.Verify(repo => repo.Get(id), Times.Once);
+        _repositorioMock.Verify(repo => repo.Get(id), Times.Never);
+        _unitOfWork.Verify(u => u.Repository.Get(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
-    public void Update_Should_Returns_Parsed_DespesaDto()
+    public async Task Update_Should_Returns_Parsed_DespesaDto()
     {
         // Arrange         
         var despesas = DespesaFaker.Instance.Despesas();
         var despesa = despesas.First();
         despesa.Descricao = "Teste Update Despesa";
         var despesaDto = _mapper.Map<DespesaDto>(despesa);
-        _repositorioMock.Setup(repo => repo.Update(It.IsAny<Despesa>()));
         _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(despesa);
-        _repositorioCategoria.Setup(repo => repo.GetAll()).Returns(despesas.Select(d => d.Categoria ?? new()).ToList());
+        _unitOfWork.Setup(u => u.Repository.Get(It.IsAny<Guid>())).ReturnsAsync(despesa);
+        _unitOfWorkCategoria.Setup(repo => repo.Repository.Get(It.IsAny<Guid>())).ReturnsAsync(despesa.Categoria);
 
         // Act
-        var result = _despesaBusiness.Update(despesaDto);
+        var result = await _despesaBusiness.Update(despesaDto);
 
         // Assert
         Assert.NotNull(result);
         Assert.IsType<DespesaDto>(result);
         Assert.Equal(despesa.Id, result.Id);
         Assert.Equal(despesa.Descricao, result.Descricao);
-        _repositorioMock.Verify(repo => repo.Update(It.IsAny<Despesa>()), Times.Once);
+        _repositorioMock.Verify(repo => repo.Update(It.IsAny<Despesa>()), Times.Never);
+        _unitOfWork.Verify(u => u.Repository.Get(It.IsAny<Guid>()), Times.AtLeast(2));
+        _unitOfWorkCategoria.Verify(repo => repo.Repository.Get(It.IsAny<Guid>()), Times.Once);
+        _unitOfWork.Verify(repo => repo.Repository.Update(It.IsAny<Despesa>()), Times.Once);
     }
 
     [Fact]
-    public void Delete_Should_Returns_True()
+    public async Task Delete_Should_Returns_True()
     {
         // Arrange
         var despesa = DespesaFaker.Instance.Despesas().First();
         _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Despesa>()));
         _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(despesa);
-        var despesaDto = _mapper.Map<DespesaDto>(despesa);
+        _unitOfWork.Setup(repo => repo.Repository.Get(It.IsAny<Guid>())).ReturnsAsync(despesa);
 
         // Act
-        var result = _despesaBusiness.Delete(despesaDto);
+        var despesaDto = _mapper.Map<DespesaDto>(despesa);
+        var result = await _despesaBusiness.Delete(despesaDto);
 
         // Assert
         Assert.IsType<bool>(result);
         Assert.True(result);
-        _repositorioMock.Verify(repo => repo.Delete(It.IsAny<Despesa>()), Times.Once);
+        _repositorioMock.Verify(repo => repo.Delete(It.IsAny<Despesa>()), Times.Never);
+        _unitOfWork.Verify(repo => repo.Repository.Get(It.IsAny<Guid>()), Times.AtLeastOnce);
+        _unitOfWork.Verify(repo => repo.Repository.Delete(It.IsAny<Guid>()), Times.Once);
     }
 
     [Fact]
-    public void IsCategoriaValid_Should_Throws_Exeption()
+    public async Task IsCategoriaValid_Should_Throws_Exception()
     {
         // Arrange
         var despesa = DespesaFaker.Instance.Despesas().First();
         var despesaDto = _mapper.Map<DespesaDto>(despesa);
-        var categorias = CategoriaFaker.Instance.Categorias();
-        _repositorioMock.Setup(repo => repo.Insert(It.Ref<Despesa>.IsAny)).Throws<Exception>();
-        _repositorioCategoria.Setup(repo => repo.GetAll()).Throws(new ArgumentException("Erro Categoria inexistente ou não cadastrada!"));
+        _unitOfWorkCategoria.Setup(repo => repo.Repository.Get(It.IsAny<Guid>())).ReturnsAsync((Categoria)null);
 
         // Act & Assert 
-        Assert.Throws<ArgumentException>(() => _despesaBusiness.Create(despesaDto));
+        await Assert.ThrowsAsync<ArgumentException>(() => _despesaBusiness.Create(despesaDto));
     }
 }
