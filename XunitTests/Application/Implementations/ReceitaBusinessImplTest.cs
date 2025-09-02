@@ -4,11 +4,8 @@ using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Profile;
 using Despesas.Application.Implementations;
 using Despesas.Repository.UnitOfWork.Abstractions;
-using Domain.Entities;
-using Moq;
 using Repository.Persistency.Generic;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Application;
 
