@@ -34,6 +34,7 @@ public sealed class CategoriaFaker
             .RuleFor(c => c.Usuario, usuario)
             .Generate();
         categoriaFaker.TipoCategoria = tipoCategoria == null ? counter % 2 == 0 ? new TipoCategoria(TipoCategoria.CategoriaType.Receita) : new TipoCategoria(TipoCategoria.CategoriaType.Despesa) : tipoCategoria;
+        categoriaFaker.TipoCategoriaId = categoriaFaker.TipoCategoria.Id;
         counter++;
         return categoriaFaker;
     }
