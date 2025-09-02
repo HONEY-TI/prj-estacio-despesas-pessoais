@@ -18,7 +18,7 @@ export class ReceitasFormComponent {
   categorias: ICategoria[] = [];
   receitaForm: FormGroup & IReceita;
   action: Action = Action.Create;
-  refresh: Function = () => { };
+  refresh: Function = () => { };  
   setRefresh(_refresh: Function): void {
     this.refresh = _refresh;
   }
@@ -27,10 +27,9 @@ export class ReceitasFormComponent {
     public formbuilder: FormBuilder,
     public modalAlert: AlertComponent,
     public activeModal: NgbActiveModal,
-    public receitaService: ReceitaService
-  ) { }
+    public receitaService: ReceitaService ) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.getCatgeoriasFromReceitas();
     this.receitaForm = this.formbuilder.group({
       id: [null],
@@ -41,7 +40,7 @@ export class ReceitasFormComponent {
     }) as FormGroup & IReceita;
   }
 
-  onSaveClick = () => {
+  public onSaveClick = () => {
     switch (this.action) {
       case Action.Create:
         this.saveCreateReceita();
@@ -54,7 +53,7 @@ export class ReceitasFormComponent {
     }
   }
 
-  getCatgeoriasFromReceitas = () => {
+  private getCatgeoriasFromReceitas = () => {
     this.receitaService.getReceitasCategorias()
       .subscribe({
         next: (result: ICategoria[]) => {
@@ -67,7 +66,7 @@ export class ReceitasFormComponent {
       });
   }
 
-  saveCreateReceita = () => {
+  private saveCreateReceita = () => {
     this.receitaService.postReceita(this.receitaForm.getRawValue() as IReceita)
       .subscribe({
         next: (result: IReceita) => {
@@ -83,7 +82,7 @@ export class ReceitasFormComponent {
       });
   }
 
-  saveEditReceita = () => {
+  private saveEditReceita = () => {
     this.receitaService.putReceita(this.receitaForm.getRawValue() as IReceita)
       .subscribe({
         next: (response: IReceita) => {
@@ -99,7 +98,7 @@ export class ReceitasFormComponent {
       });
   }
 
-  editReceita = (idReceita: number) => {
+  public editReceita = (idReceita: number) => {
     this.receitaService.getReceitaById(idReceita)
       .subscribe({
         next: (response: IReceita) => {
@@ -118,7 +117,7 @@ export class ReceitasFormComponent {
       });
   }
 
-  deleteReceita = (idReceita: number, callBack: Function) => {
+  public deleteReceita = (idReceita: number, callBack: Function) => {
     this.receitaService.deleteReceita(idReceita)
       .subscribe({
         next: (response: boolean) => {

@@ -29,15 +29,14 @@ export class LancamentosComponent implements OnInit {
     public lancamentoservice: LancamentoService,
     private despesasFormComponent: DespesasFormComponent,
     private receitasFormComponent: ReceitasFormComponent,
-    public filterMesAnoService: FilterMesAnoService
-  ) { }
+    public filterMesAnoService: FilterMesAnoService) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.menuService.setMenuSelecionado(5);
     this.initializeDataTable();
   }
 
-  initializeDataTable = () => {
+  private initializeDataTable = () => {
     this.lancamentoservice.getLancamentosByMesAno(dayjs(this.filterMesAnoService.dataMesAno))
       .subscribe({
         next: (response: ILancamento[]) => {
@@ -54,7 +53,7 @@ export class LancamentosComponent implements OnInit {
       });
   }
 
-  updateDatatable = () => {
+  private updateDatatable = () => {
     this.lancamentoservice.getLancamentosByMesAno(dayjs(this.filterMesAnoService.dataMesAno))
       .subscribe({
         next: (response: ILancamento[]) => {
@@ -69,7 +68,7 @@ export class LancamentosComponent implements OnInit {
       });
   }
 
-  parseToLancamentosData(lancamentos: ILancamento[]): LancamentoDataSet[] {
+  private parseToLancamentosData(lancamentos: ILancamento[]): LancamentoDataSet[] {
     return lancamentos.map((lancamento: ILancamento) => ({
       id: lancamento.idDespesa === 0 ? lancamento.idReceita : lancamento.idDespesa,
       data: lancamento.data,
@@ -85,7 +84,7 @@ export class LancamentosComponent implements OnInit {
     }));
   }
 
-  onClickEdit = (id: number, tipoCategoria: string) => {
+  public onClickEdit = (id: number, tipoCategoria: string) => {
     let modalRef;
     if (tipoCategoria === 'Despesa') {
       modalRef = this.modalForm.modalService.open(DespesasFormComponent, { centered: true });
@@ -105,7 +104,7 @@ export class LancamentosComponent implements OnInit {
     }
   }
 
-  onClickDelete = (id: number, tipoCategoria: string) => {
+  public onClickDelete = (id: number, tipoCategoria: string) => {
     let modalRef;
     if (tipoCategoria === 'Despesa') {
       modalRef = this.modalConfirm.open(ModalConfirmComponent, `Deseja excluir a despesa ${this.dataTable.row.descricao} ?`);
