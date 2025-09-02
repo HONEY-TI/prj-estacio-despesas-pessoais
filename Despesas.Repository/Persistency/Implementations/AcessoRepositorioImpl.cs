@@ -36,10 +36,7 @@ public class AcessoRepositorioImpl : IAcessoRepositorioImpl
 
     public async Task ChangePassword(Guid idUsuario, string password)
     {
-        var usuario = Context.Acesso
-            .Include(u => u.Usuario)
-            .SingleOrDefault(prop => prop.UsuarioId
-            .Equals(idUsuario))
+        var usuario = Context.Acesso.Include(u => u.Usuario).SingleOrDefault(prop => prop.UsuarioId.Equals(idUsuario))
             ?? throw new();
 
         var acesso = Context.Acesso.First(c => c.Login.Equals(usuario.Login));
