@@ -12,13 +12,13 @@ public class LancamentoRepositorioImpl : ILancamentoRepositorio
         Context = context;
     }
 
-    public List<Lancamento> FindByMesAno(DateTime data, Guid idUsuario)
+    public async Task<ICollection<Lancamento>> FindByMesAno(DateTime data, Guid idUsuario)
     {
         int mes = data.Month;
         int ano = data.Year;
         try
         {
-            var despesas = Context.Despesa
+            var despesas = await Context.Despesa
                 .Include(d => d.Categoria)
                 .Include(tc => tc.Categoria.TipoCategoria)
                 .Where(d => d.Data.Month == mes && d.Data.Year == ano && d.UsuarioId == idUsuario)
@@ -36,9 +36,9 @@ public class LancamentoRepositorioImpl : ILancamentoRepositorio
                     Receita = null,
                     ReceitaId = Guid.Empty
                 })
-                .ToList();
+                .ToListAsync();
 
-            var receitas = Context.Receita
+            var receitas = await Context.Receita
                 .Include(r => r.Categoria)
                 .Include(tc => tc.Categoria.TipoCategoria)
                 .Where(r => r.Data.Month == mes && r.Data.Year == ano && r.UsuarioId == idUsuario)
@@ -56,7 +56,7 @@ public class LancamentoRepositorioImpl : ILancamentoRepositorio
                     Receita = new Receita { Id = r.Id, Descricao = r.Descricao },
                     DespesaId = Guid.Empty
                 })
-                .ToList();
+                .ToListAsync();
 
             var lancamentos = despesas.Concat(receitas).OrderBy(l => l.Data).ToList();
             return lancamentos;

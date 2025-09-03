@@ -24,7 +24,7 @@ public sealed class GraficosControllerTest
         var idUsuario = Guid.NewGuid();
         DateTime anoMes = DateTime.Today;
         Usings.SetupBearerToken(idUsuario, _GraficoController);
-        _mockGraficoBusiness.Setup(business => business.GetDadosGraficoByAnoByIdUsuario(idUsuario, anoMes)).Returns(dadosGrafico);
+        _mockGraficoBusiness.Setup(business => business.GetDadosGraficoByAnoByIdUsuario(idUsuario, anoMes)).Returns(Task.Run(() => dadosGrafico));
 
         // Act
         var result = await _GraficoController.GetByAnoByIdUsuario(anoMes);

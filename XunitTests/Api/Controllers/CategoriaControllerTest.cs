@@ -9,12 +9,12 @@ using Domain.Core.ValueObject;
 namespace Api.Controllers;
 public sealed class CategoriaControllerTest
 {
-    private Mock<IBusinessBase<CategoriaDto, Categoria>> _mockCategoriaBusiness;
+    private Mock<ICategoriaBusiness<CategoriaDto, Categoria>> _mockCategoriaBusiness;
     private CategoriaController _categoriaController;
 
     public CategoriaControllerTest()
     {
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
     }
 
@@ -22,12 +22,12 @@ public sealed class CategoriaControllerTest
     public async Task Get_Returns_Ok_Result()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var categoriaDtos = CategoriaFaker.Instance.CategoriasVMs();
         var UsuarioId = categoriaDtos.First().UsuarioId;
         Usings.SetupBearerToken(UsuarioId, _categoriaController);
-        _mockCategoriaBusiness.Setup(b => b.FindAll(UsuarioId)).Returns(categoriaDtos.FindAll(c => c.UsuarioId == UsuarioId));
+        _mockCategoriaBusiness.Setup(b => b.FindAll(UsuarioId)).Returns(Task.Run(() => categoriaDtos.FindAll(c => c.UsuarioId == UsuarioId)));
 
         // Act
         var result = await _categoriaController.Get() as OkObjectResult;
@@ -43,7 +43,7 @@ public sealed class CategoriaControllerTest
     public async Task Get_Returns_Ok_Result_When_TryCatch_ThrowError()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var categoriaDtos = CategoriaFaker.Instance.CategoriasVMs();
         var UsuarioId = categoriaDtos.First().UsuarioId;
@@ -67,12 +67,12 @@ public sealed class CategoriaControllerTest
     public async Task GetById_Returns_Ok_Result()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var categoriaDto = CategoriaFaker.Instance.CategoriasVMs().First();
         var idCategoria = categoriaDto.UsuarioId;
         Usings.SetupBearerToken(idCategoria, _categoriaController);
-        _mockCategoriaBusiness.Setup(b => b.FindById(idCategoria, categoriaDto.UsuarioId)).Returns(categoriaDto);
+        _mockCategoriaBusiness.Setup(b => b.FindById(idCategoria, categoriaDto.UsuarioId)).Returns(Task.Run(() => categoriaDto));
 
         // Act
         var result = await _categoriaController.GetById(idCategoria) as OkObjectResult;
@@ -87,7 +87,7 @@ public sealed class CategoriaControllerTest
     public async Task GetById_Returns_Ok_Result_When_TryCatch_ThrowError()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var categoriaDto = CategoriaFaker.Instance.CategoriasVMs().First();
 
@@ -110,7 +110,7 @@ public sealed class CategoriaControllerTest
     public async Task GetByTipoCategoria_Returns_Ok_Result_TipoCategoria_Todas()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var listCategoriaDto = CategoriaFaker.Instance.CategoriasVMs();
 
@@ -118,7 +118,7 @@ public sealed class CategoriaControllerTest
 
         Usings.SetupBearerToken(UsuarioId.Value, _categoriaController);
         var tipoCategoria = TipoCategoriaDto.Todas;
-        _mockCategoriaBusiness.Setup(b => b.FindAll(UsuarioId.Value)).Returns(listCategoriaDto);
+        _mockCategoriaBusiness.Setup(b => b.FindByTipocategoria(It.IsAny<Guid>(), It.IsAny<int>())).ReturnsAsync(listCategoriaDto);
 
         // Act
         var result = await _categoriaController.GetByTipoCategoria(tipoCategoria) as ObjectResult;
@@ -133,13 +133,13 @@ public sealed class CategoriaControllerTest
     public async Task GetByTipoCategoria_Returns_Ok_Result()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         List<CategoriaDto> listCategoriaDto = CategoriaFaker.Instance.CategoriasVMs();
         var UsuarioId = listCategoriaDto.First().Id;
         Usings.SetupBearerToken(UsuarioId.Value, _categoriaController);
         var tipoCategoria = TipoCategoriaDto.Despesa;
-        _mockCategoriaBusiness.Setup(b => b.FindAll(UsuarioId.Value)).Returns(listCategoriaDto);
+        _mockCategoriaBusiness.Setup(b => b.FindByTipocategoria(It.IsAny<Guid>(), It.IsAny<int>())).ReturnsAsync(listCategoriaDto);
 
         // Act
         var result = await _categoriaController.GetByTipoCategoria(tipoCategoria) as ObjectResult;
@@ -154,7 +154,7 @@ public sealed class CategoriaControllerTest
     public async Task Post_Returns_Ok_Result()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var obj = CategoriaFaker.Instance.CategoriasVMs().First();
         var categoriaDto = new CategoriaDto
@@ -165,7 +165,7 @@ public sealed class CategoriaControllerTest
             IdTipoCategoria = (TipoCategoriaDto)TipoCategoria.CategoriaType.Despesa
         };
         Usings.SetupBearerToken(categoriaDto.UsuarioId, _categoriaController);
-        _mockCategoriaBusiness.Setup(b => b.Create(categoriaDto)).Returns(categoriaDto);
+        _mockCategoriaBusiness.Setup(b => b.Create(categoriaDto)).Returns(Task.Run(() => categoriaDto));
 
         // Act
         var result = await _categoriaController.Post(categoriaDto) as ObjectResult;
@@ -181,7 +181,7 @@ public sealed class CategoriaControllerTest
     public async Task Post_Returns_Bad_Request_When_TipoCategoria_Todas()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var obj = CategoriaFaker.Instance.CategoriasVMs().First();
         var categoriaDto = new CategoriaDto
@@ -193,7 +193,7 @@ public sealed class CategoriaControllerTest
         };
 
         Usings.SetupBearerToken(categoriaDto.UsuarioId, _categoriaController);
-        _mockCategoriaBusiness.Setup(b => b.Create(categoriaDto)).Returns(categoriaDto);
+        _mockCategoriaBusiness.Setup(b => b.Create(categoriaDto)).Returns(Task.Run(() => categoriaDto));
 
         // Act
         var result = await _categoriaController.Post(categoriaDto) as ObjectResult;
@@ -209,7 +209,7 @@ public sealed class CategoriaControllerTest
     public async Task Post_Returns_Bad_Request_When_TryCatch_ThrowError()
     {
         // Arrange Para ocorrer esta situação o tipo de categotia não pode ser == Todas
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var categoriaDto = CategoriaFaker.Instance.CategoriasVMs().First();
         categoriaDto.IdTipoCategoria = (TipoCategoriaDto)TipoCategoria.CategoriaType.Receita;
@@ -231,7 +231,7 @@ public sealed class CategoriaControllerTest
     public async Task Put_Returns_Ok_Result()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var obj = CategoriaFaker.Instance.CategoriasVMs().First();
         var categoriaDto = new CategoriaDto
@@ -242,7 +242,7 @@ public sealed class CategoriaControllerTest
             IdTipoCategoria = (TipoCategoriaDto)TipoCategoria.CategoriaType.Despesa
         };
         Usings.SetupBearerToken(categoriaDto.UsuarioId, _categoriaController);
-        _mockCategoriaBusiness.Setup(b => b.Update(categoriaDto)).Returns(categoriaDto);
+        _mockCategoriaBusiness.Setup(b => b.Update(categoriaDto)).Returns(Task.Run(() => categoriaDto));
 
         // Act
         var result = await _categoriaController.Put(categoriaDto) as ObjectResult;
@@ -257,12 +257,12 @@ public sealed class CategoriaControllerTest
     public async Task Put_Returns_Bad_Request_TipoCategoria_Todas()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var categoriaDto = CategoriaFaker.Instance.CategoriasVMs().First();
         categoriaDto.IdTipoCategoria = 0;
         Usings.SetupBearerToken(categoriaDto.UsuarioId, _categoriaController);
-        _mockCategoriaBusiness.Setup(b => b.Update(categoriaDto)).Returns(categoriaDto);
+        _mockCategoriaBusiness.Setup(b => b.Update(categoriaDto)).Returns(Task.Run(() => categoriaDto));
 
         // Act
         var result = await _categoriaController.Put(categoriaDto) as BadRequestObjectResult;
@@ -278,7 +278,7 @@ public sealed class CategoriaControllerTest
     public async Task Put_Returns_Bad_Request_Categoria_Null()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var categoriaDto = CategoriaFaker.Instance.CategoriasVMs().First();
         categoriaDto.IdTipoCategoria = (TipoCategoriaDto)1;
@@ -299,7 +299,7 @@ public sealed class CategoriaControllerTest
     public async Task Delete_Returns_Ok_Result()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var obj = CategoriaFaker.Instance.CategoriasVMs().Last();
         var idUsuario = Guid.NewGuid();
@@ -311,8 +311,8 @@ public sealed class CategoriaControllerTest
             IdTipoCategoria = (TipoCategoriaDto)TipoCategoria.CategoriaType.Receita
         };
         Usings.SetupBearerToken(idUsuario, _categoriaController);
-        _mockCategoriaBusiness.Setup(b => b.Delete(It.IsAny<CategoriaDto>())).Returns(true);
-        _mockCategoriaBusiness.Setup(b => b.FindById(categoriaDto.Id.Value, categoriaDto.UsuarioId)).Returns(categoriaDto);
+        _mockCategoriaBusiness.Setup(b => b.Delete(It.IsAny<CategoriaDto>())).Returns(Task.Run(() => true));
+        _mockCategoriaBusiness.Setup(b => b.FindById(categoriaDto.Id.Value, categoriaDto.UsuarioId)).Returns(Task.Run(() => categoriaDto));
 
         // Act
         var result = await _categoriaController.Delete(categoriaDto.Id.Value) as ObjectResult;
@@ -330,7 +330,7 @@ public sealed class CategoriaControllerTest
     public async Task Delete_Returns_OK_Result_Message_False()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var obj = CategoriaFaker.Instance.CategoriasVMs().Last();
         var idUsuario = Guid.NewGuid();
@@ -342,8 +342,8 @@ public sealed class CategoriaControllerTest
             IdTipoCategoria = (TipoCategoriaDto)TipoCategoria.CategoriaType.Receita
         };
         Usings.SetupBearerToken(idUsuario, _categoriaController);
-        _mockCategoriaBusiness.Setup(b => b.Delete(categoriaDto)).Returns(false);
-        _mockCategoriaBusiness.Setup(b => b.FindById(categoriaDto.Id.Value, categoriaDto.UsuarioId)).Returns(categoriaDto);
+        _mockCategoriaBusiness.Setup(b => b.Delete(categoriaDto)).Returns(Task.Run(() => false));
+        _mockCategoriaBusiness.Setup(b => b.FindById(categoriaDto.Id.Value, categoriaDto.UsuarioId)).Returns(Task.Run(() => categoriaDto));
 
         // Act
         var result = await _categoriaController.Delete(categoriaDto.Id.Value) as ObjectResult;
@@ -361,12 +361,12 @@ public sealed class CategoriaControllerTest
     public async Task Delete_Returns_BadRequest()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var categoriaDto = CategoriaFaker.Instance.CategoriasVMs().First();
         Usings.SetupBearerToken(Guid.Empty, _categoriaController);
-        _mockCategoriaBusiness.Setup(b => b.Delete(categoriaDto)).Returns(false);
-        _mockCategoriaBusiness.Setup(b => b.FindById(categoriaDto.Id.Value, categoriaDto.UsuarioId)).Returns(categoriaDto);
+        _mockCategoriaBusiness.Setup(b => b.Delete(categoriaDto)).Returns(Task.Run(() => false));
+        _mockCategoriaBusiness.Setup(b => b.FindById(categoriaDto.Id.Value, categoriaDto.UsuarioId)).Returns(Task.Run(() => categoriaDto));
 
         // Act
         var result = await _categoriaController.Delete(categoriaDto.Id.Value) as BadRequestObjectResult;
@@ -382,11 +382,11 @@ public sealed class CategoriaControllerTest
     public async Task Delete_Returns_BadRequest_When_TryCatch_ThrowError()
     {
         // Arrange
-        _mockCategoriaBusiness = new Mock<IBusinessBase<CategoriaDto, Categoria>>();
+        _mockCategoriaBusiness = new Mock<ICategoriaBusiness<CategoriaDto, Categoria>>();
         _categoriaController = new CategoriaController(_mockCategoriaBusiness.Object);
         var categoriaDto = CategoriaFaker.Instance.CategoriasVMs().First();
         Usings.SetupBearerToken(categoriaDto.UsuarioId, _categoriaController);
-        _mockCategoriaBusiness.Setup(b => b.FindById(categoriaDto.Id.Value, categoriaDto.UsuarioId)).Returns(categoriaDto);
+        _mockCategoriaBusiness.Setup(b => b.FindById(categoriaDto.Id.Value, categoriaDto.UsuarioId)).Returns(Task.Run(() => categoriaDto));
         _mockCategoriaBusiness.Setup(b => b.Delete(It.IsAny<CategoriaDto>())).Throws<Exception>();
 
         // Act

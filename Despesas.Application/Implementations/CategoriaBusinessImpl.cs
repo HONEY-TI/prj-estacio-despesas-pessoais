@@ -70,7 +70,7 @@ public class CategoriaBusinessImpl<Dto> : BusinessBase<Dto, Categoria>, ICategor
     private void IsValidTipoCategoria(Dto dto)
     {
         var categoria = this.Mapper.Map<Categoria>(dto);
-        if (categoria.TipoCategoria.Id != (int)TipoCategoria.CategoriaType.Despesa && categoria.TipoCategoria.Id != (int)TipoCategoria.CategoriaType.Receita)
+        if (categoria.TipoCategoriaId != (int)TipoCategoria.CategoriaType.Despesa && categoria.TipoCategoriaId != (int)TipoCategoria.CategoriaType.Receita)
             throw new ArgumentException("Tipo de Categoria Inválida!");
     }
 

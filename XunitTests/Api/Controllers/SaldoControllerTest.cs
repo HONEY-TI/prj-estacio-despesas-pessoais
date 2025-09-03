@@ -22,7 +22,7 @@ public sealed class SaldoControllerTest
         var idUsuario = Guid.NewGuid();
         Usings.SetupBearerToken(idUsuario, _SaldoController);
         decimal saldo = 1000.99m;
-        _mockSaldoBusiness.Setup(business => business.GetSaldo(idUsuario)).Returns(saldo);
+        _mockSaldoBusiness.Setup(business => business.GetSaldo(idUsuario)).ReturnsAsync(saldo);
 
         // Act
         var result = await _SaldoController.Get() as ObjectResult;
@@ -61,7 +61,7 @@ public sealed class SaldoControllerTest
         var idUsuario = Guid.NewGuid();
         Usings.SetupBearerToken(idUsuario, _SaldoController);
         decimal saldo = 897.99m;
-        _mockSaldoBusiness.Setup(business => business.GetSaldoAnual(DateTime.Today, idUsuario)).Returns(saldo);
+        _mockSaldoBusiness.Setup(business => business.GetSaldoAnual(DateTime.Today, idUsuario)).ReturnsAsync(saldo);
 
         // Act
         var result = await _SaldoController.GetSaldoByAno(DateTime.Today) as ObjectResult;
@@ -100,7 +100,7 @@ public sealed class SaldoControllerTest
         var idUsuario = Guid.NewGuid();
         Usings.SetupBearerToken(idUsuario, _SaldoController);
         decimal saldo = 178740.99m;
-        _mockSaldoBusiness.Setup(business => business.GetSaldoByMesAno(DateTime.Today, idUsuario)).Returns(saldo);
+        _mockSaldoBusiness.Setup(business => business.GetSaldoByMesAno(DateTime.Today, idUsuario)).ReturnsAsync(saldo);
 
         // Act
         var result = await _SaldoController.GetSaldoByMesAno(DateTime.Today) as ObjectResult;

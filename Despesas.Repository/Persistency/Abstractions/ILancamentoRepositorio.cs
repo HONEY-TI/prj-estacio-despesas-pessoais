@@ -1,7 +1,6 @@
 ﻿using Domain.Entities;
-
 namespace Repository.Persistency.Abstractions;
 public interface ILancamentoRepositorio
 {
-    List<Lancamento> FindByMesAno(DateTime data, Guid idUsuario);
+    Task<ICollection<Lancamento>> FindByMesAno(DateTime data, Guid idUsuario);
 }

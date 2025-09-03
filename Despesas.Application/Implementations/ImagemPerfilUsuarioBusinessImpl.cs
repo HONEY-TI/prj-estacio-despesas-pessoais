@@ -74,14 +74,14 @@ public class ImagemPerfilUsuarioBusinessImpl<Dto, DtoUsuario> : IImagemPerfilUsu
 
     public async Task<bool> Delete(Guid idUsuario)
     {
-        var imagemPerfilUsuario = _repositorio.GetAll().Find(prop => prop.UsuarioId.Equals(idUsuario));
+        var imagemPerfilUsuario = _repositorio.Find(prop => prop.UsuarioId.Equals(idUsuario)).FirstOrDefault();
         if (imagemPerfilUsuario != null)
         {
             var result = _amazonS3Bucket.DeleteObjectNonVersionedBucketAsync(imagemPerfilUsuario).GetAwaiter().GetResult();
             if (result)
             {
                 _repositorio.Delete(new ImagemPerfilUsuario { Id = imagemPerfilUsuario.Id });
-                await Task.FromResult(true);
+                return await Task.FromResult(true);
             }
         }
         return false;

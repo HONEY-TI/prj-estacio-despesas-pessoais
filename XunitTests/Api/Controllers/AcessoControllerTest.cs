@@ -180,7 +180,8 @@ public sealed class AcessoControllerTest
     {
         // Arrange
         var loginVM = new LoginDto { Email = "teste@teste.com", Senha = "password" };
-        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(new AuthenticationDto());
+        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(Task.Run(() => new AuthenticationDto()));
+
 
         // Act
         var result = await _acessoController.SignIn(loginVM) as ObjectResult;
@@ -376,7 +377,7 @@ public sealed class AcessoControllerTest
     {
         // Arrange
         var authenticationDto = new AuthenticationDto();
-        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(new AuthenticationDto());
+        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(Task.Run(() => new AuthenticationDto()));
 
         // Act
         var result = await _acessoController.Refresh("fakeRefreshToken") as ObjectResult;

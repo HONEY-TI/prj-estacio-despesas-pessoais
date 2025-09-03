@@ -47,8 +47,7 @@ public sealed class ReceitaBusinessImplTest
         Assert.Equal(receitaDto.Id, result.Id);
         _repositorioMock.Verify(repo => repo.Insert(It.IsAny<Receita>()), Times.Never);
         _unitOfWork.Verify(repo => repo.Repository.Get(It.IsAny<Guid>()), Times.Once);
-        _unitOfWorkCategoria.Verify(repo => repo.Repository.Get(It.IsAny<Guid>()), Times.Once);
-        _unitOfWork.Verify(repo => repo.Repository.Get(It.IsAny<Guid>()), Times.Once);
+        _unitOfWorkCategoria.Verify(repo => repo.Repository.Get(It.IsAny<Guid>()), Times.Once);        
         _unitOfWork.Verify(repo => repo.Repository.Insert(It.IsAny<Receita>()), Times.Once);
 
     }

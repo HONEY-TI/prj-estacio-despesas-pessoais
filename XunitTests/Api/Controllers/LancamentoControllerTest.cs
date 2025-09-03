@@ -27,7 +27,7 @@ public sealed class LancamentoControllerTest
         Guid idUsuario = _lancamentoDtos.First().UsuarioId;
         DateTime anoMes = DateTime.Now;
         Usings.SetupBearerToken(idUsuario, _lancamentoController);
-        _mockLancamentoBusiness.Setup(business => business.FindByMesAno(anoMes, idUsuario)).Returns(lancamentoDtos.FindAll(l => l.UsuarioId == idUsuario));
+        _mockLancamentoBusiness.Setup(business => business.FindByMesAno(anoMes, idUsuario)).Returns(Task.Run(() => lancamentoDtos.FindAll(l => l.UsuarioId == idUsuario)));
 
         // Act
         var result = await _lancamentoController.Get(anoMes) as ObjectResult;
@@ -74,7 +74,7 @@ public sealed class LancamentoControllerTest
         Guid idUsuario = _lancamentoDtos.First().UsuarioId;
         DateTime anoMes = DateTime.Now;
         Usings.SetupBearerToken(idUsuario, _lancamentoController);
-        _mockLancamentoBusiness.Setup(business => business.FindByMesAno(anoMes, idUsuario)).Returns(new List<LancamentoDto>());
+        _mockLancamentoBusiness.Setup(business => business.FindByMesAno(anoMes, idUsuario)).Returns(Task.Run(() => new List<LancamentoDto>()));
 
         // Act
         var result = await _lancamentoController.Get(anoMes) as ObjectResult;

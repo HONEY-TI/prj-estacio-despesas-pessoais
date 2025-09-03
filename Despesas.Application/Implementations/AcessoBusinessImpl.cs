@@ -44,7 +44,7 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
 
     public async Task<AuthenticationDto> ValidateCredentials(DtoLogin loginDto)
     {
-        Acesso baseLogin = await _repositorio.Find(c => c.Login.Equals(loginDto.Email)) ?? throw new ArgumentException("Usuário inexistente!");
+        Acesso baseLogin = await _repositorio.Find(c => c.Login.Equals(loginDto.Email)) ?? throw new ArgumentException("Usuário Inexistente!");
 
         if (baseLogin?.Usuario?.StatusUsuario == StatusUsuario.Inativo)
             return AuthenticationException("Usuário Inativo!");

@@ -2,8 +2,6 @@
 using Repository;
 using Repository.CommonDependenceInject;
 using Repository.Persistency.Abstractions;
-using Repository.Persistency.UnitOfWork.Abstractions;
-using Repository.UnitOfWork;
 using Despesas.Infrastructure.Email.Abstractions;
 using Despesas.Infrastructure.Email;
 using Repository.Persistency.Generic;
@@ -14,6 +12,8 @@ using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 using Despesas.Application.Implementations;
 using Despesas.Application.Dtos.Core;
+using Despesas.Repository.UnitOfWork;
+using Despesas.Repository.UnitOfWork.Abstractions;
 
 namespace CommonDependenceInject;
 public sealed class ServicesDependenceInjectTest

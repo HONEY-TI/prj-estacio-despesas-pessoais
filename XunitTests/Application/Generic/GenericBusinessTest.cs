@@ -87,8 +87,8 @@ public sealed class GenericBusinessTests
         var obj = ReceitaFaker.Instance.ReceitasVMs().First();
         var repositoryMock = new Mock<IRepositorio<Receita>>();
         repositoryMock.Setup(repo => repo.Update(It.IsAny<Receita>()));
-        _mapper = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<ReceitaProfile>(); }));
-        var business = new GenericBusiness<ReceitaDto, Receita>(_mapper, repositoryMock.Object);
+        var mapper = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<ReceitaProfile>(); }));
+        var business = new GenericBusiness<ReceitaDto, Receita>(mapper, repositoryMock.Object);
 
         // Act
         var result = business.Update(obj);

@@ -51,7 +51,7 @@ public sealed class ReceitaControllerTest
         // Arrange
         Guid idUsuario = _receitaDtos.First().UsuarioId;
         Usings.SetupBearerToken(idUsuario, _receitaController);
-        _mockReceitaBusiness.Setup(business => business.FindAll(idUsuario)).Returns(_receitaDtos);
+        _mockReceitaBusiness.Setup(business => business.FindAll(idUsuario)).Returns(Task.Run(() => _receitaDtos));
 
         // Act
         var result = await _receitaController.Get() as ObjectResult;
@@ -70,7 +70,7 @@ public sealed class ReceitaControllerTest
         var receitaDto = _receitaDtos.First();
         var idUsuario = receitaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _receitaController);
-        _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Returns(() => null);
+        _mockReceitaBusiness.Setup(b => b.FindById(receitaDto.Id.Value, idUsuario)).ReturnsAsync((ReceitaDto)null);
 
         // Act
         var result = await _receitaController.GetById(receitaDto.Id.Value) as ObjectResult;
@@ -78,10 +78,10 @@ public sealed class ReceitaControllerTest
         // Assert
         Assert.NotNull(result);
         Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Nenhuma receita foi encontrada.", message);
+        Assert.Equal("Nenhuma receita foi encontrada.", result!.Value);
         _mockReceitaBusiness.Verify(b => b.FindById(receitaDto.Id.Value, idUsuario), Times.Once);
     }
+
 
     [Fact]
     public async Task GetById_Should_Returns_OkResults_With_Despesas()
@@ -91,7 +91,7 @@ public sealed class ReceitaControllerTest
         Guid idUsuario = receita.UsuarioId;
         var receitaId = receita.Id;
         Usings.SetupBearerToken(idUsuario, _receitaController);
-        _mockReceitaBusiness.Setup(business => business.FindById(receitaId.Value, idUsuario)).Returns(receita);
+        _mockReceitaBusiness.Setup(business => business.FindById(receitaId.Value, idUsuario)).Returns(Task.Run(() => receita));
 
         // Act
         var result = await _receitaController.GetById(receitaId.Value) as ObjectResult;
@@ -132,7 +132,7 @@ public sealed class ReceitaControllerTest
         var receitaDto = _receitaDtos[3];
         Guid idUsuario = receitaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _receitaController);
-        _mockReceitaBusiness.Setup(business => business.Create(receitaDto)).Returns(receitaDto);
+        _mockReceitaBusiness.Setup(business => business.Create(receitaDto)).Returns(Task.Run(() => receitaDto));
 
         // Act
         var result = await _receitaController.Post(receitaDto) as ObjectResult;
@@ -173,7 +173,7 @@ public sealed class ReceitaControllerTest
         var receitaDto = _receitaDtos[4];
         Guid idUsuario = receitaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _receitaController);
-        _mockReceitaBusiness.Setup(business => business.Update(receitaDto)).Returns(receitaDto);
+        _mockReceitaBusiness.Setup(business => business.Update(receitaDto)).Returns(Task.Run(() => receitaDto));
 
         // Act
         var result = await _receitaController.Put(receitaDto) as ObjectResult;
@@ -214,8 +214,8 @@ public sealed class ReceitaControllerTest
         var receitaDto = _receitaDtos[2];
         Guid idUsuario = receitaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _receitaController);
-        _mockReceitaBusiness.Setup(business => business.Delete(receitaDto)).Returns(true);
-        _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Returns(receitaDto);
+        _mockReceitaBusiness.Setup(business => business.Delete(receitaDto)).Returns(Task.Run(() => true));
+        _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Returns(Task.Run(() => receitaDto));
 
         // Act
         var result = await _receitaController.Delete(receitaDto.Id.Value) as ObjectResult;
@@ -236,8 +236,8 @@ public sealed class ReceitaControllerTest
         var receitaDto = _receitaDtos[2];
         Guid idUsuario = receitaDto.UsuarioId;
         Usings.SetupBearerToken(Guid.Empty, _receitaController);
-        _mockReceitaBusiness.Setup(business => business.Delete(receitaDto)).Returns(true);
-        _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Returns(receitaDto);
+        _mockReceitaBusiness.Setup(business => business.Delete(receitaDto)).Returns(Task.Run(() => true));
+        _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Returns(Task.Run(() => receitaDto));
 
         // Act
         var result = await _receitaController.Delete(receitaDto.Id.Value) as ObjectResult;
@@ -258,8 +258,8 @@ public sealed class ReceitaControllerTest
         var receitaDto = _receitaDtos[2];
         Guid idUsuario = receitaDto.UsuarioId;
         Usings.SetupBearerToken(idUsuario, _receitaController);
-        _mockReceitaBusiness.Setup(business => business.Delete(receitaDto)).Returns(false);
-        _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Returns(receitaDto);
+        _mockReceitaBusiness.Setup(business => business.Delete(receitaDto)).Returns(Task.Run(() => false));
+        _mockReceitaBusiness.Setup(business => business.FindById(receitaDto.Id.Value, idUsuario)).Returns(Task.Run(() => receitaDto));
 
         // Act
         var result = await _receitaController.Delete(receitaDto.Id.Value) as ObjectResult;

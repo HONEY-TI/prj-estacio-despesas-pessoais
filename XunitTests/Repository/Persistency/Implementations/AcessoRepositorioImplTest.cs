@@ -19,7 +19,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
     }
 
     [Fact]
-    public void Create_Should_Insert_Acesso_When_New()
+    public async Task Create_Should_Insert_Acesso_When_New()
     {
         // Arrange 
         var context = _fixture.Context;
@@ -27,31 +27,31 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var mockAcesso = AcessoFaker.Instance.GetNewFaker();
 
         // Act
-        mockRepository.Create(mockAcesso);
+        await mockRepository.Create(mockAcesso);
 
         // Assert
-        var acesso = mockRepository.Find(c => c.Login == mockAcesso.Login);
+        var acesso = await mockRepository.Find(c => c.Login == mockAcesso.Login);
         Assert.NotNull(acesso);
         Assert.Equal(mockAcesso.Login, acesso.Login);
     }    
     
     [Fact(Skip = "Uso do DRY com Global Excepition")]
-    public void Create_Should_Throws_Exception()
+    public async Task Create_Should_Throws_Exception()
     {
         // Arrange and Setup mock repository
         var context = _fixture.Context;
         var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(new Acesso());
+        mockRepository.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).Returns(Task.Run(() => new Acesso()));
         mockRepository.Setup(repo => repo.Create(It.IsAny<Acesso>())).Throws(new InvalidOperationException("AcessoRepositorioImpl_Create_Exception"));
 
         // Act & Assert 
         Acesso? nullControleAceesso = null;
-        Assert.Throws<Exception>(() => mockRepository.Object.Create(nullControleAceesso));
+        Assert.Throws<Exception>(mockRepository.Object.Create(nullControleAceesso).Wait);
         //Assert.Equal("AcessoRepositorioImpl_Create_Exception", exception.Message);
     }
 
     [Fact]
-    public void FindByEmail_Should_Returns_Acesso()
+    public async Task FindByEmail_Should_Returns_Acesso()
     {
         // Arrange and Setup Repository
         var context = _fixture.Context;
@@ -59,7 +59,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var mockAcesso = context.Acesso.ToList().First();
 
         // Act
-        var result = mockRepository.Object.Find(c => c.Equals(mockAcesso));
+        var result = await mockRepository.Object.Find(c => c.Equals(mockAcesso));
 
         // Assert
         Assert.NotNull(result);
@@ -105,7 +105,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         mockRepository.Setup(repo => repo.RecoveryPassword(mockAcesso.Login, It.IsAny<string>())).Throws(new Exception());
 
         // Act && Assert
-        var exception = Assert.Throws<Exception>(() => mockRepository.Object.RecoveryPassword(Guid.NewGuid().ToString(), newPassword));
+        var exception = Assert.Throws<Exception>(mockRepository.Object.RecoveryPassword(Guid.NewGuid().ToString(), newPassword).Wait);
         Assert.IsType<Exception>(exception);
         Assert.Equal("RecoveryPassword_Erro", exception.Message);
     }
@@ -121,7 +121,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         context.SaveChanges();
 
         // Act && Assert
-        var exception = Assert.Throws<Exception>(() => mockRepository.Object.RecoveryPassword("email@erro.com", "newPassword"));
+        var exception = Assert.Throws<Exception>(mockRepository.Object.RecoveryPassword("email@erro.com", "newPassword").Wait);
         Assert.IsType<Exception>(exception);
         Assert.Equal("RecoveryPassword_Erro", exception.Message);
     }
@@ -136,31 +136,46 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         mockRepository.Setup(repo => repo.ChangePassword(It.IsAny<Guid>(), It.IsAny<string>())).Throws(new Exception());
 
         // Act && Assert
-        var exception = Assert.Throws<Exception>(() => mockRepository.Object.ChangePassword(Guid.Empty, Guid.NewGuid().ToString()));
+        var exception = Assert.Throws<Exception>(mockRepository.Object.ChangePassword(Guid.Empty, Guid.NewGuid().ToString()).Wait);
         Assert.IsType<Exception>(exception);
         Assert.Equal("ChangePassword_Erro", exception.Message);
     }
 
     [Fact]
-    public void ChangePassword_Should_Returns_True()
+    public async Task ChangePassword_Should_Update_Password()
     {
         // Arrange
-        var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "ChangePassword_Should_Returns_True").Options;
-        var context = new RegisterContext(options);
+        var options = new DbContextOptionsBuilder<RegisterContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Banco único por teste
+            .Options;
+
+        using var context = new RegisterContext(options);
+
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));
-        context.SaveChanges();
+        await context.SaveChangesAsync();
+
         var lstAcesso = MockAcesso.Instance.GetAcessos();
-        lstAcesso.ForEach(c => c.Usuario.PerfilUsuario = context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id));
+        lstAcesso.ForEach(c =>
+            c.Usuario.PerfilUsuario = context.PerfilUsuario.First(tc => tc.Id == c.Usuario.PerfilUsuario.Id)
+        );
+
         context.AddRange(lstAcesso);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
+
         var repository = new AcessoRepositorioImpl(context);
         var acesso = context.Acesso.Last();
 
-        // Act && Assert
-        var result =  Assert.IsType<Action>(() =>  repository.ChangePassword(acesso.UsuarioId, "!12345"));
-        Assert.IsNotType<Exception>(result);
+        var novaSenha = "!12345";
+
+        // Act
+        await repository.ChangePassword(acesso.UsuarioId, novaSenha);
+
+        // Assert
+        var acessoAtualizado = context.Acesso.First(c => c.UsuarioId == acesso.UsuarioId);
+        Assert.Equal(novaSenha, acessoAtualizado.Senha);
     }
+
 
     [Fact(Skip = "Uso do DRY com Global Excepition")]
     public void ChangePassword_Should_Throws_Exception()
@@ -176,7 +191,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         _dbContextMock.Setup(c => c.SaveChanges()).Throws<Exception>();
 
         // Act && Assert
-        var exception = Assert.Throws<Exception>(() => mockRepository.Object.ChangePassword(Guid.NewGuid(), Guid.NewGuid().ToString()));
+        var exception = Assert.Throws<Exception>(mockRepository.Object.ChangePassword(Guid.NewGuid(), Guid.NewGuid().ToString()).Wait);
         Assert.IsType<Exception>(exception);
         Assert.Equal("ChangePassword_Erro", exception.Message);
     }
@@ -190,12 +205,12 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var mockAcesso = context.Acesso.ToList().First();
 
         // Act & Assert
-        Assert.Throws<Exception>(() => mockRepository.Object.Create(mockAcesso));
+        Assert.Throws<Exception>(mockRepository.Object.Create(mockAcesso).Wait);
     }
 
 
     [Fact]
-    public void FindById_Should_Return_Acesso_When_User_Exists()
+    public async Task FindById_Should_Return_Acesso_When_User_Exists()
     {
         // Arrange
         var context = _fixture.Context;
@@ -203,7 +218,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var mockAcesso = context.Acesso.ToList().First();
 
         // Act
-        var result = mockRepository.Object.Find(acesso => acesso.Id.Equals(mockAcesso.Id));
+        var result = await mockRepository.Object.Find(acesso => acesso.Id.Equals(mockAcesso.Id));
 
         // Assert
         Assert.NotNull(result);
@@ -211,50 +226,61 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
     }
 
     [Fact]
-    public void FindById_Should_Return_Null_When_User_Not_Exists()
+    public async Task FindById_Should_Return_Null_When_User_Not_Exists()
     {
         // Arrange
         var context = _fixture.Context;
-        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
-        var nonExistingId = -1;
         var repository = new AcessoRepositorioImpl(context);
+        var nonExistingId = Guid.NewGuid(); // se Id for Guid, não faz sentido usar -1
 
         // Act
-        var result = repository.Find(acesso => acesso.Id.Equals(nonExistingId));
+        var result = await repository.Find(acesso => acesso.Id == nonExistingId);
 
         // Assert
         Assert.Null(result);
     }
 
     [Fact]
-    public void RevokeToken_Should_Throw_Exception_When_User_Not_Exists()
+    public async Task RevokeToken_Should_Throw_Exception_When_User_Not_Exists()
     {
         // Arrange
         var context = _fixture.Context;
         var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
         var nonExistingId = Guid.Empty;
 
-        // Act & Assert
-        Assert.Throws<ArgumentException>(() => mockRepository.Object.RevokeRefreshToken(nonExistingId));
+        // Act
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => mockRepository.Object.RevokeRefreshToken((Guid.Empty)));
+
+        // Assert
+        Assert.Equal("Token inexistente!", exception.Message);
     }
 
     [Fact]
-    public void RevokeToken_Should_Remove_Token_When_User_Exists()
+    public async Task RevokeToken_Should_Remove_Token_When_User_Exists()
     {
         // Arrange
         var context = _fixture.Context;
         var mockAcesso = context.Acesso.Last();
-        var mockRepository = Mock.Get<IAcessoRepositorioImpl>(_fixture.MockRepository.Object);
+        mockAcesso.RefreshToken = "token123";
+        mockAcesso.RefreshTokenExpiry = DateTime.UtcNow.AddDays(1);
 
-        // Act && Assert
-        var exception = Assert.Throws<ArgumentException>(() => mockRepository.Object.RevokeRefreshToken(mockAcesso.UsuarioId));
-        Assert.IsType<ArgumentException>(exception);
-        Assert.Equal("Token inexistente!", exception.Message);
+        var repository = new AcessoRepositorioImpl(context);
+
+        // Act
+        await repository.RevokeRefreshToken(mockAcesso.Id);
+
+        // Assert
+        var acessoDb = context.Acesso.Find(mockAcesso.Id);
+
+        Assert.NotNull(acessoDb);
+        Assert.Equal(string.Empty, acessoDb.RefreshToken);
+        Assert.Null(acessoDb.RefreshTokenExpiry);
     }
 
 
+
     [Fact]
-    public void Create_Should_Throw_When_Login_Already_Exists()
+    public async Task Create_Should_Throw_When_Login_Already_Exists()
     {
         // Arrange
         var context = _fixture.Context;
@@ -262,7 +288,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var mockAcesso = context.Acesso.First();
 
         // Act & Assert
-        Assert.ThrowsAny<Exception>(() => repository.Create(mockAcesso));
+        Assert.ThrowsAny<Exception>(repository.Create(mockAcesso).Wait);
     }
 
     [Fact]
@@ -319,7 +345,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
     }
 
     [Fact]
-    public void FindByRefreshToken_Should_Return_Acesso()
+    public async Task FindByRefreshToken_Should_Return_Acesso()
     {
         // Arrange
         var context = _fixture.Context;
@@ -329,7 +355,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         context.SaveChanges();
 
         // Act
-        var result = repository.FindByRefreshToken("refresh-123");
+        var result = await repository.FindByRefreshToken("refresh-123");
 
         // Assert
         Assert.NotNull(result);
@@ -337,7 +363,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
     }
 
     [Fact]
-    public void Find_Should_Return_Acesso_When_Exists()
+    public async Task Find_Should_Return_Acesso_When_Exists()
     {
         // Arrange
         var context = _fixture.Context;
@@ -345,7 +371,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         var mockAcesso = context.Acesso.First();
 
         // Act
-        var result = repository.Find(c => c.Id == mockAcesso.Id);
+        var result = await repository.Find(c => c.Id == mockAcesso.Id);
 
         // Assert
         Assert.NotNull(result);
@@ -353,18 +379,19 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
     }
 
     [Fact]
-    public void Find_Should_Return_Null_When_Not_Exists()
+    public async Task Find_Should_Return_Null_When_Not_Exists()
     {
         // Arrange
         var context = _fixture.Context;
         var repository = new AcessoRepositorioImpl(context);
 
         // Act
-        var result = repository.Find(c => c.Id == Guid.NewGuid());
+        var result = await repository.Find(c => c.Id == Guid.NewGuid());
 
         // Assert
         Assert.Null(result);
     }
+
 
     [Fact]
     public void RefreshTokenInfo_Should_Update_Acesso()

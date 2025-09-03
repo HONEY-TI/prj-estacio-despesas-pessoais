@@ -1,5 +1,6 @@
 ﻿using Despesas.Application.Implementations;
 using Repository.Persistency.Abstractions;
+using System.Threading.Tasks;
 
 namespace Application;
 public sealed class SaldoBusinessImplTest
@@ -14,7 +15,7 @@ public sealed class SaldoBusinessImplTest
     }
 
     [Fact]
-    public void GetSaldo_Should_Return_Saldo_As_Decimal()
+    public async Task GetSaldo_Should_Return_Saldo_As_Decimal()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -22,7 +23,7 @@ public sealed class SaldoBusinessImplTest
         _repositorioMock.Setup(r => r.GetSaldo(idUsuario)).Returns(saldo);
 
         // Act
-        var result = _saldoBusiness.GetSaldo(idUsuario);
+        var result = await _saldoBusiness.GetSaldo(idUsuario);
 
         // Assert
         Assert.Equal(saldo, result.saldo);
@@ -30,7 +31,7 @@ public sealed class SaldoBusinessImplTest
     }
 
     [Fact]
-    public void GetSaldoByAno_Should_Return_Saldo_As_Decimal()
+    public async Task GetSaldoByAno_Should_Return_Saldo_As_Decimal()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -38,7 +39,7 @@ public sealed class SaldoBusinessImplTest
         _repositorioMock.Setup(r => r.GetSaldoByAno(DateTime.Today, idUsuario)).Returns(saldo);
 
         // Act
-        var result = _saldoBusiness.GetSaldoAnual(DateTime.Today, idUsuario);
+        var result = await _saldoBusiness.GetSaldoAnual(DateTime.Today, idUsuario);
 
         // Assert
         Assert.Equal(saldo, result.saldo);
@@ -46,7 +47,7 @@ public sealed class SaldoBusinessImplTest
     }
 
     [Fact]
-    public void GetSaldoByMesAno_Should_Return_Saldo_As_Decimal()
+    public async Task GetSaldoByMesAno_Should_Return_Saldo_As_Decimal()
     {
         // Arrange
         var idUsuario = Guid.NewGuid();
@@ -54,7 +55,7 @@ public sealed class SaldoBusinessImplTest
         _repositorioMock.Setup(r => r.GetSaldoByMesAno(DateTime.Today, idUsuario)).Returns(saldo);
 
         // Act
-        var result = _saldoBusiness.GetSaldoByMesAno(DateTime.Today, idUsuario);
+        var result = await _saldoBusiness.GetSaldoByMesAno(DateTime.Today, idUsuario);
 
         // Assert
         Assert.Equal(saldo, result.saldo);

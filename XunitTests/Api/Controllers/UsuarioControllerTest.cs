@@ -37,7 +37,7 @@ public sealed class UsuarioControllerTest
         var usauriosDtos = _mapper.Map<List<UsuarioDto>>(usaurios);
         Guid idUsuario = usaurios.FindAll(u => u.PerfilUsuario == PerfilUsuario.Perfil.User).Last().Id;
         Usings.SetupBearerToken(idUsuario, _usuarioController);
-        _mockUsuarioBusiness.Setup(business => business.FindById(It.IsAny<Guid>())).Returns(usauriosDtos.Find(u => u.Id == idUsuario) ?? new());
+        _mockUsuarioBusiness.Setup(business => business.FindById(It.IsAny<Guid>())).Returns(Task.Run(() => usauriosDtos.Find(u => u.Id == idUsuario) ?? new()));
 
         // Act
         var result = await _usuarioController.Get() as ObjectResult;
@@ -57,7 +57,7 @@ public sealed class UsuarioControllerTest
         var usuarioDto = _usuarioDtos[4];
         Guid idUsuario = usuarioDto.Id.Value;
         Usings.SetupBearerToken(idUsuario, _usuarioController);
-        _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Returns(usuarioDto);
+        _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Returns(Task.Run(() => usuarioDto));
 
         // Act
         var result = await _usuarioController.Put(usuarioDto) as ObjectResult;
@@ -181,7 +181,7 @@ public sealed class UsuarioControllerTest
         // Arrange
         Guid idUsuario = Guid.NewGuid();
         Usings.SetupBearerToken(idUsuario, _usuarioController);
-        _mockUsuarioBusiness.Setup(b => b.FindById(It.IsAny<Guid>())).Returns((UsuarioDto?)null);
+        _mockUsuarioBusiness.Setup(b => b.FindById(It.IsAny<Guid>())).Returns(Task.Run(() => (UsuarioDto?)null));
 
         // Act
         var result = await _usuarioController.Get() as ObjectResult;
@@ -199,7 +199,7 @@ public sealed class UsuarioControllerTest
         var usuarioDto = _usuarioDtos.First();
         Guid idUsuario = usuarioDto.Id.Value;
         Usings.SetupBearerToken(idUsuario, _usuarioController);
-        _mockUsuarioBusiness.Setup(b => b.Create(It.IsAny<UsuarioDto>())).Returns(usuarioDto);
+        _mockUsuarioBusiness.Setup(b => b.Create(It.IsAny<UsuarioDto>())).Returns(Task.Run(() => usuarioDto));
 
         // Act
         var result = await _usuarioController.Post(usuarioDto) as ObjectResult;
@@ -232,7 +232,7 @@ public sealed class UsuarioControllerTest
     {
         var usuarioDto = _usuarioDtos.First();
         Usings.SetupBearerToken(usuarioDto.Id.Value, _usuarioController);
-        _mockUsuarioBusiness.Setup(b => b.Delete(It.IsAny<UsuarioDto>())).Returns(true);
+        _mockUsuarioBusiness.Setup(b => b.Delete(It.IsAny<UsuarioDto>())).Returns(Task.Run(() => true));
 
         var result = await _usuarioController.Delete(usuarioDto) as ObjectResult;
 
@@ -262,7 +262,7 @@ public sealed class UsuarioControllerTest
         var imageBytes = new byte[] { 1, 2, 3 };
         Guid idUsuario = Guid.NewGuid();
         Usings.SetupBearerToken(idUsuario, _usuarioController);
-        _mockUsuarioBusiness.Setup(b => b.GetProfileImage(It.IsAny<Guid>())).Returns(imageBytes);
+        _mockUsuarioBusiness.Setup(b => b.GetProfileImage(It.IsAny<Guid>())).Returns(Task.Run(() => imageBytes));
 
         var result = await _usuarioController.GetProfileImage();
 
@@ -276,7 +276,7 @@ public sealed class UsuarioControllerTest
     {
         Guid idUsuario = Guid.NewGuid();
         Usings.SetupBearerToken(idUsuario, _usuarioController);
-        _mockUsuarioBusiness.Setup(b => b.GetProfileImage(It.IsAny<Guid>())).Returns((byte[]?)null);
+        _mockUsuarioBusiness.Setup(b => b.GetProfileImage(It.IsAny<Guid>())).Returns(Task.Run(() => (byte[]?)null));
 
         var result = await _usuarioController.GetProfileImage();
 
@@ -295,7 +295,7 @@ public sealed class UsuarioControllerTest
 
         Guid idUsuario = Guid.NewGuid();
         Usings.SetupBearerToken(idUsuario, _usuarioController);
-        _mockUsuarioBusiness.Setup(b => b.UpdateProfileImage(It.IsAny<Guid>(), It.IsAny<IFormFile>())).Returns(content);
+        _mockUsuarioBusiness.Setup(b => b.UpdateProfileImage(It.IsAny<Guid>(), It.IsAny<IFormFile>())).Returns(Task.Run(() => content));
 
         var result = await _usuarioController.PutProfileImage(fileMock.Object);
 
@@ -311,7 +311,7 @@ public sealed class UsuarioControllerTest
         Guid idUsuario = Guid.NewGuid();
         Usings.SetupBearerToken(idUsuario, _usuarioController);
         _mockUsuarioBusiness.Setup(b => b.UpdateProfileImage(It.IsAny<Guid>(), It.IsAny<IFormFile>()))
-            .Returns((byte[]?)Array.Empty<byte>());
+            .Returns(Task.Run(() => (byte[]?)Array.Empty<byte>()));
 
         var result = await _usuarioController.PutProfileImage(fileMock.Object);
 
