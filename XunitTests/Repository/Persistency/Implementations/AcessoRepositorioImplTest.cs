@@ -73,7 +73,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         // Arrange
         var newPassword = "!12345";
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "RecoveryPassword_Should_Returns_True").Options;
-        var context = new RegisterContext(options);
+        var context = new RegisterContext(options, Usings.GetLogerFactory());
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));
         context.SaveChanges();
@@ -149,7 +149,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Banco único por teste
             .Options;
 
-        using var context = new RegisterContext(options);
+        using var context = new RegisterContext(options, Usings.GetLogerFactory());
 
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));

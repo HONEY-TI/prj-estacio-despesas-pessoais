@@ -9,7 +9,7 @@ public sealed class GenericRepositorioTest
     {
         // Arrange
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GenericRepositorioTest").Options;
-        _dbContextMock = new Mock<RegisterContext>(options);
+        _dbContextMock = new Mock<RegisterContext>(options, Usings.GetLogerFactory());
         _dbContextMock.Setup(c => c.Set<List<Categoria>>());
     }
 
@@ -74,7 +74,7 @@ public sealed class GenericRepositorioTest
         // Arrange
         var dataSet = MockCategoria.Instance.GetCategorias();
         var existingItem = dataSet.First();
-        var dbContext = new RegisterContext(new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Update_Should_Update_Item_And_SaveChanges").Options);
+        var dbContext = new RegisterContext(new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Update_Should_Update_Item_And_SaveChanges").Options, Usings.GetLogerFactory());
 
         var repository = new GenericRepositorio<Categoria>(dbContext);
 
@@ -101,7 +101,7 @@ public sealed class GenericRepositorioTest
         var lstUsuarios = MockUsuario.Instance.GetUsuarios(1);
         var usuario = lstUsuarios.First();
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Delete_Should_Set_Inativo_And_Return_True_When_Usuario_IsDeleted").Options;
-        var _dbContextMock = new RegisterContext(options);
+        var _dbContextMock = new RegisterContext(options, Usings.GetLogerFactory());
         _dbContextMock.Usuario.AddRange(lstUsuarios.Take(2));
         _dbContextMock.SaveChanges();
         var _repository = new GenericRepositorio<Usuario>(_dbContextMock);
@@ -119,7 +119,7 @@ public sealed class GenericRepositorioTest
         // Arrange
         var dataSet = MockCategoria.Instance.GetCategorias();
         var existingItem = dataSet.First();
-        var dbContext = new RegisterContext(new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Update_Should_Try_Update_Item_And_Return_Null").Options);
+        var dbContext = new RegisterContext(new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Update_Should_Try_Update_Item_And_Return_Null").Options, Usings.GetLogerFactory());
         var repository = new GenericRepositorio<Categoria>(dbContext);
 
         // Act &  Assert 

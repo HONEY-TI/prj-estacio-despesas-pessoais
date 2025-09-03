@@ -16,6 +16,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Domain.Core.Aggreggates;
+using Microsoft.Extensions.Logging;
 
 public sealed class Usings
 {
@@ -75,9 +76,9 @@ public sealed class Usings
             {
                 var itemToRemove = _dataSet.FirstOrDefault(item => item.Id == entity.Id);
                 if (itemToRemove != null)
-                    if (itemToRemove is Usuario usuario)                    
+                    if (itemToRemove is Usuario usuario)
                         usuario.StatusUsuario = StatusUsuario.Inativo;
-        });
+            });
         return _mock;
     }
 
@@ -133,5 +134,14 @@ public sealed class Usings
         var httpContext = new DefaultHttpContext { User = claimsPrincipal };
         httpContext.Request.Headers["Authorization"] = "Bearer " + Usings.GenerateJwtToken(idUsuario);
         controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+    }
+
+    public static ILoggerFactory GetLogerFactory()
+    {
+        return LoggerFactory.Create(builder =>
+        {
+            builder.AddDebug();
+            builder.SetMinimumLevel(LogLevel.Warning);
+        });
     }
 }

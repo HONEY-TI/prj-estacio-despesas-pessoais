@@ -11,7 +11,7 @@ public sealed class ReceitaFixture : IDisposable
     public ReceitaFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "ReceitaRepositorioImplTestDatabaseInMemory").Options;
-        Context = new RegisterContext(options);
+        Context = new RegisterContext(options, Usings.GetLogerFactory());
         Context.Database.EnsureDeleted();
         Context.Database.EnsureCreated();
 

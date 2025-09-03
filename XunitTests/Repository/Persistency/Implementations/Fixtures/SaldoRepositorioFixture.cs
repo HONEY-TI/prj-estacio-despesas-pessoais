@@ -14,7 +14,7 @@ public sealed class SaldoRepositorioFixture : IDisposable
     public SaldoRepositorioFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "SaldoRepoDatabaseInMemory").Options;
-        Context = new RegisterContext(options);
+        Context = new RegisterContext(options, Usings.GetLogerFactory());
         var usaurio = MockUsuario.Instance.GetUsuario();
         Context.AddRange(usaurio);
         Context.SaveChanges();

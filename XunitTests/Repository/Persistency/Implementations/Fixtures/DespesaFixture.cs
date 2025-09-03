@@ -11,7 +11,7 @@ public sealed class DespesaFixture : IDisposable
     public DespesaFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "DespesaRepositorioImplTestDatabaseInMemory").Options;
-        Context = new RegisterContext(options);
+        Context = new RegisterContext(options, Usings.GetLogerFactory());
         Context.Database.EnsureCreated();
 
         var acesso = MockAcesso.Instance.GetAcesso();

@@ -10,7 +10,7 @@ public sealed class LancamentoRepositorioFixture : IDisposable
     public LancamentoRepositorioFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "LancamentoRepositorioDatabaseInMemory").Options;
-        Context = new RegisterContext(options);
+        Context = new RegisterContext(options, Usings.GetLogerFactory());
         Context.Database.EnsureDeleted();
         Context.Database.EnsureCreated();
 

@@ -10,7 +10,7 @@ public sealed class UsuarioMapTest
         // Arrange
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "UsuarioMapTest").Options;
 
-        using (var context = new RegisterContext(options))
+        using (var context = new RegisterContext(options, Usings.GetLogerFactory()))
         {
             var builder = new ModelBuilder(new ConventionSet());
             var configuration = new UsuarioMap();

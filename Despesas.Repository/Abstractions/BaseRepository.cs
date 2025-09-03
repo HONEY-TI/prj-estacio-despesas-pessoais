@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Repository.Abastractions;
+
 public abstract class BaseRepository<T> where T : BaseDomain, new()
 {
     private DbContext Context { get; set; }

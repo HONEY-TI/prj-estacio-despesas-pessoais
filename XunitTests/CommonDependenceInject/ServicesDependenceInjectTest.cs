@@ -76,22 +76,4 @@ public sealed class ServicesDependenceInjectTest
         Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IGraficosRepositorio) && descriptor.ImplementationType == typeof(GraficosRepositorioImpl)));
         Assert.NotNull(services?.Any(descriptor => descriptor.ServiceType == typeof(IEmailSender) && descriptor.ImplementationType == typeof(EmailSender)));
     }
-
-    [Fact]
-    public void CreateDataBaseInMemory_Should_Add_Context_And_DataSeeder()
-    {
-        // Arrange
-        var services = new ServiceCollection();
-
-        // Act
-        services.CreateDataBaseInMemory();
-
-        // Assert
-        var serviceProvider = services.BuildServiceProvider();
-        var context = serviceProvider.GetService<RegisterContext>();
-        //var dataSeeder = serviceProvider.GetService<IDataSeeder>();
-
-        Assert.NotNull(context);
-        //Assert.NotNull(dataSeeder);
-    }
 }

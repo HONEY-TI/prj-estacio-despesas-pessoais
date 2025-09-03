@@ -10,7 +10,7 @@ public sealed class ImagemPerfilUsuarioMapTest
         // Arrange
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "ImagemPerfilUsuarioMapTest").Options;
 
-        using (var context = new RegisterContext(options))
+        using (var context = new RegisterContext(options, Usings.GetLogerFactory()))
         {
             var builder = new ModelBuilder(new ConventionSet());
             var configuration = new ImagemPerfilUsuarioMap();

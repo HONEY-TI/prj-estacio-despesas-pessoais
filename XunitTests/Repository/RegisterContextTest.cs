@@ -11,7 +11,7 @@ public sealed class RegisterContextTest
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "RegisterContext_Should_Have_DbSets").Options;
 
         // Act
-        using (var context = new RegisterContext(options))
+        using (var context = new RegisterContext(options, Usings.GetLogerFactory()))
         {
             // Assert
             Assert.NotNull(context.Acesso);
@@ -31,7 +31,7 @@ public sealed class RegisterContextTest
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "RegisterContext_Should_Apply_Configurations").Options;
 
         // Act
-        using (var context = new RegisterContext(options))
+        using (var context = new RegisterContext(options, Usings.GetLogerFactory()))
         {
             // Assert
             var model = context.Model;

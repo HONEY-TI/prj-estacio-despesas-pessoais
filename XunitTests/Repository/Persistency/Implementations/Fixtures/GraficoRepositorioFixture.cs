@@ -15,7 +15,7 @@ public sealed class GraficoRepositorioFixture : IDisposable
     public GraficoRepositorioFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Grafico Repo Database InMemory").Options;
-        Context = new RegisterContext(options);
+        Context = new RegisterContext(options, Usings.GetLogerFactory());
         UsuarioMock = MockUsuario.Instance.GetUsuario();
         Context.AddRange(UsuarioMock);
         Context.SaveChanges();

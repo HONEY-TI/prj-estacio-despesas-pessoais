@@ -11,7 +11,7 @@ public sealed class BaseRepositoryFixture : IDisposable
     public BaseRepositoryFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "BaseRepositoryFixturetDatabaseInMemory").Options;
-        Context = new RegisterContext(options);
+        Context = new RegisterContext(options, Usings.GetLogerFactory());
         Context.Database.EnsureDeleted();
         Context.Database.EnsureCreated();
 

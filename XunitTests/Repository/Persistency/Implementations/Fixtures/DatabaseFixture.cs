@@ -10,7 +10,7 @@ public sealed class DatabaseFixture : IDisposable
     public DatabaseFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "UsuarioRepositorioImplTestDatabaseInMemory").Options;
-        Context = new RegisterContext(options);
+        Context = new RegisterContext(options, Usings.GetLogerFactory());
         Context.Database.EnsureCreated();
 
         var lstAcesso = MockAcesso.Instance.GetAcessos();
