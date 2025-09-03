@@ -5,8 +5,7 @@ using Repository.Mapping;
 namespace Repository.Abastractions;
 
 public abstract class BaseContext<TContext> : DbContext where TContext : DbContext
-{
-    
+{    
     public DbSet<TipoCategoria> TipoCategoria { get; set; }
     public DbSet<PerfilUsuario> PerfilUsuario { get; set; }
 
@@ -17,5 +16,6 @@ public abstract class BaseContext<TContext> : DbContext where TContext : DbConte
         modelBuilder.ApplyConfiguration(new PerfilUsuarioMap());
         base.OnModelCreating(modelBuilder);
     }
+
     public BaseContext(DbContextOptions<TContext> options) : base(options) {}
 }

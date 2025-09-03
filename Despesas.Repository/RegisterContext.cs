@@ -6,7 +6,7 @@ using Repository.Mapping;
 
 namespace Repository;
 
-public sealed class RegisterContext : BaseContext<RegisterContext>
+public class RegisterContext : BaseContext<RegisterContext>
 {
     private readonly ILoggerFactory _loggerFactory;
 
