@@ -10,16 +10,16 @@ public class CategoriaMap : IEntityTypeConfiguration<Categoria>
         builder.ToTable(nameof(Categoria));
 
         builder.Property(c => c.Id)
-            .HasColumnType("binary(16)")
-            .HasConversion(v => v.ToByteArray(), v => new Guid(v))
-            .ValueGeneratedOnAdd().IsRequired();
+            .HasColumnType("varchar(36)")
+            .HasConversion(v => v.ToString(), v => new Guid(v))
+            .IsRequired();
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Descricao)
             .IsRequired(false)
             .HasMaxLength(100);
         builder.Property(ca => ca.UsuarioId)
-            .HasColumnType("binary(16)")
-            .HasConversion(v => v.ToByteArray(), v => new Guid(v))
+            .HasColumnType("varchar(36)")
+            .HasConversion(v => v.ToString(), v => new Guid(v))
             .IsRequired();
         builder.Property(ca => ca.TipoCategoriaId)            
             .IsRequired();

@@ -1,8 +1,9 @@
 ﻿using Domain.Entities;
+using Migrations.DataSeeders.Abstractions;
 using Repository;
 
 namespace Migrations.DataSeeders.Implementations;
-public class DataSeederDespesa : IDataSeeder
+public class DataSeederDespesa : IDataSeederDespesa
 {
     private readonly RegisterContext _context;
 
@@ -11,7 +12,7 @@ public class DataSeederDespesa : IDataSeeder
         _context = context;
     }
 
-    public void SeedData()
+    public void Insert()
     {
         if (!_context.Despesa.Any())
         {
@@ -2575,7 +2576,7 @@ public class DataSeederDespesa : IDataSeeder
 
                      Data = new DateTime(2025, 01, 01),
                      Descricao = "Conta de Água",
-                     Valor = 40.95m,
+                     Valor = 0.95m,
                      DataVencimento = new DateTime(2025, 01, 10),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2586,7 +2587,7 @@ public class DataSeederDespesa : IDataSeeder
 
                      Data = new DateTime(2025, 01, 02),
                      Descricao = "Aluguel",
-                     Valor = 800.95m,
+                     Valor = 8.95m,
                      DataVencimento = new DateTime(2025, 01, 15),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2597,7 +2598,7 @@ public class DataSeederDespesa : IDataSeeder
 
                      Data = new DateTime(2025, 01, 03),
                      Descricao = "Manutenção do Carro",
-                     Valor = 80.95m,
+                     Valor = 0.95m,
                      DataVencimento = new DateTime(2025, 01, 20),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2608,7 +2609,7 @@ public class DataSeederDespesa : IDataSeeder
 
                      Data = new DateTime(2025, 01, 04),
                      Descricao = "Material de Escritório",
-                     Valor = 30.95m,
+                     Valor = 0.95m,
                      DataVencimento = new DateTime(2025, 01, 25),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2618,7 +2619,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 01, 01),
                      Descricao = "Conta de Água",
-                     Valor = 6532.87m,
+                     Valor = 65.87m,
                      DataVencimento = new DateTime(2025, 01, 10),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2628,7 +2629,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 01, 02),
                      Descricao = "Aluguel",
-                     Valor = 4853.62m,
+                     Valor = 48.62m,
                      DataVencimento = new DateTime(2025, 01, 15),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2638,7 +2639,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 01, 03),
                      Descricao = "Manutenção do Carro",
-                     Valor = 9247.11m,
+                     Valor = 91.11m,
                      DataVencimento = new DateTime(2025, 01, 20),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2648,7 +2649,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 01, 04),
                      Descricao = "Material de Escritório",
-                     Valor = 9517.30m,
+                     Valor = 9.30m,
                      DataVencimento = new DateTime(2025, 01, 25),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2658,7 +2659,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 1, 1),
                      Descricao = "Conta de Luz",
-                     Valor = 7613.09m,
+                     Valor = 7.09m,
                      DataVencimento = new DateTime(2025, 1, 10),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2668,7 +2669,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 1, 2),
                      Descricao = "Compra de mantimentos",
-                     Valor = 9772.74m,
+                     Valor = 2.74m,
                      DataVencimento = new DateTime(2025, 1, 15),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2678,7 +2679,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 1, 3),
                      Descricao = "Serviço de Limpeza",
-                     Valor = 7388.55m,
+                     Valor = 8.55m,
                      DataVencimento = new DateTime(2025, 1, 20),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2688,7 +2689,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 1, 4),
                      Descricao = "Consulta Médica",
-                     Valor = 5192.64m,
+                     Valor = 2.64m,
                      DataVencimento = new DateTime(2025, 1, 25),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2698,7 +2699,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 1, 5),
                      Descricao = "Imposto de Renda",
-                     Valor = 9854.02m,
+                     Valor = 4.02m,
                      DataVencimento = new DateTime(2025, 1, 5),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2708,7 +2709,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 1, 6),
                      Descricao = "Passagem de Ônibus",
-                     Valor = 6028.80m,
+                     Valor = 628.80m,
                      DataVencimento = new DateTime(2025, 1, 10),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2718,7 +2719,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 1, 7),
                      Descricao = "Cinema",
-                     Valor = 8751.44m,
+                     Valor = 51.44m,
                      DataVencimento = new DateTime(2025, 1, 15),
                      Usuario = user,
                      UsuarioId = user.Id,
@@ -2728,7 +2729,7 @@ public class DataSeederDespesa : IDataSeeder
                  {
                      Data = new DateTime(2025, 1, 8),
                      Descricao = "Outros gastos",
-                     Valor = 7674.23m,
+                     Valor = 64.23m,
                      DataVencimento = new DateTime(2025, 1, 20),
                      Usuario = user,
                      UsuarioId = user.Id,

@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Repository;
 using Repository.CommonDependenceInject;
 using System.Reflection;
-using ConfigurationManager = System.Configuration.ConfigurationManager;
 using Microsoft.EntityFrameworkCore;
 using Migrations.DataSeeders.CommonDependenceInject;
 using Despesas.Application.CommonDependenceInject;
@@ -14,11 +13,10 @@ using Despesas.Application.CommonDependenceInject;
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        string connectionString = ConfigurationManager.ConnectionStrings["SqlConnectionString"]?.ConnectionString
-            ?? throw new Exception("Connection string 'MySqlConnectionString' não encontrada no app.config.");
+        string connectionString = context.Configuration.GetConnectionString("SqlConnectionString")
+              ?? throw new Exception("Connection string 'SqlConnectionString' não encontrada no appsettings.json.");
 
-        string environment = ConfigurationManager.AppSettings["Environment"] ?? "Production";
-
+        string environment = context.Configuration["Environment"] ?? "Production";
         Console.WriteLine($"Environment: {environment}");
         Console.WriteLine($"Connection String: {connectionString}");
 
@@ -29,8 +27,8 @@ var host = Host.CreateDefaultBuilder(args)
             )
         );
         
-        var cryptoKey = ConfigurationManager.AppSettings["CryptoConfigurations:Key"];
-        var cryptoAuthSalt = ConfigurationManager.AppSettings["CryptoConfigurations:AuthSalt"];
+        var cryptoKey = context.Configuration["CryptoConfigurations:Key"];
+        var cryptoAuthSalt = context.Configuration["CryptoConfigurations:AuthSalt"];
 
         if (string.IsNullOrEmpty(cryptoKey) || string.IsNullOrEmpty(cryptoAuthSalt))
             throw new Exception("CryptoConfigurations não encontradas no App.config.");

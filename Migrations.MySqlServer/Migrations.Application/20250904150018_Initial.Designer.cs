@@ -11,8 +11,8 @@ using Repository;
 namespace Migrations.MySqlServer.Migrations.Application
 {
     [DbContext(typeof(RegisterContext))]
-    [Migration("20250826172355_Profile_in_Usuario_as_LongBlob")]
-    partial class Profile_in_Usuario_as_LongText
+    [Migration("20250904150018_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,9 @@ namespace Migrations.MySqlServer.Migrations.Application
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Domain.Core.ValueObject.PerfilUsuario", b =>
@@ -78,9 +81,9 @@ namespace Migrations.MySqlServer.Migrations.Application
 
             modelBuilder.Entity("Domain.Entities.Acesso", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<string>("ExternalId")
                         .HasColumnType("varchar(255)");
@@ -103,9 +106,9 @@ namespace Migrations.MySqlServer.Migrations.Application
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<byte[]>("UsuarioId")
+                    b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.HasKey("Id");
 
@@ -124,20 +127,20 @@ namespace Migrations.MySqlServer.Migrations.Application
 
             modelBuilder.Entity("Domain.Entities.Categoria", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<int?>("TipoCategoriaId")
+                    b.Property<int>("TipoCategoriaId")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("UsuarioId")
+                    b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.HasKey("Id");
 
@@ -150,13 +153,13 @@ namespace Migrations.MySqlServer.Migrations.Application
 
             modelBuilder.Entity("Domain.Entities.Despesa", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
-                    b.Property<byte[]>("CategoriaId")
+                    b.Property<string>("CategoriaId")
                         .IsRequired()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<DateTime>("Data")
                         .ValueGeneratedOnAdd()
@@ -170,9 +173,9 @@ namespace Migrations.MySqlServer.Migrations.Application
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<byte[]>("UsuarioId")
+                    b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<decimal>("Valor")
                         .ValueGeneratedOnAdd()
@@ -190,9 +193,9 @@ namespace Migrations.MySqlServer.Migrations.Application
 
             modelBuilder.Entity("Domain.Entities.ImagemPerfilUsuario", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<string>("ContentType")
                         .IsRequired()
@@ -208,9 +211,9 @@ namespace Migrations.MySqlServer.Migrations.Application
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<byte[]>("UsuarioId")
+                    b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.HasKey("Id");
 
@@ -228,13 +231,13 @@ namespace Migrations.MySqlServer.Migrations.Application
 
             modelBuilder.Entity("Domain.Entities.Lancamento", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
-                    b.Property<byte[]>("CategoriaId")
+                    b.Property<string>("CategoriaId")
                         .IsRequired()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime");
@@ -248,17 +251,15 @@ namespace Migrations.MySqlServer.Migrations.Application
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<byte[]>("DespesaId")
-                        .IsRequired()
-                        .HasColumnType("binary(16)");
+                    b.Property<string>("DespesaId")
+                        .HasColumnType("varchar(36)");
 
-                    b.Property<byte[]>("ReceitaId")
-                        .IsRequired()
-                        .HasColumnType("binary(16)");
+                    b.Property<string>("ReceitaId")
+                        .HasColumnType("varchar(36)");
 
-                    b.Property<byte[]>("UsuarioId")
+                    b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<decimal>("Valor")
                         .HasColumnType("decimal(10, 2)");
@@ -278,14 +279,14 @@ namespace Migrations.MySqlServer.Migrations.Application
 
             modelBuilder.Entity("Domain.Entities.Receita", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
-                    b.Property<byte[]>("CategoriaId")
+                    b.Property<string>("CategoriaId")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<DateTime>("Data")
                         .ValueGeneratedOnAdd()
@@ -296,10 +297,10 @@ namespace Migrations.MySqlServer.Migrations.Application
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
-                    b.Property<byte[]>("UsuarioId")
+                    b.Property<string>("UsuarioId")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<decimal>("Valor")
                         .ValueGeneratedOnAdd()
@@ -317,9 +318,9 @@ namespace Migrations.MySqlServer.Migrations.Application
 
             modelBuilder.Entity("Domain.Entities.Usuario", b =>
                 {
-                    b.Property<byte[]>("Id")
+                    b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("binary(16)");
+                        .HasColumnType("varchar(36)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -334,8 +335,8 @@ namespace Migrations.MySqlServer.Migrations.Application
                     b.Property<int?>("PerfilUsuarioId")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("Profile")
-                        .HasColumnType("LONGBLOB");
+                    b.Property<string>("Profile")
+                        .HasColumnType("LONGTEXT");
 
                     b.Property<string>("SobreNome")
                         .IsRequired()
@@ -374,7 +375,9 @@ namespace Migrations.MySqlServer.Migrations.Application
                 {
                     b.HasOne("Domain.Core.ValueObject.TipoCategoria", "TipoCategoria")
                         .WithMany()
-                        .HasForeignKey("TipoCategoriaId");
+                        .HasForeignKey("TipoCategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.Usuario", "Usuario")
                         .WithMany("Categorias")
@@ -390,9 +393,9 @@ namespace Migrations.MySqlServer.Migrations.Application
             modelBuilder.Entity("Domain.Entities.Despesa", b =>
                 {
                     b.HasOne("Domain.Entities.Categoria", "Categoria")
-                        .WithMany()
+                        .WithMany("Despesas")
                         .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Usuario", "Usuario")
@@ -428,14 +431,12 @@ namespace Migrations.MySqlServer.Migrations.Application
                     b.HasOne("Domain.Entities.Despesa", "Despesa")
                         .WithMany()
                         .HasForeignKey("DespesaId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Domain.Entities.Receita", "Receita")
                         .WithMany()
                         .HasForeignKey("ReceitaId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Domain.Entities.Usuario", "Usuario")
                         .WithMany()
@@ -455,9 +456,9 @@ namespace Migrations.MySqlServer.Migrations.Application
             modelBuilder.Entity("Domain.Entities.Receita", b =>
                 {
                     b.HasOne("Domain.Entities.Categoria", "Categoria")
-                        .WithMany()
+                        .WithMany("Receitas")
                         .HasForeignKey("CategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Usuario", "Usuario")
@@ -478,6 +479,13 @@ namespace Migrations.MySqlServer.Migrations.Application
                         .HasForeignKey("PerfilUsuarioId");
 
                     b.Navigation("PerfilUsuario");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Categoria", b =>
+                {
+                    b.Navigation("Despesas");
+
+                    b.Navigation("Receitas");
                 });
 
             modelBuilder.Entity("Domain.Entities.Usuario", b =>

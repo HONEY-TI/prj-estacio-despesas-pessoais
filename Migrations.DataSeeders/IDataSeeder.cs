@@ -2,5 +2,6 @@
 
 public interface IDataSeeder
 {
-    public void SeedData();
+    public void Insert();
+    public void Update();
 }

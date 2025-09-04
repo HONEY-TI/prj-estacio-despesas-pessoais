@@ -8,22 +8,24 @@ public class LancamentoMap : IEntityTypeConfiguration<Lancamento>
     public void Configure(EntityTypeBuilder<Lancamento> builder)
     {
         builder.ToTable(nameof(Lancamento));
-        builder.Property(l => l.Id).HasColumnType("binary(16)")
-            .HasConversion(v => v.ToByteArray(), v => new Guid(v))
-            .ValueGeneratedOnAdd().IsRequired();
+        builder.Property(l => l.Id).HasColumnType("varchar(36)")
+            .HasConversion(v => v.ToString(), v => new Guid(v))
+            .IsRequired();
         builder.HasKey(l => l.Id);
-        builder.Property(l => l.UsuarioId).HasColumnType("binary(16)")
-            .HasConversion(v => v.ToByteArray(), v => new Guid(v)).IsRequired();
+        builder.Property(l => l.UsuarioId)
+            .HasColumnType("varchar(36)")
+            .HasConversion(v => v.ToString(), v => new Guid(v))
+            .IsRequired();
         builder.Property(l => l.DespesaId)
-            .HasColumnType("binary(16)")
+                .HasColumnType("varchar(36)")
             .HasConversion(
-            v => v.HasValue ? v.Value.ToByteArray() : null,
+            v => v.HasValue ? v.Value.ToString() : null,
             v => v != null ? new Guid(v) : (Guid?)null);
 
         builder.Property(l => l.ReceitaId)
-            .HasColumnType("binary(16)")
+            .HasColumnType("varchar(36)")
             .HasConversion(
-            v => v.HasValue ? v.Value.ToByteArray() : null,
+            v => v.HasValue ? v.Value.ToString() : null,
             v => v != null ? new Guid(v) : (Guid?)null);
 
         //MySqlServer
