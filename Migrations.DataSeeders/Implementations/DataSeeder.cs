@@ -1,28 +1,39 @@
-﻿using Repository;
-using EasyCryptoSalt;
+﻿using Migrations.DataSeeders.Abstractions;
 
 namespace Migrations.DataSeeders.Implementations;
 
 public class DataSeeder : IDataSeeder
 {
-    private readonly ICrypto _crypto;
+    private readonly IDataSeederAcesso _acessoSeeder;
+    private readonly IDataSeederDespesa _despesaSeeder;
+    private readonly IDataSeederReceita _receitaSeeder;
+    private readonly IDataSeederUpdateDespesa _updateDespesaSeeder;
+    private readonly IDataSeederUpdateReceita _updateReceitaSeeder;
 
-    private readonly RegisterContext _context;
-    public DataSeeder(RegisterContext context, ICrypto crypto)
+    public DataSeeder(
+        IDataSeederAcesso acessoSeeder,
+        IDataSeederDespesa despesaSeeder,
+        IDataSeederReceita receitaSeeder,
+        IDataSeederUpdateDespesa updateDespesaSeeder,
+        IDataSeederUpdateReceita updateReceitaSeeder)
     {
-        _context = context;
-        _crypto = crypto;
+        _acessoSeeder = acessoSeeder;
+        _despesaSeeder = despesaSeeder;
+        _receitaSeeder = receitaSeeder;
+        _updateDespesaSeeder = updateDespesaSeeder;
+        _updateReceitaSeeder = updateReceitaSeeder;
     }
 
-    public void SeedData()
+    public void Insert()
     {
-        try
-        {
+        _acessoSeeder.Insert();
+        _despesaSeeder.Insert();
+        _receitaSeeder.Insert();
+    }
 
-            new DataSeederAcesso(_context, _crypto).SeedData();
-            new DataSeederDespesa(_context).SeedData();
-            new DataSeederReceita(_context).SeedData();
-        }
-        catch { throw; }
+    public void Update()
+    {
+        _updateDespesaSeeder.Update();
+        _updateReceitaSeeder.Update();
     }
 }

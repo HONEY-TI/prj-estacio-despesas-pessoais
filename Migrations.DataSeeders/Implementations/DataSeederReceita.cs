@@ -1,9 +1,10 @@
 ﻿using Domain.Core.ValueObject;
 using Domain.Entities;
+using Migrations.DataSeeders.Abstractions;
 using Repository;
 
 namespace Migrations.DataSeeders.Implementations;
-public class DataSeederReceita : IDataSeeder
+public class DataSeederReceita : IDataSeederReceita
 {
     private readonly RegisterContext _context;
 
@@ -12,7 +13,7 @@ public class DataSeederReceita : IDataSeeder
         _context = context;
     }
 
-    public void SeedData()
+    public void Insert()
     {
         if (!_context.Receita.Any())
         {
@@ -1223,7 +1224,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 01, 05),
                     Descricao = "Salário mês de Janeiro",
-                    Valor = 10654.12m,
+                    Valor = 54.12m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Salário")).Id
@@ -1232,7 +1233,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 01, 20),
                     Descricao = "Investimento bitcoin",
-                    Valor = 13782.45m,
+                    Valor = 2.45m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Investimento")).Id
@@ -1241,7 +1242,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 02, 05),
                     Descricao = "Salário mês de Fevereiro",
-                    Valor = 11829.33m,
+                    Valor = 29.33m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Salário")).Id
@@ -1250,7 +1251,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 02, 20),
                     Descricao = "Investimento na poupança",
-                    Valor = 12478.67m,
+                    Valor = 78.67m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Investimento")).Id
@@ -1259,7 +1260,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 03, 05),
                     Descricao = "Salário mês de Março",
-                    Valor = 13001.21m,
+                    Valor = 13.21m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Salário")).Id
@@ -1268,7 +1269,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 03, 20),
                     Descricao = "Investimento Bitcoin",
-                    Valor = 17129.53m,
+                    Valor = 17.53m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Investimento")).Id
@@ -1277,7 +1278,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 04, 05),
                     Descricao = "Salário mês de Abril",
-                    Valor = 14256.90m,
+                    Valor = 14.90m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Salário")).Id
@@ -1286,7 +1287,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 04, 20),
                     Descricao = "Investimento Bitcoin",
-                    Valor = 15673.88m,
+                    Valor = 173.88m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Investimento")).Id
@@ -1295,7 +1296,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 05, 05),
                     Descricao = "Salário mês de Maio",
-                    Valor = 19384.44m,
+                    Valor = 14.44m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Salário")).Id
@@ -1304,7 +1305,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 05, 20),
                     Descricao = "Investimento na poupança",
-                    Valor = 17385.76m,
+                    Valor = 185.76m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Investimento")).Id
@@ -1313,7 +1314,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 06, 05),
                     Descricao = "Salário mês de Junho",
-                    Valor = 18123.93m,
+                    Valor = 83.93m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Salário")).Id
@@ -1322,7 +1323,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 06, 20),
                     Descricao = "Investimento em Bitcoin",
-                    Valor = 19762.33m,
+                    Valor = 162.33m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Investimento")).Id
@@ -1330,7 +1331,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 07, 05),
                     Descricao = "Salário mês de Julho",
-                    Valor = 20457.18m,
+                    Valor = 57.18m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Salário")).Id
@@ -1339,7 +1340,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 07, 20),
                     Descricao = "Investimento em ações",
-                    Valor = 18632.71m,
+                    Valor = 132.71m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Investimento")).Id
@@ -1348,7 +1349,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 08, 05),
                     Descricao = "Salário mês de Agosto",
-                    Valor = 21983.64m,
+                    Valor = 983.64m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Salário")).Id
@@ -1357,7 +1358,7 @@ public class DataSeederReceita : IDataSeeder
                 {
                     Data = new DateTime(2025, 08, 20),
                     Descricao = "Investimento renda fixa",
-                    Valor = 19476.12m,
+                    Valor = 76.12m,
                     Usuario = user,
                     UsuarioId = user.Id,
                     CategoriaId = _context.Categoria.FirstOrDefault(c => c.UsuarioId == user.Id && c.Descricao.Contains("Investimento")).Id

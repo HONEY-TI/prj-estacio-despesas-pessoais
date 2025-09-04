@@ -8,12 +8,13 @@ public class ImagemPerfilUsuarioMap : IEntityTypeConfiguration<ImagemPerfilUsuar
     public void Configure(EntityTypeBuilder<ImagemPerfilUsuario> builder)
     {
         builder.ToTable(nameof(ImagemPerfilUsuario));
-        builder.Property(i => i.Id).HasColumnType("binary(16)")
-            .HasConversion(v => v.ToByteArray(), v => new Guid(v))
-            .ValueGeneratedOnAdd().IsRequired();
+        builder.Property(i => i.Id).HasColumnType("varchar(36)")
+            .HasConversion(v => v.ToString(), v => new Guid(v))
+            .IsRequired();
         builder.HasKey(i => i.Id);
-        builder.Property(i => i.UsuarioId).HasColumnType("binary(16)")
-            .HasConversion(v => v.ToByteArray(), v => new Guid(v)).IsRequired();
+        builder.Property(i => i.UsuarioId).HasColumnType("varchar(36)")
+            .HasConversion(v => v.ToString(), v => new Guid(v))
+            .IsRequired();
         builder.HasIndex(i => i.UsuarioId).IsUnique(true);
         builder.HasIndex(i => i.Name).IsUnique(true);
         builder.Property(i => i.Name).IsRequired().HasMaxLength(50);

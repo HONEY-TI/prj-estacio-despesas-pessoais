@@ -1,10 +1,11 @@
 ﻿using Domain.Entities;
 using EasyCryptoSalt;
+using Migrations.DataSeeders.Abstractions;
 using Repository;
 
 namespace Migrations.DataSeeders.Implementations;
 
-public class DataSeederAcesso : IDataSeeder
+public class DataSeederAcesso : IDataSeederAcesso
 {
     private readonly ICrypto _crypto;
 
@@ -15,7 +16,7 @@ public class DataSeederAcesso : IDataSeeder
         _crypto = crypto;
     }
 
-    public void SeedData()
+    public void Insert()
     {
         var account = new Acesso();
         var usuario = new Usuario
@@ -53,5 +54,5 @@ public class DataSeederAcesso : IDataSeeder
 
         _context.Add(account);
         _context.SaveChanges();
-    }
+    }    
 }

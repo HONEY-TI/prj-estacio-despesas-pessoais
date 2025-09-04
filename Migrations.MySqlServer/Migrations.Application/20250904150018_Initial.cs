@@ -49,13 +49,14 @@ namespace Migrations.MySqlServer.Migrations.Application
                 name: "Usuario",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "binary(16)", nullable: false),
+                    Id = table.Column<string>(type: "varchar(36)", nullable: false),
                     Nome = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     SobreNome = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     Telefone = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: true),
                     Email = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     StatusUsuario = table.Column<ushort>(type: "smallint unsigned", nullable: false),
-                    PerfilUsuarioId = table.Column<int>(type: "int", nullable: true)
+                    PerfilUsuarioId = table.Column<int>(type: "int", nullable: true),
+                    Profile = table.Column<string>(type: "LONGTEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -72,10 +73,10 @@ namespace Migrations.MySqlServer.Migrations.Application
                 name: "Categoria",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "binary(16)", nullable: false),
+                    Id = table.Column<string>(type: "varchar(36)", nullable: false),
                     Descricao = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
-                    UsuarioId = table.Column<byte[]>(type: "binary(16)", nullable: false),
-                    TipoCategoriaId = table.Column<int>(type: "int", nullable: true)
+                    UsuarioId = table.Column<string>(type: "varchar(36)", nullable: false),
+                    TipoCategoriaId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,7 +85,8 @@ namespace Migrations.MySqlServer.Migrations.Application
                         name: "FK_Categoria_TipoCategoria_TipoCategoriaId",
                         column: x => x.TipoCategoriaId,
                         principalTable: "TipoCategoria",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Categoria_Usuario_UsuarioId",
                         column: x => x.UsuarioId,
@@ -98,10 +100,10 @@ namespace Migrations.MySqlServer.Migrations.Application
                 name: "ControleAcesso",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "binary(16)", nullable: false),
+                    Id = table.Column<string>(type: "varchar(36)", nullable: false),
                     Login = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
                     Senha = table.Column<string>(type: "longtext", nullable: false),
-                    UsuarioId = table.Column<byte[]>(type: "binary(16)", nullable: false),
+                    UsuarioId = table.Column<string>(type: "varchar(36)", nullable: false),
                     RefreshToken = table.Column<string>(type: "longtext", nullable: true),
                     RefreshTokenExpiry = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     ExternalProvider = table.Column<string>(type: "varchar(255)", nullable: true),
@@ -123,11 +125,11 @@ namespace Migrations.MySqlServer.Migrations.Application
                 name: "ImagemPerfilUsuario",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "binary(16)", nullable: false),
+                    Id = table.Column<string>(type: "varchar(36)", nullable: false),
                     Url = table.Column<string>(type: "varchar(255)", nullable: false),
                     Name = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: false),
                     ContentType = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false),
-                    UsuarioId = table.Column<byte[]>(type: "binary(16)", nullable: false)
+                    UsuarioId = table.Column<string>(type: "varchar(36)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -145,13 +147,13 @@ namespace Migrations.MySqlServer.Migrations.Application
                 name: "Despesa",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "binary(16)", nullable: false),
+                    Id = table.Column<string>(type: "varchar(36)", nullable: false),
                     Data = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     Descricao = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
                     Valor = table.Column<decimal>(type: "decimal(10,2)", nullable: false, defaultValue: 0m),
                     DataVencimento = table.Column<DateTime>(type: "datetime", nullable: true),
-                    UsuarioId = table.Column<byte[]>(type: "binary(16)", nullable: false),
-                    CategoriaId = table.Column<byte[]>(type: "binary(16)", nullable: false)
+                    UsuarioId = table.Column<string>(type: "varchar(36)", nullable: false),
+                    CategoriaId = table.Column<string>(type: "varchar(36)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -161,7 +163,7 @@ namespace Migrations.MySqlServer.Migrations.Application
                         column: x => x.CategoriaId,
                         principalTable: "Categoria",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Despesa_Usuario_UsuarioId",
                         column: x => x.UsuarioId,
@@ -174,12 +176,12 @@ namespace Migrations.MySqlServer.Migrations.Application
                 name: "Receita",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "binary(16)", nullable: false),
+                    Id = table.Column<string>(type: "varchar(36)", nullable: false),
                     Data = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     Descricao = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
                     Valor = table.Column<decimal>(type: "decimal(10,2)", nullable: false, defaultValue: 0m),
-                    UsuarioId = table.Column<byte[]>(type: "binary(16)", nullable: false),
-                    CategoriaId = table.Column<byte[]>(type: "binary(16)", nullable: false)
+                    UsuarioId = table.Column<string>(type: "varchar(36)", nullable: false),
+                    CategoriaId = table.Column<string>(type: "varchar(36)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -189,7 +191,7 @@ namespace Migrations.MySqlServer.Migrations.Application
                         column: x => x.CategoriaId,
                         principalTable: "Categoria",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Receita_Usuario_UsuarioId",
                         column: x => x.UsuarioId,
@@ -202,14 +204,14 @@ namespace Migrations.MySqlServer.Migrations.Application
                 name: "Lancamento",
                 columns: table => new
                 {
-                    Id = table.Column<byte[]>(type: "binary(16)", nullable: false),
+                    Id = table.Column<string>(type: "varchar(36)", nullable: false),
                     Valor = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Data = table.Column<DateTime>(type: "datetime", nullable: false),
                     Descricao = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true),
-                    UsuarioId = table.Column<byte[]>(type: "binary(16)", nullable: false),
-                    DespesaId = table.Column<byte[]>(type: "binary(16)", nullable: false),
-                    ReceitaId = table.Column<byte[]>(type: "binary(16)", nullable: false),
-                    CategoriaId = table.Column<byte[]>(type: "binary(16)", nullable: false),
+                    UsuarioId = table.Column<string>(type: "varchar(36)", nullable: false),
+                    DespesaId = table.Column<string>(type: "varchar(36)", nullable: true),
+                    ReceitaId = table.Column<string>(type: "varchar(36)", nullable: true),
+                    CategoriaId = table.Column<string>(type: "varchar(36)", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "datetime", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
@@ -276,8 +278,7 @@ namespace Migrations.MySqlServer.Migrations.Application
             migrationBuilder.CreateIndex(
                 name: "IX_ControleAcesso_ExternalProvider",
                 table: "ControleAcesso",
-                column: "ExternalProvider",
-                unique: true);
+                column: "ExternalProvider");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ControleAcesso_Login",
