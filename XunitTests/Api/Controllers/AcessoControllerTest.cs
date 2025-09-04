@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using __mock__.Entities;
-using Despesas.Backend.Controllers;
-using Despesas.Application.Dtos;
+﻿using __mock__.Entities;
 using Despesas.Application.Abstractions;
+using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Abstractions;
 using Despesas.Application.Dtos.Core;
+using Despesas.Backend.Controllers;
+using Despesas.GlobalException.CustomExceptions.Acesso;
+using Despesas.GlobalException.CustomExceptions.Core;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
+
 public sealed class AcessoControllerTest
 {
     private readonly Mock<IAcessoBusiness<AcessoDto, LoginDto>> _mockAcessoBusiness;
@@ -18,402 +22,224 @@ public sealed class AcessoControllerTest
         _acessoController = new AcessoController(_mockAcessoBusiness.Object);
     }
 
+    // ----- POST -----
     [Fact]
-    public async Task Post_With_ValidData_Returns_OkResult()
+    public async Task Post_With_ValidData_Returns_Ok()
     {
-        // Arrange
-        var acesso = AcessoFaker.Instance.GetNewFaker();
-        var acessoDto = AcessoFaker.Instance.GetNewFakerVM(acesso.Usuario);
-        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>()));
-
-        // Act
-        var result = await _acessoController.Post(acessoDto) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<OkObjectResult>(result);
-        var message = (bool?)result.Value;
-        Assert.True(message);
-    }
-
-    [Fact]
-    public async Task Post_With_ValidData_Returns_BadRequest()
-    {
-        // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
-        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Throws<Exception>();
+        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Returns(Task.CompletedTask);
 
-        // Act
-        var result = await _acessoController.Post(acessoDto) as ObjectResult;
+        var result = await _acessoController.Post(acessoDto) as OkObjectResult;
 
-        // Assert
         Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Não foi possível realizar o cadastro.", message);
+        Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+        Assert.True((bool)result.Value);
     }
 
     [Fact]
-    public async Task Post_With_Null_Telefone_Returns_BadRequest()
+    public async Task Post_With_Business_Exception_Returns_BadRequest()
     {
-        // Arrange
+        var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
+        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>()))
+            .ThrowsAsync(new AcessoException("Não foi possível realizar o cadastro.", 400));
+
+        var result = await Assert.ThrowsAsync<AcessoException>(() => _acessoController.Post(acessoDto));
+        Assert.Equal("Não foi possível realizar o cadastro.", result.Message);
+    }
+
+    [Fact]
+    public async Task Post_With_Telefone_Null_Throws_CampoObrigatorio()
+    {
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
         acessoDto.Telefone = string.Empty;
-        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Throws(new ArgumentException("Campo Telefone não pode ser em branco"));
+        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>()))
+            .ThrowsAsync(new CampoObrigatorioException("Telefone"));
 
-        // Act
-        var result = await _acessoController.Post(acessoDto) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Campo Telefone não pode ser em branco", message);
+        var ex = await Assert.ThrowsAsync<CampoObrigatorioException>(() => _acessoController.Post(acessoDto));
+        Assert.Equal("Campo Telefone não pode ser em branco ou nulo!", ex.Message);
     }
 
     [Fact]
-    public async Task Post_With_NUll_Email_Returns_BadRequest()
+    public async Task Post_With_Email_Null_Throws_CampoObrigatorio()
     {
-        // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
-        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Throws(new ArgumentException("Campo Login não pode ser em branco"));
         acessoDto.Email = string.Empty;
+        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>()))
+            .ThrowsAsync(new CampoObrigatorioException("Email"));
 
-        // Act
-        var result = await _acessoController.Post(acessoDto) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Campo Login não pode ser em branco", message);
+        var ex = await Assert.ThrowsAsync<CampoObrigatorioException>(() => _acessoController.Post(acessoDto));
+        Assert.Equal("Campo Email não pode ser em branco ou nulo!", ex.Message);
     }
 
     [Fact]
-    public async Task Post_With_InvalidEmail_Returns_BadRequest()
+    public async Task Post_With_InvalidEmail_Throws_EmailInvalidoException()
     {
-        // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
-        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Throws(new ArgumentException("Email inválido!"));
         acessoDto.Email = "email";
+        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>()))
+            .ThrowsAsync(new EmailInvalidoException());
 
-        // Act
-        var result = await _acessoController.Post(acessoDto) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Email inválido!", message);
+        await Assert.ThrowsAsync<EmailInvalidoException>(() => _acessoController.Post(acessoDto));
     }
 
     [Fact]
-    public async Task Post_With_NUll_Password_Returns_BadRequest()
+    public async Task Post_With_Senha_Null_Throws_CampoObrigatorio()
     {
-        // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
         acessoDto.Senha = string.Empty;
-        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Throws(new ArgumentException("Campo Senha não pode ser em branco ou nulo"));
-        // Act
-        var result = await _acessoController.Post(acessoDto) as ObjectResult;
+        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>()))
+            .ThrowsAsync(new CampoObrigatorioException("Senha"));
 
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Campo Senha não pode ser em branco ou nulo", message);
+        var ex = await Assert.ThrowsAsync<CampoObrigatorioException>(() => _acessoController.Post(acessoDto));
+        Assert.Equal("Campo Senha não pode ser em branco ou nulo!", ex.Message);
     }
 
     [Fact]
-    public async Task Post_With_NUll_ConfirmedPassword_Returns_BadRequest()
+    public async Task Post_With_ConfirmaSenha_Null_Throws_CampoObrigatorio()
     {
-        // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
-        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Throws(new ArgumentException("Campo Confirma Senha não pode ser em branco ou nulo"));
         acessoDto.ConfirmaSenha = string.Empty;
+        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>()))
+            .ThrowsAsync(new ConfirmaSenhaInvalidaException());
 
-        // Act
-        var result = await _acessoController.Post(acessoDto) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Campo Confirma Senha não pode ser em branco ou nulo", message);
+        var ex = await Assert.ThrowsAsync<ConfirmaSenhaInvalidaException>(() => _acessoController.Post(acessoDto));
+        Assert.Equal("Campo Confirma Senha não pode ser em branco ou nulo!", ex.Message);
     }
 
     [Fact]
-    public async Task Post_With_Password_Mismatch_Returns_BadRequest()
+    public async Task Post_With_PasswordMismatch_Throws_AcessoException()
     {
-        // Arrange
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
-        acessoDto.ConfirmaSenha = "senha Errada";
-        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>())).Throws(new ArgumentException("Senha e Confirma Senha são diferentes!"));
+        acessoDto.ConfirmaSenha = "senhaErrada";
+        _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>()))
+            .ThrowsAsync(new AcessoException("Senha e Confirma Senha são diferentes!", 400));
 
-        // Act
-        var result = await _acessoController.Post(acessoDto) as ObjectResult;
+        var ex = await Assert.ThrowsAsync<AcessoException>(() => _acessoController.Post(acessoDto));
+        Assert.Equal("Senha e Confirma Senha são diferentes!", ex.Message);
+    }
 
-        // Assert
+    // ----- SIGN IN -----
+    [Fact]
+    public async Task SignIn_With_ValidData_Returns_Ok()
+    {
+        var loginDto = new LoginDto { Email = "teste@teste.com", Senha = "password" };
+        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>()))
+            .ReturnsAsync(new AuthenticationDto { Authenticated = true });
+
+        var result = await _acessoController.SignIn(loginDto) as OkObjectResult;
+
         Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Senha e Confirma Senha são diferentes!", message);
+        Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+        Assert.True(((AuthenticationDto)result.Value).Authenticated);
     }
 
     [Fact]
-    public async Task SignIn_BadRequest_When_TryCatch_Throws_ArgumentException()
+    public async Task SignIn_With_InvalidCredentials_Throws_UsuarioInexistenteException()
     {
-        // Arrange
-        var loginVM = new LoginDto { Email = "teste@teste.com", Senha = "password" };
-        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Throws<ArgumentException>();
+        var loginDto = new LoginDto { Email = "email@invalido.com", Senha = "password" };
+        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>()))
+            .ThrowsAsync(new UsuarioInexistenteException());
 
-        // Act
-        var result = await _acessoController.SignIn(loginVM) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
+        await Assert.ThrowsAsync<UsuarioInexistenteException>(() => _acessoController.SignIn(loginDto));
     }
 
     [Fact]
-    public async Task SignIn_With_ValidData_Returns_ObjectResult()
+    public async Task SignIn_With_InvalidEmailFormat_Throws_EmailInvalidoException()
     {
-        // Arrange
-        var loginVM = new LoginDto { Email = "teste@teste.com", Senha = "password" };
-        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>())).Returns(Task.Run(() => new AuthenticationDto()));
+        var loginDto = new LoginDto { Email = "emailinvalido", Senha = "password" };
+        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>()))
+            .ThrowsAsync(new EmailInvalidoException());
 
-
-        // Act
-        var result = await _acessoController.SignIn(loginVM) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<OkObjectResult>(result);
-    }
-
-
-    [Fact]
-    public async Task SignIn_With_InvalidEmail_Returns_BadRequest_EmailInvalido()
-    {
-        // Arrange
-        var loginVM = new LoginDto { Email = "email@invalido.com", Senha = "password" };
-
-        // Act
-        var result = await _acessoController.SignIn(loginVM) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
+        await Assert.ThrowsAsync<EmailInvalidoException>(() => _acessoController.SignIn(loginDto));
     }
 
     [Fact]
-    public async Task SignIn_With_InvalidEmail_Returns_BadRequest_Login_Erro()
+    public async Task SignIn_With_InvalidPassword_Throws_SenhaInvalidaException()
     {
         // Arrange
-        var loginVM = new LoginDto { Email = "email", Senha = "password" };
+        var loginDto = new LoginDto { Email = "teste@teste.com", Senha = "senhaErrada" };
 
-        // Act
-        var result = await _acessoController.SignIn(loginVM) as ObjectResult;
+        // Simula que o usuário existe, mas a senha não confere
+        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<LoginDto>()))
+            .ThrowsAsync(new SenhaInvalidaException());
 
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Não foi possível realizar o login do usuário.", message);
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<SenhaInvalidaException>(() => _acessoController.SignIn(loginDto));
+        Assert.Equal("Senha inválida!", ex.Message);
     }
 
+    // ----- CHANGE PASSWORD -----
     [Fact]
-    public async Task ChangePassword_With_ValidData_Returns_OkResult()
+    public async Task ChangePassword_With_ValidData_Returns_Ok()
     {
-        // Arrange
-        var changePasswordVM = new ChangePasswordDto { Senha = "!12345", ConfirmaSenha = "!12345" };
+        var changePasswordDto = new ChangePasswordDto { Senha = "!12345", ConfirmaSenha = "!12345" };
         Usings.SetupBearerToken(Guid.NewGuid(), _acessoController);
-        _mockAcessoBusiness.Setup(b => b.ChangePassword(It.IsAny<Guid>(), "!12345"));
+        _mockAcessoBusiness.Setup(b => b.ChangePassword(It.IsAny<Guid>(), "!12345"))
+            .Returns(Task.CompletedTask);
 
-        // Act
-        var result = await _acessoController.ChangePassword(changePasswordVM) as ObjectResult;
+        var result = await _acessoController.ChangePassword(changePasswordDto) as OkObjectResult;
 
-        // Assert
         Assert.NotNull(result);
-        Assert.IsType<OkObjectResult>(result);
-        var message = (bool?)result.Value;
-        Assert.True(message);
+        Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+        Assert.True((bool)result.Value);
     }
 
     [Fact]
-    public async Task ChangePassword_With_NULL_Password_Returns_BadRequest()
+    public async Task ChangePassword_With_Null_Throws_BadRequest()
     {
-        // Arrange
-        var changePasswordVM = new ChangePasswordDto { Senha = null, ConfirmaSenha = "!12345" };
+        ChangePasswordDto? dto = null;
         Usings.SetupBearerToken(Guid.NewGuid(), _acessoController);
-        ChangePasswordDto? nullChangePasswordDto = null;
 
-        // Act
-        var result = await _acessoController.ChangePassword(nullChangePasswordDto) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Erro ao trocar senha tente novamente mais tarde ou entre em contato com nosso suporte.", message);
+        var ex = await Assert.ThrowsAsync<TrocaSenhaException>(async () => await _acessoController.ChangePassword(dto));
+        Assert.Equal("Erro ao trocar senha tente novamente mais tarde ou entre em contato com nosso suporte.", ex.Message);
     }
 
+    // ----- RECOVERY PASSWORD -----
     [Fact]
-    public async Task ChangePassword_With_NULL_ConfirmedPassword_Returns_BadRequest()
+    public async Task RecoveryPassword_With_ValidEmail_Returns_Ok()
     {
-        // Arrange
-        var changePasswordVM = new ChangePasswordDto { Senha = "!12345", ConfirmaSenha = null };
-        Usings.SetupBearerToken(Guid.NewGuid(), _acessoController);
-        ChangePasswordDto? nullChangePasswordDto = null;
-
-        // Act
-        var result = await _acessoController.ChangePassword(nullChangePasswordDto) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Erro ao trocar senha tente novamente mais tarde ou entre em contato com nosso suporte.", message);
-    }
-
-    [Fact]
-    public async Task ChangePassword_With_ValidData_Returns_BadRequest()
-    {
-        // Arrange
-        var changePasswordVM = new ChangePasswordDto { Senha = "!12345", ConfirmaSenha = "!12345" };
-        var idUsuario = Guid.NewGuid();
-        Usings.SetupBearerToken(idUsuario, _acessoController);
-        _mockAcessoBusiness.Setup(b => b.ChangePassword(It.IsAny<Guid>(), "!12345")).Throws(new Exception());
-
-        // Act
-        var result = await _acessoController.ChangePassword(changePasswordVM) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Erro ao trocar senha tente novamente mais tarde ou entre em contato com nosso suporte.", message);
-    }
-
-    [Fact]
-    public async Task RecoveryPassword_WithValidEmail_ReturnsOkResult()
-    {
-        // Arrange
         var email = "teste@teste.com";
-        _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>())).Callback(() => { });
-        _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>()));
+        _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
         Usings.SetupBearerToken(Guid.NewGuid(), _acessoController);
 
-        // Act
-        var result = await _acessoController.RecoveryPassword(email) as ObjectResult;
+        var result = await _acessoController.RecoveryPassword(email) as OkObjectResult;
 
-        // Assert
         Assert.NotNull(result);
-        Assert.IsType<OkObjectResult>(result);
-        var message = (bool?)result.Value;
-        Assert.True(message);
+        Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+        Assert.True((bool)result.Value);
     }
 
     [Fact]
-    public async Task RecoveryPassword_With_NUll_Email_Returns_BadRequest()
+    public async Task RecoveryPassword_With_InvalidEmail_Throws_Exception()
     {
-        // Arrange
-        var email = string.Empty;
-        _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>())).Throws<Exception>();
-        // Act
-        var result = await _acessoController.RecoveryPassword(email) as NoContentResult;
+        var email = "emailinvalido@teste.com";
+        _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>()))
+            .ThrowsAsync(new UsuarioInexistenteException());
 
-        // Assert
+        await Assert.ThrowsAsync<UsuarioInexistenteException>(() => _acessoController.RecoveryPassword(email));
+    }
+
+    // ----- REFRESH -----
+    [Fact]
+    public async Task Refresh_With_ValidToken_Returns_Ok()
+    {
+        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>()))
+            .ReturnsAsync(new AuthenticationDto());
+
+        var result = await _acessoController.Refresh("fakeToken") as OkObjectResult;
+
         Assert.NotNull(result);
-        Assert.IsType<NoContentResult>(result);
+        Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
     }
 
     [Fact]
-    public async Task RecoveryPassword_Lenght_Bigger_Than_256_Email_Returns_BadRequest()
+    public async Task Refresh_With_InvalidToken_Throws_AcessoException()
     {
-        // Arrange
-        var email = new string('A', 257);
-        _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>())).Throws<Exception>();
+        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>()))
+            .ThrowsAsync(new AcessoException("Token inválido", 400));
 
-        // Act
-        var result = await _acessoController.RecoveryPassword(email) as NoContentResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<NoContentResult>(result);
-    }
-
-    [Fact]
-    public async Task RecoveryPassword_With_Invalid_Email_Returns_BadRequest()
-    {
-        // Arrange
-        var email = "email Invalido";
-        _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>())).Throws<Exception>();
-        // Act
-        var result = await _acessoController.RecoveryPassword(email) as NoContentResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<NoContentResult>(result);
-    }
-
-    [Fact]
-    public async Task RecoveryPassword_WithInvalid_Email_Returns_BadRequest_Email_Nao_Enviado()
-    {
-        // Arrange
-        var email = "email@invalido.com";
-        _mockAcessoBusiness.Setup(b => b.RecoveryPassword(It.IsAny<string>())).Throws<Exception>();
-
-        // Act
-        var result = await _acessoController.RecoveryPassword(email) as NoContentResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<NoContentResult>(result);
-    }
-
-    [Fact]
-    public async Task Refresh_With_ValidData_Returns_OkResult()
-    {
-        // Arrange
-        var authenticationDto = new AuthenticationDto();
-        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(Task.Run(() => new AuthenticationDto()));
-
-        // Act
-        var result = await _acessoController.Refresh("fakeRefreshToken") as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<OkObjectResult>(result);
-    }
-
-    [Fact]
-    public async Task Refresh_With_InvalidData_Returns_BadRequest()
-    {
-        // Arrange
-        var authenticationDto = new AuthenticationDto();
-        _acessoController.ModelState.AddModelError("Key", "Error");
-        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(() => null);
-        // Act
-        var result = await _acessoController.Refresh("fakeRefreshToken") as NoContentResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(204, result.StatusCode);
-    }
-
-    [Fact]
-    public async Task Refresh_With_Null_Result_Returns_BadRequest()
-    {
-        // Arrange
-        var authenticationDto = new AuthenticationDto();
-        _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>())).Returns(() => null);
-
-        // Act
-        var result = await _acessoController.Refresh("fakeRefreshToken") as NoContentResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(204, result.StatusCode);
+        var ex = await Assert.ThrowsAsync<AcessoException>(() => _acessoController.Refresh("fakeToken"));
+        Assert.Equal("Token inválido", ex.Message);
     }
 }

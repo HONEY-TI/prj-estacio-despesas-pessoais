@@ -9,6 +9,7 @@ using Despesas.Application.Dtos.Core;
 using Despesas.Application.Dtos.Profile;
 using Despesas.Application.Implementations;
 using Despesas.Backend.CommonDependenceInject;
+using Despesas.GlobalException.CustomExceptions.Acesso;
 using Despesas.Infrastructure.Email;
 using EasyCryptoSalt;
 using Microsoft.AspNetCore.Builder;
@@ -87,7 +88,7 @@ public sealed class AcessoBusinessImplTest
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).ReturnsAsync(() => null);
 
         // Act & Assert 
-        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await _acessoBusiness.ValidateCredentials(loginDto));
+        var exception = await Assert.ThrowsAsync<UsuarioInexistenteException>(async () => await _acessoBusiness.ValidateCredentials(loginDto));
         Assert.Contains("Usuário Inexistente!", exception.Message);
     }
 
@@ -102,7 +103,7 @@ public sealed class AcessoBusinessImplTest
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).ReturnsAsync(acesso);
 
         // Act && Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await _acessoBusiness.ValidateCredentials(new LoginDto { Email = acesso.Login, Senha = acesso.Senha }));
+        var exception = await Assert.ThrowsAsync<UsuarioInativoException>(async () => await _acessoBusiness.ValidateCredentials(new LoginDto { Email = acesso.Login, Senha = acesso.Senha }));
         Assert.Contains("Usuário Inativo!", exception.Message);
     }
 
@@ -121,7 +122,7 @@ public sealed class AcessoBusinessImplTest
         _repositorioMock.Setup(repo => repo.Find(It.IsAny<Expression<Func<Acesso, bool>>>())).ReturnsAsync(() => null);
 
         // Act & Assert 
-        var exception = await Assert.ThrowsAsync<ArgumentException>(async () =>  await _acessoBusiness.ValidateCredentials(loginDto));
+        var exception = await Assert.ThrowsAsync<UsuarioInexistenteException>(async () =>  await _acessoBusiness.ValidateCredentials(loginDto));
         Assert.Contains("Usuário Inexistente!", exception.Message);
 
     }
@@ -235,7 +236,7 @@ public sealed class AcessoBusinessImplTest
         _repositorioMock.Setup(repo => repo.FindByRefreshToken(It.IsAny<string>())).ReturnsAsync(baseLogin);
 
         // Act && Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await _acessoBusiness.ValidateCredentials("expired_refresh_token"));
+        var exception = await Assert.ThrowsAsync<RefreshTokenInvalidoException>(async () => await _acessoBusiness.ValidateCredentials("expired_refresh_token"));
                 
         _repositorioMock.Verify(repo => repo.RevokeRefreshToken(idUsuario), Times.Once);
         Assert.Equal("Refresh Token Inválido!", exception.Message);
@@ -248,7 +249,7 @@ public sealed class AcessoBusinessImplTest
         var refreshToken = "invalid_refresh_token";
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(
+        var exception = await Assert.ThrowsAsync<RefreshTokenInvalidoException>(
             async () => await _acessoBusiness.ValidateCredentials(refreshToken)
         );
 
@@ -263,7 +264,7 @@ public sealed class AcessoBusinessImplTest
         _repositorioMock.Setup(repo => repo.FindByRefreshToken(It.IsAny<string>())).ReturnsAsync(mockAcesso);
 
         // Act && Assert
-        var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await _acessoBusiness.ValidateCredentials("invalid_refresh_token"));
+        var exception = await Assert.ThrowsAsync<RefreshTokenInvalidoException>(async () => await _acessoBusiness.ValidateCredentials("invalid_refresh_token"));
         _repositorioMock.Verify(repo => repo.RevokeRefreshToken(It.IsAny<Guid>()), Times.Once);
         Assert.Equal("Refresh Token Inválido!", exception.Message);
     }

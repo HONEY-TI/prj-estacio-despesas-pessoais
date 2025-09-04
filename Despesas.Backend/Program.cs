@@ -1,11 +1,11 @@
 ﻿using CrossCutting.CommonDependenceInject;
 using Despesas.Application.CommonDependenceInject;
 using Despesas.Backend.CommonDependenceInject;
-using Repository.CommonDependenceInject;
 using Despesas.Infrastructure.CommonDependenceInject;
 using Microsoft.EntityFrameworkCore;
 using Repository;
-
+using Repository.CommonDependenceInject;
+using Despesas.GlobalException.CommonDependenceInject;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,6 +71,9 @@ if (builder.Environment.IsStaging())
 }
 
 var app = builder.Build();
+
+//Configure Global Execeptions
+app.UseGlobalExceptionHandler();
 
 // Configure the HTTP request pipeline
 app.UseHsts();

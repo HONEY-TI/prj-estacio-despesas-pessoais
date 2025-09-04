@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "erros-detected", "erros-det
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dump", "dump", "{C493C238-4E3F-4784-9EE6-5829DFB3C9AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Despesas.GlobalException", "Despesas.GlobalException\Despesas.GlobalException.csproj", "{90CC5C05-BD07-462B-8A35-1636F0BC223A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{2A2470E1-C4C9-45B7-BA14-5AA87DF3930A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A2470E1-C4C9-45B7-BA14-5AA87DF3930A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A2470E1-C4C9-45B7-BA14-5AA87DF3930A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90CC5C05-BD07-462B-8A35-1636F0BC223A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90CC5C05-BD07-462B-8A35-1636F0BC223A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90CC5C05-BD07-462B-8A35-1636F0BC223A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90CC5C05-BD07-462B-8A35-1636F0BC223A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

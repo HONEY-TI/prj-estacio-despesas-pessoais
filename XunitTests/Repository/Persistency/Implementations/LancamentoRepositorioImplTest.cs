@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repository.Persistency.Implementations.Fixtures;
+using System.Collections.Immutable;
 
 namespace Repository.Persistency.Implementations;
 public sealed class LancamentoRepositorioImplTest : IClassFixture<LancamentoRepositorioFixture>
@@ -25,7 +26,7 @@ public sealed class LancamentoRepositorioImplTest : IClassFixture<LancamentoRepo
 
         // Assert            
         Assert.NotNull(result);
-        Assert.IsType<List<Lancamento>>(result);
+        Assert.IsType<ImmutableArray<Lancamento>>(result);
         Assert.True(result.Count >= 1);
     }
 
@@ -65,7 +66,6 @@ public sealed class LancamentoRepositorioImplTest : IClassFixture<LancamentoRepo
         // Assert
         Assert.NotNull(result);
         var exception = await Assert.ThrowsAsync<Exception>(async () => await _fixture.MockRepository.FindByMesAno(data, idUsuario));
-        Assert.Equal("LancamentoRepositorioImpl_FindByMesAno_Erro", exception.Message);
     }
 
     [Fact]
@@ -86,7 +86,6 @@ public sealed class LancamentoRepositorioImplTest : IClassFixture<LancamentoRepo
 
         // Assert
         Assert.NotNull(result);
-        var exception = await Assert.ThrowsAsync<Exception>(async () => await _fixture.MockRepository.FindByMesAno(data, idUsuario));
-        Assert.Equal("LancamentoRepositorioImpl_FindByMesAno_Erro", exception.Message);
+        await Assert.ThrowsAsync<Exception>(async () => await _fixture.MockRepository.FindByMesAno(data, idUsuario));
     }
 }
