@@ -1,6 +1,6 @@
 ﻿using Despesas.Application.Dtos.Abstractions;
 
-namespace Domain.Entities;
+namespace Domain;
 public sealed class AuthResponseTest
 {
     [Theory]

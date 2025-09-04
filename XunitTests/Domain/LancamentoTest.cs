@@ -1,4 +1,4 @@
-﻿namespace Domain.Entities;
+﻿namespace Domain;
 public sealed class LancamentoTest
 {
     [Theory]

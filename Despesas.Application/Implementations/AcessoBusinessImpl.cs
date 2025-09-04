@@ -17,8 +17,8 @@ using System.Security.Claims;
 using System.Text.RegularExpressions;
 using static Domain.Core.ValueObject.PerfilUsuario;
 
-
 namespace Despesas.Application.Implementations;
+
 public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLogin> where DtoCa : AcessoDto where DtoLogin : LoginDto, new()
 {
     private readonly ICrypto _crypto;
@@ -94,7 +94,7 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
     {
         var usuario = _mapper.Map<Usuario>(acessoDto);
         usuario = new Usuario().CreateUsuario(usuario);
-        Acesso acesso = acessoDto != null ? _mapper.Map<Acesso>(acessoDto) : new Acesso();
+        Acesso acesso = _mapper.Map<Acesso>(acessoDto);
         acesso.CreateAccount(usuario, _crypto.Encrypt(acessoDto.Senha));
         await _repositorio.Create(acesso);
     }

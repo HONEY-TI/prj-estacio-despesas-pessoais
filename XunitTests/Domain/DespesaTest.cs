@@ -1,11 +1,11 @@
-﻿namespace Domain.Entities;
+﻿namespace Domain;
 public sealed class DespesaTest
 {
     [Theory]
     [InlineData("Descrição 1", 10.0)]
     [InlineData("Descrição 2", 0.0)]
     [InlineData("Descrição 3", 9.5)]
-    public void Despesa_Should_Set_Properties_Correctly(string descricao, Decimal valor)
+    public void Despesa_Should_Set_Properties_Correctly(string descricao, decimal valor)
     {
         var id = Guid.NewGuid();
         var usuarioId = Guid.NewGuid();

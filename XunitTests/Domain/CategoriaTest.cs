@@ -1,7 +1,7 @@
 ﻿using __mock__.Entities;
 using Domain.Core.ValueObject;
 
-namespace Domain.Entities;
+namespace Domain;
 public sealed class CategoriaTest
 {
     [Theory]
