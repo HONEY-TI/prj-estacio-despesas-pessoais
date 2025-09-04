@@ -14,10 +14,17 @@ public class LancamentoMap : IEntityTypeConfiguration<Lancamento>
         builder.HasKey(l => l.Id);
         builder.Property(l => l.UsuarioId).HasColumnType("binary(16)")
             .HasConversion(v => v.ToByteArray(), v => new Guid(v)).IsRequired();
-        builder.Property(l => l.DespesaId).HasColumnType("binary(16)")
-            .HasConversion(v => v.ToByteArray(), v => new Guid(v));
-        builder.Property(l => l.ReceitaId).HasColumnType("binary(16)")
-            .HasConversion(v => v.ToByteArray(), v => new Guid(v));
+        builder.Property(l => l.DespesaId)
+            .HasColumnType("binary(16)")
+            .HasConversion(
+            v => v.HasValue ? v.Value.ToByteArray() : null,
+            v => v != null ? new Guid(v) : (Guid?)null);
+
+        builder.Property(l => l.ReceitaId)
+            .HasColumnType("binary(16)")
+            .HasConversion(
+            v => v.HasValue ? v.Value.ToByteArray() : null,
+            v => v != null ? new Guid(v) : (Guid?)null);
 
         //MySqlServer
         builder.Property(m => m.Data).HasColumnType("datetime").IsRequired();

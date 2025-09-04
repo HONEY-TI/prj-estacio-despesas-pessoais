@@ -33,7 +33,7 @@ public class LancamentoRepositorioImpl : ILancamentoRepositorio
                 Valor = d.Valor,
                 Despesa = new Despesa { Id = d.Id, Descricao = d.Descricao },
                 Receita = null,
-                ReceitaId = Guid.Empty
+                ReceitaId = null
             })
             .ToListAsync();
 
@@ -53,7 +53,7 @@ public class LancamentoRepositorioImpl : ILancamentoRepositorio
                 Valor = r.Valor,
                 Despesa = null,
                 Receita = new Receita { Id = r.Id, Descricao = r.Descricao },
-                DespesaId = Guid.Empty
+                DespesaId = null
             })
             .ToListAsync();
 

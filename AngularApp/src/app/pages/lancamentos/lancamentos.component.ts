@@ -70,7 +70,7 @@ export class LancamentosComponent implements OnInit {
 
   private parseToLancamentosData(lancamentos: ILancamento[]): LancamentoDataSet[] {
     return lancamentos.map((lancamento: ILancamento) => ({
-      id: lancamento.idDespesa === 0 ? lancamento.idReceita : lancamento.idDespesa,
+      id: lancamento.idDespesa === null ? lancamento.idReceita : lancamento.idDespesa,
       data: lancamento.data,
       tipoCategoria: lancamento.tipoCategoria,
       categoria: lancamento.categoria,

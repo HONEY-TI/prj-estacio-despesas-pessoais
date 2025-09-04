@@ -20,7 +20,7 @@ export class CustomInterceptor implements HttpInterceptor {
   constructor(
     private tokenService: TokenStorageService,
     private authService: AuthService,
-    private modalService: NgbModal) {}
+    private modalService: NgbModal) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.showLoader();
@@ -41,6 +41,10 @@ export class CustomInterceptor implements HttpInterceptor {
     );
   }
 
+  private conolseLog = (error) :void => {
+    console.log(error);
+  }
+
   /**
    * 🔹 Trata apenas erros normais (400, 403, 404 etc.)
    */
@@ -48,7 +52,11 @@ export class CustomInterceptor implements HttpInterceptor {
     if (error.ok === false && error.status === 0) return throwError(() => 'Erro de conexão, tente mais tarde.');
     if (error.status === 400) return throwError(() => error.error);
     if (error.status === 403) return throwError(() => 'Acesso não autorizado!');
-    if (error.status === 404) { 
+    if (error.status === 500) {
+      this.conolseLog(error.message);
+      return throwError(() => error.error);
+    };
+    if (error.status === 404) {
       this.tokenService.signOut();
       return throwError(() => 'Recurso não encontrado.');
     }
