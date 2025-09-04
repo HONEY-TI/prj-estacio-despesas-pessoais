@@ -1,4 +1,5 @@
 ﻿using Despesas.GlobalException.CustomExceptions.Acesso;
+using Despesas.GlobalException.CustomExceptions.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
@@ -33,10 +34,14 @@ public class GlobalExceptionMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro inesperado");
-
-            await HandleExceptionAsync(context, (int)HttpStatusCode.InternalServerError,
-                "Ocorreu um erro inesperado. Tente novamente mais tarde.");
+            // Verifica se é uma exceção do EF Core / repositório
+            if (!await EfCoreExceptionHandler.HandleAsync(context, ex, _logger))
+            {
+                // Qualquer outra exceção inesperada
+                _logger.LogError(ex, "Erro inesperado");
+                await HandleExceptionAsync(context, StatusCodes.Status500InternalServerError,
+                    "Ocorreu um erro inesperado. Tente novamente mais tarde.");
+            }
         }
     }
 
