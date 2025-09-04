@@ -44,6 +44,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Despesas.Backend\Despesas.Backend.csproj" />
 		<ProjectReference Include="..\Despesas.Domain\Despesas.Domain.csproj" />
+		<ProjectReference Include="..\Despesas.GlobalException\Despesas.GlobalException.csproj" />
 		<ProjectReference Include="..\Despesas.Infrastructure\Despesas.Infrastructure.csproj" />
 		<ProjectReference Include="..\Despesas.Repository\Despesas.Repository.csproj" />
 		<ProjectReference Include="..\Migrations.DataSeeders\Migrations.DataSeeders.csproj" />
