@@ -14,6 +14,5 @@ public class LancamentoProfile : AutoMapper.Profile
             .ForMember(dest => dest.TipoCategoria, opt => opt.MapFrom(src => src.Categoria.TipoCategoria.Name))
             .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.ReceitaId == null ? src.Despesa.Descricao : src.Receita.Descricao))
             .ReverseMap();
-
     }
 }
