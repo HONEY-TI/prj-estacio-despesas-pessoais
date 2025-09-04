@@ -59,8 +59,8 @@ export class LoginComponent implements OnInit {
         }
       }),
       catchError((error) => {
-        if (error && typeof error.message === 'string') {
-          throw (error.message);
+        if (error && typeof error.error === 'string') {
+          throw (error.error);
         }
         throw (error);
       })
