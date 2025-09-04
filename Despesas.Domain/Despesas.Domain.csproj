@@ -6,6 +6,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Despesas.GlobalException\Despesas.GlobalException.csproj" PrivateAssets="none" ReferenceOutputAssembly="true" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<None Include="..\.editorconfig" Link=".editorconfig">
 			<DependentUpon>$(MSBuildProjectDirectory)</DependentUpon>
 		</None>

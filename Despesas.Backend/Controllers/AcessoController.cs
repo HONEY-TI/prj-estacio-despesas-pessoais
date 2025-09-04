@@ -1,13 +1,15 @@
 ﻿using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Core;
+using Despesas.Backend.Controllers.Abstractions;
 using Despesas.GlobalException.CustomExceptions.Acesso;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Despesas.Backend.Controllers;
 
-public class AcessoController : AuthController
+[Route("api/[controller]")]
+public class AcessoController : UnitControllerBase
 {
     private readonly IAcessoBusiness<AcessoDto, LoginDto> _acessoBusiness;
 

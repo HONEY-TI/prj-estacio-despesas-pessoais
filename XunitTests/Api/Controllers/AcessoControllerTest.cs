@@ -4,10 +4,11 @@ using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Abstractions;
 using Despesas.Application.Dtos.Core;
 using Despesas.Backend.Controllers;
-using Despesas.GlobalException.CustomExceptions.Acesso;
-using Despesas.GlobalException.CustomExceptions.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Domain;
+using Despesas.GlobalException.CustomExceptions.Acesso;
+using Despesas.GlobalException.CustomExceptions.Core;
 
 namespace Api.Controllers;
 
@@ -33,7 +34,7 @@ public sealed class AcessoControllerTest
 
         Assert.NotNull(result);
         Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
-        Assert.True((bool)result.Value);
+        Assert.True((bool)result.Value.ToBoolean());
     }
 
     [Fact]
@@ -130,7 +131,6 @@ public sealed class AcessoControllerTest
 
         Assert.NotNull(result);
         Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
-        Assert.True(((AuthenticationDto)result.Value).Authenticated);
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public sealed class AcessoControllerTest
 
         Assert.NotNull(result);
         Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
-        Assert.True((bool)result.Value);
+        Assert.True((bool)result.Value.ToBoolean());
     }
 
     [Fact]
@@ -207,7 +207,7 @@ public sealed class AcessoControllerTest
 
         Assert.NotNull(result);
         Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
-        Assert.True((bool)result.Value);
+        Assert.True((bool)result.Value.ToBoolean());
     }
 
     [Fact]

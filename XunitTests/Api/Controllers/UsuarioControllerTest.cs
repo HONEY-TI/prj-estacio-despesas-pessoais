@@ -14,8 +14,7 @@ public sealed class UsuarioControllerTest
     private Mock<IUsuarioBusiness<UsuarioDto>> _mockUsuarioBusiness;
     private UsuarioController _usuarioController;
     private List<UsuarioDto> _usuarioDtos;
-    private UsuarioDto administrador;
-    private UsuarioDto usuarioNormal;
+        private UsuarioDto _usuarioNormal;
     private Mapper _mapper;
 
     public UsuarioControllerTest()
@@ -24,8 +23,7 @@ public sealed class UsuarioControllerTest
         _usuarioController = new UsuarioController(_mockUsuarioBusiness.Object);
         var usuarios = UsuarioFaker.Instance.GetNewFakersUsuarios(20);
         _mapper = new Mapper(new MapperConfiguration(cfg => { cfg.AddProfile<UsuarioProfile>(); }));
-        administrador = _mapper.Map<UsuarioDto>(usuarios.FindAll(u => u.PerfilUsuario == PerfilUsuario.Perfil.Admin).First());
-        usuarioNormal = _mapper.Map<UsuarioDto>(usuarios.FindAll(u => u.PerfilUsuario == PerfilUsuario.Perfil.User).First());
+        _usuarioNormal = _mapper.Map<UsuarioDto>(usuarios.FindAll(u => u.PerfilUsuario == PerfilUsuario.Perfil.User).First());
         _usuarioDtos = _mapper.Map<List<UsuarioDto>>(usuarios);
     }
 
@@ -159,7 +157,7 @@ public sealed class UsuarioControllerTest
     public async Task Put_Should_Returns_OkObjectResult_with_Empty_Result_When_Usuario_IsNull()
     {
         // Arrange
-        var usuarioDto = usuarioNormal;
+        var usuarioDto = _usuarioNormal;
         Guid idUsuario = usuarioDto.Id.Value;
         Usings.SetupBearerToken(idUsuario, _usuarioController);
         _mockUsuarioBusiness.Setup(business => business.Update(It.IsAny<UsuarioDto>())).Throws(new ArgumentException("Usuário não encontrado!"));

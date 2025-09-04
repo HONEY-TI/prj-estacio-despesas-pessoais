@@ -52,8 +52,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Despesas.Application\Despesas.Application.csproj" />
-	  <ProjectReference Include="..\Despesas.GlobalException\Despesas.GlobalException.csproj" />
+	  <ProjectReference Include="..\Despesas.Application\Despesas.Application.csproj" />	  
 	</ItemGroup>
 
 	<PropertyGroup>
