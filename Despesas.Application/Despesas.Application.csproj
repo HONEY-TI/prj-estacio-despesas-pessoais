@@ -17,7 +17,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Despesas.CrossCutting\Despesas.CrossCutting.csproj" />
 		<ProjectReference Include="..\Despesas.Domain\Despesas.Domain.csproj" />
-		<ProjectReference Include="..\Despesas.GlobalException\Despesas.GlobalException.csproj" />
 		<ProjectReference Include="..\Despesas.Infrastructure\Despesas.Infrastructure.csproj" />
 		<ProjectReference Include="..\Despesas.Repository\Despesas.Repository.csproj" />
 	</ItemGroup>
