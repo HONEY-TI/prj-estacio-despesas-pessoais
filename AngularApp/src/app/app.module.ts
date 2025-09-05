@@ -26,7 +26,7 @@ import { DespesasModule } from './pages/despesas/despesas.module';
 import { ReceitasModule } from './pages/receitas/receitas.module';
 import { LancamentosModule } from './pages/lancamentos/lancamentos.module';
 import { AuthServiceBase } from './services/auth/auth.abstract.service';
-
+import { CookieConsentComponent } from './components/cookie-consent/cookie-consent.component';
 
 export function initializeAuth(authService: AuthServiceBase) {
   return () => authService.autoLogin();
@@ -37,7 +37,7 @@ export function initializeAuth(authService: AuthServiceBase) {
   bootstrap: [AppComponent],
   imports: [BrowserModule, AppRoutingModule, CommonModule, ReactiveFormsModule, AcessoComponent, AlertModule, DashboardModule, CategoriasModule, DespesasModule, ReceitasModule, LancamentosModule, 
     MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, BrowserAnimationsModule, MomentDateModule, NgbDropdownModule,
-    NgxMaskDirective, NgxMaskPipe],
+    NgxMaskDirective, NgxMaskPipe, CookieConsentComponent],
   providers: [AuthService, AcessoService, MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent, NgbActiveModal,
     {
       provide: APP_INITIALIZER,
