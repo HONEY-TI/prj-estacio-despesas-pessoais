@@ -13,3 +13,16 @@ export class PrivacyComponent implements OnInit {
 
   ngOnInit() { }
 }
+
+
+@Component({
+  selector: 'app-privacy',
+  templateUrl: './privacy.component.html',
+  standalone: true
+})
+
+export class RedirectPrivacyComponent implements OnInit {
+  ngOnInit() {
+    window.location.href = '/#/privacy';
+}
+}
