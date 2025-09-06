@@ -32,7 +32,7 @@ public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusinessBas
 
     public override async Task<List<Dto>> FindAll(Guid idUsuario)
     {
-        var result = await UnitOfWork.Repository.Find(repo => repo.UsuarioId == idUsuario);
+        var result = await UnitOfWork.Repository.Find(repo => repo.UsuarioId == idUsuario && repo.Categoria.TipoCategoria.Id == (int)TipoCategoria.CategoriaType.Despesa);
         var despesas = result.ToList();
         var dtos = _mapper.Map<List<Dto>>(despesas);
         return dtos;
@@ -40,8 +40,9 @@ public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusinessBas
 
     public override async Task<Dto> FindById(Guid id, Guid idUsuario)
     {
-        var despesa = await UnitOfWork.Repository.Get(id);
-        if (despesa is null) return null;
+        var result = await UnitOfWork.Repository.Find(d => d.Id == id && d.UsuarioId == idUsuario);
+        if (result is null) return null;
+        var despesa = result.FirstOrDefault();        
         despesa.UsuarioId = idUsuario;
         await IsValidDespesa(despesa);
         var despesaDto = _mapper.Map<Dto>(despesa);
@@ -61,7 +62,10 @@ public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusinessBas
 
     public override async Task<bool> Delete(Dto dto)
     {
-        Despesa despesa = _mapper.Map<Despesa>(dto);
+        var result = await UnitOfWork.Repository.Find(d => d.Id == dto.Id && d.UsuarioId == dto.UsuarioId);
+        if (result is null)
+            throw new ArgumentException("Usuário não permitido a realizar operação!"); ;
+        var despesa = result.FirstOrDefault();
         await IsValidDespesa(despesa);
         await UnitOfWork.Repository.Delete(despesa.Id);
         await UnitOfWork.CommitAsync();

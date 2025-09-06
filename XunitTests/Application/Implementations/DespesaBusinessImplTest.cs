@@ -4,6 +4,7 @@ using Despesas.Application.Dtos;
 using Despesas.Application.Implementations;
 using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.ValueObject;
+using Domain.Entities;
 using Repository.Persistency.Generic;
 using System.Linq.Expressions;
 
@@ -78,10 +79,12 @@ public sealed class DespesaBusinessImplTest
     public async Task FindById_Should_Returns_Parsed_DespesaDto()
     {
         // Arrange
-        var despesa = DespesaFaker.Instance.Despesas().First();
+        var _despesas = DespesaFaker.Instance.Despesas();
+        var despesa = _despesas.First();
         var id = despesa.Id;
         _repositorioMock.Setup(repo => repo.Get(id)).Returns(despesa);
         _unitOfWork.Setup(u => u.Repository.Get(It.IsAny<Guid>())).ReturnsAsync(despesa);
+        _unitOfWork.Setup(uow => uow.Repository.Find(It.IsAny<Expression<Func<Despesa, bool>>>())).ReturnsAsync(_despesas);
 
         // Act
         var result = await _despesaBusiness.FindById(id, despesa.UsuarioId);
@@ -91,25 +94,29 @@ public sealed class DespesaBusinessImplTest
         Assert.IsType<DespesaDto>(result);
         Assert.Equal(despesa.Id, result.Id);
         _repositorioMock.Verify(repo => repo.Get(id), Times.Never);
-        _unitOfWork.Verify(u => u.Repository.Get(It.IsAny<Guid>()), Times.AtLeast(2));
+        _unitOfWork.Verify(u => u.Repository.Get(It.IsAny<Guid>()), Times.AtLeast(1));
     }
 
     [Fact]
     public async Task FindById_Should_Returns_Null_When_Parsed_DespesaDto()
     {
         // Arrange
-        var despesa = DespesaFaker.Instance.Despesas().First();
+        var _despesas = DespesaFaker.Instance.Despesas();
+        var despesa = _despesas.First();
         var id = despesa.Id;
         _repositorioMock.Setup(repo => repo.Get(id)).Returns(() => null);
         _unitOfWork.Setup(u => u.Repository.Get(It.IsAny<Guid>())).ReturnsAsync((Despesa)null);
-        
+        _unitOfWork.Setup(uow => uow.Repository.Find(It.IsAny<Expression<Func<Despesa, bool>>>())).ReturnsAsync((List<Despesa>)null);
+
         // Act
         var result = await _despesaBusiness.FindById(id, Guid.Empty);
 
         // Assert
         Assert.Null(result);
         _repositorioMock.Verify(repo => repo.Get(id), Times.Never);
-        _unitOfWork.Verify(u => u.Repository.Get(It.IsAny<Guid>()), Times.Once);
+        _unitOfWork.Verify(uow => uow.Repository.Find(It.IsAny<Expression<Func<Despesa, bool>>>()), Times.Once);
+        _unitOfWork.Verify(u => u.Repository.Get(It.IsAny<Guid>()), Times.Never);
+
     }
 
     [Fact]
@@ -142,10 +149,12 @@ public sealed class DespesaBusinessImplTest
     public async Task Delete_Should_Returns_True()
     {
         // Arrange
-        var despesa = DespesaFaker.Instance.Despesas().First();
+        var _despesas = DespesaFaker.Instance.Despesas();
+        var despesa = _despesas.First();
         _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Despesa>()));
         _repositorioMock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns(despesa);
         _unitOfWork.Setup(repo => repo.Repository.Get(It.IsAny<Guid>())).ReturnsAsync(despesa);
+        _unitOfWork.Setup(uow => uow.Repository.Find(It.IsAny<Expression<Func<Despesa, bool>>>())).ReturnsAsync(_despesas);
 
         // Act
         var despesaDto = _mapper.Map<DespesaDto>(despesa);
