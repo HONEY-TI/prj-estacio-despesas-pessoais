@@ -19,6 +19,15 @@ public static class EfCoreExceptionHandler
 
             case DbUpdateException dbEx:
                 logger.LogError(dbEx, "Erro ao salvar alterações no banco de dados");
+
+                // 🔹 Se for violação de chave estrangeira (FK constraint)
+                if (dbEx.InnerException?.Message.Contains("FOREIGN KEY", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    await WriteResponseAsync(context, StatusCodes.Status400BadRequest,
+                        "Não é possível excluir este registro, pois existem dados vinculados.");
+                    return true;
+                }
+
                 await WriteResponseAsync(context, StatusCodes.Status500InternalServerError,
                     "Erro ao acessar os dados. Tente novamente mais tarde.");
                 return true;
@@ -42,7 +51,7 @@ public static class EfCoreExceptionHandler
                 return true;
 
             default:
-                // Qualquer outra exceção
+                // Qualquer outra exceção -> deixa o middleware global tratar
                 return false;
         }
     }
@@ -61,4 +70,3 @@ public static class EfCoreExceptionHandler
         await context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
 }
-
