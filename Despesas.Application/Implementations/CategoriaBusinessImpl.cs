@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Despesas.Application.Abstractions;
-using Despesas.GlobalException.CustomExceptions.Categoria;
+using Despesas.GlobalException.CustomExceptions;
 using Despesas.GlobalException.CustomExceptions.Core;
 using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.ValueObject;

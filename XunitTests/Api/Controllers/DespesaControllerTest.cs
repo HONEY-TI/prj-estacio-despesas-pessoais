@@ -2,7 +2,6 @@
 using AutoMapper;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
-using Despesas.Application.Dtos.Profile;
 using Despesas.Backend.Controllers;
 using Despesas.GlobalException.CustomExceptions.Core;
 using Microsoft.AspNetCore.Mvc;

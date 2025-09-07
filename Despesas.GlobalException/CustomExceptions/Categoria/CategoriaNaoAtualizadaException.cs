@@ -1,4 +1,4 @@
-﻿namespace Despesas.GlobalException.CustomExceptions.Categoria;
+﻿namespace Despesas.GlobalException.CustomExceptions;
 
 public class CategoriaUpdateException : ArgumentException
 {

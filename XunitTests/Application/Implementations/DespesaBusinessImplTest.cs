@@ -2,7 +2,7 @@
 using AutoMapper;
 using Despesas.Application.Dtos;
 using Despesas.Application.Implementations;
-using Despesas.GlobalException.CustomExceptions.Categoria;
+using Despesas.GlobalException.CustomExceptions;
 using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.ValueObject;
 using Repository.Persistency.Generic;

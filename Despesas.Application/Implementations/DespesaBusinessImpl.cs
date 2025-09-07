@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
-using Despesas.GlobalException.CustomExceptions.Categoria;
+using Despesas.GlobalException.CustomExceptions;
 using Despesas.GlobalException.CustomExceptions.Core;
 using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.ValueObject;
@@ -78,10 +78,8 @@ public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusinessBas
         await IsValidCategoria(despesa);
         await UnitOfWork.Repository.Update(despesa);
         await UnitOfWork.CommitAsync();
-        despesa = await UnitOfWork.Repository.Get(dto.Id.Value);
-        if (despesa is null)
-            throw new CustomException("Não foi possível atualizar o cadastro da despesa.");
-
+        despesa = await UnitOfWork.Repository.Get(dto.Id.Value) 
+            ?? throw new CustomException("Não foi possível atualizar o cadastro da despesa.");
         return _mapper.Map<Dto>(despesa);
     }
 
