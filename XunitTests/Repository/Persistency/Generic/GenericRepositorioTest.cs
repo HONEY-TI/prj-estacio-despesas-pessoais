@@ -113,7 +113,7 @@ public sealed class GenericRepositorioTest
         Assert.NotNull(result);
     }
 
-    [Fact(Skip = "Uso do DRY com Global Excepition")]
+    [Fact]
     public void Update_Should_Try_Update_Item_And_Return_Null()
     {
         // Arrange
@@ -121,9 +121,10 @@ public sealed class GenericRepositorioTest
         var existingItem = dataSet.First();
         var dbContext = new RegisterContext(new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Update_Should_Try_Update_Item_And_Return_Null").Options, Usings.GetLogerFactory());
         var repository = new GenericRepositorio<Categoria>(dbContext);
+        _dbContextMock.Setup(c => c.Set<Categoria>().Update(It.IsAny<Categoria>())).Throws(new Exception());
 
         // Act &  Assert 
-        var exception = Assert.Throws<Exception>(() => repository.Update(existingItem));
+        Assert.Throws<Exception>(() => repository.Update(existingItem));
     }
 
     [Fact]
@@ -164,7 +165,7 @@ public sealed class GenericRepositorioTest
         _dbContextMock.Verify(c => c.SaveChanges(), Times.Never);
     }
 
-    [Fact(Skip = "Uso do DRY com Global Excepition")]
+    [Fact]//(Skip = "Uso do DRY com Global Excepition")]
     public void Delete_Should_Throw_Exception()
     {
         // Arrange
@@ -175,11 +176,10 @@ public sealed class GenericRepositorioTest
         var dbSetMock = Usings.MockDbSet(dataSet);
 
         _dbContextMock.Setup(c => c.Set<Categoria>()).Returns(dbSetMock.Object);
-        _dbContextMock.Setup(c => c.Remove(It.IsAny<Categoria>())).Throws<Exception>();
+        _dbContextMock.Setup(c => c.Set<Categoria>().Remove(It.IsAny<Categoria>())).Throws(new Exception());
         var repository = new GenericRepositorio<Categoria>(_dbContextMock.Object);
 
         // Act and Assert
-        var exception = Assert.Throws<Exception>(() => repository.Delete(item));
-        Assert.Equal("GenericRepositorio_Delete", exception.Message);
+        Assert.Throws<Exception>(() => repository.Delete(item));
     }
 }
