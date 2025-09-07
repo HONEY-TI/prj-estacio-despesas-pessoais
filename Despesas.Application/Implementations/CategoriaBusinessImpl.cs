@@ -64,7 +64,7 @@ public class CategoriaBusinessImpl<Dto> : BusinessBase<Dto, Categoria>, ICategor
         }
         catch (Exception)
         {
-            throw new CategoriaNaoAtualizadaException();
+            throw new CategoriaUpdateException();
         }
     }
 
@@ -95,7 +95,7 @@ public class CategoriaBusinessImpl<Dto> : BusinessBase<Dto, Categoria>, ICategor
     {
         var categoria = await UnitOfWork.Repository.Get(this.Mapper.Map<Categoria>(dto).Id);
         if (categoria.Usuario?.Id != categoria.UsuarioId)
-            throw new CategoriaNaoPertenceAoUsuarioException();
+            throw new CategoriaUsuarioInvalidaException();
     }
 
     public async Task<List<Dto>> FindByTipocategoria(Guid idUsuario, int idTipoCategoria)

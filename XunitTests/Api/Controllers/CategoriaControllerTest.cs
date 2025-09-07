@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using __mock__.Entities;
-using Despesas.Backend.Controllers;
+﻿using __mock__.Entities;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Core;
+using Despesas.Backend.Controllers;
+using Despesas.GlobalException.CustomExceptions.Core;
 using Domain.Core.ValueObject;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 public sealed class CategoriaControllerTest
@@ -191,14 +192,11 @@ public sealed class CategoriaControllerTest
         categoriaDto.IdTipoCategoria = (TipoCategoriaDto)TipoCategoria.CategoriaType.Receita;
         Usings.SetupBearerToken(categoriaDto.UsuarioId, _categoriaController);
 
-        // Act
-        var result = await _categoriaController.Post(categoriaDto) as ObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Não foi possível realizar o cadastro de uma nova categoria, tente mais tarde ou entre em contato com o suporte.", message);
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _categoriaController.Post(categoriaDto));
+        Assert.Equal("Não foi possível realizar o cadastro de uma nova categoria, tente mais tarde ou entre em contato com o suporte.", exception.Message);
+        Assert.Equal(400, exception.StatusCode);
+        _mockCategoriaBusiness.Verify(b => b.Create(It.IsAny<CategoriaDto>()), Times.Once);
     }
 
     [Fact]
@@ -259,14 +257,11 @@ public sealed class CategoriaControllerTest
         Usings.SetupBearerToken(categoriaDto.UsuarioId, _categoriaController);
         _mockCategoriaBusiness.Setup(b => b.Update(It.IsAny<CategoriaDto>())).ReturnsAsync((CategoriaDto)null);
 
-        // Act
-        var result = await _categoriaController.Put(categoriaDto) as BadRequestObjectResult;
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.IsType<BadRequestObjectResult>(result);
-        var message = result.Value;
-        Assert.Equal("Erro ao atualizar categoria!", message);
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<CustomException>(async () => await _categoriaController.Put(categoriaDto));
+        Assert.Equal("Erro ao atualizar categoria!", exception.Message);
+        Assert.Equal(400, exception.StatusCode);
+        _mockCategoriaBusiness.Verify(b => b.Update(It.IsAny<CategoriaDto>()), Times.Once);
     }
 
     [Fact]

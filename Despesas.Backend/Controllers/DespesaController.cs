@@ -1,5 +1,6 @@
 ﻿using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
+using Despesas.GlobalException.CustomExceptions.Core;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,9 +33,8 @@ public class DespesaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Get([FromRoute] Guid id)
     {
-        var despesa = await _despesaBusiness.FindById(id, UserIdentity);
-        if (despesa == null)
-            return BadRequest("Nenhuma despesa foi encontrada.");
+        var despesa = await _despesaBusiness.FindById(id, UserIdentity) 
+            ?? throw new CustomException("Nenhuma despesa foi encontrada.");
         return Ok(despesa);
     }
 
@@ -47,9 +47,8 @@ public class DespesaController : AuthController
     public async Task<IActionResult> Post([FromBody] DespesaDto despesa)
     {
         despesa.UsuarioId = UserIdentity;
-        despesa = await _despesaBusiness.Create(despesa);
-        if (despesa is null)
-            return BadRequest("Não foi possível realizar o cadastro da despesa.");
+        despesa = await _despesaBusiness.Create(despesa)
+            ?? throw new CustomException("Não foi possível realizar o cadastro da despesa.");
         return Ok(despesa);
     }
 
@@ -62,11 +61,9 @@ public class DespesaController : AuthController
     public async Task<IActionResult> Put([FromBody] DespesaDto despesa)
     {
         despesa.UsuarioId = UserIdentity;
-        despesa = await _despesaBusiness.Update(despesa);
-        if (despesa is null)
-            return BadRequest("Não foi possível atualizar o cadastro da despesa.");
+        despesa = await _despesaBusiness.Update(despesa) 
+            ?? throw new CustomException("Não foi possível atualizar o cadastro da despesa.");
         return Ok(despesa);
-
     }
 
     [HttpDelete("{idDespesa}")]
@@ -77,7 +74,7 @@ public class DespesaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Delete(Guid idDespesa)
     {
-        DespesaDto despesa = new DespesaDto
+        var despesa = new DespesaDto
         {
             Id = idDespesa,
             UsuarioId = UserIdentity

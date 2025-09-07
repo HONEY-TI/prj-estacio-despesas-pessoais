@@ -2,9 +2,9 @@
 using AutoMapper;
 using Despesas.Application.Dtos;
 using Despesas.Application.Implementations;
+using Despesas.GlobalException.CustomExceptions.Categoria;
 using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.ValueObject;
-using Domain.Entities;
 using Repository.Persistency.Generic;
 using System.Linq.Expressions;
 
@@ -116,7 +116,6 @@ public sealed class DespesaBusinessImplTest
         _repositorioMock.Verify(repo => repo.Get(id), Times.Never);
         _unitOfWork.Verify(uow => uow.Repository.Find(It.IsAny<Expression<Func<Despesa, bool>>>()), Times.Once);
         _unitOfWork.Verify(u => u.Repository.Get(It.IsAny<Guid>()), Times.Never);
-
     }
 
     [Fact]
@@ -177,6 +176,6 @@ public sealed class DespesaBusinessImplTest
         _unitOfWorkCategoria.Setup(repo => repo.Repository.Get(It.IsAny<Guid>())).ReturnsAsync((Categoria)null);
 
         // Act & Assert 
-        await Assert.ThrowsAsync<ArgumentException>(() => _despesaBusiness.Create(despesaDto));
+        await Assert.ThrowsAsync<CategoriaUsuarioInvalidaException>(() => _despesaBusiness.Create(despesaDto));
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Core;
+using Despesas.GlobalException.CustomExceptions.Core;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -59,10 +60,8 @@ public class CategoriaController : AuthController
             return BadRequest("Nenhum tipo de Categoria foi selecionado!");
 
         categoria.UsuarioId = UserIdentity;
-        categoria = await _categoriaBusiness.Create(categoria);
-        if (categoria == null)
-            return BadRequest("Não foi possível realizar o cadastro de uma nova categoria, tente mais tarde ou entre em contato com o suporte.");
-
+        categoria = await _categoriaBusiness.Create(categoria) 
+            ?? throw new CustomException("Não foi possível realizar o cadastro de uma nova categoria, tente mais tarde ou entre em contato com o suporte.");
         return Ok(categoria);
     }
 
@@ -78,10 +77,8 @@ public class CategoriaController : AuthController
             return BadRequest("Nenhum tipo de Categoria foi selecionado!");
 
         categoria.UsuarioId = UserIdentity;
-        categoria = await _categoriaBusiness.Update(categoria);
-        if (categoria is null)
-            return BadRequest("Erro ao atualizar categoria!"); ;
-
+        categoria = await _categoriaBusiness.Update(categoria)
+            ?? throw new CustomException("Erro ao atualizar categoria!");
         return Ok(categoria);
     }
 
@@ -103,6 +100,5 @@ public class CategoriaController : AuthController
             return Ok(result);
         else
             return BadRequest("Erro ao deletar categoria!");
-
     }
 }
