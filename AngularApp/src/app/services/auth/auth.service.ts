@@ -11,7 +11,7 @@ export class AuthService extends AuthServiceBase {
   public accessToken$ = this.accessTokenSubject.asObservable();
 
   constructor(
-    protected override tokenStorage: TokenStorageService,
+    public override tokenStorage: TokenStorageService,
     protected override acessoService: AcessoService,
     protected override router: Router) {
       super(acessoService, tokenStorage, router);
@@ -21,7 +21,7 @@ export class AuthService extends AuthServiceBase {
         this.accessTokenSubject.next(token);
         this.isAuthenticated$.next(true);
       } else {
-        this.clearSessionStorage();
+        this.tokenStorage.clearSessionStorage();
       }
   }
 

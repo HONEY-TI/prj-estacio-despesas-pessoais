@@ -1,43 +1,19 @@
-.full-height {
-  height: 60%;
-}
+@use '../../../styles/variables' as v;
 
-.footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
+.full-height {
+  height: v.$height-full; 
 }
 
 .tituloHeader {
-  color: lightcyan;
+  color: v.$header-color; 
 }
 
 .textBtnHeader {
-  color: #0d6efd;
-}
-
-.btnSocialMedia {
-  font-size: 2rem;
-  position: absolute;
-  top: 53%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.icon-img
-{
-  font-size: 2rem;
-   width: 2rem;
-  height: 2rem;
-  position: absolute;
-  top: 53%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  color: v.$primary-color;
 }
 
 .error-bi-input {
   display: inline;
-
 }
 
 .not-error-input {
@@ -53,8 +29,4 @@
     width: 16px;
     height: 16px;
   }
-}
-
-.g_signin {
-
 }

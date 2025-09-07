@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -35,10 +35,11 @@ export function initializeAuth(authService: AuthServiceBase) {
 @NgModule({
   declarations: [AppComponent],
   bootstrap: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, CommonModule, ReactiveFormsModule, AcessoComponent, AlertModule, DashboardModule, CategoriasModule, DespesasModule, ReceitasModule, LancamentosModule, 
+  imports: [BrowserModule, AppRoutingModule, CommonModule, ReactiveFormsModule, AcessoComponent, AlertModule, DashboardModule, CategoriasModule, DespesasModule, ReceitasModule, LancamentosModule,
     MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, BrowserAnimationsModule, MomentDateModule, NgbDropdownModule,
     NgxMaskDirective, NgxMaskPipe, CookieConsentComponent],
   providers: [AuthService, AcessoService, MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent, NgbActiveModal,
+    { provide: LocationStrategy, useClass: HashLocationStrategy } ,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAuth,
@@ -53,8 +54,8 @@ export function initializeAuth(authService: AuthServiceBase) {
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
     },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
-    provideNgxMask(), provideHttpClient(withInterceptorsFromDi()), provideAnimationsAsync()],
-    
+    provideNgxMask(), provideHttpClient(withInterceptorsFromDi()), provideAnimationsAsync(),
+  ],
 })
 
 export class AppModule { }

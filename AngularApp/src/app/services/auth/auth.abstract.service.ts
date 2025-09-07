@@ -8,6 +8,7 @@ import { IAuth } from '../../models';
 @Injectable({
   providedIn: 'root'
 })
+
 export abstract class AuthServiceBase {
   public isAuthenticated$ = new BehaviorSubject<boolean>(false);
   public accessTokenSubject = new BehaviorSubject<string | undefined>(undefined);
@@ -22,7 +23,6 @@ export abstract class AuthServiceBase {
     const refreshToken = this.tokenStorage.getRefreshToken();
     if (!refreshToken) {
       this.logout();
-      return;
     }
 
     try {
@@ -39,15 +39,14 @@ export abstract class AuthServiceBase {
     }
   }
 
-  protected setAccessToken(token?: string) {
+  private setAccessToken(token?: string) {
     this.accessTokenSubject.next(token);
   }
 
   protected logout(): void {
-    this.tokenStorage.signOut();
     this.accessTokenSubject.next(undefined);
     this.isAuthenticated$.next(false);
-    this.router.navigate(['/']);
+    this.tokenStorage.clearSessionStorage();
   }
 
 
@@ -63,11 +62,6 @@ export abstract class AuthServiceBase {
     }
   }
 
-  public clearSessionStorage() {
-    this.setAccessToken(undefined);
-    sessionStorage.clear();
-  }
-
   public refreshToken(token: string): Observable<IAuth> {
     return this.acessoService.refreshToken(token);
   }
@@ -76,7 +70,7 @@ export abstract class AuthServiceBase {
   public isAuthenticated(): boolean {
     const token = this.tokenStorage.getAccessToken() ?? this.accessTokenSubject.getValue();
     if (!token) {
-      this.clearSessionStorage();
+      this.tokenStorage.clearSessionStorage();
       return false;
     }
     return true;

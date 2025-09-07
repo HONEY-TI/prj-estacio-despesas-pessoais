@@ -5,7 +5,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService, TokenStorageService } from '../app/services';
 import { IAuth } from '../app/models';
 import { LoadingComponent } from '../app/components';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'

@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { MenuService } from "../../services/utils/menu-service/menu.service";
 import { AuthService } from "../../services/auth/auth.service";
 import { ImagemPerfilService } from "../../services/api";
+import { TokenStorageService } from "../../services";
 
 @Component({
   selector: 'app-layout',
@@ -17,8 +18,7 @@ export class LayoutComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     public menuService: MenuService,
-    private imagemPerfilService: ImagemPerfilService
-  ) { }
+    private imagemPerfilService: ImagemPerfilService) { }
 
   private initialize = (): void => {
     this.imagemPerfilService.getImagemPerfilUsuario()
@@ -42,7 +42,7 @@ export class LayoutComponent implements OnInit {
   }
 
   protected onLogoutClick() {
-    this.authService.clearSessionStorage();
+    this.authService.tokenStorage.clearSessionStorage();
     this.router.navigate(['/']);
   }
 
