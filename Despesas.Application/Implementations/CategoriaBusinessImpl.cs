@@ -21,18 +21,19 @@ public class CategoriaBusinessImpl<Dto> : BusinessBase<Dto, Categoria>, ICategor
 
     public override async Task<Dto> Create(Dto dto)
     {
-        IsValidTipoCategoria(dto);
-        var categoria = this.Mapper.Map<Categoria>(dto);
         try
         {
+            IsValidTipoCategoria(dto);
+            var categoria = this.Mapper.Map<Categoria>(dto);
             await UnitOfWork.Repository.Insert(categoria);
             await UnitOfWork.CommitAsync();
-            categoria = await UnitOfWork.Repository.Get(categoria.Id);
+            categoria = await UnitOfWork.Repository.Get(categoria.Id)
+              ?? throw new CustomException("Não foi possível realizar o cadastro de uma nova categoria, tente mais tarde ou entre em contato com o suporte.");
             return this.Mapper.Map<Dto>(categoria);
         }
         catch
         {
-            throw new CustomException("Não foi possível realizar o cadastro de uma nova categoria, tente mais tarde ou entre em contato com o suporte.");
+            throw;
         }
     }
 
@@ -51,20 +52,20 @@ public class CategoriaBusinessImpl<Dto> : BusinessBase<Dto, Categoria>, ICategor
 
     public override async Task<Dto> Update(Dto dto)
     {
-        IsValidTipoCategoria(dto);
-        await IsValidCategoria(dto);
-
         try
         {
+            IsValidTipoCategoria(dto);
+            await IsValidCategoria(dto);
             var categoria = this.Mapper.Map<Categoria>(dto);
             await UnitOfWork.Repository.Update(categoria);
             await UnitOfWork.CommitAsync();
-            categoria = await UnitOfWork.Repository.Get(categoria.Id);
+            categoria = await UnitOfWork.Repository.Get(categoria.Id)
+                ?? throw new CategoriaUpdateException();
             return this.Mapper.Map<Dto>(categoria);
         }
-        catch (Exception)
+        catch
         {
-            throw new CategoriaUpdateException();
+            throw;
         }
     }
 
