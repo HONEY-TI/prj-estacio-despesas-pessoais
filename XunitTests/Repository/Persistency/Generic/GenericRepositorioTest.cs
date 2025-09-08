@@ -124,7 +124,7 @@ public sealed class GenericRepositorioTest
         _dbContextMock.Setup(c => c.Set<Categoria>().Update(It.IsAny<Categoria>())).Throws(new Exception());
 
         // Act &  Assert 
-        Assert.Throws<Exception>(() => repository.Update(existingItem));
+        Assert.Throws<ArgumentNullException>(() => repository.Update(existingItem));
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public sealed class GenericRepositorioTest
         _dbContextMock.Verify(c => c.SaveChanges(), Times.Never);
     }
 
-    [Fact]//(Skip = "Uso do DRY com Global Excepition")]
+    [Fact]
     public void Delete_Should_Throw_Exception()
     {
         // Arrange
@@ -177,6 +177,7 @@ public sealed class GenericRepositorioTest
 
         _dbContextMock.Setup(c => c.Set<Categoria>()).Returns(dbSetMock.Object);
         _dbContextMock.Setup(c => c.Set<Categoria>().Remove(It.IsAny<Categoria>())).Throws(new Exception());
+        _dbContextMock.Setup(c => c.Remove(It.IsAny<Categoria>())).Throws(new Exception());
         var repository = new GenericRepositorio<Categoria>(_dbContextMock.Object);
 
         // Act and Assert
