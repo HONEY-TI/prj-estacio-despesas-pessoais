@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Despesas.Application.Abstractions;
+using Despesas.Application.Dtos;
+using Despesas.GlobalException.CustomExceptions;
+using Despesas.GlobalException.CustomExceptions.Core;
+using Despesas.Repository.UnitOfWork.Abstractions;
+using Domain.Core.ValueObject;
 using Domain.Entities;
 using Repository.Persistency.Generic;
-using Despesas.Application.Dtos;
-using Domain.Core.ValueObject;
-using Despesas.Repository.UnitOfWork.Abstractions;
 
 namespace Despesas.Application.Implementations;
 public class ReceitaBusinessImpl<Dto> : BusinessBase<Dto, Receita> where Dto : ReceitaDto, new()
@@ -19,14 +21,40 @@ public class ReceitaBusinessImpl<Dto> : BusinessBase<Dto, Receita> where Dto : R
         _unitOfWorkCategoria = unitOfWorkCategoria;
     }
 
+    private async Task IsValidReceita(Receita dto)
+    {
+        var receita = await UnitOfWork!.Repository.Get(dto.Id);
+        if (receita == null || receita.UsuarioId != dto.UsuarioId)
+            throw new ReceitaUsuarioInvalidaException();
+    }
+
+    private async Task IsValidCategoria(Receita dto)
+    {
+        var categoria = await _unitOfWorkCategoria.Repository.Get(dto.CategoriaId);
+        if (categoria == null
+            || categoria.UsuarioId != dto.UsuarioId
+            || categoria == null
+            || categoria.TipoCategoria != TipoCategoria.CategoriaType.Receita
+            || categoria.Id != dto.CategoriaId)
+            throw new CategoriaUsuarioInvalidaException();
+    }
+
     public override async Task<Dto> Create(Dto dto)
     {
-        var receita = _mapper.Map<Receita>(dto);
-        await IsValidCategoria(receita);
-        await UnitOfWork.Repository.Insert(receita);
-        await UnitOfWork.CommitAsync();
-        receita = await UnitOfWork.Repository.Get(receita.Id);
-        return _mapper.Map<Dto>(receita);
+        try
+        {
+            var receita = _mapper.Map<Receita>(dto);
+            await IsValidCategoria(receita);
+            await UnitOfWork.Repository.Insert(receita);
+            await UnitOfWork.CommitAsync();
+            receita = await UnitOfWork.Repository.Get(receita.Id)
+                ?? throw new CustomException("Não foi possível realizar o cadastro da receita.");
+            return _mapper.Map<Dto>(receita);
+        }
+        catch
+        {
+            throw;
+        }
     }
 
     public override async Task<List<Dto>> FindAll(Guid idUsuario)
@@ -48,39 +76,36 @@ public class ReceitaBusinessImpl<Dto> : BusinessBase<Dto, Receita> where Dto : R
 
     public override async Task<Dto> Update(Dto dto)
     {
-        var receita = _mapper.Map<Receita>(dto);
-        await IsValidReceita(receita);
-        await IsValidCategoria(receita);
-        await UnitOfWork.Repository.Update(receita);
-        await UnitOfWork.CommitAsync();
-        receita = await UnitOfWork.Repository.Get(dto.Id.Value);
-        return _mapper.Map<Dto>(receita);
+        try
+        {
+            var receita = _mapper.Map<Receita>(dto);
+            await IsValidReceita(receita);
+            await IsValidCategoria(receita);
+            await UnitOfWork.Repository.Update(receita);
+            await UnitOfWork.CommitAsync();
+            receita = await UnitOfWork.Repository.Get(dto.Id.Value)
+                ?? throw new CustomException("Não foi possível atualizar o cadastro da receita.");
+            return _mapper.Map<Dto>(receita);
+        }
+        catch
+        {
+            throw;
+        }
     }
 
     public override async Task<bool> Delete(Dto dto)
     {
-        Receita receita = _mapper.Map<Receita>(dto);
-        await IsValidReceita(receita);
-        await UnitOfWork.Repository.Delete(receita.Id);
-        await UnitOfWork.CommitAsync();
-        return true;
-    }
-
-    private async Task IsValidCategoria(Receita dto)
-    {
-        var categoria = await _unitOfWorkCategoria.Repository.Get(dto.CategoriaId);
-        if (categoria == null
-            || categoria.UsuarioId != dto.UsuarioId
-            || categoria== null
-            || categoria.TipoCategoria != TipoCategoria.CategoriaType.Receita
-            || categoria.Id != dto.CategoriaId)
-            throw new ArgumentException("Categoria inválida para este usuário!");
-    }
-
-    private async Task IsValidReceita(Receita dto)
-    {
-        var receita = await UnitOfWork!.Repository.Get(dto.Id);
-        if (receita == null || receita.UsuarioId != dto.UsuarioId)
-            throw new ArgumentException("Receita inválida para este usuário!");
-    }
+        try
+        {
+            Receita receita = _mapper.Map<Receita>(dto);
+            await IsValidReceita(receita);
+            await UnitOfWork.Repository.Delete(receita.Id);
+            await UnitOfWork.CommitAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }  
 }

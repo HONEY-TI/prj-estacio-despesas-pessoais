@@ -1,5 +1,6 @@
 ﻿using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
+using Despesas.GlobalException.CustomExceptions.Core;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,17 +23,7 @@ public class ReceitaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Get()
     {
-        try
-        {
-            return Ok(await _receitaBusiness.FindAll(UserIdentity));
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return Ok(new List<ReceitaDto>());
-        }
+        return Ok(await _receitaBusiness.FindAll(UserIdentity));
     }
 
     [HttpGet("GetById/{id}")]
@@ -43,18 +34,9 @@ public class ReceitaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
-        try
-        {
-            var _receita = await _receitaBusiness.FindById(id, UserIdentity) ?? throw new ArgumentException("Nenhuma receita foi encontrada.");
-            return Ok(_receita);
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Não foi possível realizar a consulta da receita.");
-        }
+        var _receita = await _receitaBusiness.FindById(id, UserIdentity) 
+            ?? throw new CustomException("Nenhuma receita foi encontrada.");
+        return Ok(_receita);
     }
 
     [HttpPost]
@@ -65,18 +47,10 @@ public class ReceitaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Post([FromBody] ReceitaDto receita)
     {
-        try
-        {
-            receita.UsuarioId = UserIdentity;
-            return Ok(await _receitaBusiness.Create(receita));
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Não foi possível realizar o cadastro da receita!");
-        }
+        receita.UsuarioId = UserIdentity;
+        receita = await _receitaBusiness.Create(receita)
+            ?? throw new CustomException("Não foi possível realizar o cadastro da receita!");
+        return Ok(receita);
     }
 
     [HttpPut]
@@ -87,19 +61,10 @@ public class ReceitaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Put([FromBody] ReceitaDto receita)
     {
-        try
-        {
-            receita.UsuarioId = UserIdentity;
-            var updateReceita = await _receitaBusiness.Update(receita) ?? throw new();
-            return Ok(updateReceita);
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Não foi possível atualizar o cadastro da receita.");
-        }
+        receita.UsuarioId = UserIdentity;
+        receita = await _receitaBusiness.Update(receita)
+            ?? throw new CustomException("Não foi possível atualizar o cadastro da receita.");
+        return Ok(receita);
     }
 
     [HttpDelete("{idReceita}")]
@@ -110,20 +75,13 @@ public class ReceitaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Delete(Guid idReceita)
     {
-        try
-        {
-            ReceitaDto receita = await _receitaBusiness.FindById(idReceita, UserIdentity);
-            if (receita == null || UserIdentity != receita.UsuarioId)
-                throw new ArgumentException("Usuário não permitido a realizar operação!");
 
-            return await _receitaBusiness.Delete(receita) ? Ok(true) : throw new();
-        }
-        catch (Exception ex)
+        var despesa = new ReceitaDto
         {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
+            Id = idReceita,
+            UsuarioId = UserIdentity
+        };
 
-            return BadRequest("Erro ao excluir Receita!");
-        }
+        return await _receitaBusiness.Delete(despesa) ? Ok(true) : BadRequest("Erro ao excluir Receita!");
     }
 }

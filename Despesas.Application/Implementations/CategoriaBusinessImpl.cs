@@ -1,10 +1,12 @@
-﻿using Domain.Entities;
-using MediatR;
-using AutoMapper;
-using Repository.Persistency.Generic;
+﻿using AutoMapper;
 using Despesas.Application.Abstractions;
-using Domain.Core.ValueObject;
+using Despesas.GlobalException.CustomExceptions;
+using Despesas.GlobalException.CustomExceptions.Core;
 using Despesas.Repository.UnitOfWork.Abstractions;
+using Domain.Core.ValueObject;
+using Domain.Entities;
+using MediatR;
+using Repository.Persistency.Generic;
 
 namespace Despesas.Application.Implementations;
 public class CategoriaBusinessImpl<Dto> : BusinessBase<Dto, Categoria>, ICategoriaBusiness<Dto, Categoria> where Dto : class, new()
@@ -19,12 +21,20 @@ public class CategoriaBusinessImpl<Dto> : BusinessBase<Dto, Categoria>, ICategor
 
     public override async Task<Dto> Create(Dto dto)
     {
-        IsValidTipoCategoria(dto);
-        var categoria = this.Mapper.Map<Categoria>(dto);
-        await UnitOfWork.Repository.Insert(categoria);
-        await UnitOfWork.CommitAsync();
-        categoria = await UnitOfWork.Repository.Get(categoria.Id);
-        return this.Mapper.Map<Dto>(categoria);
+        try
+        {
+            IsValidTipoCategoria(dto);
+            var categoria = this.Mapper.Map<Categoria>(dto);
+            await UnitOfWork.Repository.Insert(categoria);
+            await UnitOfWork.CommitAsync();
+            categoria = await UnitOfWork.Repository.Get(categoria.Id)
+              ?? throw new CustomException("Não foi possível realizar o cadastro de uma nova categoria, tente mais tarde ou entre em contato com o suporte.");
+            return this.Mapper.Map<Dto>(categoria);
+        }
+        catch
+        {
+            throw;
+        }
     }
 
     public override async Task<List<Dto>> FindAll(Guid idUsuario)
@@ -42,20 +52,28 @@ public class CategoriaBusinessImpl<Dto> : BusinessBase<Dto, Categoria>, ICategor
 
     public override async Task<Dto> Update(Dto dto)
     {
-        IsValidTipoCategoria(dto);
-        await IsValidCategoria(dto);
-        var categoria = this.Mapper.Map<Categoria>(dto);
-        await UnitOfWork.Repository.Update(categoria);
-        await UnitOfWork.CommitAsync();
-        categoria = await UnitOfWork.Repository.Get(categoria.Id);
-        return this.Mapper.Map<Dto>(categoria);
+        try
+        {
+            IsValidTipoCategoria(dto);
+            await IsValidCategoria(dto);
+            var categoria = this.Mapper.Map<Categoria>(dto);
+            await UnitOfWork.Repository.Update(categoria);
+            await UnitOfWork.CommitAsync();
+            categoria = await UnitOfWork.Repository.Get(categoria.Id)
+                ?? throw new CategoriaUpdateException();
+            return this.Mapper.Map<Dto>(categoria);
+        }
+        catch
+        {
+            throw;
+        }
     }
 
     public override async Task<bool> Delete(Dto dto)
     {
-        await IsValidCategoria(dto);
         try
         {
+            await IsValidCategoria(dto);
             var categoria = this.Mapper.Map<Categoria>(dto);
             await UnitOfWork.Repository.Delete(categoria.Id);
             await UnitOfWork.CommitAsync();
@@ -71,14 +89,14 @@ public class CategoriaBusinessImpl<Dto> : BusinessBase<Dto, Categoria>, ICategor
     {
         var categoria = this.Mapper.Map<Categoria>(dto);
         if (categoria.TipoCategoriaId != (int)TipoCategoria.CategoriaType.Despesa && categoria.TipoCategoriaId != (int)TipoCategoria.CategoriaType.Receita)
-            throw new ArgumentException("Tipo de Categoria Inválida!");
+            throw new TipoCategoriaInvalidaException();
     }
 
     private async Task IsValidCategoria(Dto dto)
     {
         var categoria = await UnitOfWork.Repository.Get(this.Mapper.Map<Categoria>(dto).Id);
         if (categoria.Usuario?.Id != categoria.UsuarioId)
-            throw new ArgumentException("Categoria inválida para este usuário!");
+            throw new CategoriaUsuarioInvalidaException();
     }
 
     public async Task<List<Dto>> FindByTipocategoria(Guid idUsuario, int idTipoCategoria)

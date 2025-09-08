@@ -1,6 +1,7 @@
 ﻿using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
-using Domain.Entities;
+using Despesas.GlobalException.CustomExceptions;
+using Despesas.GlobalException.CustomExceptions.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,8 +13,7 @@ public class UsuarioController : AuthController
 
     public UsuarioController(IUsuarioBusiness<UsuarioDto> usuarioBusiness)
     {
-        _usuarioBusiness = usuarioBusiness;
-    
+        _usuarioBusiness = usuarioBusiness;    
     }
 
     [HttpGet]
@@ -24,19 +24,9 @@ public class UsuarioController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Get()
     {
-        try
-        {
-            var _usuario = await _usuarioBusiness.FindById(UserIdentity);
-            if (_usuario == null) throw new();
-            return Ok(_usuario);
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Usuário não encontrado!");
-        }
+        var usuario = await _usuarioBusiness.FindById(UserIdentity)
+            ?? throw new UsuarioNaoEncontradoException();
+        return Ok(usuario);
     }
 
     [HttpPost]
@@ -47,18 +37,10 @@ public class UsuarioController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Post([FromBody] UsuarioDto usuarioDto)
     {
-        try
-        {
-            usuarioDto.UsuarioId = UserIdentity;
-            return Ok(await _usuarioBusiness.Create(usuarioDto));
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Erro ao cadastrar Usuário!");
-        }
+        usuarioDto.UsuarioId = UserIdentity;
+        usuarioDto = await _usuarioBusiness.Create(usuarioDto)
+            ?? throw new CustomException("Erro ao cadastrar Usuário!");
+        return Ok(usuarioDto);
     }
 
     [HttpPut]
@@ -69,18 +51,10 @@ public class UsuarioController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Put([FromBody] UsuarioDto usuarioDto)
     {
-        try
-        {
-            usuarioDto.UsuarioId = UserIdentity;
-            return Ok(await _usuarioBusiness.Update(usuarioDto));
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Erro ao atualizar dados pessoais do usuário!");
-        }
+        usuarioDto.UsuarioId = UserIdentity;
+        usuarioDto = await _usuarioBusiness.Update(usuarioDto)
+            ?? throw new CustomException("Erro ao atualizar dados pessoais do usuário!");
+        return Ok(usuarioDto);
     }    
     
     [HttpDelete]
@@ -91,20 +65,10 @@ public class UsuarioController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Delete([FromBody] UsuarioDto usuarioDto)
     {
-        try
-        {
-            if (await _usuarioBusiness.Delete(usuarioDto))
-                return Ok(true);
-
-            throw new ArgumentException("Não foi possivél excluir este usuário.");
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Erro ao excluir Usuário!");
-        }
+        usuarioDto.UsuarioId = UserIdentity;
+        return await _usuarioBusiness.Delete(usuarioDto) 
+            ? Ok(true) 
+            : BadRequest("Erro ao excluir Usuário!");
     }
 
     [HttpGet("GetProfileImage")]
@@ -116,22 +80,12 @@ public class UsuarioController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> GetProfileImage()
     {
-        try
-        {
-            var image = await _usuarioBusiness.GetProfileImage(UserIdentity);
+        var image = await _usuarioBusiness.GetProfileImage(UserIdentity);
 
-            if(image == null || image.Length == 0)
-                return NoContent();
+        if (image == null || image.Length == 0)
+            return NoContent();
 
-            return File(image!, "image/png");
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-            
-            return BadRequest("Erro ao incluir imagem de perfil!");
-        }
+        return File(image, "image/png");
     }
 
     [HttpPut("UpdateProfileImage")]
@@ -143,22 +97,12 @@ public class UsuarioController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> PutProfileImage(IFormFile file)
     {
-        try
-        {
-            var image = await _usuarioBusiness.UpdateProfileImage(UserIdentity, file);
+        var image = await _usuarioBusiness.UpdateProfileImage(UserIdentity, file);
 
-            if (image == null || image.Length == 0)
-                return NoContent();
+        if (image == null || image.Length == 0)
+            return NoContent();
 
-            return File(image!, file.ContentType);
-
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Erro ao incluir imagem de perfil!");
-        }
+        return File(image, file.ContentType);
     }
+
 }

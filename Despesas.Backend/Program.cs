@@ -79,23 +79,18 @@ app.UseGlobalExceptionHandler();
 app.UseHsts();
 
 app.UseHttpsRedirection();
-
 app.AddSupporteCulturesPtBr();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseCors();
-
 app.AddSwaggerUIApiVersioning();
+app.UseRouting();
+app.UseCertificateForwarding();
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.UseRouting()
-    .UseAuthentication()
-    .UseAuthorization()
-    .UseCertificateForwarding()
-    .UseEndpoints(endpoints =>
-    {
-        endpoints.MapControllers();
-        endpoints.MapFallbackToFile("index.html");
-    });
+app.MapControllers();
+app.MapFallbackToFile("index.html");
 
 if (app.Environment.IsStaging())
 {

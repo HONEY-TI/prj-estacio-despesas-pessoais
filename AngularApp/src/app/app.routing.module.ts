@@ -4,8 +4,8 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
 import { AuthProvider } from './services';
 import { AcessoComponent } from './pages/acesso/acesso.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
-import { PrivacyComponent } from './pages/privacy/privacy/privacy.component';
+import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { PrivacyComponent } from './pages/privacy/privacy.component';
 
 const routes: Routes = [
   { path: '', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule), pathMatch: 'full' },
@@ -24,7 +24,8 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }]
-
+  providers: [{ provide: LocationStrategy, useClass: PathLocationStrategy } ]
 })
+
+
 export class AppRoutingModule { }

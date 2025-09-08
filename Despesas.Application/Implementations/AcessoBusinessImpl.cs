@@ -29,7 +29,7 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
 
     private AuthenticationDto AuthenticationException(string message, int statusCode = 400)
     {
-        throw new AcessoException(message, statusCode);
+        throw new CustomException(message, statusCode);
     }
 
     private Task<AuthenticationDto> AuthenticationSuccess(Acesso acesso)
@@ -119,7 +119,7 @@ public class AcessoBusinessImpl<DtoCa, DtoLogin> : IAcessoBusiness<DtoCa, DtoLog
             return await AuthenticationSuccess(baseLogin);
         }
 
-        throw new AcessoException("Usuário Inválido!", StatusCodes.Status401Unauthorized);
+        throw new CustomException("Usuário Inválido!", StatusCodes.Status401Unauthorized);
     }
 
     public async Task<AuthenticationDto> ValidateExternalCredentials(GoogleAuthenticationDto authenticationDto)
