@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { NgChartsModule } from "ng2-charts";
 import { BarChartComponent } from "../../components";
-import { DashboardService } from "../../services/api";
+import { DashboardService } from "../../services";
 import { SharedModule } from "../../app.shared.module";
 import { DashboardComponent } from "./dashboard.component";
 import { DashboardRoutingModule } from "./dashboard.routing.module";
