@@ -1,7 +1,7 @@
 ﻿import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { AlertComponent, AlertType } from '../../../components';
-import { ImagemPerfilService } from '../../../services/api';
+import { ImagemPerfilService } from '../../../services';
 
 @Component({
   selector: 'app-change-avatar',
@@ -15,7 +15,7 @@ export class ChangeAvatarComponent implements OnInit {
   formAvatar: FormGroup;
   file: File | null = null;
   fileLoaded = false;
-  urlPerfilImage: string = '../../../../assets/perfil_static.png' ;
+  public urlPerfilImage: string = '../../../../assets/perfil_static.png' ;
 
   constructor(
     public imagemPerfilService: ImagemPerfilService,

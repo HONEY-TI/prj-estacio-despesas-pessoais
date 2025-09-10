@@ -4,9 +4,7 @@ import { Router } from "@angular/router";
 import { map, catchError } from "rxjs";
 import { AlertComponent, AlertType } from "../../components";
 import { ILogin, IAuth } from "../../models";
-import { AuthService } from "../../services";
-import { AcessoService } from "../../services/api";
-import { AuthGoogleService } from "../../services/auth/auth.google.service";
+import { AuthService, AcessoService, AuthGoogleService } from "../../services";
 import { isNativeMobile } from "../../utils/platform.utils";
 import { Platform } from '@ionic/angular';
 

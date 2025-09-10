@@ -2,21 +2,26 @@
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { IAuth, IGoogleAuth } from '../../models';
 import { environment } from '../../../environments/environment';
-import { AcessoService } from '../api';
 import { AuthServiceBase } from './auth.abstract.service';
-import { AuthService } from '..';
+import { AcessoService, AuthService, TokenStorageService } from '..';
+import { Router } from '@angular/router';
 
 declare const google: any;
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class AuthGoogleService extends AuthServiceBase {
   private clientId: string = environment.client_id;
   private initialized = false;
 
-  constructor(protected override acessoService: AcessoService, private authProviderService: AuthService) {
-    super(acessoService, {} as any, {} as any); 
+  constructor(
+    protected acessoService: AcessoService, 
+    private authProviderService: AuthService, 
+    public override tokenStorage: TokenStorageService,
+    protected override router: Router) {
+    super(tokenStorage, router);
     this.initializeGoogleLogin();
   }
 
@@ -35,7 +40,7 @@ export class AuthGoogleService extends AuthServiceBase {
             this.handleCredentialResponse(response).subscribe({
               next: (auth) => {
                 this.accessTokenSubject.next(auth.accessToken);
-                this.isAuthenticated$.next(true);                
+                this.isAuthenticated$.next(true);
               },
               error: (err) => console.error('Erro ao processar credencial:', err)
             });
@@ -76,8 +81,8 @@ export class AuthGoogleService extends AuthServiceBase {
           return authResponse;
         }
         else {
-        throw new Error('Erro de autenticação: usuário não autenticado');
-      }
+          throw new Error('Erro de autenticação: usuário não autenticado');
+        }
       }),
       catchError(err =>
         throwError(() => new Error(err?.message || 'Erro de autenticação, atualize a página e tente novamente!'))
@@ -103,40 +108,38 @@ export class AuthGoogleService extends AuthServiceBase {
     return JSON.parse(jsonPayload);
   }
 
-public handleGoogleLogin(): Observable<IAuth> {
-  return new Observable<IAuth>((observer) => {
-    if (!this.isGoogleScriptLoaded()) {
-      observer.error(new Error('Google API não carregada.'));
-      return;
-    }
+  public handleGoogleLogin(): Observable<IAuth> {
+    return new Observable<IAuth>((observer) => {
+      if (!this.isGoogleScriptLoaded()) {
+        observer.error(new Error('Google API não carregada.'));
+        return;
+      }
 
-    google.accounts.id.prompt(() => {
-      const callback = (response: any) => {
-        if (response.credential) {
-          this.handleCredentialResponse(response).subscribe({
-            next: (auth) => {
-              this.accessTokenSubject.next(auth.accessToken);
-              this.isAuthenticated$.next(true);
-              observer.next(auth);
-              observer.complete();
-            },
-            error: (err) => observer.error(err)
-          });
-        } else {
-          observer.error(new Error('Nenhuma credencial recebida.'));
-        }
-      };
+      google.accounts.id.prompt(() => {
+        const callback = (response: any) => {
+          if (response.credential) {
+            this.handleCredentialResponse(response).subscribe({
+              next: (auth) => {
+                this.accessTokenSubject.next(auth.accessToken);
+                this.isAuthenticated$.next(true);
+                observer.next(auth);
+                observer.complete();
+              },
+              error: (err) => observer.error(err)
+            });
+          } else {
+            observer.error(new Error('Nenhuma credencial recebida.'));
+          }
+        };
 
-      // substitui temporariamente o callback do google
-      google.accounts.id.initialize({
-        client_id: this.clientId,
-        callback
+        // substitui temporariamente o callback do google
+        google.accounts.id.initialize({
+          client_id: this.clientId,
+          callback
+        });
+
+        google.accounts.id.prompt();
       });
-
-      google.accounts.id.prompt();
     });
-  });
-}
-
-
+  }
 }

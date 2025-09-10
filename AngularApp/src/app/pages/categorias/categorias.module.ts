@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { CategoriasFormComponent } from "./categorias-form/categorias.form.component";
 import { CategoriasComponent } from "./categorias.component";
 import { CategoriaRoutingModule } from "./categorias.routing.module";
-import { CategoriaService } from "../../services/api";
+import { CategoriaService } from "../../services";
 import { SharedModule } from "../../app.shared.module";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";

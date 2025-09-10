@@ -4,7 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import dayjs from 'dayjs';
 import { AlertComponent, AlertType } from '../../../components';
 import { ICategoria, IReceita, Action } from '../../../models';
-import { ReceitaService } from '../../../services/api';
+import { ReceitaService } from '../../../services';
 import { CustomValidators } from '../../validators';
 
 @Component({
@@ -53,7 +53,7 @@ export class ReceitasFormComponent {
     }
   }
 
-  private getCatgeoriasFromReceitas = () => {
+  public getCatgeoriasFromReceitas = () => {
     this.receitaService.getReceitasCategorias()
       .subscribe({
         next: (result: ICategoria[]) => {
@@ -66,7 +66,7 @@ export class ReceitasFormComponent {
       });
   }
 
-  private saveCreateReceita = () => {
+  public saveCreateReceita = () => {
     this.receitaService.postReceita(this.receitaForm.getRawValue() as IReceita)
       .subscribe({
         next: (result: IReceita) => {
@@ -82,7 +82,7 @@ export class ReceitasFormComponent {
       });
   }
 
-  private saveEditReceita = () => {
+  public saveEditReceita = () => {
     this.receitaService.putReceita(this.receitaForm.getRawValue() as IReceita)
       .subscribe({
         next: (response: IReceita) => {

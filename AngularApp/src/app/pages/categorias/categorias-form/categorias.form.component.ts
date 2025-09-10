@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { AlertComponent, AlertType } from '../../../components';
 import { ICategoria, Action } from '../../../models';
-import { CategoriaService } from '../../../services/api';
+import { CategoriaService } from '../../../services';
 
 @Component({
   selector: 'app-categorias-form',

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgbModalConfig, NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModalConfig, NgbModal, NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-modal-confirm',
@@ -16,17 +16,17 @@ export class ModalConfirmComponent {
     config.keyboard = false;
   }
 
-  open(content: any, _message: string) {
-    const modalRef = this.modalService.open(content);
+  public open(content: any, _message: string): NgbModalRef {
+    let modalRef = this.modalService.open(content);
     modalRef.componentInstance.message = _message;
     return modalRef;
   }
 
-  close(){
+  public close(): void {
     this.modalService.dismissAll();
   }
 
-  setConfirmButton( _confirm: Function){
+  public setConfirmButton( _confirm: Function): void {
     this.onClickConfirm = () => {
       _confirm();
       this.activeModal.close();

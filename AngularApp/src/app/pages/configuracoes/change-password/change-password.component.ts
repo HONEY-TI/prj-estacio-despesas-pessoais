@@ -2,7 +2,7 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertComponent, AlertType } from '../../../components';
 import { ILogin } from '../../../models';
-import { AcessoService } from '../../../services/api';
+import { AcessoService } from '../../../services';
 
 @Component({
   selector: 'app-change-password',

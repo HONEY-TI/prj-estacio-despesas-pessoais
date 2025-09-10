@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { map, catchError } from "rxjs";
 import { AlertComponent, AlertType } from "../../components";
 import { IAcesso } from "../../models";
-import { AcessoService } from "../../services/api";
+import { AcessoService } from "../../services";
 import { CustomValidators } from "../validators";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";

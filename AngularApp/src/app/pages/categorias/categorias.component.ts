@@ -2,8 +2,7 @@
 import { CategoriasFormComponent } from './categorias-form/categorias.form.component';
 import { ICategoria, ITipoCategoria, Action } from '../../models';
 import { BarraFerramentaBase, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from '../../components';
-import { MenuService } from '../../services';
-import { CategoriaService } from '../../services/api';
+import { MenuService, CategoriaService } from '../../services';
 import { CategoriaDataSet, CategoriaColumns } from '../../models/datatable-config/categorias';
 
 @Component({

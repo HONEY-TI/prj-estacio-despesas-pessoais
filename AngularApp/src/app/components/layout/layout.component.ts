@@ -1,10 +1,6 @@
 ﻿import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { MenuService } from "../../services/utils/menu-service/menu.service";
-import { AuthService } from "../../services/auth/auth.service";
-import { ImagemPerfilService } from "../../services/api";
-import { TokenStorageService } from "../../services";
-
+import { AuthService, MenuService,  ImagemPerfilService } from "../../services";
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
@@ -20,7 +16,7 @@ export class LayoutComponent implements OnInit {
     public menuService: MenuService,
     private imagemPerfilService: ImagemPerfilService) { }
 
-  private initialize = (): void => {
+  public initialize = (): void => {
     this.imagemPerfilService.getImagemPerfilUsuario()
       .subscribe({
         next: (response: ArrayBuffer) => {
@@ -37,12 +33,12 @@ export class LayoutComponent implements OnInit {
       });
   }
   
-  protected selectMenu(menu: number) {
+  public selectMenu(menu: number) {
     this.menuService.selectMenu(menu, this.router);
   }
 
-  protected onLogoutClick() {
-    this.authService.tokenStorage.clearSessionStorage();
+  public onLogoutClick() {
+    this.authService.tokenStorage.signOut();
     this.router.navigate(['/']);
   }
 

@@ -4,14 +4,15 @@ import { DespesasFormComponent } from "./despesas-form/despesas.form.component";
 import { BarraFerramentaBase, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../components";
 import { DespesaDataSet, DespesaColumns } from "../../models/datatable-config/despesas";
 import { IDespesa, Action } from "../../models";
-import { MenuService } from "../../services";
-import { DespesaService } from "../../services/api";
+import { MenuService, DespesaService } from "../../services";
+
 @Component({
   selector: 'app-despesas',
   templateUrl: './despesas.component.html',
   styleUrls: ['./despesas.component.scss'],
   standalone: false
 })
+
 export class DespesasComponent implements BarraFerramentaBase, OnInit {
   @ViewChild(DataTableComponent) dataTable: DataTableComponent;
   despesasData: DespesaDataSet[] = [];

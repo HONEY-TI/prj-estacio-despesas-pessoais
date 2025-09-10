@@ -2,7 +2,6 @@
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { TokenStorageService } from '../token/token.storage.service';
-import { AcessoService } from '../api';
 import { IAuth } from '../../models';
 
 @Injectable({
@@ -15,7 +14,6 @@ export abstract class AuthServiceBase {
   public route: string = 'Acesso';
 
   constructor(
-    protected acessoService: AcessoService,
     protected tokenStorage: TokenStorageService,
     protected router: Router) { }
 
@@ -23,6 +21,8 @@ export abstract class AuthServiceBase {
     const refreshToken = this.tokenStorage.getRefreshToken();
     if (!refreshToken) {
       this.logout();
+
+      return;
     }
 
     try {
@@ -62,8 +62,9 @@ export abstract class AuthServiceBase {
     }
   }
 
-  public refreshToken(token: string): Observable<IAuth> {
-    return this.acessoService.refreshToken(token);
+  public refreshToken(token: string): any {
+    this.tokenStorage.saveRefreshToken(token);
+    return this.tokenStorage.getRefreshToken();
   }
 
 

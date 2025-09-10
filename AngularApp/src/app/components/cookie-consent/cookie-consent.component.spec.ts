@@ -1,6 +1,7 @@
 /* tslint:disable:no-unused-variable */
 import {  ComponentFixture, TestBed } from '@angular/core/testing';
-import { CookieConsentComponent } from './cookie-consent.component';
+import { CookieConsentComponent } from '..';
+
 
 describe('CookieConsentComponent', () => {
   let component: CookieConsentComponent;

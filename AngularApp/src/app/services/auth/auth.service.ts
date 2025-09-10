@@ -1,8 +1,8 @@
 ﻿import { Injectable } from '@angular/core';
 import { TokenStorageService } from '../token/token.storage.service';
-import { AcessoService } from '../api';
-import { AuthServiceBase } from './auth.abstract.service';
 import { Router } from '@angular/router';
+import { AuthServiceBase } from './auth.abstract.service';
+import { AcessoService } from '..';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +12,8 @@ export class AuthService extends AuthServiceBase {
 
   constructor(
     public override tokenStorage: TokenStorageService,
-    protected override acessoService: AcessoService,
     protected override router: Router) {
-      super(acessoService, tokenStorage, router);
+      super(tokenStorage, router);
 
       const token = this.tokenStorage.getAccessToken();
       if (token) {

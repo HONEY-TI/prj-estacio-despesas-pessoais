@@ -2,8 +2,7 @@
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { AlertComponent, AlertType } from "../../components";
 import { IUsuario } from "../../models";
-import { MenuService } from "../../services";
-import { UsuarioService } from "../../services/api";
+import { MenuService, UsuarioService } from "../../services";
 
 @Component({
   selector: 'app-perfil',
