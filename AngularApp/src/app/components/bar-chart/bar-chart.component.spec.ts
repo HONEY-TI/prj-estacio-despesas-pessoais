@@ -8,9 +8,8 @@ describe('BarChartComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [BarChartComponent],
-      schemas: [NO_ERRORS_SCHEMA],
-
+      imports: [BarChartComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(BarChartComponent);
     component = fixture.componentInstance;
