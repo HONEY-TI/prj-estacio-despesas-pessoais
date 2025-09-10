@@ -7,7 +7,27 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { from, of, throwError } from 'rxjs';
 import { AlertComponent, AlertType } from '../../../components';
 import { ImagemPerfilService, UsuarioService } from '../../../services';
-import { MockImagemPerfil } from '../../../../__mock__';
+
+class MockImagemPerfil {
+  private mockBuffer: ArrayBuffer;
+
+  constructor() {
+    const data = new TextEncoder().encode("fake image content");
+    this.mockBuffer = data.buffer;
+  }
+
+  getImagemPerfilUsuario() {
+    return of(this.mockBuffer);
+  }
+
+  updateImagemPerfilUsuario(file: File) {
+    return of(this.mockBuffer);
+  }
+
+  deleteImagemPerfilUsuario() {
+    return of(true);
+  }
+}
 
 describe('Unit Test ChangeAvatarComponent', () => {
   let component: ChangeAvatarComponent;

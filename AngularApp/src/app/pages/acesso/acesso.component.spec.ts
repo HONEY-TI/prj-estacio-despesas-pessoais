@@ -1,8 +1,7 @@
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed, fakeAsync, flush } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { of, throwError } from "rxjs";
 import { AcessoComponent } from "./acesso.component";
@@ -17,8 +16,8 @@ describe('AcessoComponent', () => {
   beforeEach(() => {
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     TestBed.configureTestingModule({
-      imports: [AcessoComponent, ReactiveFormsModule,  RouterTestingModule, HttpClientTestingModule ],
-      providers: [AlertComponent, NgbActiveModal,
+      imports: [AcessoComponent, ReactiveFormsModule ],
+      providers: [AlertComponent, NgbActiveModal, provideHttpClientTesting(),
         { provide: Router, useValue: mockRouter }
       ]
     });

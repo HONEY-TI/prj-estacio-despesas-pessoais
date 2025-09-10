@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { NgbModal, NgbModalConfig } from "@ng-bootstrap/ng-bootstrap";
 import { AlertModule } from "./alert.component.module";
-import { MockAlertComponent } from "../../../__mock__";
 import { AlertComponent, AlertType } from "..";
 
 describe('Test AlertComponent', () => {
@@ -11,8 +10,8 @@ describe('Test AlertComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [AlertComponent ],
-      imports: [ AlertModule, MockAlertComponent ],
+      declarations: [AlertComponent],
+      imports: [ AlertModule ],
       providers: [NgbModalConfig,  NgbModal],
     });
 
@@ -29,7 +28,7 @@ describe('Test AlertComponent', () => {
 
   it('should open modal', () => {
     // Arrange
-    const content =  MockAlertComponent;
+    const content =  AlertComponent;
     spyOn(modalService, 'open');
 
     // Act
@@ -42,7 +41,7 @@ describe('Test AlertComponent', () => {
 
   it('should close modal', () => {
     // Arrange
-    const content = MockAlertComponent;
+    const content = AlertComponent;
     spyOn(modalService, 'open').and.returnValue(modalService.open(content));
     spyOn(modalService, 'dismissAll').and.returnValue(modalService.dismissAll());
 
@@ -61,10 +60,10 @@ describe('Test AlertComponent', () => {
 
     // Act
     modalRefMock.componentInstance.message = expectedMessage;
-    component.open(MockAlertComponent, expectedMessage, AlertType.Warning);
+    component.open(AlertComponent, expectedMessage, AlertType.Warning);
 
     // Assert
-    expect(openSpy).toHaveBeenCalledWith(MockAlertComponent, expectedMessage, AlertType.Warning);
+    expect(openSpy).toHaveBeenCalledWith(AlertComponent, expectedMessage, AlertType.Warning);
     expect(modalRefMock.componentInstance.message).toBe(expectedMessage);
   });
 
@@ -75,11 +74,11 @@ describe('Test AlertComponent', () => {
     const closeSpy = spyOn(component, 'close').and.returnValue(modalRefMock);
 
     // Act
-    component.open(MockAlertComponent, "Test Alert Component", AlertType.Success);
+    component.open(AlertComponent, "Test Alert Component", AlertType.Success);
     component.close();
 
     // Assert
-    expect(openSpy).toHaveBeenCalledWith(MockAlertComponent, "Test Alert Component", AlertType.Success);
+    expect(openSpy).toHaveBeenCalledWith(AlertComponent, "Test Alert Component", AlertType.Success);
     expect(closeSpy).toHaveBeenCalledWith();
   });
 });
