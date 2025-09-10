@@ -22,8 +22,7 @@ export class CategoriasComponent implements BarraFerramentaBase, OnInit {
     public modalAlert: AlertComponent,
     public modalForm: ModalFormComponent,
     public modalConfirm: ModalConfirmComponent,
-    public categoriaService: CategoriaService
-  ) { }
+    public categoriaService: CategoriaService) { }
 
   ngOnInit() {
     this.menuService.setMenuSelecionado(2);

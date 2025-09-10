@@ -14,11 +14,10 @@ import { FooterComponent } from "../../components/footer/footer.component";
 
 @Component({
   selector: 'app-acesso',
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule,  FormsModule, MatIconModule, MatFormFieldModule, MatInputModule, FooterComponent ],
   templateUrl: './acesso.component.html',
   styleUrls: ['./acesso.component.scss'],
-
+  standalone: true
 })
 
 export class AcessoComponent  implements OnInit {

@@ -2,8 +2,6 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed, fakeAsync, flush } from "@angular/core/testing";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatSelectModule } from "@angular/material/select";
-import { RouterTestingModule } from "@angular/router/testing";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { from, throwError } from "rxjs";
 import { DespesasFormComponent } from "./despesas-form/despesas.form.component";
@@ -35,7 +33,7 @@ describe('Unit Test DespesasComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [DespesasComponent, DespesasFormComponent],
-      imports: [ SharedModule, RouterTestingModule, HttpClientTestingModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule],
+      imports: [ SharedModule, HttpClientTestingModule, MatDatepickerModule, MatNativeDateModule],
       providers: [MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent, NgbActiveModal, DespesaService, DespesasFormComponent ]
     });
     fixture = TestBed.createComponent(DespesasComponent);

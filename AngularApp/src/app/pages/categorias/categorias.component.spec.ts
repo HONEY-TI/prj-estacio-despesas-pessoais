@@ -1,7 +1,5 @@
-import { CommonModule } from "@angular/common";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, tick, flush } from "@angular/core/testing";
-import { ReactiveFormsModule } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { from, throwError, of } from "rxjs";
 import { CategoriasFormComponent } from "./categorias-form/categorias.form.component";
@@ -11,7 +9,6 @@ import { CategoriaDataSet } from "../../models/datatable-config/categorias";
 import { ICategoria } from "../../models";
 import { SharedModule } from "../../app.shared.module";
 import { MenuService, CategoriaService } from "../../services";
-
 
 describe('Unit Test CategoriasComponent', () => {
   let component: CategoriasComponent;
@@ -27,8 +24,8 @@ describe('Unit Test CategoriasComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [CategoriasComponent, CategoriasFormComponent],
-      imports: [CommonModule, ReactiveFormsModule, SharedModule, HttpClientTestingModule ],
-      providers: [MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent,  NgbActiveModal, CategoriaService,   ]
+      imports: [ SharedModule, HttpClientTestingModule ],
+      providers: [MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent,  NgbActiveModal, CategoriaService ]
     });
     fixture = TestBed.createComponent(CategoriasComponent);
     component = fixture.componentInstance;

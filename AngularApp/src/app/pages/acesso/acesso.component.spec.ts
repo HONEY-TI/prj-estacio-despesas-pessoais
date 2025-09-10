@@ -1,4 +1,4 @@
-import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, flush } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -7,6 +7,7 @@ import { of, throwError } from "rxjs";
 import { AcessoComponent } from "./acesso.component";
 import { AlertComponent, AlertType } from "../../components";
 import { IAcesso } from "../../models";
+import { AcessoService } from "../../services";
 
 describe('AcessoComponent', () => {
   let component: AcessoComponent;
@@ -15,17 +16,25 @@ describe('AcessoComponent', () => {
 
   beforeEach(() => {
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+
     TestBed.configureTestingModule({
-      imports: [AcessoComponent, ReactiveFormsModule ],
-      providers: [AlertComponent, NgbActiveModal, provideHttpClientTesting(),
+      imports: [
+        HttpClientTestingModule,
+        ReactiveFormsModule,
+        AcessoComponent
+      ],
+      providers: [
+        AcessoService,
+        AlertComponent,
+        NgbActiveModal,
         { provide: Router, useValue: mockRouter }
       ]
     });
+
     fixture = TestBed.createComponent(AcessoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
 
   it('should create', () => {
     // Assert
@@ -56,10 +65,9 @@ describe('AcessoComponent', () => {
     expect(component.acessoService.createUsuario).toHaveBeenCalledWith(controleAcesso);
     expect(component.onSaveClick).toHaveBeenCalled();
     expect(component.modalALert.open).toHaveBeenCalled();
-    //expect(component.router.navigate).toHaveBeenCalledWith(['/dashboard']);
   }));
 
-  it('should open modal when when error comes from api ', () => {
+  it('should open modal when API returns an error', fakeAsync(() => {
     // Arrange
     const controleAcesso: IAcesso = {
       nome: 'Teste Usuário',
@@ -70,47 +78,22 @@ describe('AcessoComponent', () => {
       confirmaSenha: '!12345'
     };
 
-    const response = {  message: "Teste Erro Message From API" };
+    const errorResponse = { message: "Teste Erro Message From API" };
     spyOn(component.modalALert, 'open').and.callThrough();
-    spyOn(component.acessoService, 'createUsuario').and.returnValue(of(response));
+    spyOn(component.acessoService, 'createUsuario').and.returnValue(throwError(() => errorResponse));
     spyOn(component, 'onSaveClick').and.callThrough();
 
     // Act
     component.createAccountFrom.patchValue(controleAcesso);
     component.onSaveClick();
+    flush();
 
-    // Asssert
+    // Assert
     expect(component.modalALert.open).toHaveBeenCalled();
-  });
+  }));
 
-  it('should open modal when when throws error ', () => {
+  it('should toggle senha visibility', () => {
     // Arrange
-    const controleAcesso: IAcesso = {
-      nome: 'Teste Usuário',
-      sobreNome: 'Usuário',
-      telefone: '(21) 9999-9999',
-      email: 'teste@teste.com',
-      senha: '!12345',
-      confirmaSenha: '!12345'
-    };
-
-    const response = {  message: "Teste Throws Error" };
-    spyOn(component.modalALert, 'open').and.callThrough();
-    spyOn(component.acessoService, 'createUsuario').and.returnValue(of(response)).and.throwError;
-    spyOn(component, 'onSaveClick').and.callThrough();
-
-    // Act
-    component.createAccountFrom.patchValue(controleAcesso);
-    component.onSaveClick();
-
-    // Asssert
-    expect(component.modalALert.open).toHaveBeenCalled();
-  });
-
-
-  it('should toggle senha visibility and update eye icon class', () => {
-    // Arrange
-    component.ngOnInit();
     component.showSenha = false;
     component.eyeIconClass = 'bi-eye';
 
@@ -118,20 +101,19 @@ describe('AcessoComponent', () => {
     component.onToogleSenha();
 
     // Assert
-    expect(component.showSenha).toBe(true);
+    expect(component.showSenha).toBeTrue();
     expect(component.eyeIconClass).toBe('bi-eye-slash');
 
     // Act
     component.onToogleSenha();
 
     // Assert
-    expect(component.showSenha).toBe(false);
+    expect(component.showSenha).toBeFalse();
     expect(component.eyeIconClass).toBe('bi-eye');
   });
 
-  it('should toggle confirma senha visibility and update eye icon class', () => {
+  it('should toggle confirma senha visibility', () => {
     // Arrange
-    component.ngOnInit();
     component.showConfirmaSenha = false;
     component.eyeIconClassConfirmaSenha = 'bi-eye';
 
@@ -139,18 +121,18 @@ describe('AcessoComponent', () => {
     component.onToogleConfirmaSenha();
 
     // Assert
-    expect(component.showConfirmaSenha).toBe(true);
+    expect(component.showConfirmaSenha).toBeTrue();
     expect(component.eyeIconClassConfirmaSenha).toBe('bi-eye-slash');
 
     // Act
     component.onToogleConfirmaSenha();
 
     // Assert
-    expect(component.showConfirmaSenha).toBe(false);
+    expect(component.showConfirmaSenha).toBeFalse();
     expect(component.eyeIconClassConfirmaSenha).toBe('bi-eye');
   });
 
-  it('should open modal with validation error message when API returns 400 with validation errors', fakeAsync(() => {
+  it('should show validation errors from API', fakeAsync(() => {
     // Arrange
     const controleAcesso: IAcesso = {
       nome: 'Teste Usuário',
@@ -162,12 +144,11 @@ describe('AcessoComponent', () => {
     };
     const errorResponse = {
       status: 400,
-      errors: {
-        email: ['Email inválido']
-      }
+      errors: { email: ['Email inválido'] }
     };
+
     spyOn(component.modalALert, 'open').and.callThrough();
-    spyOn(component.acessoService, 'createUsuario').and.returnValue(throwError(errorResponse));
+    spyOn(component.acessoService, 'createUsuario').and.returnValue(throwError(() => errorResponse));
     spyOn(component, 'onSaveClick').and.callThrough();
 
     // Act
@@ -176,6 +157,7 @@ describe('AcessoComponent', () => {
     flush();
 
     // Assert
-    expect(component.modalALert.open).toHaveBeenCalledWith(AlertComponent, 'Email inválido', AlertType.Warning);
+    expect(component.modalALert.open)
+      .toHaveBeenCalledWith(AlertComponent, 'Email inválido', AlertType.Warning);
   }));
 });

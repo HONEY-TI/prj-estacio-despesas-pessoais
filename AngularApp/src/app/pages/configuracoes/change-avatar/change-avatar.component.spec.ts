@@ -1,12 +1,12 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { ChangeAvatarComponent } from './change-avatar.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { from, of, throwError } from 'rxjs';
 import { AlertComponent, AlertType } from '../../../components';
 import { ImagemPerfilService, UsuarioService } from '../../../services';
+import { SharedModule } from '../../../app.shared.module';
 
 class MockImagemPerfil {
   private mockBuffer: ArrayBuffer;
@@ -38,7 +38,7 @@ describe('Unit Test ChangeAvatarComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [ChangeAvatarComponent],
-      imports: [CommonModule, HttpClientTestingModule, ReactiveFormsModule],
+      imports: [SharedModule, HttpClientTestingModule],
       providers: [FormBuilder, AlertComponent, UsuarioService, NgbActiveModal]
     });
     fixture = TestBed.createComponent(ChangeAvatarComponent);

@@ -1,5 +1,5 @@
 
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, flush } from "@angular/core/testing";
 import { FormBuilder } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -19,7 +19,7 @@ describe('Unit Test CategoriasFormComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [CategoriasFormComponent],
-      imports: [SharedModule,  HttpClientTestingModule],
+      imports: [SharedModule, HttpClientTestingModule ],
       providers: [FormBuilder, AlertComponent, NgbActiveModal, CategoriaService]
     });
     fixture = TestBed.createComponent(CategoriasFormComponent);

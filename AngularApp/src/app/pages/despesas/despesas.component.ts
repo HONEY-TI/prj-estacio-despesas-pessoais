@@ -1,10 +1,10 @@
 ﻿import { Component, OnInit, ViewChild } from "@angular/core";
-import dayjs from "dayjs";
 import { DespesasFormComponent } from "./despesas-form/despesas.form.component";
 import { BarraFerramentaBase, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../components";
 import { DespesaDataSet, DespesaColumns } from "../../models/datatable-config/despesas";
 import { IDespesa, Action } from "../../models";
 import { MenuService, DespesaService } from "../../services";
+import dayjs from "dayjs";
 
 @Component({
   selector: 'app-despesas',
@@ -26,43 +26,12 @@ export class DespesasComponent implements BarraFerramentaBase, OnInit {
     public despesaService: DespesaService,
     private despesasFormComponent: DespesasFormComponent) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.menuService.setMenuSelecionado(3);
     this.initializeDataTable();
   }
 
-  initializeDataTable = () => {
-    this.despesaService.getDespesas()
-      .subscribe({
-        next: (result: IDespesa[]) => {
-          if (result) {
-            this.despesasData = this.parseToDespesasData(result);
-            this.dataTable.loadData(this.despesasData);
-            this.dataTable.rerender();
-          }
-        },
-        error: (errorMessage: string) => {
-          this.modalAlert.open(AlertComponent, errorMessage, AlertType.Warning);
-        }
-      });
-  }
-
-  updateDatatable = () => {
-    this.despesaService.getDespesas()
-      .subscribe({
-        next: (result: any) => {
-          if (result) {
-            this.despesasData = this.parseToDespesasData(result);
-            this.dataTable.rerender();
-          }
-        },
-        error: (errorMessage: string) => {
-          this.modalAlert.open(AlertComponent, errorMessage, AlertType.Warning);
-        }
-      });
-  }
-
-  parseToDespesasData(despesas: IDespesa[]): DespesaDataSet[] {
+  private parseToDespesasData(despesas: IDespesa[]): DespesaDataSet[] {
     return despesas.map((despesa: IDespesa) => ({
       id: despesa.id,
       data: dayjs(despesa.data).format('DD/MM/YYYY'),
@@ -78,7 +47,38 @@ export class DespesasComponent implements BarraFerramentaBase, OnInit {
     }));
   }
 
-  onClickNovo = () => {
+  public initializeDataTable = (): void => {
+    this.despesaService.getDespesas()
+      .subscribe({
+        next: (result: IDespesa[]) => {
+          if (result) {
+            this.despesasData = this.parseToDespesasData(result);
+            this.dataTable.loadData(this.despesasData);
+            this.dataTable.rerender();
+          }
+        },
+        error: (errorMessage: string) => {
+          this.modalAlert.open(AlertComponent, errorMessage, AlertType.Warning);
+        }
+      });
+  }
+
+  public updateDatatable = (): void => {
+    this.despesaService.getDespesas()
+      .subscribe({
+        next: (result: any) => {
+          if (result) {
+            this.despesasData = this.parseToDespesasData(result);
+            this.dataTable.rerender();
+          }
+        },
+        error: (errorMessage: string) => {
+          this.modalAlert.open(AlertComponent, errorMessage, AlertType.Warning);
+        }
+      });
+  }
+
+  public onClickNovo = (): void => {
     const modalRef = this.modalForm.modalService.open(DespesasFormComponent, { centered: true });
     modalRef.shown.subscribe(() => {
       modalRef.componentInstance.action = Action.Create;
@@ -86,7 +86,7 @@ export class DespesasComponent implements BarraFerramentaBase, OnInit {
     });
   }
 
-  onClickEdit = (idDespesa: number) => {
+  public onClickEdit = (idDespesa: number): void => {
     const modalRef = this.modalForm.modalService.open(DespesasFormComponent, { centered: true });
     modalRef.shown.subscribe(() => {
       modalRef.componentInstance.action = Action.Edit;
@@ -95,7 +95,7 @@ export class DespesasComponent implements BarraFerramentaBase, OnInit {
     });
   }
 
-  onClickDelete = (idDespesa: number) => {
+  public onClickDelete = (idDespesa: number): void => {
     const modalRef = this.modalConfirm.open(ModalConfirmComponent, `Deseja excluir a despesa ${this.dataTable.row.descricao} ?`);
     modalRef.shown.subscribe(() => {
       modalRef.componentInstance.setConfirmButton(() => this.despesasFormComponent.deleteDespesa(idDespesa, this.updateDatatable));
