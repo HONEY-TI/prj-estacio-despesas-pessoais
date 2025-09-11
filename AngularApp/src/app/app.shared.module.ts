@@ -12,7 +12,8 @@ import { MatInputModule } from "@angular/material/input";
 @NgModule({
   declarations: [LayoutComponent],
   imports: [CommonModule, ReactiveFormsModule, FormsModule, BarraFerramentaModule, CurrencyMaskModule, DataTableModule ],
-  exports: [LayoutComponent, BarraFerramentaComponent, DataTableModule, CurrencyMaskModule, MatSelectModule, MatFormFieldModule, MatInputModule ],
+  exports: [LayoutComponent, BarraFerramentaComponent, CommonModule, ReactiveFormsModule, FormsModule, 
+    DataTableModule, CurrencyMaskModule, MatSelectModule, MatFormFieldModule, MatInputModule ],
   providers: [DataTableComponent]
 })
 

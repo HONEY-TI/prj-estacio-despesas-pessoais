@@ -2,7 +2,6 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed, fakeAsync, flush } from "@angular/core/testing";
 import { MatNativeDateModule } from "@angular/material/core";
 import { MatDatepickerModule } from "@angular/material/datepicker";
-import { RouterTestingModule } from "@angular/router/testing";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { from, throwError } from "rxjs";
 import { ReceitasFormComponent } from "./receitas-form/receitas.form.component";
@@ -31,8 +30,8 @@ describe('Unit Test ReceitasComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ReceitasComponent, ReceitasFormComponent, ],
-      imports: [ SharedModule, RouterTestingModule,HttpClientTestingModule,  MatDatepickerModule, MatNativeDateModule],
+      declarations: [ReceitasComponent, ],
+      imports: [ SharedModule, HttpClientTestingModule,  MatDatepickerModule, MatNativeDateModule],
       providers: [MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent, NgbActiveModal, ReceitaService, ReceitasFormComponent ]
     });
     fixture = TestBed.createComponent(ReceitasComponent);

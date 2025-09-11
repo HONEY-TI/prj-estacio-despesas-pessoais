@@ -32,7 +32,7 @@ describe('Unit Test DespesasComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [DespesasComponent, DespesasFormComponent],
+      declarations: [DespesasComponent],
       imports: [ SharedModule, HttpClientTestingModule, MatDatepickerModule, MatNativeDateModule],
       providers: [MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent, NgbActiveModal, DespesaService, DespesasFormComponent ]
     });

@@ -3,8 +3,9 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 import { IAuth, IGoogleAuth } from '../../models';
 import { environment } from '../../../environments/environment';
 import { AuthServiceBase } from './auth.abstract.service';
-import { AcessoService, AuthService, TokenStorageService } from '..';
+import { AcessoService, TokenStorageService } from '..';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 declare const google: any;
 
@@ -17,11 +18,11 @@ export class AuthGoogleService extends AuthServiceBase {
   private initialized = false;
 
   constructor(
-    protected acessoService: AcessoService, 
-    private authProviderService: AuthService, 
-    public override tokenStorage: TokenStorageService,
-    protected override router: Router) {
-    super(tokenStorage, router);
+    httpClient: HttpClient,
+    tokenStorage: TokenStorageService,
+    router: Router,
+    acessoService: AcessoService) {
+    super(httpClient, tokenStorage, router, acessoService);
     this.initializeGoogleLogin();
   }
 
@@ -47,6 +48,8 @@ export class AuthGoogleService extends AuthServiceBase {
           }
         }
       });
+
+
 
       this.initialized = true;
     } else {
@@ -77,7 +80,6 @@ export class AuthGoogleService extends AuthServiceBase {
     return this.acessoService.signInWithGoogleAccount(authData).pipe(
       map((authResponse: IAuth) => {
         if (authResponse.authenticated) {
-          this.authProviderService.createAccessToken(authResponse);
           return authResponse;
         }
         else {
@@ -111,34 +113,45 @@ export class AuthGoogleService extends AuthServiceBase {
   public handleGoogleLogin(): Observable<IAuth> {
     return new Observable<IAuth>((observer) => {
       if (!this.isGoogleScriptLoaded()) {
-        observer.error(new Error('Google API não carregada.'));
+        observer.error(new Error("Google API não carregada."));
         return;
       }
 
-      google.accounts.id.prompt(() => {
-        const callback = (response: any) => {
-          if (response.credential) {
-            this.handleCredentialResponse(response).subscribe({
-              next: (auth) => {
-                this.accessTokenSubject.next(auth.accessToken);
-                this.isAuthenticated$.next(true);
-                observer.next(auth);
-                observer.complete();
-              },
-              error: (err) => observer.error(err)
-            });
-          } else {
-            observer.error(new Error('Nenhuma credencial recebida.'));
-          }
-        };
+      const callback = (response: any) => {
+        if (!response.credential) {
+          observer.error(new Error("Nenhuma credencial recebida."));
+          return;
+        }
 
-        // substitui temporariamente o callback do google
-        google.accounts.id.initialize({
-          client_id: this.clientId,
-          callback
+        this.handleCredentialResponse(response).subscribe({
+          next: (auth) => {
+            this.accessTokenSubject.next(auth.accessToken);
+            this.isAuthenticated$.next(true);
+            observer.next(auth);
+            observer.complete();
+          },
+          error: (err) => observer.error(err),
         });
+      };
 
-        google.accounts.id.prompt();
+      // Inicializa o cliente Google
+      google.accounts.id.initialize({
+        client_id: this.clientId,
+        callback,
+      });
+
+      // Renderiza o botão (classe CSS no HTML)
+      const btn = document.querySelector(".g_signin") as HTMLElement;
+      if (!btn) {
+        observer.error(new Error("Elemento do botão não encontrado."));
+        return;
+      }
+
+      google.accounts.id.renderButton(btn, {
+        theme: "outline",
+        size: "large",
+        text: "continue_with",
+        shape: "rectangular",
       });
     });
   }

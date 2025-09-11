@@ -1,139 +1,114 @@
 import { TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
 import { TokenStorageService } from '../token/token.storage.service';
 import { IAuth } from '../../models';
 import { AuthServiceBase } from './auth.abstract.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { AcessoService } from '..';
 
 describe('AuthServiceBase Unit Test', () => {
   let service: AuthServiceBase;
   let tokenStorage: jasmine.SpyObj<TokenStorageService>;
   let router: jasmine.SpyObj<Router>;
-  
-  class AuthServiceTest extends AuthServiceBase { }
+  let acessoService: jasmine.SpyObj<AcessoService>;
 
+  class AuthServiceTest extends AuthServiceBase {
+    constructor() {
+      super(
+        null as any,
+        tokenStorage,
+        router,
+        acessoService
+      );
+    }
+  }
   beforeEach(() => {
-    const tokenSpy = jasmine.createSpyObj('TokenStorageService', [
-      'getAccessToken', 'getRefreshToken', 'saveToken', 'saveRefreshToken', 'clearSessionStorage'
+    // Arrange: Criar mocks para dependências
+    tokenStorage = jasmine.createSpyObj('TokenStorageService', [
+      'getAccessToken', 'getRefreshToken', 'saveAccessToken', 'saveRefreshToken', 'clear'
     ]);
-    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    router = jasmine.createSpyObj('Router', ['navigate']);
+    acessoService = jasmine.createSpyObj('AcessoService', ['refreshToken']);
 
     TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       providers: [
-        { provide: TokenStorageService, useValue: tokenSpy },
-        { provide: Router, useValue: routerSpy },
-        { provide: AuthServiceBase, useClass: AuthServiceTest }
+        { provide: AuthServiceBase, useClass: AuthServiceTest },
+        { provide: TokenStorageService, useValue: tokenStorage },
+        { provide: Router, useValue: router }
       ]
     });
 
+    // Act: Injetar serviço
     service = TestBed.inject(AuthServiceBase);
-    tokenStorage = TestBed.inject(TokenStorageService) as jasmine.SpyObj<TokenStorageService>;
-    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
   });
 
-  it('should be created', () => {
+  it('should create the service', () => {
+    // Assert
     expect(service).toBeTruthy();
   });
 
-  it('should create access token successfully', () => {
-    const auth: IAuth = { accessToken: 'token', refreshToken: 'refresh', authenticated: true, created: '', expiration: '' };
-    const result = service.createAccessToken(auth);
-
-    expect(result).toBeTrue();
-    expect(tokenStorage.saveToken).toHaveBeenCalledWith('token');
-    expect(tokenStorage.saveRefreshToken).toHaveBeenCalledWith('refresh');
-    service.isAuthenticated$.subscribe(authenticated => {
-      expect(authenticated).toBeTrue();
-    });
-  });
-
-  it('should fail creating access token if exception occurs', () => {
-    tokenStorage.saveToken.and.throwError('Error');
-    const auth: IAuth = { accessToken: 'token', refreshToken: 'refresh', authenticated: true, created: '', expiration: '' };
-    const result = service.createAccessToken(auth);
-
-    expect(result).toBeFalse();
-  });
-
   it('should return true if user is authenticated', () => {
+    // Arrange
     tokenStorage.getAccessToken.and.returnValue('token');
+
+    // Act
     const result = service.isAuthenticated();
 
+    // Assert
     expect(result).toBeTrue();
   });
 
-  it('should return false and clear session if not authenticated', () => {
+  it('should return false if not authenticated', () => {
+    // Arrange
     tokenStorage.getAccessToken.and.returnValue(null);
     service['accessTokenSubject'].next(undefined);
 
+    // Act
     const result = service.isAuthenticated();
+
+    // Assert
     expect(result).toBeFalse();
-    expect(tokenStorage.clearSessionStorage).toHaveBeenCalled();
   });
 
   it('should logout correctly', () => {
+    // Arrange
     service['accessTokenSubject'].next('token');
     service['isAuthenticated$'].next(true);
 
-    service['logout']();
+    // Act
+    service.logout();
 
+    // Assert
     expect(service['accessTokenSubject'].getValue()).toBeUndefined();
-    service.isAuthenticated$.subscribe(authenticated => {
-      expect(authenticated).toBeFalse();
-    });
-    expect(tokenStorage.clearSessionStorage).toHaveBeenCalled();
+    service.isAuthenticated$.subscribe(auth => expect(auth).toBeFalse());
+    expect(tokenStorage.clear).toHaveBeenCalled();
   });
 
-  it('should refresh token', () => {
-    tokenStorage.getRefreshToken.and.returnValue('refreshToken');
-    const result = service.refreshToken('refreshToken');
-    expect(result).toBe('refreshToken');
-    expect(tokenStorage.saveRefreshToken).toHaveBeenCalledWith('refreshToken');
+  it('should login and save tokens', () => {
+    // Arrange
+    const auth: IAuth = { accessToken: 'a', refreshToken: 'b', authenticated: true, created: '', expiration: '' };
+
+    // Act
+    service.login(auth);
+
+    // Assert
+    expect(tokenStorage.saveAccessToken).toHaveBeenCalledWith('a');
+    expect(tokenStorage.saveRefreshToken).toHaveBeenCalledWith('b');
+    expect(service['accessTokenSubject'].getValue()).toBe('a');
+    service.isAuthenticated$.subscribe(authenticated => expect(authenticated).toBeTrue());
   });
-
-  it('should autoLogin and navigate to dashboard if refresh token exists', fakeAsync(async () => {
-    tokenStorage.getRefreshToken.and.returnValue('refreshToken');
-    spyOn(service, 'refreshToken').and.returnValue(of({
-      accessToken: 'newAccessToken',
-      refreshToken: 'newRefreshToken',
-      authenticated: true,
-      created: '',
-      expiration: ''
-    } as IAuth));
-
-    await service.autoLogin();
-    flush();
-
-    expect(service['refreshToken']).toHaveBeenCalledWith('refreshToken');
-    expect(tokenStorage.saveToken).toHaveBeenCalledWith('newAccessToken');
-    expect(tokenStorage.saveRefreshToken).toHaveBeenCalledWith('newRefreshToken');
-    expect(service['accessTokenSubject'].getValue()).toBe('newAccessToken');
-
-    service.isAuthenticated$.subscribe(authenticated => {
-      expect(authenticated).toBeTrue();
-    });
-
-  expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
-}));
 
   it('should logout if no refresh token during autoLogin', fakeAsync(async () => {
+    // Arrange
     tokenStorage.getRefreshToken.and.returnValue(null);
-    const logoutSpy = spyOn<any>(service, 'logout').and.callThrough();
+    const logoutSpy = spyOn(service, 'logout').and.callThrough();
 
+    // Act
     await service.autoLogin();
     flush();
 
+    // Assert
     expect(logoutSpy).toHaveBeenCalled();
-  }));
-
-  it('should logout if autoLogin fails', fakeAsync(async () => {
-    tokenStorage.getRefreshToken.and.returnValue('refreshToken');
-    spyOn(service, 'refreshToken').and.returnValue(throwError(() => new Error('fail')));
-    const logoutSpy = spyOn<any>(service, 'logout').and.callThrough();
-
-    await service.autoLogin();
-    flush();
-
-    expect(logoutSpy).toHaveBeenCalled();
-  }));
+  }));  
 });

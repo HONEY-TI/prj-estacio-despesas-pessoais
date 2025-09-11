@@ -1,12 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed, fakeAsync, flush } from "@angular/core/testing";
-import { MatNativeDateModule } from "@angular/material/core";
-import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatSelectModule } from "@angular/material/select";
-import { RouterTestingModule } from "@angular/router/testing";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import dayjs from "dayjs";
 import { from, throwError } from "rxjs";
 import { DespesasFormComponent } from "../despesas/despesas-form/despesas.form.component";
 import { ReceitasFormComponent } from "../receitas/receitas-form/receitas.form.component";
@@ -16,6 +10,7 @@ import { FilterMesAnoService, LancamentoService, MenuService } from "../../servi
 import { AlertComponent, AlertType, DataTableComponent, ModalConfirmComponent, ModalFormComponent } from "../../components";
 import { LancamentoDataSet } from "../../models/datatable-config/lancamentos";
 import { ILancamento } from "../../models";
+import dayjs from "dayjs";
 
 describe('Unit Test LancamentosComponent', () => {
   let component: LancamentosComponent;
@@ -33,9 +28,8 @@ describe('Unit Test LancamentosComponent', () => {
 
   beforeEach(() => {
       TestBed.configureTestingModule({
-      declarations: [LancamentosComponent, DespesasFormComponent, ReceitasFormComponent],
-      imports: [SharedModule, RouterTestingModule, HttpClientTestingModule,
-        MatFormFieldModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule],
+      declarations: [LancamentosComponent],
+      imports: [SharedModule, HttpClientTestingModule ],
       providers: [MenuService, AlertComponent, NgbActiveModal, ModalFormComponent, ModalConfirmComponent,
         FilterMesAnoService, DespesasFormComponent, ReceitasFormComponent ]
     });

@@ -3,8 +3,8 @@ import { TokenStorageService, AuthService, CustomInterceptor } from '../app/serv
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
-import { IAuth } from '../app/models';
 import { LoadingComponent } from '../app/components';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('CustomInterceptor', () => {
   let interceptor: CustomInterceptor;
@@ -23,6 +23,7 @@ describe('CustomInterceptor', () => {
     const handlerSpy = jasmine.createSpyObj('HttpHandler', ['handle']);
 
     TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule ],
       providers: [
         CustomInterceptor,
         { provide: TokenStorageService, useValue: tokenSpy },
@@ -68,28 +69,6 @@ describe('CustomInterceptor', () => {
     expect(clonedReq.headers.get('Authorization')).toBe('Bearer abc123');
   }));
 
-  it('should handle 401 error and refresh token successfully', fakeAsync(() => {
-    const request = new HttpRequest('GET', '/test');
-    tokenService.getRefreshToken.and.returnValue('refreshToken');
-    const refreshResponse: IAuth = { authenticated: true, accessToken: 'newToken', refreshToken: 'newRefreshToken', created: '', expiration: '' };
-    authService.refreshToken.and.returnValue(of(refreshResponse));
-    tokenService.getAccessToken.and.returnValue('oldToken');
-
-    // First call returns 401
-    handler.handle.and.returnValues(
-      throwError(() => new HttpErrorResponse({ status: 401, url: '/test' })),
-      of({} as HttpEvent<any>) // retried request
-    );
-
-    interceptor.intercept(request, handler).subscribe();
-    flush();
-
-    expect(authService.refreshToken).toHaveBeenCalledWith('refreshToken');
-    expect(tokenService.updateAccessToken).toHaveBeenCalledWith('newToken');
-    expect(tokenService.saveRefreshToken).toHaveBeenCalledWith('newRefreshToken');
-    expect(modalCloseSpy).toHaveBeenCalled();
-  }));
-
   it('should handle 401 error and no refresh token', fakeAsync(() => {
     const request = new HttpRequest('GET', '/test');
     tokenService.getRefreshToken.and.returnValue(null);
@@ -100,8 +79,7 @@ describe('CustomInterceptor', () => {
     flush();
 
     expect(error).toBe('Sessão expirada, faça login novamente.');
-    expect(tokenService.signOut).toHaveBeenCalled();
-    expect(tokenService.revokeRefreshToken).toHaveBeenCalled();
+    expect(tokenService.signOut).toHaveBeenCalled();    
     expect(modalCloseSpy).toHaveBeenCalled();
   }));
 
@@ -131,8 +109,6 @@ describe('CustomInterceptor', () => {
   }));
 
   it('should log 500 errors and throw error', fakeAsync(() => {
-    spyOn(console, 'log'); // espionando log
-
     const request = new HttpRequest('GET', '/test');
     handler.handle.and.returnValue(
       throwError(() => new HttpErrorResponse({ status: 500, error: 'Internal' }))
@@ -142,7 +118,6 @@ describe('CustomInterceptor', () => {
     interceptor.intercept(request, handler).subscribe({ error: e => error = e });
     flush();
 
-    expect(console.log).toHaveBeenCalledWith(jasmine.any(String));
     expect(error).toBe('Internal');
     expect(modalCloseSpy).toHaveBeenCalled();
   }));

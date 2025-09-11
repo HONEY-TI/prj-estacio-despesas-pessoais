@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { map, catchError } from "rxjs";
+import { map, catchError, of } from "rxjs";
 import { AlertComponent, AlertType } from "../../components";
 import { ILogin, IAuth } from "../../models";
 import { AuthService, AcessoService, AuthGoogleService } from "../../services";
@@ -44,38 +44,30 @@ export class LoginComponent implements OnInit {
   }
 
   public onLoginClick(): void {
-
     let login: ILogin = this.loginForm.getRawValue();
 
     this.acessoService.signIn(login).pipe(
       map((response: IAuth) => {
         if (response.authenticated) {
-          return this.authProviderService.createAccessToken(response);
-        }
-        else {
-          throw (response);
+          return { success: true, response: response };
+        } else {
+          return { success: false, error: response };
         }
       }),
       catchError((error) => {
-        if (error && typeof error.error === 'string') {
-          throw (error.error);
-        }
-        throw (error);
+        const errorMsg = (error && typeof error.error === 'string')
+          ? error.error
+          : 'Erro inesperado, tente novamente';
+        return of({ success: false, error: errorMsg });
       })
-    )
-      .subscribe({
-        next: (response: boolean) => {
-          if (response)
-            this.router.navigate(['/dashboard']).then(success => {
-              if (!success) {
-                console.error('Falha ao navegar para /dashboard');
-              }
-            });
-        },
-        error: (errorMessage: string) => {
-          this.modalALert.open(AlertComponent, errorMessage, AlertType.Warning);
-        }
-      });
+    ).subscribe((result: { success: boolean, response?: IAuth, error?: any }) => {
+      if (result.success) {
+        this.authProviderService.login(result.response!);
+        this.router.navigate(['/dashboard']);
+      } else {
+        this.modalALert.open(AlertComponent, result.error, AlertType.Warning);
+      }
+    });
   }
 
   public onGoogleLoginClick(): void {

@@ -22,7 +22,6 @@ describe('Unit Test DashboardComponent', () => {
 
   beforeEach(() => {
     mockAuthService = jasmine.createSpyObj('AuthService', ['createAccessToken', 'isAuthenticated']);
-    mockAuthService.createAccessToken.and.returnValue(true);
     mockAuthService.isAuthenticated.and.returnValue(true);
 
     TestBed.configureTestingModule({

@@ -1,7 +1,6 @@
 
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync, flush } from "@angular/core/testing";
-import { FormBuilder } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { from, of, throwError } from "rxjs";
 import { CategoriasFormComponent } from "./categorias.form.component";
@@ -20,7 +19,7 @@ describe('Unit Test CategoriasFormComponent', () => {
     TestBed.configureTestingModule({
       declarations: [CategoriasFormComponent],
       imports: [SharedModule, HttpClientTestingModule ],
-      providers: [FormBuilder, AlertComponent, NgbActiveModal, CategoriaService]
+      providers: [AlertComponent, NgbActiveModal, CategoriaService]
     });
     fixture = TestBed.createComponent(CategoriasFormComponent);
     component = fixture.componentInstance;

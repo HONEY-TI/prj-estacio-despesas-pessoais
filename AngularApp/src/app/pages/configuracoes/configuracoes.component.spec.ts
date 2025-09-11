@@ -8,8 +8,8 @@ describe('Unit Test ConfiguracoesComponent', () => {
   let fixture: ComponentFixture<ConfiguracoesComponent>;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ SharedModule],
-      providers: [MenuService]
+      imports: [ SharedModule ],
+      providers: [MenuService ]
     });
     fixture = TestBed.createComponent(ConfiguracoesComponent);
     component = fixture.componentInstance;

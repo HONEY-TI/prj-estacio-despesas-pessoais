@@ -1,233 +1,141 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChangeAvatarComponent } from './change-avatar.component';
-import { FormBuilder } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { from, of, throwError } from 'rxjs';
+import { ImagemPerfilService } from '../../../services';
 import { AlertComponent, AlertType } from '../../../components';
-import { ImagemPerfilService, UsuarioService } from '../../../services';
-import { SharedModule } from '../../../app.shared.module';
+import { of, throwError } from 'rxjs';
 
-class MockImagemPerfil {
-  private mockBuffer: ArrayBuffer;
-
-  constructor() {
-    const data = new TextEncoder().encode("fake image content");
-    this.mockBuffer = data.buffer;
-  }
-
-  getImagemPerfilUsuario() {
-    return of(this.mockBuffer);
-  }
-
-  updateImagemPerfilUsuario(file: File) {
-    return of(this.mockBuffer);
-  }
-
-  deleteImagemPerfilUsuario() {
-    return of(true);
-  }
-}
-
-describe('Unit Test ChangeAvatarComponent', () => {
+describe('ChangeAvatarComponent', () => {
   let component: ChangeAvatarComponent;
   let fixture: ComponentFixture<ChangeAvatarComponent>;
-  let mockImagemPerfilService: MockImagemPerfil;
-  let mockImagemPerfilUsuario: any;
+  let imagemPerfilServiceSpy: jasmine.SpyObj<ImagemPerfilService>;
+  let alertSpy: jasmine.SpyObj<AlertComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    imagemPerfilServiceSpy = jasmine.createSpyObj('ImagemPerfilService', [
+      'getImagemPerfilUsuario',
+      'updateImagemPerfilUsuario'
+    ]);
+    alertSpy = jasmine.createSpyObj('AlertComponent', ['open']);
+    imagemPerfilServiceSpy.getImagemPerfilUsuario.and.returnValue(of(null));
+
+    await TestBed.configureTestingModule({
       declarations: [ChangeAvatarComponent],
-      imports: [SharedModule, HttpClientTestingModule],
-      providers: [FormBuilder, AlertComponent, UsuarioService, NgbActiveModal]
+      providers: [
+        { provide: ImagemPerfilService, useValue: imagemPerfilServiceSpy },
+        { provide: AlertComponent, useValue: alertSpy }
+      ]
     });
+
     fixture = TestBed.createComponent(ChangeAvatarComponent);
     component = fixture.componentInstance;
-    mockImagemPerfilService = TestBed.inject(ImagemPerfilService) as unknown as MockImagemPerfil;
-    mockImagemPerfilUsuario = new MockImagemPerfil().getImagemPerfilUsuario();
     fixture.detectChanges();
   });
 
-  it('should create Change Avatar Component', () => {
+  it('should initialize with default image when service returns null', () => {
+    // Arrange
+    imagemPerfilServiceSpy.getImagemPerfilUsuario.and.returnValue(of(null as any));
+
+    // Act
+    component.initialize();
+
     // Assert
-    expect(component).toBeTruthy();
+    expect(component.urlPerfilImage).toBe('../../../../assets/perfil_static.png');
   });
 
-  it('should initialize Change Avatar Component', fakeAsync(() => {
+  it('should update urlPerfilImage when service returns an image', () => {
     // Arrange
-    const mockArrayBuffer = new ArrayBuffer(8);
-    const spyOnGetImagemPerfilUsuario = spyOn(mockImagemPerfilService, 'getImagemPerfilUsuario').and.returnValue(of(mockArrayBuffer));
-
-    // Act
-    component.initialize();
-    flush();
-
-    // Assert
-    expect(spyOnGetImagemPerfilUsuario).toHaveBeenCalled();
-    expect(component.urlPerfilImage).not.toBeNull();
-    expect(component.urlPerfilImage).not.toEqual('../../../../assets/perfil_static.png');
-    expect(component.urlPerfilImage.startsWith('blob:')).toBeTrue();
-  }));
-
-  it('should initialize Change Avatar Component adn Thnrows Error ', fakeAsync(() => {
-    // Arrange
-    const errorMessage = 'Fake Error Message Initialize Chart';
-    const spyOnGetImagemPerfilUsuario = spyOn(mockImagemPerfilService, 'getImagemPerfilUsuario').and.returnValue(throwError(errorMessage));
-    const alertOpenSpy = spyOn(TestBed.inject(AlertComponent), 'open');
+    const buffer = new ArrayBuffer(8);
+    imagemPerfilServiceSpy.getImagemPerfilUsuario.and.returnValue(of(buffer));
 
     // Act
     component.initialize();
 
     // Assert
-    expect(spyOnGetImagemPerfilUsuario).toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalledWith(AlertComponent, errorMessage, AlertType.Warning);
-  }));
+    expect(component.urlPerfilImage).toContain('blob:');
+  });
 
-  it('should handle avatar upload', () => {
+  it('should call AlertComponent when service throws in initialize', () => {
     // Arrange
-    const mockFile = new File(['mock file'], 'avatar.jpg', { type: 'image/jpeg' });
-    const event = { target: { files: [mockFile] } };
+    imagemPerfilServiceSpy.getImagemPerfilUsuario.and.returnValue(throwError(() => 'service error'));
+
+    // Act
+    component.initialize();
+
+    // Assert
+    expect(alertSpy.open).toHaveBeenCalledWith(
+      AlertComponent,
+      'service error',
+      AlertType.Warning
+    );
+  });
+
+  it('should load file in handleAvatarUpload', () => {
+    // Arrange
+    const file = new File(['content'], 'avatar.png', { type: 'image/png' });
+    const event = { target: { files: [file] } };
 
     // Act
     component.handleAvatarUpload(event);
 
     // Assert
-    expect(component.file).toEqual(mockFile);
-    expect(component.urlPerfilImage).not.toBeNull();
-    expect(component.fileLoaded).toBeTruthy();
+    expect(component.file).toBe(file);
+    expect(component.fileLoaded).toBeTrue();
+    expect(component.urlPerfilImage).toContain('blob:');
   });
 
-  it('should handle and create imagem Perfil successfully', fakeAsync(() => {
+  it('should save new profile image in handleImagePerfil (update)', () => {
     // Arrange
-    let mockImagemPerfilUsuario: any = new MockImagemPerfil().getImagemPerfilUsuario();
-    let mockFile = new File(['mock file'], 'avatar.jpg', { type: 'image/jpeg' });
-    const spyOnImagemPerfilService = spyOn(mockImagemPerfilService, 'updateImagemPerfilUsuario').and.returnValue(of(mockImagemPerfilUsuario));
-    const alertOpenSpy = spyOn(TestBed.inject(AlertComponent), 'open');
+    const file = new File(['content'], 'avatar.png', { type: 'image/png' });
+    const buffer = new ArrayBuffer(8);
+    component.file = file;
+    component.urlPerfilImage = 'someImage.png';
+    imagemPerfilServiceSpy.updateImagemPerfilUsuario.and.returnValue(of(buffer));
 
-    // Act    
-    component.file = mockFile;
+    // Act
     component.handleImagePerfil();
-    flush();
 
     // Assert
-    expect(spyOnImagemPerfilService).toHaveBeenCalled();
-    expect(spyOnImagemPerfilService).toHaveBeenCalledWith(mockFile);
+    expect(alertSpy.open).toHaveBeenCalledWith(
+      AlertComponent,
+      'Imagem de perfil usuário alterada com sucesso!',
+      AlertType.Success
+    );
     expect(component.file).toBeNull();
-    expect(component.fileLoaded).toBeFalsy();
-    expect(alertOpenSpy).toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalledWith(AlertComponent, 'Imagem adicionada com sucesso!', AlertType.Success);
-  }));
+    expect(component.fileLoaded).toBeFalse();
+  });
 
-  it('should try to create imagem Perfil without upload image', fakeAsync(() => {
+  it('should warn when no file is selected in handleImagePerfil', () => {
     // Arrange
-    let errorMessage = 'Fake Error Message nto uplaod image';
-    let mockFile = null;
-    const spyOnImagemPerfilService = spyOn(mockImagemPerfilService, 'updateImagemPerfilUsuario').and.returnValue(throwError(errorMessage));
-    const alertOpenSpy = spyOn(TestBed.inject(AlertComponent), 'open');
+    component.file = null;
 
     // Act
-    component.file = mockFile;
     component.handleImagePerfil();
-    flush();
 
     // Assert
-    expect(spyOnImagemPerfilService).not.toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalledWith(AlertComponent, 'É preciso carregar uma nova imagem!', AlertType.Warning);
-  }));
+    expect(alertSpy.open).toHaveBeenCalledWith(
+      AlertComponent,
+      'É preciso carregar uma nova imagem!',
+      AlertType.Warning
+    );
+  });
 
-  it('should handle and try create imagem Perfil and throws error', fakeAsync(() => {
+  it('should handle error in handleImagePerfil', () => {
     // Arrange
-    let errorMessage = 'Fake Error Message ';
-    let mockFile = new File(['mock file'], 'avatar.jpg', { type: 'image/jpeg' });
-    const spyOnImagemPerfilService = spyOn(mockImagemPerfilService, 'updateImagemPerfilUsuario').and.returnValue(throwError(errorMessage));
-    const alertOpenSpy = spyOn(TestBed.inject(AlertComponent), 'open');
+    const file = new File(['content'], 'avatar.png', { type: 'image/png' });
+    component.file = file;
+    component.urlPerfilImage = '../../../../assets/perfil_static.png';
+    imagemPerfilServiceSpy.updateImagemPerfilUsuario.and.returnValue(
+      throwError(() => 'upload error')
+    );
 
     // Act
-    component.file = mockFile;
     component.handleImagePerfil();
-    flush();
 
     // Assert
-    expect(spyOnImagemPerfilService).toHaveBeenCalled();
-    expect(spyOnImagemPerfilService).toHaveBeenCalledWith(mockFile);
-    expect(alertOpenSpy).toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalledWith(AlertComponent, errorMessage, AlertType.Warning);
-  }));
-
-  it('should handle and update imagem Perfil successfully', fakeAsync(() => {
-    // Arrange
-    const mockFile = new File(['mock file content'], 'avatar.jpg', { type: 'image/jpeg' });
-    const mockResponse = new ArrayBuffer(8); 
-    const spyOnImagemPerfilService = spyOn(mockImagemPerfilService, 'updateImagemPerfilUsuario').and.returnValue(of(mockResponse));
-    const alertOpenSpy = spyOn(TestBed.inject(AlertComponent), 'open');
-
-    // Act    
-    component.file = mockFile;
-    component.handleImagePerfil();
-    flush();
-
-    // Assert
-    expect(spyOnImagemPerfilService).toHaveBeenCalled();
-    expect(spyOnImagemPerfilService).toHaveBeenCalledWith(mockFile);
-    expect(component.file).toBeNull();
-    expect(component.fileLoaded).toBeFalsy();
-    expect(component.urlPerfilImage).not.toEqual('../../../../assets/perfil_static.png');
-    expect(alertOpenSpy).toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalledWith(AlertComponent, 'Imagem adicionada com sucesso!', AlertType.Success);
-  }));
-
-  it('should handle and try update imagem Perfil and throws error', fakeAsync(() => {
-    // Arrange
-    let errorMessage = 'Fake Error Message updateImagemPerfilUsuario';
-    let mockFile = new File(['mock file'], 'avatar.jpg', { type: 'image/jpeg' });
-    const spyOnImagemPerfilService = spyOn(mockImagemPerfilService, 'updateImagemPerfilUsuario').and.returnValue(throwError(errorMessage));
-    const alertOpenSpy = spyOn(TestBed.inject(AlertComponent), 'open');
-
-    // Act
-    component.file = mockFile;
-    component.handleImagePerfil();
-    flush();
-
-    // Assert
-    expect(spyOnImagemPerfilService).toHaveBeenCalled();
-    expect(spyOnImagemPerfilService).toHaveBeenCalledWith(mockFile);
-    expect(alertOpenSpy).toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalledWith(AlertComponent, errorMessage, AlertType.Warning);
-  }));
-
-  xit('should handle and delete imagem Perfil successfully', fakeAsync(() => {
-    // Arrange
-    const spyOnImagemPerfilService = spyOn(mockImagemPerfilService, 'deleteImagemPerfilUsuario').and.returnValue(from(Promise.resolve(true)));
-    const alertOpenSpy = spyOn(component.modalAlert, 'open').and.callThrough();
-
-    // Act
-    component.handleDeleteImagePerfil();
-    flush();
-
-    // Assert
-    expect(spyOnImagemPerfilService).toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalledWith(AlertComponent, 'Imagem de perfil usuário excluída com sucesso!', AlertType.Success);
-    expect(component.file).toBeNull();
-    expect(component.fileLoaded).toBeFalsy();
-
-  }));
-
-  xit('should handle and try delete imagem Perfil and throws error', fakeAsync(() => {
-    // Arrange
-    let errorMessage = 'Fake Error Message deleteImagemPerfilUsuario';
-    const spyOnImagemPerfilService = spyOn(mockImagemPerfilService, 'deleteImagemPerfilUsuario').and.returnValue(throwError(errorMessage));
-    const alertOpenSpy = spyOn(TestBed.inject(AlertComponent), 'open');
-
-    // Act
-    component.handleDeleteImagePerfil();
-    flush();
-
-    // Assert
-    expect(spyOnImagemPerfilService).toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalled();
-    expect(alertOpenSpy).toHaveBeenCalledWith(AlertComponent, errorMessage, AlertType.Warning);
-  }));
+    expect(alertSpy.open).toHaveBeenCalledWith(
+      AlertComponent,
+      'upload error',
+      AlertType.Warning
+    );
+  });
 });

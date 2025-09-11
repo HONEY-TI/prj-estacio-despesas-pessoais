@@ -24,7 +24,7 @@ export class ImagemPerfilService extends AbstractService {
       .get(`${this.routeUrl}/GetProfileImage`, { responseType: 'arraybuffer' })
       .pipe(
         tap((response: ArrayBuffer) => {
-          if (response && response.byteLength > 0) {
+          if (response && response.byteLength >= 0) {
             this.cachedImage = response;
           }
         })
@@ -39,7 +39,7 @@ export class ImagemPerfilService extends AbstractService {
       .put(`${this.routeUrl}/UpdateProfileImage`, formData, { responseType: 'arraybuffer' })
       .pipe(
         tap((response: ArrayBuffer) => {
-          if (response && response.byteLength > 0) {
+          if (response && response.byteLength >= 0) {
             this.cachedImage = response;
           }
         })

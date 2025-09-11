@@ -1,56 +1,71 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed, fakeAsync, flush } from "@angular/core/testing";
 import { Router } from "@angular/router";
-import { RouterTestingModule } from "@angular/router/testing";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { of } from "rxjs";
-import { LoginComponent } from "./login.component";
-import { SharedModule } from "../../app.shared.module";
-import { AuthService } from "../../services";
-import { AlertComponent } from "../../components";
-import { IAuth, ILogin } from "../../models";
+import { of, throwError } from "rxjs";
+import { FormBuilder, ReactiveFormsModule } from "@angular/forms";
+import { Platform } from '@ionic/angular';
 
-describe('LoginComponent', () => {
+import { LoginComponent } from "./login.component";
+import { AlertComponent, AlertType } from "../../components";
+import { IAuth, ILogin } from "../../models";
+import { AuthService, AcessoService, AuthGoogleService } from "../../services";
+
+describe('LoginComponent Unit Tests', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let mockRouter: jasmine.SpyObj<Router>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
+  let mockAcessoService: jasmine.SpyObj<AcessoService>;
+  let mockGoogleService: jasmine.SpyObj<AuthGoogleService>;
+  let mockAlert: jasmine.SpyObj<AlertComponent>;
 
   beforeEach(() => {
+    // Arrange: criar mocks
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    mockAuthService = jasmine.createSpyObj('AuthService', ['createAccessToken', 'isAuthenticated']);
+    mockAuthService = jasmine.createSpyObj('AuthService', ['login', 'isAuthenticated']);
+    mockAcessoService = jasmine.createSpyObj('AcessoService', ['signIn']);
+    mockGoogleService = jasmine.createSpyObj('AuthGoogleService', ['handleGoogleLogin']);
+    mockAlert = jasmine.createSpyObj('AlertComponent', ['open']);
+
     TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule, ReactiveFormsModule],
       declarations: [LoginComponent],
-      imports: [SharedModule,  RouterTestingModule, HttpClientTestingModule  ],
-      providers: [AlertComponent, NgbActiveModal,
+      providers: [
+        FormBuilder,
+        Platform,
         { provide: Router, useValue: mockRouter },
         { provide: AuthService, useValue: mockAuthService },
+        { provide: AcessoService, useValue: mockAcessoService },
+        { provide: AuthGoogleService, useValue: mockGoogleService },
+        { provide: AlertComponent, useValue: mockAlert }
       ]
     });
+
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create component', () => {
     // Assert
     expect(component).toBeTruthy();
   });
 
-  it('should navigate to dashboard on successful login', fakeAsync(() => {
+  it('should initialize login form with default values', () => {
+    // Act
+    component.ngOnInit();
+    const formValues = component.loginForm.getRawValue();
+
+    // Assert
+    expect(formValues.email).toBe('teste@teste.com');
+    expect(formValues.senha).toBe('12345T!');
+  });
+
+  it('should login successfully and navigate to dashboard', fakeAsync(() => {
     // Arrange
-    const login: ILogin = { email: "teste@teste.com", senha: "teste" };
-    const authResponse: IAuth = {
-      authenticated: true,
-      created: '2023-10-01',
-      expiration: '2023-10-30',
-      accessToken: 'teste#token',
-      refreshToken: 'testeRefreshToken'
-    };
-    spyOn(component.acessoService, 'signIn').and.returnValue(of(authResponse));
-    mockAuthService.createAccessToken.and.returnValue(true);
-    mockAuthService.isAuthenticated.and.returnValue(true);
-    mockRouter.navigate.and.returnValue(Promise.resolve(true));
+    const login: ILogin = { email: 'teste@teste.com', senha: '12345T!' };
+    const authResponse: IAuth = { authenticated: true, accessToken: 'token', refreshToken: 'refresh', created: '', expiration: '' };
+    mockAcessoService.signIn.and.returnValue(of(authResponse));
 
     // Act
     component.loginForm.patchValue(login);
@@ -58,58 +73,43 @@ describe('LoginComponent', () => {
     flush();
 
     // Assert
-    expect(component.acessoService.signIn).toHaveBeenCalledWith(login);
-    expect(component.authProviderService.createAccessToken).toHaveBeenCalledWith(authResponse);
-    expect(component.authProviderService.isAuthenticated()).toBe(true);
+    expect(mockAcessoService.signIn).toHaveBeenCalledWith(login);
+    expect(mockAuthService.login).toHaveBeenCalledWith(authResponse);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/dashboard']);
   }));
 
-  it('should open modal when promisse is rejected ', () => {
+  it('should show modal when login response is not authenticated', fakeAsync(() => {
     // Arrange
-    const errorMessage = "Error Test Component";
-    spyOn(component.modalALert, 'open').and.callThrough();
-    spyOn(component.acessoService, 'signIn').and.rejectWith().and.callThrough();
-    spyOn(component, 'onLoginClick');
+    const login: ILogin = { email: 'teste@teste.com', senha: '12345T!' };
+    const authResponse = 'Erro de autenticação';
+    mockAcessoService.signIn.and.returnValue(of(authResponse));
 
     // Act
+    component.loginForm.patchValue(login);
     component.onLoginClick();
-
-    // Asssert
-    expect(component.onLoginClick).toHaveBeenCalled();
-    expect(component.acessoService.signIn).not.toHaveBeenCalled();
-  });
-
-  it('should open modal when authenticated is not true ', () => {
-    // Arrange
-    const authResponse = { authenticated: false, message: 'Test Erro Auth' };
-    spyOn(component.modalALert, 'open').and.callThrough();
-    spyOn(component.acessoService, 'signIn').and.returnValue(of(authResponse));
-    spyOn(component, 'onLoginClick').and.callThrough();
-
-    // Act
-    component.onLoginClick();
-
-    // Asssert
-    expect(component.modalALert.open).toHaveBeenCalled();
-  });
-
-  it('should return login form controls', () => {
-    // Arrange
-    component.ngOnInit();
-    component.loginForm.controls['email'].setValue('teste@teste.com');
-    component.loginForm.controls['senha'].setValue('password');
-
-    // Act
-    const loginDados = component.loginForm.getRawValue();
+    flush();
 
     // Assert
-    expect(loginDados.email).toBe('teste@teste.com');
-    expect(loginDados.senha).toBe('password');
-  });
+    expect(mockAlert.open).toHaveBeenCalledWith(AlertComponent, authResponse, AlertType.Warning);
+  }));
 
-  it('should toggle password visibility and update eye icon class', () => {
+  it('should show modal when login throws an error', fakeAsync(() => {
     // Arrange
-    component.ngOnInit();
+    const login: ILogin = { email: 'teste@teste.com', senha: '12345T!' };
+    const error = { error: 'Erro inesperado' };
+    mockAcessoService.signIn.and.returnValue(throwError(() => error));
+
+    // Act
+    component.loginForm.patchValue(login);
+    component.onLoginClick();
+    flush();
+
+    // Assert
+    expect(mockAlert.open).toHaveBeenCalledWith(AlertComponent, 'Erro inesperado', AlertType.Warning);
+  }));
+
+  it('should toggle password visibility and eye icon', () => {
+    // Arrange
     component.showPassword = false;
     component.eyeIconClass = 'bi-eye';
 
@@ -117,14 +117,40 @@ describe('LoginComponent', () => {
     component.onTooglePassword();
 
     // Assert
-    expect(component.showPassword).toBe(true);
+    expect(component.showPassword).toBeTrue();
     expect(component.eyeIconClass).toBe('bi-eye-slash');
 
     // Act
     component.onTooglePassword();
 
     // Assert
-    expect(component.showPassword).toBe(false);
+    expect(component.showPassword).toBeFalse();
     expect(component.eyeIconClass).toBe('bi-eye');
   });
+
+  it('should handle Google login success', fakeAsync(() => {
+    // Arrange
+    const authResponse: IAuth = { authenticated: true, accessToken: 'token', refreshToken: 'refresh', created: '', expiration: '' };
+    mockGoogleService.handleGoogleLogin.and.returnValue(of(authResponse));
+
+    // Act
+    component.onGoogleLoginClick();
+    flush();
+
+    // Assert
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/dashboard']);
+  }));
+
+  it('should handle Google login error', fakeAsync(() => {
+    // Arrange
+    const errorMessage = 'Erro Google';
+    mockGoogleService.handleGoogleLogin.and.returnValue(throwError(() => errorMessage));
+
+    // Act
+    component.onGoogleLoginClick();
+    flush();
+
+    // Assert
+    expect(mockAlert.open).toHaveBeenCalledWith(AlertComponent, errorMessage, AlertType.Warning);
+  }));
 });

@@ -1,6 +1,5 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed, fakeAsync, flush } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { SharedModule } from "../../app.shared.module";
 import { PerfilComponent } from "./perfil.component";
@@ -16,7 +15,7 @@ describe('Unit Test PerfilComponent', () => {
 
   beforeEach(() => {
       TestBed.configureTestingModule({
-      imports: [ SharedModule, RouterTestingModule, HttpClientTestingModule],
+      imports: [ SharedModule, HttpClientTestingModule],
       providers: [MenuService, AlertComponent, NgbActiveModal, UsuarioService ]
     });
     fixture = TestBed.createComponent(PerfilComponent);

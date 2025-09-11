@@ -1,6 +1,7 @@
 ﻿import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthService, MenuService,  ImagemPerfilService } from "../../services";
+
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
@@ -20,11 +21,11 @@ export class LayoutComponent implements OnInit {
     this.imagemPerfilService.getImagemPerfilUsuario()
       .subscribe({
         next: (response: ArrayBuffer) => {
-          if (!response || response.byteLength === 0) {
-            this.urlPerfilImage = '../../../../assets/perfil_static.png'; // usa padrão
-          } else {
+          if (response && response.byteLength > 0 && response.byteLength > 1) {
             const blob = new Blob([response], { type: 'image/png' });
             this.urlPerfilImage = URL.createObjectURL(blob);
+          } else {
+            this.urlPerfilImage = '../../../../assets/perfil_static.png';
           }
         },
         error: () => {
@@ -38,7 +39,7 @@ export class LayoutComponent implements OnInit {
   }
 
   public onLogoutClick() {
-    this.authService.tokenStorage.signOut();
+    this.authService.logout();
     this.router.navigate(['/']);
   }
 

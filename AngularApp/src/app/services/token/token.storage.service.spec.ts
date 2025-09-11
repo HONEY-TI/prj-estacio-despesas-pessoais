@@ -16,44 +16,42 @@ describe('TokenStorageService', () => {
   });
 
   it('should save and get access token', () => {
-    service.saveToken('myAccessToken');
-    expect(sessionStorage.getItem('@access-token')).toBe('myAccessToken');
-    expect(service.getAccessToken()).toBe('myAccessToken');
+    service.saveAccessToken('access123');
+    const token = service.getAccessToken();
+    expect(token).toBe('access123');
+    expect(sessionStorage.getItem('@access-token')).toBe('access123');
   });
 
-  it('should update access token', () => {
-    service.saveToken('oldToken');
-    service.updateAccessToken('newToken');
+  it('should overwrite access token', () => {
+    service.saveAccessToken('oldToken');
+    service.saveAccessToken('newToken');
+    const token = service.getAccessToken();
+    expect(token).toBe('newToken');
     expect(sessionStorage.getItem('@access-token')).toBe('newToken');
-    expect(service.getAccessToken()).toBe('newToken');
   });
 
   it('should save and get refresh token', () => {
-    service.saveRefreshToken('myRefreshToken');
-    expect(localStorage.getItem('@refresh-token')).toBe('myRefreshToken');
-    expect(service.getRefreshToken()).toBe('myRefreshToken');
+    service.saveRefreshToken('refresh123');
+    const token = service.getRefreshToken();
+    expect(token).toBe('refresh123');
+    expect(localStorage.getItem('@refresh-token')).toBe('refresh123');
   });
 
-  it('should revoke refresh token', () => {
-    service.saveRefreshToken('tokenToRevoke');
-    service.revokeRefreshToken();
-    expect(localStorage.getItem('@refresh-token')).toBeNull();
+  it('should clear session and remove refresh token', () => {
+    service.saveAccessToken('access123');
+    service.saveRefreshToken('refresh123');
+    service.clear();
+    expect(service.getAccessToken()).toBeNull();
     expect(service.getRefreshToken()).toBeNull();
-  });
-
-  it('should clear session storage', () => {
-    sessionStorage.setItem('@access-token', 'test');
-    service.clearSessionStorage();
-    expect(sessionStorage.getItem('@access-token')).toBeNull();
-  });
-
-  it('should sign out and clear both storages', () => {
-    sessionStorage.setItem('@access-token', 'testSession');
-    localStorage.setItem('@refresh-token', 'testLocal');
-
-    service.signOut();
-
     expect(sessionStorage.getItem('@access-token')).toBeNull();
     expect(localStorage.getItem('@refresh-token')).toBeNull();
+  });
+
+  it('should sign out (clear session storage only)', () => {
+    service.saveAccessToken('access123');
+    service.saveRefreshToken('refresh123');
+    service.signOut();
+    expect(service.getAccessToken()).toBeNull();
+    expect(service.getRefreshToken()).toBe('refresh123'); // localStorage não é limpo pelo signOut
   });
 });

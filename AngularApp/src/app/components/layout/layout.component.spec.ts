@@ -4,168 +4,75 @@ import { CommonModule } from '@angular/common';
 import { MenuService, AuthService, ImagemPerfilService } from '../../services';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 
-describe('Unit Test LayoutComponent', () => {
+describe('LayoutComponent Unit Test', () => {
   let component: LayoutComponent;
   let fixture: ComponentFixture<LayoutComponent>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
-  let imagemPerfilService: ImagemPerfilService;
+  let mockImagemPerfilService: jasmine.SpyObj<ImagemPerfilService>;
+  let menuService: MenuService;
   let router: Router;
 
   beforeEach(() => {
-    mockAuthService = jasmine.createSpyObj<AuthService>('AuthService', [], {
-      tokenStorage: jasmine.createSpyObj('tokenStorage', ['signOut'])
-    });
+    mockAuthService = jasmine.createSpyObj('AuthService', ['logout']);
+    mockImagemPerfilService = jasmine.createSpyObj('ImagemPerfilService', ['getImagemPerfilUsuario']);
+    mockImagemPerfilService.getImagemPerfilUsuario.and.returnValue(of(new ArrayBuffer(8)));
 
     TestBed.configureTestingModule({
       declarations: [LayoutComponent],
-      imports: [CommonModule, RouterTestingModule, HttpClientTestingModule],
+      imports: [CommonModule, RouterTestingModule],
       providers: [
         MenuService,
-        { provide: AuthService, useValue: mockAuthService }
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: ImagemPerfilService, useValue: mockImagemPerfilService }
       ]
-    });
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LayoutComponent);
     component = fixture.componentInstance;
+    menuService = TestBed.inject(MenuService);
     router = TestBed.inject(Router);
-    imagemPerfilService = TestBed.inject(ImagemPerfilService);
     fixture.detectChanges();
   });
 
-
-  it('should create', () => {
-    // Assert
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
-  it('should initialize correctly', fakeAsync(() => {
-    // Arrange
-    const mockResponse = new ArrayBuffer(8); // simula o retorno real do serviço
-    const spyOnImagemPerfilService = spyOn(imagemPerfilService, 'getImagemPerfilUsuario')
-      .and.returnValue(of(mockResponse));
 
-    // Act
+  it('should call initialize on ngOnInit', () => {
+    const spyInitialize = spyOn(component, 'initialize');
+    component.ngOnInit();
+    expect(spyInitialize).toHaveBeenCalled();
+  });
+
+  it('should set profile image from service', fakeAsync(() => {
     component.initialize();
     flush();
-
-    // Assert
-    expect(spyOnImagemPerfilService).toHaveBeenCalled();
+    expect(mockImagemPerfilService.getImagemPerfilUsuario).toHaveBeenCalled();
     expect(component.urlPerfilImage).toContain('blob:');
   }));
 
-
-  it('should throws error and fill with default path imagemPerfil', fakeAsync(() => {
-    // Arrange
-    const spyOnImagemPerfilService = spyOn(imagemPerfilService, 'getImagemPerfilUsuario').and.returnValue(throwError('Imagem não encontrada!'));
-
-    // Act
+  it('should set default profile image on error', fakeAsync(() => {
+    mockImagemPerfilService.getImagemPerfilUsuario.and.returnValue(throwError(() => 'Erro'));
     component.initialize();
     flush();
-
-    // Assert
-    expect(spyOnImagemPerfilService).toHaveBeenCalled();
-    expect(component.urlPerfilImage).toEqual('../../../../assets/perfil_static.png');
+    expect(component.urlPerfilImage).toBe('../../../../assets/perfil_static.png');
   }));
 
+  it('should call menuService.selectMenu with correct menu numbers', () => {
+    spyOn(menuService, 'selectMenu');
 
-  it('should navigate to dashboard when menu is 1', () => {
-    // Arrange
-    spyOn(router, 'navigate');
-
-    // Act
-    component.selectMenu(1);
-
-    // Assert
-    expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
+    for (let menu = 1; menu <= 7; menu++) {
+      component.selectMenu(menu);
+      expect(menuService.selectMenu).toHaveBeenCalledWith(menu, router);
+    }
   });
 
-  it('should navigate to categoria when menu is 2', () => {
-    // Arrange
+  it('should call authService.logout and navigate to / on logout', () => {
     spyOn(router, 'navigate');
-
-    // Act
-    component.selectMenu(2);
-
-    // Assert
-    expect(router.navigate).toHaveBeenCalledWith(['/categoria']);
-  });
-
-  it('should navigate to despesa when menu is 3', () => {
-    // Arrange
-    spyOn(router, 'navigate');
-
-    // Act
-    component.selectMenu(3);
-
-    // Assert
-    expect(router.navigate).toHaveBeenCalledWith(['/despesa']);
-  });
-
-  it('should navigate to receita when menu is 4', () => {
-    // Arrange
-    spyOn(router, 'navigate');
-
-    // Act
-    component.selectMenu(4);
-
-    // Assert
-    expect(router.navigate).toHaveBeenCalledWith(['/receita']);
-  });
-
-  it('should navigate to lancamento when menu is 5', () => {
-    // Arrange
-    spyOn(router, 'navigate');
-
-    // Act
-    component.selectMenu(5);
-
-    // Assert
-    expect(router.navigate).toHaveBeenCalledWith(['/lancamento']);
-  });
-
-  it('should navigate to perfil when menu is 6', () => {
-    // Arrange
-    spyOn(router, 'navigate');
-
-    // Act
-    component.selectMenu(6);
-
-    // Assert
-    expect(router.navigate).toHaveBeenCalledWith(['/perfil']);
-  });
-
-  it('should navigate to configuracoes when menu is 7', () => {
-    // Arrange
-    spyOn(router, 'navigate');
-
-    // Act
-    component.selectMenu(7);
-
-    // Assert
-    expect(router.navigate).toHaveBeenCalledWith(['/configuracoes']);
-  });
-
-  it('should navigate to Dashboard when an invalid menu is selected', () => {
-    // Arrange
-    spyOn(router, 'navigate');
-
-    // Act
-    component.selectMenu(8);
-
-    // Assert
-    expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
-  });
-
-  it('should navigate to Initial Page when button logout is clicked ', () => {
-    // Arrange
-    spyOn(router, 'navigate');
-
-    // Act
     component.onLogoutClick();
-
-    // Assert
+    expect(mockAuthService.logout).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/']);
   });
 });

@@ -12,13 +12,12 @@ import { NgbActiveModal, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing.module';
 import { AcessoComponent } from './pages/acesso/acesso.component';
-import { AlertComponent, ModalFormComponent, ModalConfirmComponent, LoadingComponent } from './components';
+import { AlertComponent, ModalFormComponent, ModalConfirmComponent } from './components';
 import { AlertModule } from './components/alert-component/alert.component.module';
 import { AuthService, MenuService, CustomInterceptor, AcessoService } from './services';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter, MomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS, } from '@angular/material-moment-adapter';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { DashboardModule } from './pages/dashboard/dashboard.module';
 import { CategoriasModule } from './pages/categorias/categorias.module';
 import { DespesasModule } from './pages/despesas/despesas.module';
@@ -38,7 +37,6 @@ export function initializeAuth(authService: AuthServiceBase) {
     MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, BrowserAnimationsModule, MomentDateModule, NgbDropdownModule,
     NgxMaskDirective, NgxMaskPipe, CookieConsentComponent],
   providers: [AuthService, AcessoService, MenuService, AlertComponent, ModalFormComponent, ModalConfirmComponent, NgbActiveModal,
-    { provide: LocationStrategy, useClass: HashLocationStrategy } ,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeAuth,
@@ -53,7 +51,8 @@ export function initializeAuth(authService: AuthServiceBase) {
       deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
     },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
-    provideNgxMask(), provideHttpClient(withInterceptorsFromDi()), provideAnimationsAsync(),
+    provideNgxMask(), provideHttpClient(withInterceptorsFromDi()),
+    { provide: LocationStrategy, useClass: PathLocationStrategy } 
   ],
 })
 

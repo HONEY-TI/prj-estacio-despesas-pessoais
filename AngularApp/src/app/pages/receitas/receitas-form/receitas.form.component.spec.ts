@@ -1,16 +1,15 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ComponentFixture, TestBed, fakeAsync, flush } from "@angular/core/testing";
-import { FormBuilder } from "@angular/forms";
 import { MatNativeDateModule } from "@angular/material/core";
-import {  MatDatepickerModule } from "@angular/material/datepicker";
+import { MatDatepickerModule } from "@angular/material/datepicker";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import dayjs from "dayjs";
 import { from, throwError, of } from "rxjs";
 import { ReceitasFormComponent } from "./receitas.form.component";
 import { SharedModule } from "../../../app.shared.module";
 import { ReceitaService } from "../../../services";
 import { Action, ICategoria, IReceita } from "../../../models";
 import { AlertComponent, AlertType } from "../../../components";
+import dayjs from "dayjs";
 
 describe('Unit Test ReceitasFormComponent', () => {
   let component: ReceitasFormComponent;
@@ -30,7 +29,7 @@ describe('Unit Test ReceitasFormComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ReceitasFormComponent],
       imports: [SharedModule, HttpClientTestingModule, MatDatepickerModule, MatNativeDateModule, ],
-      providers: [FormBuilder, AlertComponent, NgbActiveModal, ReceitaService ]
+      providers: [AlertComponent, NgbActiveModal, ReceitaService ]
     });
     fixture = TestBed.createComponent(ReceitasFormComponent);
     component = fixture.componentInstance;
