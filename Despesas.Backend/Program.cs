@@ -80,10 +80,10 @@ app.UseHsts();
 
 app.UseHttpsRedirection();
 app.AddSupporteCulturesPtBr();
-app.UseDefaultFiles();
-app.UseStaticFiles();
 app.UseCors();
 app.AddSwaggerUIApiVersioning();
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.UseRouting();
 app.UseCertificateForwarding();
 app.UseAuthentication();
