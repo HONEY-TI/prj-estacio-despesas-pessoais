@@ -36,7 +36,9 @@ public class GlobalExceptionMiddleware
             // Verifica se é uma exceção do EF Core / repositório
             if (!await EfCoreExceptionHandler.HandleAsync(context, ex, _logger))
             {
-                // Qualquer outra exceção inesperada
+                /* Vide Docker && Kurbenetes Qualquer outra exceção inesperada é invocada _logger.LogError(...) dentro do Global Exception,
+                /e vai para o Console e Debug Output (sem configuração extra... appsettings.json). 
+                */
                 _logger.LogError(ex, "Erro inesperado");
                 await HandleExceptionAsync(context, StatusCodes.Status500InternalServerError,
                     "Ocorreu um erro inesperado. Tente novamente mais tarde.");
