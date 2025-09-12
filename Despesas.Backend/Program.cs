@@ -70,6 +70,10 @@ if (builder.Environment.IsStaging())
     builder.WebHost.UseUrls("https://0.0.0.0:42535", "http://0.0.0.0:42536");
 }
 
+// remove todos os providers (Console, Debug, EventLog etc.) Mata Kubernetes
+if (builder.Environment.IsProduction() || builder.Environment.IsStaging())
+    builder.Logging.ClearProviders();
+
 var app = builder.Build();
 
 //Configure Global Execeptions
