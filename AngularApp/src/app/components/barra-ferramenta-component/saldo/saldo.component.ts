@@ -2,8 +2,7 @@
 import { Component, OnInit } from "@angular/core";
 import dayjs, { Dayjs } from "dayjs";
 import { ISaldo } from "../../../models";
-import { FilterMesService } from "../../../services";
-import { SaldoService } from "../../../services/api";
+import { FilterMesService, SaldoService } from "../../../services";
 
 dayjs.locale('pt-br');
 
@@ -22,8 +21,16 @@ export class SaldoComponent implements OnInit {
   saldoMensalNegativo: string = 'text-danger';
 
   constructor(private saldoService: SaldoService, public filterMesService: FilterMesService) { }
+ 
+  private isSaldoNegativo = (saldo: number): boolean => {
+    return saldo < 0;
+  }
+  
+  public ngOnInit(): void {
+    this.initialize();
+  }
 
-  private initialize = (): void => {
+  public initialize = (): void => {
     this.saldoService.getSaldoAnual(dayjs(dayjs().format('YYYY-01-01')))
       .subscribe({
         next: (response: ISaldo) => {
@@ -43,14 +50,6 @@ export class SaldoComponent implements OnInit {
       });
 
     this.handleSaldoMesAno(this.filterMesService.dayJs);
-  }
-  
-  private isSaldoNegativo = (saldo: number): boolean => {
-    return saldo < 0;
-  }
-  
-  public ngOnInit(): void {
-    this.initialize();
   }
 
   public handleSaldoMesAno = (mes: Dayjs): void => {

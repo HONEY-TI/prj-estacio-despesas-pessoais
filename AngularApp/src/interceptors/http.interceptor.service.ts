@@ -1,8 +1,8 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, catchError, filter, finalize, map, switchMap, take, throwError } from 'rxjs';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, catchError, finalize,  switchMap, throwError } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AuthService, TokenStorageService } from '../app/services';
+import { AcessoService, TokenStorageService } from '../app/services';
 import { IAuth } from '../app/models';
 import { LoadingComponent } from '../app/components';
 
@@ -18,7 +18,7 @@ export class CustomInterceptor implements HttpInterceptor {
 
   constructor(
     private tokenService: TokenStorageService,
-    private authService: AuthService,
+    private acessoService: AcessoService,
     private modalService: NgbModal) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -41,7 +41,7 @@ export class CustomInterceptor implements HttpInterceptor {
   }
 
   private conolseLog = (error) :void => {
-    console.log(error);
+    //console.log(error);
   }
 
   /**
@@ -69,18 +69,15 @@ export class CustomInterceptor implements HttpInterceptor {
   private handleRefreshToken(request: HttpRequest<any>, next: HttpHandler) {
     const refreshToken = this.tokenService.getRefreshToken();
     if (!refreshToken) {
-      this.tokenService.revokeRefreshToken();
-      this.tokenService.signOut();
       this.tokenService.signOut();
       return throwError(() => 'Sessão expirada, faça login novamente.');
     }
 
     const isRefreshRequest = request.url.includes('/refreshtoken/');
 
-    // 🔹 Se não existe refresh em andamento, inicia
     if (!this.refreshInProgress) {
       this.refreshInProgress = true;
-      this.refreshCall$ = this.authService.refreshToken(refreshToken).pipe(
+      this.refreshCall$ = this.acessoService.refreshToken(refreshToken).pipe(
         finalize(() => {
           this.refreshInProgress = false;
           this.refreshCall$ = null;
@@ -88,18 +85,15 @@ export class CustomInterceptor implements HttpInterceptor {
       );
     }
 
-    // 🔹 Todas as requisições aguardam a mesma chamada de refresh
     return this.refreshCall$!.pipe(
       switchMap((auth: IAuth) => {
-        this.tokenService.updateAccessToken(auth.accessToken);
+        this.tokenService.saveAccessToken(auth.accessToken);
         this.tokenService.saveRefreshToken(auth.refreshToken);
-
-        // 🔹 Refaz a requisição original com novo accessToken, se não for refresh
         const req = isRefreshRequest ? request : this.setModifiedRequest(request);
         return next.handle(req);
       }),
       catchError(() => {
-        this.tokenService.revokeRefreshToken();
+        this.tokenService.clear();
         return throwError(() => 'Sessão expirada, faça login novamente.');
       })
     );

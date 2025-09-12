@@ -2,8 +2,7 @@
 import { CategoriasFormComponent } from './categorias-form/categorias.form.component';
 import { ICategoria, ITipoCategoria, Action } from '../../models';
 import { BarraFerramentaBase, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from '../../components';
-import { MenuService } from '../../services';
-import { CategoriaService } from '../../services/api';
+import { MenuService, CategoriaService } from '../../services';
 import { CategoriaDataSet, CategoriaColumns } from '../../models/datatable-config/categorias';
 
 @Component({
@@ -23,8 +22,7 @@ export class CategoriasComponent implements BarraFerramentaBase, OnInit {
     public modalAlert: AlertComponent,
     public modalForm: ModalFormComponent,
     public modalConfirm: ModalConfirmComponent,
-    public categoriaService: CategoriaService
-  ) { }
+    public categoriaService: CategoriaService) { }
 
   ngOnInit() {
     this.menuService.setMenuSelecionado(2);

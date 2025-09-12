@@ -1,11 +1,11 @@
 ﻿import { Component } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import dayjs from 'dayjs';
 import { AlertComponent, AlertType } from '../../../components';
 import { ICategoria, IDespesa, Action } from '../../../models';
-import { DespesaService } from '../../../services/api';
+import { DespesaService } from '../../../services';
 import { CustomValidators } from '../../validators';
+import dayjs from 'dayjs';
 
 @Component({
   selector: 'app-despesas-form',
@@ -30,7 +30,7 @@ export class DespesasFormComponent {
     public despesaService: DespesaService
   ) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.getCatgeoriasFromDespesas();
     this.despesaForm = this.formbuilder.group({
       id: [null],
@@ -42,7 +42,7 @@ export class DespesasFormComponent {
     }) as FormGroup & IDespesa;
   }
 
-  getCatgeoriasFromDespesas = () => {
+  public getCatgeoriasFromDespesas = (): void => {
     this.despesaService.getDespesasCategorias()
       .subscribe({
         next: (result: ICategoria[]) => {
@@ -55,7 +55,7 @@ export class DespesasFormComponent {
       });
   }
 
-  onSaveClick = () => {
+  public onSaveClick = (): void => {
     switch (this.action) {
       case Action.Create:
         this.saveCreateDespesa();
@@ -68,7 +68,7 @@ export class DespesasFormComponent {
     }
   }
 
-  saveCreateDespesa = () => {
+  public saveCreateDespesa = (): void => {
     this.despesaService.postDespesa(this.despesaForm.getRawValue() as IDespesa)
       .subscribe({
         next: (result: boolean) => {
@@ -84,7 +84,7 @@ export class DespesasFormComponent {
       });
   }
 
-  saveEditDespesa = () => {
+  public saveEditDespesa = (): void => {
     const despesa = this.despesaForm.getRawValue() as IDespesa;
     this.despesaService.putDespesa(despesa)
       .subscribe({
@@ -102,7 +102,7 @@ export class DespesasFormComponent {
 
   }
 
-  editDespesa = (idDespesa: number) => {
+  public editDespesa = (idDespesa: number): void  => {
     this.despesaService.getDespesaById(idDespesa)
       .subscribe({
         next: (response: IDespesa) => {

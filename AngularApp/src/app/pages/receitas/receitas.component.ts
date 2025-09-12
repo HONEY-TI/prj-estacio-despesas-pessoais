@@ -4,8 +4,7 @@ import { ReceitasFormComponent } from "./receitas-form/receitas.form.component";
 import { BarraFerramentaBase, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../components";
 import { ReceitaDataSet, ReceitaColumns } from "../../models/datatable-config/receitas";
 import { IReceita, Action } from "../../models";
-import { MenuService } from "../../services";
-import { ReceitaService } from "../../services/api";
+import { MenuService, ReceitaService  } from "../../services";
 
 @Component({
   selector: 'app-receitas',
