@@ -9,9 +9,13 @@ import { MatInputModule } from '@angular/material/input';
 import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ConfiguracoesComponent } from './configuracoes.component';
+import { DeleteDPComponent } from './delete-dados-pessoais/deleteDP.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 @NgModule({
-  declarations : [ConfiguracoesComponent, ChangeAvatarComponent, ChangePasswordComponent],
-  imports: [CommonModule, ReactiveFormsModule, ConfiguracoesRoutingModule, MatIconModule, MatFormFieldModule, MatInputModule, SharedModule]
+  declarations : [ConfiguracoesComponent, ChangeAvatarComponent, ChangePasswordComponent, DeleteDPComponent],
+  imports: [CommonModule, ReactiveFormsModule, ConfiguracoesRoutingModule, MatIconModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, SharedModule]
 })
 
 export class ConfiguracoesModule {}
+
