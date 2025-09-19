@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { LayoutComponent } from './layout.component';
 import { CommonModule } from '@angular/common';
-import { MenuService, AuthService, ImagemPerfilService } from '../../services';
+import { AuthService, ImagemPerfilService } from '../../services';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
+import MenuService from '../../services/utils/menu-service/menu.service';
 
 describe('LayoutComponent Unit Test', () => {
   let component: LayoutComponent;
