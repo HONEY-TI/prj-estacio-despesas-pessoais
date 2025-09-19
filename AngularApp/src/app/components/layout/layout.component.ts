@@ -35,7 +35,7 @@ export class LayoutComponent implements OnInit {
   }
   
   public selectMenu(menu: number) {
-    this.menuService.selectMenu(menu, this.router);
+    this.menuService.setMenuSelecionado(menu);
   }
 
   public onLogoutClick() {

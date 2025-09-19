@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed, fakeAsync, flush } from '@angular/core/testing';
 import { LayoutComponent } from './layout.component';
 import { CommonModule } from '@angular/common';
-import { MenuService, AuthService, ImagemPerfilService } from '../../services';
+import { AuthService, ImagemPerfilService, MenuService } from '../../services';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
+
 
 describe('LayoutComponent Unit Test', () => {
   let component: LayoutComponent;
@@ -60,12 +61,12 @@ describe('LayoutComponent Unit Test', () => {
     expect(component.urlPerfilImage).toBe('../../../../assets/perfil_static.png');
   }));
 
-  it('should call menuService.selectMenu with correct menu numbers', () => {
-    spyOn(menuService, 'selectMenu');
+  it('should call menuService.setMenuSelecionado with correct menu numbers', () => {
+    spyOn(menuService, 'setMenuSelecionado');
 
     for (let menu = 1; menu <= 7; menu++) {
       component.selectMenu(menu);
-      expect(menuService.selectMenu).toHaveBeenCalledWith(menu, router);
+      expect(menuService.setMenuSelecionado).toHaveBeenCalledWith(menu);
     }
   });
 
