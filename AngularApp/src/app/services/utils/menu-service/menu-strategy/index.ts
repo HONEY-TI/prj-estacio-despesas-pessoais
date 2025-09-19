@@ -6,3 +6,4 @@ export * from './home/home.strategy';
 export * from './lancamento/lancamento-strategy';
 export * from './perfil/perfil-strategy';
 export * from './receita/receita-strategy';
+export *  from './invalid/invalid.strategy';

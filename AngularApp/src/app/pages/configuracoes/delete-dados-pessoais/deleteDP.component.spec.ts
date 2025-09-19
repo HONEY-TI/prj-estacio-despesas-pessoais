@@ -1,14 +1,17 @@
 /* tslint:disable:no-unused-variable */
 import {  ComponentFixture, TestBed } from '@angular/core/testing';
-import { DeleteDPComponent } from './exclusao-dados-pessoais.component';
+import { DeleteDPComponent } from './deleteDP.component';
+import { AlertComponent, ModalConfirmComponent } from '../../../components';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-describe('ExclusaoDadosPessoaisComponent', () => {
+describe('DeleteDPComponent', () => {
   let component: DeleteDPComponent;
   let fixture: ComponentFixture<DeleteDPComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ DeleteDPComponent ]
+      declarations: [ DeleteDPComponent],
+      providers: [AlertComponent, ModalConfirmComponent,  NgbActiveModal]
     })
     .compileComponents();
   });
