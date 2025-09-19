@@ -19,3 +19,4 @@ export * from './api/dashboard/dashboard.service';
 export * from './api/usuarios/usuario.service';
 export * from './api/saldo/saldo.service';
 export * from './api/imagem-perfil/imagem.perfil.service';
+export * from './utils/menu-service/menu.service';
