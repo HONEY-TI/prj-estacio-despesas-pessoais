@@ -10,28 +10,10 @@ using Repository;
 using Repository.CommonDependenceInject;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // -------------------- Configuração de CORS --------------------
 // Define as origens permitidas para requisições cross-origin
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins(
-            "https://alexfariakof.com",
-            "https://alexfariakof.com:42535",
-            "https://localhost",
-            "https://localhost:42535",
-            "https://localhost:4200",
-            "https://127.0.0.1",
-            "https://127.0.0.1:4200",
-            "https://127.0.0.1:42535",
-            "https://accounts.google.com")
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials();
-    });
-});
+builder.AddCORSConfigurations();
+
 
 // -------------------- Configuração de Routing e Controllers --------------------
 builder.Services.AddRouting(options => options.LowercaseUrls = true); // URLs em minúsculo
@@ -69,12 +51,6 @@ builder.Services.AddRepositories(); // Repositórios
 builder.Services.AddServices(); // Serviços da aplicação
 builder.Services.AddCrossCuttingConfiguration(); // Cross-cutting concerns
 
-// -------------------- Configuração de URLs para Staging --------------------
-if (builder.Environment.IsStaging())
-{
-    builder.WebHost.UseUrls("https://0.0.0.0:42535", "http://0.0.0.0:42536");
-}
-
 // -------------------- Logging --------------------
 // Remove todos os providers (Console, Debug, EventLog) em Staging ou Production
 if (builder.Environment.IsProduction() || builder.Environment.IsStaging())
@@ -82,6 +58,7 @@ if (builder.Environment.IsProduction() || builder.Environment.IsStaging())
 
 // -------------------- Health Checks --------------------
 builder.AddHealthCheckConfigurations();
+
 
 var app = builder.Build();
 
@@ -91,7 +68,10 @@ app.UseHsts(); // HTTPS Strict Transport Security
 app.UseHttpsRedirection(); // Redireciona HTTP para HTTPS
 app.AddSupporteCulturesPtBr(); // Suporte a culturas PT-BR
 app.UseCors(); // Ativa CORS
-app.AddSwaggerUIApiVersioning(); // Swagger UI
+
+if (!app.Environment.IsProduction()) 
+    app.AddSwaggerUIApiVersioning(); // Swagger UI apenas para ambientes que não sejam produção 
+
 app.UseDefaultFiles(); // Suporte a arquivos default (index.html)
 app.UseStaticFiles(); // Servir arquivos estáticos
 app.UseRouting(); // Habilita roteamento
@@ -104,22 +84,25 @@ app.MapHealthChecks("/health"); // Endpoint de health check
 app.MapControllers(); // Mapeia controllers
 app.MapFallbackToFile("index.html"); // Fallback para SPA
 
-// -------------------- URLs adicionais para Staging --------------------
-if (app.Environment.IsStaging())
+
+// -------------------- Configuração de URLs para Staging & Development -------------------- i
+if (app.Environment.IsStaging() || app.Environment.IsDevelopment())
 {
-    app.Urls.Add("https://0.0.0.0:42535");
-    app.Urls.Add("http://0.0.0.0:42536");
+    app.Urls.Add("https://0.0.0.0:42535"); app.Urls.Add("http://0.0.0.0:42536");
 }
 
-
-app.UseHealthChecks("/health", new HealthCheckOptions
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse // necessário para a UI
-});
+    app.UseHealthChecks("/health", new HealthCheckOptions
+    {
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse // necessário para a UI
+    });
 
-app.UseHealthChecksUI(options =>
-{
-    options.UIPath = "/health-ui"; // URL para acessar a interface
-});
+    app.UseHealthChecksUI(options =>
+    {
+        options.UIPath = "/health-ui"; // URL para acessar a interface
+    });
+}
+
 // -------------------- Executa aplicação --------------------
 app.Run();
