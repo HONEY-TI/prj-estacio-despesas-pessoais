@@ -16,6 +16,7 @@
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.prod.yml" />
+    <None Include="docker-compose.staging.yml" />
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
     <None Include="docker-compose.NetSdkWIthNode.yml" />

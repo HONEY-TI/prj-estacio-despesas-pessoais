@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "Swagger": {
+    "Swagger Development": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "swagger",
@@ -9,6 +9,16 @@
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:42535;http://localhost:42536"
+    },
+    "Swagger Production": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:443;http://localhost:80"
     },
     "Development": {
       "commandName": "Project",
@@ -30,29 +40,7 @@
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:42535;http://localhost:42536"
-    },
-    "MySqlServer": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "MySqlServer",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:42535;http://localhost:42536"
-    },
-    "MsSqlServer": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "MsSqlServer",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:42535;http://localhost:42536"
+      "applicationUrl": "https://localhost:433;http://localhost:80"
     },
     "Container (Dockerfile)": {
       "commandName": "Docker",
