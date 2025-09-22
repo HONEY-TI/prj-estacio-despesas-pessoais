@@ -16,12 +16,11 @@ public class SigningConfigurations : ISigningConfigurations
     public TokenConfiguration? TokenConfiguration { get; private set; }
     public SigningCredentials? SigningCredentials { get; private set; }
 
-    public SigningConfigurations(X509Certificate2 _X509Certificate, IOptions<TokenOptions> options) : this(options)
+    public SigningConfigurations(X509Certificate2? _X509Certificate, IOptions<TokenOptions> options) : this(options)
     {
-        RSA? rsa = _X509Certificate.GetRSAPrivateKey()
-                ?? _X509Certificate.GetRSAPublicKey()
-                ?? RSA.Create(2048)
-                ?? throw new InvalidOperationException("Erro ao obter chave RSA do certificado.");
+        RSA? rsa = _X509Certificate?.GetRSAPrivateKey()
+                ?? _X509Certificate?.GetRSAPublicKey()
+                ?? RSA.Create(2048);
 
         var rsaKey = new RsaSecurityKey(rsa)
         {
