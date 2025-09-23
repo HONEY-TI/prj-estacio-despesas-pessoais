@@ -1,35 +1,21 @@
 ﻿using Despesas.Application.CommonDependenceInject;
 using Despesas.Infrastructure.DatabaseContexts;
-using Despesas.Repository.Mapping.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Migrations.DataSeeders.CommonDependenceInject;
+using Migrations.Oracle.CommonInjectDependence;
 using Repository.CommonDependenceInject;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        var provider = DatabaseProvider.Oracle;
-        services.AddSingleton(typeof(DatabaseProvider), provider);
-        string connectionString = context.Configuration.GetConnectionString("SqlConnectionString")
-              ?? throw new Exception("Connection string 'SqlConnectionString' não encontrada no appsettings.json.");
+        services.ConfigureOracleServerMigrationsContext(context.Configuration);
 
         string environment = context.Configuration["Environment"] ?? "Production";
         Console.WriteLine($"Environment: {environment}");
-        Console.WriteLine($"Connection String: {connectionString}");
-
-        services.AddDbContext<RegisterContext>((sp, options) =>
-        {
-            var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-            options.UseOracle(
-                connectionString,
-                b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
-            options.UseLoggerFactory(loggerFactory);
-            options.UseLazyLoadingProxies();
-        });
 
         var cryptoKey = context.Configuration["CryptoConfigurations:Key"];
         var cryptoAuthSalt = context.Configuration["CryptoConfigurations:AuthSalt"];

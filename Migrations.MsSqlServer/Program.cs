@@ -1,44 +1,21 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Despesas.Application.CommonDependenceInject;
+using Despesas.Infrastructure.DatabaseContexts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Repository.CommonDependenceInject;
-using Microsoft.EntityFrameworkCore;
 using Migrations.DataSeeders.CommonDependenceInject;
-using Despesas.Application.CommonDependenceInject;
-using Despesas.Repository.Mapping.Abstractions;
-using Despesas.Infrastructure.DatabaseContexts;
-using System.Reflection;
+using Migrations.MsSqlServer.CommonInjectDependence;
+using Repository.CommonDependenceInject;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        var provider = DatabaseProvider.SqlServer;
-        services.AddSingleton(typeof(DatabaseProvider), provider);
-
-        string connectionString = context.Configuration.GetConnectionString("SqlConnectionString")
-              ?? throw new Exception("Connection string 'SqlConnectionString' não encontrada no appsettings.json.");
+        services.ConfigureMsSqlServerMigrationsContext(context.Configuration);
 
         string environment = context.Configuration["Environment"] ?? "Production";
         Console.WriteLine($"Environment: {environment}");
-        Console.WriteLine($"Connection String: {connectionString}");
-
-        services.AddDbContext<RegisterContext>((sp, options) =>
-        {
-            var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-            options.UseSqlServer(
-                connectionString,
-                b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
-            options.UseLoggerFactory(loggerFactory);
-            options.UseLazyLoadingProxies();
-        });
-
-        services.AddScoped<RegisterContext>(sp =>
-        {
-            var options = sp.GetRequiredService<DbContextOptions<RegisterContext>>();
-            var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-            return new RegisterContext(options, provider, loggerFactory);
-        });
 
         var cryptoKey = context.Configuration["CryptoConfigurations:Key"];
         var cryptoAuthSalt = context.Configuration["CryptoConfigurations:AuthSalt"];
