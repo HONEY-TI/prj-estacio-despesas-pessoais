@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Despesas.Infrastructure.DatabaseContexts;
 using Repository.Persistency.Abstractions;
 
 namespace Repository.Persistency.Implementations;

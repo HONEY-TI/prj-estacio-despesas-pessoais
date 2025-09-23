@@ -3,10 +3,10 @@ using Despesas.Application.CommonDependenceInject;
 using Despesas.Backend.CommonDependenceInject;
 using Despesas.GlobalException.CommonDependenceInject;
 using Despesas.Infrastructure.CommonDependenceInject;
+using Despesas.Infrastructure.DatabaseContexts;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using Repository;
 using Repository.CommonDependenceInject;
 
 var builder = WebApplication.CreateBuilder(args);

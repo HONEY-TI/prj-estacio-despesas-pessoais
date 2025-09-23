@@ -2,6 +2,7 @@
 using Repository.Persistency.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Domain.Core.ValueObject;
+using Despesas.Repository.Mapping.Abstractions;
 
 namespace Repository.Persistency.Implementations.Fixtures;
 public sealed class SaldoRepositorioFixture : IDisposable
@@ -14,7 +15,7 @@ public sealed class SaldoRepositorioFixture : IDisposable
     public SaldoRepositorioFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "SaldoRepoDatabaseInMemory").Options;
-        Context = new RegisterContext(options, Usings.GetLogerFactory());
+        Context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         var usaurio = MockUsuario.Instance.GetUsuario();
         Context.AddRange(usaurio);
         Context.SaveChanges();

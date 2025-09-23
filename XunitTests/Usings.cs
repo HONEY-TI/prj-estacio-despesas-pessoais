@@ -1,6 +1,7 @@
 ﻿global using Moq;
 global using Xunit;
 global using Domain.Entities;
+global using Despesas.Infrastructure.DatabaseContexts;
 using AutoMapper;
 using Despesas.Application.Authentication;
 using Despesas.Business.Authentication.Abstractions;

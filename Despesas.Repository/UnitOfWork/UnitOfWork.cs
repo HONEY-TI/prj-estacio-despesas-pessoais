@@ -1,6 +1,6 @@
-﻿using Despesas.Repository.UnitOfWork.Abstractions;
+﻿using Despesas.Infrastructure.DatabaseContexts;
+using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.Aggreggates;
-using Repository;
 
 namespace Despesas.Repository.UnitOfWork;
 

@@ -1,18 +1,21 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Despesas.Application.CommonDependenceInject;
+using Despesas.Infrastructure.DatabaseContexts;
+using Despesas.Repository.Mapping.Abstractions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Repository;
+using Migrations.DataSeeders.CommonDependenceInject;
 using Repository.CommonDependenceInject;
 using System.Reflection;
-using Microsoft.EntityFrameworkCore;
-using Migrations.DataSeeders.CommonDependenceInject;
-using Despesas.Application.CommonDependenceInject;
-
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
+        var provider = DatabaseProvider.MySql;
+        services.AddSingleton(typeof(DatabaseProvider), provider);
+
         string connectionString = context.Configuration.GetConnectionString("SqlConnectionString")
               ?? throw new Exception("Connection string 'SqlConnectionString' não encontrada no appsettings.json.");
 
@@ -20,13 +23,16 @@ var host = Host.CreateDefaultBuilder(args)
         Console.WriteLine($"Environment: {environment}");
         Console.WriteLine($"Connection String: {connectionString}");
 
-        services.AddDbContext<RegisterContext>(options =>
+        services.AddDbContext<RegisterContext>((sp, options) =>
+        {
+            var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
             options.UseMySQL(
                 connectionString,
-                builder => builder.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name)
-            )
-        );
-        
+                b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
+            options.UseLoggerFactory(loggerFactory);
+            options.UseLazyLoadingProxies();
+        });
+
         var cryptoKey = context.Configuration["CryptoConfigurations:Key"];
         var cryptoAuthSalt = context.Configuration["CryptoConfigurations:AuthSalt"];
 

@@ -1,4 +1,5 @@
 ﻿using __mock__.Repository;
+using Despesas.Repository.Mapping.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Persistency.Implementations.Fixtures;
@@ -10,7 +11,7 @@ public sealed class DatabaseFixture : IDisposable
     public DatabaseFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "UsuarioRepositorioImplTestDatabaseInMemory").Options;
-        Context = new RegisterContext(options, Usings.GetLogerFactory());
+        Context = new RegisterContext(options, DatabaseProvider.MySql,  Usings.GetLogerFactory());
         Context.Database.EnsureCreated();
 
         var lstAcesso = MockAcesso.Instance.GetAcessos();

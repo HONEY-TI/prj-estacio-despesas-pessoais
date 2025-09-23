@@ -1,36 +1,47 @@
-﻿using Despesas.Application.CommonDependenceInject;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Repository;
 using Repository.CommonDependenceInject;
-using System.Reflection;
-using ConfigurationManager = System.Configuration.ConfigurationManager;
 using Microsoft.EntityFrameworkCore;
 using Migrations.DataSeeders.CommonDependenceInject;
-
+using Despesas.Application.CommonDependenceInject;
+using Despesas.Repository.Mapping.Abstractions;
+using Despesas.Infrastructure.DatabaseContexts;
+using System.Reflection;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        string connectionString = ConfigurationManager.ConnectionStrings["SqlConnectionString"]?.ConnectionString
-            ?? throw new Exception("Connection string 'Sql Server SqlConnectionString' não encontrada no app.config.");
+        var provider = DatabaseProvider.SqlServer;
+        services.AddSingleton(typeof(DatabaseProvider), provider);
 
-        string environment = ConfigurationManager.AppSettings["Environment"] ?? "Production";
+        string connectionString = context.Configuration.GetConnectionString("SqlConnectionString")
+              ?? throw new Exception("Connection string 'SqlConnectionString' não encontrada no appsettings.json.");
 
+        string environment = context.Configuration["Environment"] ?? "Production";
         Console.WriteLine($"Environment: {environment}");
         Console.WriteLine($"Connection String: {connectionString}");
 
-        services.AddDbContext<RegisterContext>(options =>
+        services.AddDbContext<RegisterContext>((sp, options) =>
+        {
+            var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
             options.UseSqlServer(
                 connectionString,
-                builder => builder.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name)
-            )
-        );
-        
-        var cryptoKey = ConfigurationManager.AppSettings["CryptoConfigurations:Key"];
-        var cryptoAuthSalt = ConfigurationManager.AppSettings["CryptoConfigurations:AuthSalt"];
+                b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
+            options.UseLoggerFactory(loggerFactory);
+            options.UseLazyLoadingProxies();
+        });
+
+        services.AddScoped<RegisterContext>(sp =>
+        {
+            var options = sp.GetRequiredService<DbContextOptions<RegisterContext>>();
+            var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+            return new RegisterContext(options, provider, loggerFactory);
+        });
+
+        var cryptoKey = context.Configuration["CryptoConfigurations:Key"];
+        var cryptoAuthSalt = context.Configuration["CryptoConfigurations:AuthSalt"];
 
         if (string.IsNullOrEmpty(cryptoKey) || string.IsNullOrEmpty(cryptoAuthSalt))
             throw new Exception("CryptoConfigurations não encontradas no App.config.");

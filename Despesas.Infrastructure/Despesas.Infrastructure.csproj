@@ -8,9 +8,10 @@
 	<ItemGroup>
 		<PackageReference Include="AWSSDK.S3" Version="3.7.307.13" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -21,5 +22,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Despesas.Domain\Despesas.Domain.csproj" />
+	  <ProjectReference Include="..\Despesas.Repository.Mapping\Despesas.Repository.Mapping.csproj" />
 	</ItemGroup>
 </Project>

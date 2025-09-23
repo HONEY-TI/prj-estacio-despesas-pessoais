@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Despesas.Infrastructure.DatabaseContexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Repository;
 
 namespace Migrations.MySqlServer.CommonInjectDependence;
 public static class MigrationsMsSqlServerInjectDependence

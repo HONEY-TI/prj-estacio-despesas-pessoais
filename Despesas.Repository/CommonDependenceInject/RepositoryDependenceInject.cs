@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Despesas.Infrastructure.DatabaseContexts;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Repository.Persistency.Abstractions;

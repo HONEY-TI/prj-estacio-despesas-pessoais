@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Despesas.Infrastructure.DatabaseContexts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Repository;
 
 namespace Migrations.MsSqlServer.CommonInjectDependence;
+
 public static class MigrationsMsSqlServerInjectDependence
 {
     public static IServiceCollection ConfigureMsSqlServerMigrationsContext(this IServiceCollection services, IConfiguration configuration)

@@ -1,4 +1,5 @@
 ﻿using __mock__.Repository;
+using Despesas.Repository.Mapping.Abstractions;
 using Domain.Core.ValueObject;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,7 @@ public sealed class BaseRepositoryFixture : IDisposable
     public BaseRepositoryFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "BaseRepositoryFixturetDatabaseInMemory").Options;
-        Context = new RegisterContext(options, Usings.GetLogerFactory());
+        Context = new RegisterContext(options, DatabaseProvider.MySql,  Usings.GetLogerFactory());
         Context.Database.EnsureDeleted();
         Context.Database.EnsureCreated();
 

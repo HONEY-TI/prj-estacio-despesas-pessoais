@@ -4,36 +4,39 @@ namespace Migrations.DataSeeders.Implementations;
 
 public class DataSeeder : IDataSeeder
 {
-    private readonly IDataSeederAcesso _acessoSeeder;
-    private readonly IDataSeederDespesa _despesaSeeder;
-    private readonly IDataSeederReceita _receitaSeeder;
-    private readonly IDataSeederUpdateDespesa _updateDespesaSeeder;
-    private readonly IDataSeederUpdateReceita _updateReceitaSeeder;
+    private readonly IEnumerable<ISeeder> _seeders;
+    private readonly IEnumerable<IUpdater> _updaters;
+    private readonly IDatabaseMaintenance _dbMaintenance;
 
     public DataSeeder(
-        IDataSeederAcesso acessoSeeder,
-        IDataSeederDespesa despesaSeeder,
-        IDataSeederReceita receitaSeeder,
-        IDataSeederUpdateDespesa updateDespesaSeeder,
-        IDataSeederUpdateReceita updateReceitaSeeder)
+        IEnumerable<ISeeder> seeders,
+        IEnumerable<IUpdater> updaters,
+        IDatabaseMaintenance dbMaintenance)
     {
-        _acessoSeeder = acessoSeeder;
-        _despesaSeeder = despesaSeeder;
-        _receitaSeeder = receitaSeeder;
-        _updateDespesaSeeder = updateDespesaSeeder;
-        _updateReceitaSeeder = updateReceitaSeeder;
+        _seeders = seeders;
+        _updaters = updaters;
+        _dbMaintenance = dbMaintenance;
     }
 
     public void Insert()
     {
-        _acessoSeeder.Insert();
-        _despesaSeeder.Insert();
-        _receitaSeeder.Insert();
+        foreach (var seeder in _seeders)
+            seeder.Seed();
     }
 
     public void Update()
     {
-        _updateDespesaSeeder.Update();
-        _updateReceitaSeeder.Update();
+        foreach (var updater in _updaters)
+            updater.Update();
+    }
+
+    public void BackupDatabase()
+    {
+        _dbMaintenance.Backup();
+    }
+
+    public void RestoreDatabase(string file)
+    {
+        _dbMaintenance.Restore(file);
     }
 }

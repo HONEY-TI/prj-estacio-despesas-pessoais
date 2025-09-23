@@ -1,0 +1,18 @@
+﻿services:
+  oracle21c:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: oracle21c
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    environment:
+      ORACLE_PASSWORD: "Oracle123"
+      APP_USER: "appuser"
+      APP_USER_PASSWORD: "AppUser123"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+
+volumes:
+  oracle-data:

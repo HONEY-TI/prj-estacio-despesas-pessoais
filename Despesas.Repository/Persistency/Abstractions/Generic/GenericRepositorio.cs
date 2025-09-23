@@ -1,4 +1,5 @@
-﻿using Domain.Core.Aggreggates;
+﻿using Despesas.Infrastructure.DatabaseContexts;
+using Domain.Core.Aggreggates;
 using System.Linq.Expressions;
 
 namespace Repository.Persistency.Generic;
