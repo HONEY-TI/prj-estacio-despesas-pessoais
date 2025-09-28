@@ -79,8 +79,6 @@ public abstract class BaseMap<TEntity, TKey> : IEntityTypeConfiguration<TEntity>
             builder.HasKey("Id");
         }
 
-
-
         foreach (var prop in typeof(TEntity).GetProperties())
         {
             if (prop.PropertyType == typeof(DateTime) || prop.PropertyType == typeof(DateTime?))
