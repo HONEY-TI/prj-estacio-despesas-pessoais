@@ -1,12 +1,15 @@
 ﻿#!/bin/bash
-# entrypoint.sh
+# Inicializa o banco e o listener do Oracle XE
+echo "Iniciando Oracle XE..."
 
-set -e
-set -o pipefail
+# Inicializa o listener
+lsnrctl start
 
-# Função de log
-log() {
-    echo "[INFO] $*"
-}
+# Inicia a instância XE
+sqlplus / as sysdba <<EOF
+startup;
+exit;
+EOF
 
+# Mantém o container rodando em foreground
 tail -f /dev/null

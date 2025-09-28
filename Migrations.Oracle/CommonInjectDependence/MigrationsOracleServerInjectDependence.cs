@@ -7,7 +7,8 @@ using Microsoft.Extensions.Logging;
 using System.Reflection;
 
 namespace Migrations.Oracle.CommonInjectDependence;
-public static class MigrationsOracleServerInjectDependence
+
+public static class MigratioMigrationsOracleServerInjectDependencensMySqlServerInjectDependence
 {
     public static IServiceCollection ConfigureOracleServerMigrationsContext(this IServiceCollection services, IConfiguration configuration)
     {
@@ -22,17 +23,16 @@ public static class MigrationsOracleServerInjectDependence
                 b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
             options.UseLoggerFactory(loggerFactory);
             options.UseLazyLoadingProxies();
+        });
 
-            var provider = DatabaseProvider.Oracle;
-            services.AddSingleton(typeof(DatabaseProvider), provider);
+        var provider = DatabaseProvider.Oracle;
+        services.AddSingleton(typeof(DatabaseProvider), provider);
 
-            services.AddScoped<RegisterContext>(sp =>
-            {
-                var options = sp.GetRequiredService<DbContextOptions<RegisterContext>>();
-                var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-                return new RegisterContext(options, provider, loggerFactory);
-            });
-
+        services.AddScoped<RegisterContext>(sp =>
+        {
+            var options = sp.GetRequiredService<DbContextOptions<RegisterContext>>();
+            var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+            return new RegisterContext(options, provider, loggerFactory);
         });
 
         return services;

@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrtations.Oracle", "Migrt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Despesas.Repository.Mapping", "Despesas.Repository.Mapping\Despesas.Repository.Mapping.csproj", "{480F7982-6387-423D-9A7C-101E0E8B602F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations.Oracle", "Migrations.Oracle\Migrations.Oracle.csproj", "{520515F4-B5D8-BFFA-B29A-19E580652700}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +115,10 @@ Global
 		{480F7982-6387-423D-9A7C-101E0E8B602F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{480F7982-6387-423D-9A7C-101E0E8B602F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{480F7982-6387-423D-9A7C-101E0E8B602F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{520515F4-B5D8-BFFA-B29A-19E580652700}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{520515F4-B5D8-BFFA-B29A-19E580652700}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{520515F4-B5D8-BFFA-B29A-19E580652700}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{520515F4-B5D8-BFFA-B29A-19E580652700}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

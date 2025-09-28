@@ -33,5 +33,4 @@
 		<ProjectReference Include="..\Despesas.Repository\Despesas.Repository.csproj" />
 		<ProjectReference Include="..\Migrations.DataSeeders\Migrations.DataSeeders.csproj" />
   </ItemGroup>
-
 </Project>

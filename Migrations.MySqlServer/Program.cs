@@ -1,6 +1,5 @@
 ﻿using Despesas.Application.CommonDependenceInject;
 using Despesas.Infrastructure.DatabaseContexts;
-using Despesas.Repository.Mapping.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

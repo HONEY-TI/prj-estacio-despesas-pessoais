@@ -2,32 +2,18 @@
   oracle-xe:
     image: alexfariakof/ole-database-xe
     container_name: oracle-xe
-    build:      
+    build:
       context: .
       dockerfile: Dockerfile
       args:
         ORACLE_PASSWORD: ${ORACLE_PASSWORD}
         APP_USER: ${APP_USER}
         APP_USER_PASSWORD: ${APP_USER_PASSWORD}
-        TZ: ${TZ}
-        ORACLE_ACCEPT_LICENSE: ${ORACLE_ACCEPT_LICENSE}
-        ORACLE_SID: ${ORACLE_SID}
-        ORACLE_PDB: ${ORACLE_PDB}
-    hostname: ora-server-xe
+        ORACLE_SID: ${ORACLE_SID}         
     ports:
-      - "1522:1522"
+      - "1525:1521"
     environment:
       ORACLE_PASSWORD: ${ORACLE_PASSWORD}
       APP_USER: ${APP_USER}
       APP_USER_PASSWORD: ${APP_USER_PASSWORD}
-      TZ: ${TZ}
-      ORACLE_ACCEPT_LICENSE: ${ORACLE_ACCEPT_LICENSE}
-      ORACLE_SID: ${ORACLE_SID}
-      ORACLE_PDB: ${ORACLE_PDB}
-    tty: true   
-    stdin_open: true
-    volumes:
-      - oracle_data:/opt/oracle/oradata 
-
-volumes:
-  oracle_data:
+      ORACLE_SID: ${ORACLE_SID}          

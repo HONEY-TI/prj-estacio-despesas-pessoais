@@ -6,14 +6,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
-using Repository;
 
 #nullable disable
 
-namespace Migrtations.Oracle.Migrations.Application
+namespace Migrations.Oracle.Migrations.Application
 {
     [DbContext(typeof(RegisterContext))]
-    [Migration("20250923000130_Initial")]
+    [Migration("20250928171456_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -108,7 +107,7 @@ namespace Migrtations.Oracle.Migrations.Application
                         .HasColumnType("NVARCHAR2(2000)");
 
                     b.Property<DateTime?>("RefreshTokenExpiry")
-                        .HasColumnType("TIMESTAMP(7)");
+                        .HasColumnType("TIMESTAMP");
 
                     b.Property<string>("Senha")
                         .IsRequired()
@@ -249,7 +248,9 @@ namespace Migrtations.Oracle.Migrations.Application
                         .HasColumnType("varchar(36)");
 
                     b.Property<DateTime>("Data")
-                        .HasColumnType("TIMESTAMP");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<DateTime>("DataCriacao")
                         .ValueGeneratedOnAdd()
@@ -294,7 +295,6 @@ namespace Migrtations.Oracle.Migrations.Application
 
                     b.Property<string>("CategoriaId")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(36)");
 
                     b.Property<DateTime>("Data")
@@ -308,7 +308,6 @@ namespace Migrtations.Oracle.Migrations.Application
 
                     b.Property<string>("UsuarioId")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("varchar(36)");
 
                     b.Property<decimal>("Valor")
@@ -385,13 +384,13 @@ namespace Migrtations.Oracle.Migrations.Application
                     b.HasOne("Domain.Core.ValueObject.TipoCategoria", "TipoCategoria")
                         .WithMany()
                         .HasForeignKey("TipoCategoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Usuario", "Usuario")
                         .WithMany("Categorias")
                         .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("TipoCategoria");

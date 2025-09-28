@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Migrtations.Oracle.Migrations.Application
+namespace Migrations.Oracle.Migrations.Application
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -79,13 +79,13 @@ namespace Migrtations.Oracle.Migrations.Application
                         column: x => x.TipoCategoriaId,
                         principalTable: "TipoCategoria",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Categoria_Usuario_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuario",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -97,7 +97,7 @@ namespace Migrtations.Oracle.Migrations.Application
                     Senha = table.Column<string>(type: "NVARCHAR2(2000)", nullable: false),
                     UsuarioId = table.Column<string>(type: "varchar(36)", nullable: false),
                     RefreshToken = table.Column<string>(type: "NVARCHAR2(2000)", nullable: true),
-                    RefreshTokenExpiry = table.Column<DateTime>(type: "TIMESTAMP(7)", nullable: true),
+                    RefreshTokenExpiry = table.Column<DateTime>(type: "TIMESTAMP", nullable: true),
                     ExternalProvider = table.Column<string>(type: "NVARCHAR2(450)", nullable: true),
                     ExternalId = table.Column<string>(type: "NVARCHAR2(450)", nullable: true)
                 },
@@ -194,7 +194,7 @@ namespace Migrtations.Oracle.Migrations.Application
                 {
                     Id = table.Column<string>(type: "varchar(36)", nullable: false),
                     Valor = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Data = table.Column<DateTime>(type: "TIMESTAMP", nullable: false),
+                    Data = table.Column<DateTime>(type: "TIMESTAMP", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     Descricao = table.Column<string>(type: "NVARCHAR2(100)", maxLength: 100, nullable: true),
                     UsuarioId = table.Column<string>(type: "varchar(36)", nullable: false),
                     DespesaId = table.Column<string>(type: "varchar(36)", nullable: true),
