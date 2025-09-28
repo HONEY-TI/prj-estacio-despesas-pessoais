@@ -1,0 +1,48 @@
+﻿services:
+  oraclelinux:
+    container_name: ole-database
+    build:      
+      context: .
+      dockerfile: Dockerfile
+      args:
+        TZ: ${TZ}
+        ORACLE_ACCEPT_LICENSE: ${ORACLE_ACCEPT_LICENSE}
+        ROOT_PWD: ${ROOT_PWD}
+        ORACLE_PWD: ${ORACLE_PWD}        
+        ORACLE_BASE: ${ORACLE_BASE}
+        MIGRATIONS_PWD: ${MIGRATIONS_PWD}
+        HOST_NAME: ${HOST_NAME}
+    image: alexfariakof/ole-database21c
+    hostname: ora-server
+    environment:
+      TZ: ${TZ}
+      ORACLE_ACCEPT_LICENSE: ${ORACLE_ACCEPT_LICENSE}
+      ROOT_PWD: "${ROOT_PWD}"
+      ORACLE_PWD: "${ORACLE_PWD}"
+      MIGRATIONS_PWD: "{MIGRATIONS_PWD}"
+      ORACLE_BASE: ${ORACLE_BASE}
+      ORACLE_HOME: ${ORACLE_BASE}/product/21.3.0/dbhome_1
+      HOST_NAME: ${HOST_NAME}
+    ports:
+      - "1521:1521"   
+      - "5500:5500"   
+      - "22:22"       
+    tty: true   
+    stdin_open: true
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 4g
+    mem_limit: 4g        
+    memswap_limit: 8g
+    shm_size: 8g
+    privileged: true
+    sysctls:
+      kernel.shmmax: 8589934592
+      kernel.shmall: 2097152
+    volumes:
+      - oradata:/opt/oracle/oradata
+
+volumes:
+  oradata:
