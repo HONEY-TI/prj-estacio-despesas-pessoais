@@ -41,8 +41,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dump", "dump", "{C493C238-4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Despesas.GlobalException", "Despesas.GlobalException\Despesas.GlobalException.csproj", "{90CC5C05-BD07-462B-8A35-1636F0BC223A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrtations.Oracle", "Migrtations.Oracle\Migrtations.Oracle.csproj", "{356B746D-A072-47AE-BC44-FC703241DB92}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Despesas.Repository.Mapping", "Despesas.Repository.Mapping\Despesas.Repository.Mapping.csproj", "{480F7982-6387-423D-9A7C-101E0E8B602F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations.Oracle", "Migrations.Oracle\Migrations.Oracle.csproj", "{520515F4-B5D8-BFFA-B29A-19E580652700}"
@@ -107,10 +105,6 @@ Global
 		{90CC5C05-BD07-462B-8A35-1636F0BC223A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90CC5C05-BD07-462B-8A35-1636F0BC223A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90CC5C05-BD07-462B-8A35-1636F0BC223A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{356B746D-A072-47AE-BC44-FC703241DB92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{356B746D-A072-47AE-BC44-FC703241DB92}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{356B746D-A072-47AE-BC44-FC703241DB92}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{356B746D-A072-47AE-BC44-FC703241DB92}.Release|Any CPU.Build.0 = Release|Any CPU
 		{480F7982-6387-423D-9A7C-101E0E8B602F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{480F7982-6387-423D-9A7C-101E0E8B602F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{480F7982-6387-423D-9A7C-101E0E8B602F}.Release|Any CPU.ActiveCfg = Release|Any CPU

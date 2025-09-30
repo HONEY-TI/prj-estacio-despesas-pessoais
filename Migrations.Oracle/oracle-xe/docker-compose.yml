@@ -1,4 +1,6 @@
-﻿services:
+﻿networks:
+  oracle-xe-net:    
+services:
   oracle-xe:
     image: alexfariakof/ole-database-xe
     container_name: oracle-xe
@@ -6,14 +8,18 @@
       context: .
       dockerfile: Dockerfile
       args:
-        ORACLE_PASSWORD: ${ORACLE_PASSWORD}
-        APP_USER: ${APP_USER}
-        APP_USER_PASSWORD: ${APP_USER_PASSWORD}
-        ORACLE_SID: ${ORACLE_SID}         
+        ORACLE_PASSWORD: "${ORACLE_PASSWORD}"
+        APP_USER: "${APP_USER}"
+        APP_USER_PASSWORD: "${APP_USER_PASSWORD}"
     ports:
       - "1525:1521"
     environment:
-      ORACLE_PASSWORD: ${ORACLE_PASSWORD}
-      APP_USER: ${APP_USER}
-      APP_USER_PASSWORD: ${APP_USER_PASSWORD}
-      ORACLE_SID: ${ORACLE_SID}          
+      ORACLE_PASSWORD: "${ORACLE_PASSWORD}"
+      APP_USER: "${APP_USER}"
+      APP_USER_PASSWORD: "${APP_USER_PASSWORD}"
+    volumes:
+      - oradata:/opt/oracle/oradata
+    networks:
+      - oracle-xe-net
+volumes:
+  oradata:

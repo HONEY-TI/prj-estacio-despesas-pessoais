@@ -1,6 +1,9 @@
-﻿services:
+﻿networks:
+  oracle-net:
+services:
   oraclelinux:
     container_name: ole-database
+    image: alexfariakof/ole-database21c
     build:      
       context: .
       dockerfile: Dockerfile
@@ -11,8 +14,7 @@
         ORACLE_PWD: ${ORACLE_PWD}        
         ORACLE_BASE: ${ORACLE_BASE}
         MIGRATIONS_PWD: ${MIGRATIONS_PWD}
-        HOST_NAME: ${HOST_NAME}
-    image: alexfariakof/ole-database21c
+        HOST_NAME: ${HOST_NAME}    
     hostname: ora-server
     environment:
       TZ: ${TZ}
@@ -24,9 +26,9 @@
       ORACLE_HOME: ${ORACLE_BASE}/product/21.3.0/dbhome_1
       HOST_NAME: ${HOST_NAME}
     ports:
-      - "1521:1521"   
+      - "1526:1521"   
       - "5500:5500"   
-      - "22:22"       
+      - "2223:22"       
     tty: true   
     stdin_open: true
     deploy:
@@ -43,6 +45,9 @@
       kernel.shmall: 2097152
     volumes:
       - oradata:/opt/oracle/oradata
+    networks:
+      - oracle-net
+    restart: always
 
 volumes:
   oradata:
