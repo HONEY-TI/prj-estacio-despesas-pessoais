@@ -12,7 +12,8 @@ public static class MigratioMigrationsOracleServerInjectDependencensMySqlServerI
 {
     public static IServiceCollection ConfigureOracleServerMigrationsContext(this IServiceCollection services, IConfiguration configuration)
     {
-        string connectionString = configuration.GetConnectionString("SqlConnectionString")
+        string connectionString = configuration.GetConnectionString("OracleConnectionString")
+           ?? configuration.GetConnectionString("SqlConnectionString") 
            ?? throw new Exception("Connection string 'SqlConnectionString' não encontrada no appsettings.json.");
 
         services.AddDbContext<RegisterContext>((sp, options) =>

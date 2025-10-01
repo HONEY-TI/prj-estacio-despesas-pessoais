@@ -22,7 +22,8 @@ public static class MigrationsMsSqlServerInjectDependence
             return new RegisterContext(options, provider, loggerFactory);
         });
 
-        string connectionString = configuration.GetConnectionString("SqlConnectionString")
+        string connectionString = configuration.GetConnectionString("SqlServerConnectionString")
+           ?? configuration.GetConnectionString("SqlConnectionString") 
            ?? throw new Exception("Connection string 'SqlConnectionString' não encontrada no appsettings.json.");
 
         services.AddDbContext<RegisterContext>((sp, options) =>

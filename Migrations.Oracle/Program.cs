@@ -12,6 +12,7 @@ using Repository.CommonDependenceInject;
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
+
         services.ConfigureOracleServerMigrationsContext(context.Configuration);
 
         string environment = context.Configuration["Environment"] ?? "Production";
@@ -29,9 +30,7 @@ var host = Host.CreateDefaultBuilder(args)
             { "CryptoConfigurations:AuthSalt", cryptoAuthSalt }
         };
 
-        var configuration = new ConfigurationBuilder().AddInMemoryCollection(inMemoryConfig).Build();
-
-        services.AddServicesCryptography(configuration);
+        services.AddServicesCryptography(context.Configuration);
         services.AddRepositories();
         services.AddDataSeeders();
         services.AddLogging(logging => logging.AddConsole());

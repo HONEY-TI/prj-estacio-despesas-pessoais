@@ -11,7 +11,8 @@ public static class MigrationsMySqlServerInjectDependence
 {
     public static IServiceCollection ConfigureMySqlServerMigrationsContext(this IServiceCollection services, IConfiguration configuration)
     {
-        string connectionString = configuration.GetConnectionString("SqlConnectionString")
+        string connectionString = configuration.GetConnectionString("MySqlConnectionString")
+           ?? configuration.GetConnectionString("SqlConnectionString") 
            ?? throw new Exception("Connection string 'SqlConnectionString' não encontrada no appsettings.json.");
 
         services.AddDbContext<RegisterContext>((sp, options) =>

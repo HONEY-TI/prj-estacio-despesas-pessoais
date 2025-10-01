@@ -1,5 +1,6 @@
 ﻿FROM gvenzl/oracle-xe:21-full
 
+EXPOSE 1521
 
 # Recebe do build
 ARG ORACLE_PASSWORD
@@ -17,5 +18,3 @@ RUN sed -i 's/\r$//' /container-entrypoint-initdb.d/*.sh && \
     sed -i '1s/^\xEF\xBB\xBF//' /container-entrypoint-initdb.d/*.sh && \
     chmod +x /container-entrypoint-initdb.d/*.sh
 
-USER oracle
-EXPOSE 1521

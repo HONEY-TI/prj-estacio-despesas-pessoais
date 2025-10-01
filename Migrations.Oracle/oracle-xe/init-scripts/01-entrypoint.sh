@@ -10,3 +10,4 @@ log() {
 }
 
 log "Entrypoint Executado..."
+

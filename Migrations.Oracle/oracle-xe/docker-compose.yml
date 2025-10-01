@@ -1,6 +1,4 @@
-﻿networks:
-  oracle-xe-net:    
-services:
+﻿services:
   oracle-xe:
     image: alexfariakof/ole-database-xe
     container_name: oracle-xe
@@ -19,7 +17,6 @@ services:
       APP_USER_PASSWORD: "${APP_USER_PASSWORD}"
     volumes:
       - oradata:/opt/oracle/oradata
-    networks:
-      - oracle-xe-net
+    restart: always 
 volumes:
   oradata:

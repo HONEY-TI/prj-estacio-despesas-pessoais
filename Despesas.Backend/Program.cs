@@ -3,39 +3,32 @@ using Despesas.Application.CommonDependenceInject;
 using Despesas.Backend.CommonDependenceInject;
 using Despesas.GlobalException.CommonDependenceInject;
 using Despesas.Infrastructure.CommonDependenceInject;
-using Despesas.Infrastructure.DatabaseContexts;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.EntityFrameworkCore;
 using Repository.CommonDependenceInject;
+using Migrations.Oracle.CommonInjectDependence;
+using Migrations.MsSqlServer.CommonInjectDependence;
+using Migrations.MySqlServer.CommonInjectDependence;
 
 var builder = WebApplication.CreateBuilder(args);
 // -------------------- Configuração de CORS --------------------
 // Define as origens permitidas para requisições cross-origin
 builder.AddCORSConfigurations();
 
-
 // -------------------- Configuração de Routing e Controllers --------------------
 builder.Services.AddRouting(options => options.LowercaseUrls = true); // URLs em minúsculo
 builder.Services.AddControllers(); // Registra controllers
 builder.Services.AddSwaggerApiVersioning(); // Swagger + versionamento de API
 
-// -------------------- Configuração do DbContext --------------------
-if (builder.Environment.IsStaging() || builder.Environment.IsDevelopment())
-{
-    // Usa conexão de desenvolvimento
-    builder.Services.AddDbContext<RegisterContext>(options => options
-        .UseLazyLoadingProxies()
-        .UseMySQL(builder.Configuration.GetConnectionString("Dev.SqlConnectionString") ??
-            throw new NullReferenceException("SqlConnectionString not defined.")));
-}
-else
-{
-    // Usa conexão de produção
-    builder.Services.AddDbContext<RegisterContext>(options => options
-        .UseMySQL(builder.Configuration.GetConnectionString("SqlConnectionString") ??
-            throw new NullReferenceException("SqlConnectionString not defined.")));
-}
+// -------------------- Configuração do DbContext Oralce --------------------
+//builder.Services.ConfigureOracleServerMigrationsContext(builder.Configuration);
+
+// -------------------- Configuração do DbContext Sql Server  --------------------
+//builder.Services.ConfigureMsSqlServerMigrationsContext(builder.Configuration);
+
+// -------------------- Configuração do DbContext MySql Server  --------------------
+builder.Services.ConfigureMySqlServerMigrationsContext(builder.Configuration);
+
 
 // -------------------- Configurações de Segurança --------------------
 builder.AddSigningConfigurations(); // Configura assinaturas JWT
