@@ -33,7 +33,7 @@ describe('Unit Test PerfilComponent', () => {
     // Arrange
     const mockUsuario: IUsuario = {
       id : 99,
-      email: 'teste@teste.com',
+      email: 'user@example.com',
       nome: 'Teste Usuário',
       sobreNome: 'Teste',
       telefone: '(21) 9999-9999'
@@ -73,7 +73,7 @@ describe('Unit Test PerfilComponent', () => {
     // Arrange
     let mockUsuario: IUsuario = {
       id : 22,
-      email: 'teste@teste.com',
+      email: 'user@example.com',
       nome: 'Teste Usuário',
       sobreNome: 'Teste',
       telefone: '(21) 9999-9999'
@@ -81,7 +81,7 @@ describe('Unit Test PerfilComponent', () => {
     const spyOnGetUsuario = spyOn(usuarioService, 'getUsuario').and.returnValue(of(mockUsuario));
     const editedData = {
       id : 22,
-      email: 'teste@teste.com',
+      email: 'user@example.com',
       nome: 'Teste Alteração Nome Usuario',
       sobreNome: 'Teste',
       telefone: '(21) 9999-9999'

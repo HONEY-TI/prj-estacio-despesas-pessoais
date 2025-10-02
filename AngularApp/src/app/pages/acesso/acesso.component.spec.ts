@@ -47,7 +47,7 @@ describe('AcessoComponent', () => {
       nome: 'Teste Usuário',
       sobreNome: 'Usuário',
       telefone: '(21) 9999-9999',
-      email: 'teste@teste.com',
+      email: 'user@example.com',
       senha: '!12345',
       confirmaSenha: '!12345'
     };
@@ -73,7 +73,7 @@ describe('AcessoComponent', () => {
       nome: 'Teste Usuário',
       sobreNome: 'Usuário',
       telefone: '(21) 9999-9999',
-      email: 'teste@teste.com',
+      email: 'user@example.com',
       senha: '!12345',
       confirmaSenha: '!12345'
     };
@@ -138,7 +138,7 @@ describe('AcessoComponent', () => {
       nome: 'Teste Usuário',
       sobreNome: 'Usuário',
       telefone: '(21) 9999-9999',
-      email: 'teste@teste.com',
+      email: 'user@example.com',
       senha: '!12345',
       confirmaSenha: '!12345'
     };
