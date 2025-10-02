@@ -2,6 +2,11 @@
     app-despesas-pessoais-prod:
         container_name: app-despesas-pessoais-prod
         image: alexfariakof/api-despesas-backend-netcore-img
+        logging:
+            driver: json-file
+            options:
+                max-size: "2m"
+                max-file: "1"
         build:
             context: .
             dockerfile: Despesas.Backend/Dockerfile.production        

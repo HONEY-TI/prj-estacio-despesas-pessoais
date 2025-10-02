@@ -10,7 +10,8 @@
   <ItemGroup>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+		<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+	</Content>
   </ItemGroup>
 
 	<ItemGroup>

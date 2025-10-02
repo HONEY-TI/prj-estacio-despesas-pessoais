@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     private formbuilder: FormBuilder,
     public router: Router,
     public acessoService: AcessoService,
-    public authProviderService: AuthService,
+    public authService: AuthService,
     public authProviderGoogleService: AuthGoogleService,
     public modalALert: AlertComponent) {
     this.platform.ready().then(() => {
@@ -47,11 +47,11 @@ export class LoginComponent implements OnInit {
     let login: ILogin = this.loginForm.getRawValue();
 
     this.acessoService.signIn(login).pipe(
-      map((response: IAuth) => {
-        if (response.authenticated) {
-          return { success: true, response: response };
+      map((auth: IAuth) => {
+        if (auth.authenticated) {
+          return { success: true, response: auth };
         } else {
-          return { success: false, error: response };
+          return { success: false, error: auth };
         }
       }),
       catchError((error) => {
@@ -60,12 +60,12 @@ export class LoginComponent implements OnInit {
           : 'Erro inesperado, tente novamente';
         return of({ success: false, error: errorMsg });
       })
-    ).subscribe((result: { success: boolean, response?: IAuth, error?: any }) => {
-      if (result.success) {
-        this.authProviderService.login(result.response!);
+    ).subscribe((auth: { success: boolean, response?: IAuth, error?: any }) => {
+      if (auth.success) {
+        this.authService.login(auth.response!);
         this.router.navigate(['/dashboard']);
       } else {
-        this.modalALert.open(AlertComponent, result.error, AlertType.Warning);
+        this.modalALert.open(AlertComponent, auth.error, AlertType.Warning);
       }
     });
   }
@@ -74,6 +74,7 @@ export class LoginComponent implements OnInit {
     this.authProviderGoogleService.handleGoogleLogin().subscribe({
       next: (auth: IAuth) => {
         if (auth.authenticated)
+          this.authService.login(auth);
           this.router.navigate(['/dashboard']);
       },
       error: (errorMessage: string) => {
