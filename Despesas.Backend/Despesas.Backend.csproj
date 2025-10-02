@@ -53,7 +53,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Despesas.Application\Despesas.Application.csproj" />	  
+	  <ProjectReference Include="..\Despesas.Application\Despesas.Application.csproj" />
+	  <ProjectReference Include="..\Migrations.MsSqlServer\Migrations.MsSqlServer.csproj" />
+	  <ProjectReference Include="..\Migrations.MySqlServer\Migrations.MySqlServer.csproj" />
+	  <ProjectReference Include="..\Migrations.Oracle\Migrations.Oracle.csproj" />	  
 	</ItemGroup>
 
 	<PropertyGroup>

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Despesas.Repository.Mapping.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository;
 
@@ -11,7 +12,7 @@ public sealed class RegisterContextTest
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "RegisterContext_Should_Have_DbSets").Options;
 
         // Act
-        using (var context = new RegisterContext(options, Usings.GetLogerFactory()))
+        using (var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory()))
         {
             // Assert
             Assert.NotNull(context.Acesso);
@@ -31,7 +32,7 @@ public sealed class RegisterContextTest
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "RegisterContext_Should_Apply_Configurations").Options;
 
         // Act
-        using (var context = new RegisterContext(options, Usings.GetLogerFactory()))
+        using (var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory()))
         {
             // Assert
             var model = context.Model;

@@ -9,12 +9,12 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.0" />
     <PackageReference Include="EasyCryptoSalt" Version="1.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Despesas.Domain\Despesas.Domain.csproj" />
+    <ProjectReference Include="..\Despesas.Infrastructure\Despesas.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

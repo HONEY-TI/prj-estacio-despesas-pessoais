@@ -1,4 +1,5 @@
 ﻿using __mock__.Repository;
+using Despesas.Repository.Mapping.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Repository.Persistency.Implementations.Fixtures;
 
@@ -33,7 +34,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         // Arrange
         var usuario = MockUsuario.Instance.GetUsuario();
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GetSaldo_Should_Returns_Saldo_Equal_0").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         var repository = new SaldoRepositorioImpl(context);
 
         // Act
@@ -54,7 +55,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         despesaDbSetMock.As<IQueryable<Despesa>>().Setup(d => d.Provider).Throws<Exception>();
 
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GetSaldo_Throws_Exception_When_Despesa_Execute_Where").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.Despesa = despesaDbSetMock.Object;
         context.SaveChanges();
         var repository = new SaldoRepositorioImpl(context);
@@ -76,7 +77,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         var receitaDbSetMock = new Mock<DbSet<Receita>>();
         receitaDbSetMock.As<IQueryable<Receita>>().Setup(d => d.Provider).Throws<Exception>();
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GetSaldo_Throws_Exception_When_Receita_Execute_Where").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.Receita = receitaDbSetMock.Object;
         context.SaveChanges();
         var repository = new SaldoRepositorioImpl(context);
@@ -110,7 +111,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         // Arrange
         var idUsuario = _fixture.Context.Usuario.Last().Id;
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GetSaldoByAno_Should_Returns_Saldo_Equal_0").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.Despesa.AddRange(new List<Despesa>());
         context.Receita.AddRange(new List<Receita>());
         context.SaveChanges();
@@ -132,7 +133,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         var despesaDbSetMock = new Mock<DbSet<Despesa>>();
         despesaDbSetMock.As<IQueryable<Despesa>>().Setup(d => d.Provider).Throws<Exception>();
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GetSaldoByAno_Throws_Exception_When_Despesa_Execute_Where").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.Despesa = despesaDbSetMock.Object;
         var repository = new SaldoRepositorioImpl(context);
 
@@ -153,7 +154,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         var receitaDbSetMock = new Mock<DbSet<Receita>>();
         receitaDbSetMock.As<IQueryable<Receita>>().Setup(d => d.Provider).Throws<Exception>();
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GetSaldoByAno_Throws_Exception_When_Receita_Execute_Where").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.Receita = receitaDbSetMock.Object;
         var repository = new SaldoRepositorioImpl(context);
 
@@ -186,7 +187,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         // Arrange
         var idUsuario = _fixture.Context.Usuario.First().Id;
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GetSaldoByMesAno_Should_Returns_Saldo_Equal_0").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.Despesa.AddRange(new List<Despesa>());
         context.Receita.AddRange(new List<Receita>());
         context.SaveChanges();
@@ -208,7 +209,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         var despesaDbSetMock = new Mock<DbSet<Despesa>>();
         despesaDbSetMock.As<IQueryable<Despesa>>().Setup(d => d.Provider).Throws<Exception>();
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GetSaldoByMesAno_Throws_Exception_When_Despesa_Execute_Where").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.Despesa = despesaDbSetMock.Object;
         var repository = new SaldoRepositorioImpl(context);
 
@@ -229,7 +230,7 @@ public sealed class SaldoRepositorioImplTest : IClassFixture<SaldoRepositorioFix
         var receitaDbSetMock = new Mock<DbSet<Receita>>();
         receitaDbSetMock.As<IQueryable<Receita>>().Setup(d => d.Provider).Throws<Exception>();
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GetSaldoByMesAno_Throws_Exception_When_Receita_Execute_Where").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.Receita = receitaDbSetMock.Object;
         var repository = new SaldoRepositorioImpl(context);
 

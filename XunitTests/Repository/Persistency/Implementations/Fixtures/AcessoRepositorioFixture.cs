@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using __mock__.Repository;
 using Domain.Core.ValueObject;
+using Despesas.Repository.Mapping.Abstractions;
 
 namespace Repository.Persistency.Implementations.Fixtures;
 
@@ -14,7 +15,7 @@ public sealed class AcessoRepositorioFixture : IDisposable
     public AcessoRepositorioFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "AcessoRepositorioImpl_Test").Options;
-        Context = new RegisterContext(options, Usings.GetLogerFactory());
+        Context = new RegisterContext(options, DatabaseProvider.MySql,  Usings.GetLogerFactory());
         Context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         Context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));
         Context.TipoCategoria.Add(new TipoCategoria(1));

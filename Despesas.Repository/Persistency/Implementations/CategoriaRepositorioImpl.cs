@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Repository.Abastractions;
 using System.Linq.Expressions;
 using Domain.Core.ValueObject;
+using Despesas.Infrastructure.DatabaseContexts;
 
 namespace Repository.Persistency.Implementations;
 public class CategoriaRepositorioImpl : BaseRepository<Categoria>, IRepositorio<Categoria>

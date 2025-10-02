@@ -1,4 +1,5 @@
 ﻿using __mock__.Repository;
+using Despesas.Repository.Mapping.Abstractions;
 using Domain.Core.ValueObject;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,7 @@ public sealed class DespesaFixture : IDisposable
     public DespesaFixture()
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "DespesaRepositorioImplTestDatabaseInMemory").Options;
-        Context = new RegisterContext(options, Usings.GetLogerFactory());
+        Context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         Context.Database.EnsureCreated();
 
         var acesso = MockAcesso.Instance.GetAcesso();

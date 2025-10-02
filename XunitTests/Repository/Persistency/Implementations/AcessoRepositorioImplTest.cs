@@ -1,6 +1,7 @@
 ﻿using __mock__.Entities;
 using __mock__.Repository;
 using Despesas.Infrastructure.Email;
+using Despesas.Repository.Mapping.Abstractions;
 using Domain.Core.ValueObject;
 using Microsoft.EntityFrameworkCore;
 using Repository.Persistency.Abstractions;
@@ -73,7 +74,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
         // Arrange
         var newPassword = "!12345";
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "RecoveryPassword_Should_Returns_True").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));
         context.SaveChanges();
@@ -149,7 +150,7 @@ public sealed class AcessoRepositorioImplTest : IClassFixture<AcessoRepositorioF
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Banco único por teste
             .Options;
 
-        using var context = new RegisterContext(options, Usings.GetLogerFactory());
+        using var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
 
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.Admin));
         context.PerfilUsuario.Add(new PerfilUsuario(PerfilUsuario.Perfil.User));

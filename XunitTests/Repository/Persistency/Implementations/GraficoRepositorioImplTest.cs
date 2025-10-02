@@ -1,4 +1,5 @@
 ﻿using __mock__.Repository;
+using Despesas.Repository.Mapping.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Repository.Persistency.Implementations.Fixtures;
 
@@ -41,7 +42,7 @@ public sealed class GraficoRepositorioImplTest : IClassFixture<GraficoRepositori
         despesaDbSetMock.As<IQueryable<Despesa>>().Setup(d => d.Provider).Throws<Exception>();
 
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GetDadosGraficoByAno_Throws_Exception_And_Returns_Grafico_With_Default_Values").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.Despesa = despesaDbSetMock.Object;
         context.SaveChanges();
 

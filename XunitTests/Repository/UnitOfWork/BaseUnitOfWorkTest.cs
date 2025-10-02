@@ -1,4 +1,5 @@
-﻿using Despesas.Repository.UnitOfWork.Abstractions;
+﻿using Despesas.Repository.Mapping.Abstractions;
+using Despesas.Repository.UnitOfWork.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository.UnitOfWork;
@@ -8,7 +9,7 @@ public sealed class BaseUnitOfWorkTest
     private RegisterContext GetContext(string dbName)
     {
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: dbName).Options;
-        return new RegisterContext(options, Usings.GetLogerFactory());
+        return new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
     }
 
     [Fact]

@@ -1,32 +1,22 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Despesas.Application.CommonDependenceInject;
+using Despesas.Infrastructure.DatabaseContexts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Repository;
-using Repository.CommonDependenceInject;
-using System.Reflection;
-using Microsoft.EntityFrameworkCore;
 using Migrations.DataSeeders.CommonDependenceInject;
-using Despesas.Application.CommonDependenceInject;
-
+using Migrations.MySqlServer.CommonInjectDependence;
+using Repository.CommonDependenceInject;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        string connectionString = context.Configuration.GetConnectionString("SqlConnectionString")
-              ?? throw new Exception("Connection string 'SqlConnectionString' não encontrada no appsettings.json.");
+        services.ConfigureMySqlServerMigrationsContext(context.Configuration);
 
         string environment = context.Configuration["Environment"] ?? "Production";
         Console.WriteLine($"Environment: {environment}");
-        Console.WriteLine($"Connection String: {connectionString}");
 
-        services.AddDbContext<RegisterContext>(options =>
-            options.UseMySQL(
-                connectionString,
-                builder => builder.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name)
-            )
-        );
-        
         var cryptoKey = context.Configuration["CryptoConfigurations:Key"];
         var cryptoAuthSalt = context.Configuration["CryptoConfigurations:AuthSalt"];
 
