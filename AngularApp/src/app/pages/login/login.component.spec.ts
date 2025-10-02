@@ -57,13 +57,13 @@ describe('LoginComponent Unit Tests', () => {
     const formValues = component.loginForm.getRawValue();
 
     // Assert
-    expect(formValues.email).toBe('teste@teste.com');
+    expect(formValues.email).toBe('user@example.com');
     expect(formValues.senha).toBe('12345T!');
   });
 
   it('should login successfully and navigate to dashboard', fakeAsync(() => {
     // Arrange
-    const login: ILogin = { email: 'teste@teste.com', senha: '12345T!' };
+    const login: ILogin = { email: 'user@example.com', senha: '12345T!' };
     const authResponse: IAuth = { authenticated: true, accessToken: 'token', refreshToken: 'refresh', created: '', expiration: '' };
     mockAcessoService.signIn.and.returnValue(of(authResponse));
 
@@ -80,7 +80,7 @@ describe('LoginComponent Unit Tests', () => {
 
   it('should show modal when login response is not authenticated', fakeAsync(() => {
     // Arrange
-    const login: ILogin = { email: 'teste@teste.com', senha: '12345T!' };
+    const login: ILogin = { email: 'user@example.com', senha: '12345T!' };
     const authResponse = 'Erro de autenticação';
     mockAcessoService.signIn.and.returnValue(of(authResponse));
 
@@ -95,7 +95,7 @@ describe('LoginComponent Unit Tests', () => {
 
   it('should show modal when login throws an error', fakeAsync(() => {
     // Arrange
-    const login: ILogin = { email: 'teste@teste.com', senha: '12345T!' };
+    const login: ILogin = { email: 'user@example.com', senha: '12345T!' };
     const error = { error: 'Erro inesperado' };
     mockAcessoService.signIn.and.returnValue(throwError(() => error));
 

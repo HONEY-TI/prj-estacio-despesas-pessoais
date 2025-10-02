@@ -24,7 +24,7 @@ describe('Unit Test AcessoService', () => {
     [AcessoService, HttpTestingController],
     (service: AcessoService, httpMock: HttpTestingController) => {
       const loginData: ILogin = {
-        email: 'teste@teste.com',
+        email: 'user@example.com',
         senha: 'teste',
       };
 
@@ -47,7 +47,7 @@ describe('Unit Test AcessoService', () => {
         nome: 'Teste ',
         sobreNome: 'Usuario',
         telefone: '(21) 9999-9999',
-        email: 'teste@teste.com',
+        email: 'user@example.com',
         senha: '12345',
         confirmaSenha: '12345'
       };

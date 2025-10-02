@@ -26,7 +26,7 @@ describe('Unit Test UsuarioService', () => {
 
       const mockResponse: IUsuario = {
         id: 2,
-        email: 'teste@teste.com',
+        email: 'user@example.com',
         nome: 'Teste Usaurio',
         sobreNome: 'Teste',
         telefone: '(21) 9999-9999'
@@ -50,7 +50,7 @@ describe('Unit Test UsuarioService', () => {
     (service: UsuarioService, httpMock: HttpTestingController) => {
       const usuario: IUsuario = {
         id: 1,
-        email: 'teste@teste.com',
+        email: 'user@example.com',
         nome: 'Teste Usaurio',
         sobreNome: 'Teste',
         telefone: '(21) 9999-9999'
@@ -75,7 +75,7 @@ describe('Unit Test UsuarioService', () => {
     (service: UsuarioService, httpMock: HttpTestingController) => {
       const usuario: IUsuario = {
         id: 1,
-        email: 'teste@teste.com',
+        email: 'user@example.com',
         nome: 'Teste Usaurio',
         sobreNome: 'Teste',
         telefone: '(21) 9999-9999'
@@ -101,7 +101,7 @@ describe('Unit Test UsuarioService', () => {
     (service: UsuarioService, httpMock: HttpTestingController) => {
       const usuario: IUsuario = {
         id: 4,
-        email: 'teste@teste.com',
+        email: 'user@example.com',
         nome: 'Teste Usaurio',
         sobreNome: 'Teste',
         telefone: '(21) 9999-9999'
