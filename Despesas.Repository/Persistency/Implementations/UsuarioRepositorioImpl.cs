@@ -1,4 +1,5 @@
-﻿using Domain.Core.ValueObject;
+﻿using Despesas.Infrastructure.DatabaseContexts;
+using Domain.Core.ValueObject;
 using Domain.Entities;
 using EasyCryptoSalt;
 using Microsoft.EntityFrameworkCore;

@@ -1,8 +1,6 @@
 ﻿import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { MenuService } from "../../services/utils/menu-service/menu.service";
-import { AuthService } from "../../services/auth/auth.service";
-import { ImagemPerfilService } from "../../services/api";
+import { AuthService, MenuService,  ImagemPerfilService } from "../../services";
 
 @Component({
   selector: 'app-layout',
@@ -17,18 +15,17 @@ export class LayoutComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     public menuService: MenuService,
-    private imagemPerfilService: ImagemPerfilService
-  ) { }
+    private imagemPerfilService: ImagemPerfilService) { }
 
-  private initialize = (): void => {
+  public initialize = (): void => {
     this.imagemPerfilService.getImagemPerfilUsuario()
       .subscribe({
         next: (response: ArrayBuffer) => {
-          if (!response || response.byteLength === 0) {
-            this.urlPerfilImage = '../../../../assets/perfil_static.png'; // usa padrão
-          } else {
+          if (response && response.byteLength > 0 && response.byteLength > 1) {
             const blob = new Blob([response], { type: 'image/png' });
             this.urlPerfilImage = URL.createObjectURL(blob);
+          } else {
+            this.urlPerfilImage = '../../../../assets/perfil_static.png';
           }
         },
         error: () => {
@@ -37,12 +34,12 @@ export class LayoutComponent implements OnInit {
       });
   }
   
-  protected selectMenu(menu: number) {
-    this.menuService.selectMenu(menu, this.router);
+  public selectMenu(menu: number) {
+    this.menuService.setMenuSelecionado(menu);
   }
 
-  protected onLogoutClick() {
-    this.authService.clearSessionStorage();
+  public onLogoutClick() {
+    this.authService.logout();
     this.router.navigate(['/']);
   }
 

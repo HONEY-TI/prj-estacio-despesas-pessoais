@@ -1,4 +1,6 @@
-﻿using Domain.Entities;
+﻿using Despesas.Infrastructure.DatabaseContexts;
+using Domain.Core.ValueObject;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repository.Persistency.Abstractions;
 using System.Collections.Immutable;
@@ -20,7 +22,7 @@ public class LancamentoRepositorioImpl : ILancamentoRepositorio
         var despesas = await Context.Despesa
             .Include(d => d.Categoria)
             .Include(tc => tc.Categoria.TipoCategoria)
-            .Where(d => d.Data.Month == mes && d.Data.Year == ano && d.UsuarioId == idUsuario)
+            .Where(d => d.Data.Month == mes && d.Data.Year == ano && d.UsuarioId == idUsuario && d.Categoria.TipoCategoria.Id == (int)TipoCategoria.CategoriaType.Despesa)
             .Select(d => new Lancamento
             {
                 Id = d.Id,
@@ -40,7 +42,7 @@ public class LancamentoRepositorioImpl : ILancamentoRepositorio
         var receitas = await Context.Receita
             .Include(r => r.Categoria)
             .Include(tc => tc.Categoria.TipoCategoria)
-            .Where(r => r.Data.Month == mes && r.Data.Year == ano && r.UsuarioId == idUsuario)
+            .Where(r => r.Data.Month == mes && r.Data.Year == ano && r.UsuarioId == idUsuario && r.Categoria.TipoCategoria.Id == (int)TipoCategoria.CategoriaType.Receita)
             .Select(r => new Lancamento
             {
                 Id = r.Id,

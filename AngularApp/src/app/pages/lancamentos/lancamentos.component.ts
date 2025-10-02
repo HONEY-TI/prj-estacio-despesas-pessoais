@@ -3,8 +3,7 @@ import dayjs from "dayjs";
 import { BarraFerramentaComponent, DataTableComponent, AlertComponent, ModalFormComponent, ModalConfirmComponent, AlertType } from "../../components";
 import { LancamentoDataSet, LancamentoColumns } from "../../models/datatable-config/lancamentos";
 import { ILancamento, Action } from "../../models";
-import { MenuService, FilterMesAnoService } from "../../services";
-import { LancamentoService } from "../../services/api";
+import { MenuService, FilterMesAnoService, LancamentoService } from "../../services";
 import { DespesasFormComponent } from "../despesas/despesas-form/despesas.form.component";
 import { ReceitasFormComponent } from "../receitas/receitas-form/receitas.form.component";
 
@@ -36,7 +35,7 @@ export class LancamentosComponent implements OnInit {
     this.initializeDataTable();
   }
 
-  private initializeDataTable = () => {
+  public initializeDataTable = () => {
     this.lancamentoservice.getLancamentosByMesAno(dayjs(this.filterMesAnoService.dataMesAno))
       .subscribe({
         next: (response: ILancamento[]) => {
@@ -53,7 +52,7 @@ export class LancamentosComponent implements OnInit {
       });
   }
 
-  private updateDatatable = () => {
+  public updateDatatable = () => {
     this.lancamentoservice.getLancamentosByMesAno(dayjs(this.filterMesAnoService.dataMesAno))
       .subscribe({
         next: (response: ILancamento[]) => {

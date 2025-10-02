@@ -19,6 +19,6 @@ public sealed class DataSeedersDependenceInjectTests
         DataSeedersDependenceInject.RunDataSeeders(serviceProvider);
 
         // Assert
-        dataSeederMock.Verify(ds => ds.SeedData(), Times.Once);
+        dataSeederMock.Verify(ds => ds.Insert(), Times.Once);
     }
 }

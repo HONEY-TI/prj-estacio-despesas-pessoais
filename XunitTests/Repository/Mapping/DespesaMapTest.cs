@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Despesas.Repository.Mapping;
+using Despesas.Repository.Mapping.Abstractions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace Repository.Mapping;
@@ -10,10 +12,10 @@ public sealed class DespesaMapTest
         // Arrange
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "DespesaMapTest").Options;
 
-        using (var context = new RegisterContext(options, Usings.GetLogerFactory()))
+        using (var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory()))
         {
             var builder = new ModelBuilder(new ConventionSet());
-            var configuration = new DespesaMap();
+            var configuration = new DespesaMap(DatabaseProvider.MySql);
 
             configuration.Configure(builder.Entity<Despesa>());
 

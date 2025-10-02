@@ -4,20 +4,20 @@ import { Router } from "@angular/router";
 import { map, catchError } from "rxjs";
 import { AlertComponent, AlertType } from "../../components";
 import { IAcesso } from "../../models";
-import { AcessoService } from "../../services/api";
+import { AcessoService } from "../../services";
 import { CustomValidators } from "../validators";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
 import { CommonModule } from "@angular/common";
 import { MatIconModule } from "@angular/material/icon";
+import { FooterComponent } from "../../components/footer/footer.component";
 
 @Component({
   selector: 'app-acesso',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,  FormsModule, MatIconModule, MatFormFieldModule, MatInputModule ],
+  imports: [CommonModule, ReactiveFormsModule,  FormsModule, MatIconModule, MatFormFieldModule, MatInputModule, FooterComponent ],
   templateUrl: './acesso.component.html',
   styleUrls: ['./acesso.component.scss'],
-
+  standalone: true
 })
 
 export class AcessoComponent  implements OnInit {

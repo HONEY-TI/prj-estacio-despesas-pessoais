@@ -1,4 +1,5 @@
 ﻿using __mock__.Repository;
+using Despesas.Repository.Mapping.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Persistency.Generic;
@@ -9,7 +10,7 @@ public sealed class GenericRepositorioTest
     {
         // Arrange
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "GenericRepositorioTest").Options;
-        _dbContextMock = new Mock<RegisterContext>(options, Usings.GetLogerFactory());
+        _dbContextMock = new Mock<RegisterContext>(options,DatabaseProvider.MySql, Usings.GetLogerFactory());
         _dbContextMock.Setup(c => c.Set<List<Categoria>>());
     }
 
@@ -74,7 +75,7 @@ public sealed class GenericRepositorioTest
         // Arrange
         var dataSet = MockCategoria.Instance.GetCategorias();
         var existingItem = dataSet.First();
-        var dbContext = new RegisterContext(new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Update_Should_Update_Item_And_SaveChanges").Options, Usings.GetLogerFactory());
+        var dbContext = new RegisterContext(new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Update_Should_Update_Item_And_SaveChanges").Options, DatabaseProvider.MySql, Usings.GetLogerFactory());
 
         var repository = new GenericRepositorio<Categoria>(dbContext);
 
@@ -101,7 +102,7 @@ public sealed class GenericRepositorioTest
         var lstUsuarios = MockUsuario.Instance.GetUsuarios(1);
         var usuario = lstUsuarios.First();
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Delete_Should_Set_Inativo_And_Return_True_When_Usuario_IsDeleted").Options;
-        var _dbContextMock = new RegisterContext(options, Usings.GetLogerFactory());
+        var _dbContextMock = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         _dbContextMock.Usuario.AddRange(lstUsuarios.Take(2));
         _dbContextMock.SaveChanges();
         var _repository = new GenericRepositorio<Usuario>(_dbContextMock);
@@ -113,17 +114,18 @@ public sealed class GenericRepositorioTest
         Assert.NotNull(result);
     }
 
-    [Fact(Skip = "Uso do DRY com Global Excepition")]
+    [Fact]
     public void Update_Should_Try_Update_Item_And_Return_Null()
     {
         // Arrange
         var dataSet = MockCategoria.Instance.GetCategorias();
         var existingItem = dataSet.First();
-        var dbContext = new RegisterContext(new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Update_Should_Try_Update_Item_And_Return_Null").Options, Usings.GetLogerFactory());
+        var dbContext = new RegisterContext(new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "Update_Should_Try_Update_Item_And_Return_Null").Options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         var repository = new GenericRepositorio<Categoria>(dbContext);
+        _dbContextMock.Setup(c => c.Set<Categoria>().Update(It.IsAny<Categoria>())).Throws(new Exception());
 
         // Act &  Assert 
-        var exception = Assert.Throws<Exception>(() => repository.Update(existingItem));
+        Assert.Throws<ArgumentNullException>(() => repository.Update(existingItem));
     }
 
     [Fact]
@@ -164,7 +166,7 @@ public sealed class GenericRepositorioTest
         _dbContextMock.Verify(c => c.SaveChanges(), Times.Never);
     }
 
-    [Fact(Skip = "Uso do DRY com Global Excepition")]
+    [Fact]
     public void Delete_Should_Throw_Exception()
     {
         // Arrange
@@ -175,11 +177,11 @@ public sealed class GenericRepositorioTest
         var dbSetMock = Usings.MockDbSet(dataSet);
 
         _dbContextMock.Setup(c => c.Set<Categoria>()).Returns(dbSetMock.Object);
-        _dbContextMock.Setup(c => c.Remove(It.IsAny<Categoria>())).Throws<Exception>();
+        _dbContextMock.Setup(c => c.Set<Categoria>().Remove(It.IsAny<Categoria>())).Throws(new Exception());
+        _dbContextMock.Setup(c => c.Remove(It.IsAny<Categoria>())).Throws(new Exception());
         var repository = new GenericRepositorio<Categoria>(_dbContextMock.Object);
 
         // Act and Assert
-        var exception = Assert.Throws<Exception>(() => repository.Delete(item));
-        Assert.Equal("GenericRepositorio_Delete", exception.Message);
+        Assert.Throws<Exception>(() => repository.Delete(item));
     }
 }

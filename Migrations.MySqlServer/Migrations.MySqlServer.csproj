@@ -8,13 +8,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="App.config">
+		<Content Include="appsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 		<PackageReference Include="EasyCryptoSalt" Version="1.0.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
@@ -28,12 +27,11 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
-
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Despesas.Application\Despesas.Application.csproj" />
+		<ProjectReference Include="..\Despesas.Infrastructure\Despesas.Infrastructure.csproj" />
 		<ProjectReference Include="..\Despesas.Repository\Despesas.Repository.csproj" />
 		<ProjectReference Include="..\Migrations.DataSeeders\Migrations.DataSeeders.csproj" />
 	</ItemGroup>

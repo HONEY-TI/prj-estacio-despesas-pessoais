@@ -1,28 +1,42 @@
-﻿using Repository;
-using EasyCryptoSalt;
+﻿using Migrations.DataSeeders.Abstractions;
 
 namespace Migrations.DataSeeders.Implementations;
 
 public class DataSeeder : IDataSeeder
 {
-    private readonly ICrypto _crypto;
+    private readonly IEnumerable<ISeeder> _seeders;
+    private readonly IEnumerable<IUpdater> _updaters;
+    private readonly IDatabaseMaintenance _dbMaintenance;
 
-    private readonly RegisterContext _context;
-    public DataSeeder(RegisterContext context, ICrypto crypto)
+    public DataSeeder(
+        IEnumerable<ISeeder> seeders,
+        IEnumerable<IUpdater> updaters,
+        IDatabaseMaintenance dbMaintenance)
     {
-        _context = context;
-        _crypto = crypto;
+        _seeders = seeders;
+        _updaters = updaters;
+        _dbMaintenance = dbMaintenance;
     }
 
-    public void SeedData()
+    public void Insert()
     {
-        try
-        {
+        foreach (var seeder in _seeders)
+            seeder.Seed();
+    }
 
-            new DataSeederAcesso(_context, _crypto).SeedData();
-            new DataSeederDespesa(_context).SeedData();
-            new DataSeederReceita(_context).SeedData();
-        }
-        catch { throw; }
+    public void Update()
+    {
+        foreach (var updater in _updaters)
+            updater.Update();
+    }
+
+    public void BackupDatabase()
+    {
+        _dbMaintenance.Backup();
+    }
+
+    public void RestoreDatabase(string file)
+    {
+        _dbMaintenance.Restore(file);
     }
 }

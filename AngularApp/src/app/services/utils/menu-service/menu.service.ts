@@ -1,100 +1,38 @@
+import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { CategoriaStrategy, ConfiguracoesStrategy, DespesaStrategy, HomeStrategy, InvalidStrategy, LancamentoStrategy, MenuStrategy, PerfilStrategy, ReceitaStrategy } from "./menu-strategy";
+import { DashboardStrategy } from "./menu-strategy/dashboard/dashboard.strategy";
+
+@Injectable({
+  providedIn: 'root',
+})
 
 export class MenuService {
-    constructor() { }
+  menuSelecionado: number = 0;
+  menu: string = '';
+  private strategies: Map<number, MenuStrategy>;
+  private invalidStrategy = new InvalidStrategy();
 
-    menuSelecionado: number = 0;
-    menu: string = '';
-
-    selectMenu(menu: number, router : Router) {
-      switch (menu) {
-          case 0:
-            router.navigate(['/login']);
-            break;
-
-          case 1:
-              router.navigate(['/dashboard']);
-              this.menu = "Home";
-              break;
-
-          case 2:
-              router.navigate(['/categoria']);
-              this.menu = "Categorias";
-              break;
-
-          case 3:
-              router.navigate(['/despesa']);
-              this.menu = "Despesas";
-              break;
-
-          case 4:
-              router.navigate(['/receita']);
-              this.menu = "Receitas";
-              break;
-
-          case 5:
-              router.navigate(['/lancamento']);
-              this.menu = "Lançamentos";
-              break;
-
-          case 6:
-              router.navigate(['/perfil']);
-              this.menu = "Perfil";
-              break;
-
-          case 7:
-              router.navigate(['/configuracoes']);
-              this.menu = "Configurações";
-              break;
-
-          default:
-              router.navigate(['/dashboard']);
-              break;
-      }
-
-      this.menuSelecionado = menu;
+  constructor(private router: Router) {    
+    this.strategies = new Map([
+      [0, new HomeStrategy()],
+      [1, new DashboardStrategy()],
+      [2, new CategoriaStrategy()],
+      [3, new DespesaStrategy()],
+      [4, new ReceitaStrategy()],
+      [5, new LancamentoStrategy()],
+      [6, new PerfilStrategy()],
+      [7, new ConfiguracoesStrategy()]
+    ]);
   }
 
+  setMenuSelecionado(menu: number): void {
+    const strategy = this.strategies.get(menu) ?? this.invalidStrategy;
 
-  setMenuSelecionado(menu: number) {
-    switch (menu) {
-        case 0:
-          break;
-
-        case 1:
-            this.menu = "Home";
-            break;
-
-        case 2:
-            this.menu = "Categorias";
-            break;
-
-        case 3:
-            this.menu = "Despesas";
-            break;
-
-        case 4:
-            this.menu = "Receitas";
-            break;
-
-        case 5:
-            this.menu = "Lançamentos";
-            break;
-
-        case 6:
-            this.menu = "Perfil";
-            break;
-
-        case 7:
-            this.menu = "Configurações";
-            break;
-
-        default:
-            break;
+    if (strategy) {
+      this.menu = strategy.setMenuName();
+      this.menuSelecionado = menu;
+      strategy.navigate(this.router);
     }
-
-    this.menuSelecionado = menu;
-}
-
-
+  }
 }

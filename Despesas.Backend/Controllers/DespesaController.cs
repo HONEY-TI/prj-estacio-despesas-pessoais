@@ -1,5 +1,6 @@
 ﻿using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
+using Despesas.GlobalException.CustomExceptions.Core;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,17 +22,7 @@ public class DespesaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Get()
     {
-        try
-        {
-            return Ok(await _despesaBusiness.FindAll(UserIdentity));
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return Ok(new List<DespesaDto>());
-        }
+        return Ok(await _despesaBusiness.FindAll(UserIdentity));
     }
 
     [HttpGet("GetById/{id}")]
@@ -42,18 +33,9 @@ public class DespesaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Get([FromRoute] Guid id)
     {
-        try
-        {
-            var _despesa = await _despesaBusiness.FindById(id, UserIdentity) ?? throw new ArgumentException("Nenhuma despesa foi encontrada.");
-            return Ok(_despesa);
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Não foi possível realizar a consulta da despesa.");
-        }
+        var despesa = await _despesaBusiness.FindById(id, UserIdentity) 
+            ?? throw new CustomException("Nenhuma despesa foi encontrada.");
+        return Ok(despesa);
     }
 
     [HttpPost]
@@ -64,18 +46,10 @@ public class DespesaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Post([FromBody] DespesaDto despesa)
     {
-        try
-        {
-            despesa.UsuarioId = UserIdentity;
-            return Ok(await _despesaBusiness.Create(despesa));
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Não foi possível realizar o cadastro da despesa.");
-        }
+        despesa.UsuarioId = UserIdentity;
+        despesa = await _despesaBusiness.Create(despesa)
+            ?? throw new CustomException("Não foi possível realizar o cadastro da despesa.");
+        return Ok(despesa);
     }
 
     [HttpPut]
@@ -86,19 +60,10 @@ public class DespesaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Put([FromBody] DespesaDto despesa)
     {
-        try
-        {
-            despesa.UsuarioId = UserIdentity;
-            var updateDespesa = await _despesaBusiness.Update(despesa) ?? throw new();
-            return Ok(updateDespesa);
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Não foi possível atualizar o cadastro da despesa.");
-        }
+        despesa.UsuarioId = UserIdentity;
+        despesa = await _despesaBusiness.Update(despesa) 
+            ?? throw new CustomException("Não foi possível atualizar o cadastro da despesa.");
+        return Ok(despesa);
     }
 
     [HttpDelete("{idDespesa}")]
@@ -109,20 +74,12 @@ public class DespesaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Delete(Guid idDespesa)
     {
-        try
+        var despesa = new DespesaDto
         {
-            DespesaDto despesa = await _despesaBusiness.FindById(idDespesa, UserIdentity);
-            if (despesa == null || UserIdentity != despesa.UsuarioId)
-                throw new ArgumentException("Usuário não permitido a realizar operação!");
+            Id = idDespesa,
+            UsuarioId = UserIdentity
+        };
 
-            return await _despesaBusiness.Delete(despesa) ? Ok(true) : throw new();
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Erro ao excluir Despesa!");
-        }
-    }
+        return await _despesaBusiness.Delete(despesa) ? Ok(true) : BadRequest("Erro ao excluir Despesa!");
+   }
 }

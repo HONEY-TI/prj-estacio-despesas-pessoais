@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Despesas.Infrastructure.DatabaseContexts;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Repository.Persistency.Abstractions;
 using System.Linq.Expressions;

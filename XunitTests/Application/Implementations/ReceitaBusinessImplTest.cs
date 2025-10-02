@@ -3,6 +3,7 @@ using AutoMapper;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Profile;
 using Despesas.Application.Implementations;
+using Despesas.GlobalException.CustomExceptions;
 using Despesas.Repository.UnitOfWork.Abstractions;
 using Repository.Persistency.Generic;
 using System.Linq.Expressions;
@@ -167,6 +168,6 @@ public sealed class ReceitaBusinessImplTest
         _unitOfWorkCategoria.Setup(repo => repo.Repository.Get(It.IsAny<Guid>())).ReturnsAsync((Categoria)null);
 
         // Act & Assert 
-        await Assert.ThrowsAsync<ArgumentException>(() => _receitaBusiness.Create(receitaDto));    
+        await Assert.ThrowsAsync<CategoriaUsuarioInvalidaException>(async () => await _receitaBusiness.Create(receitaDto));    
     }
 }

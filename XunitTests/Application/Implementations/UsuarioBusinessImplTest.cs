@@ -3,6 +3,7 @@ using AutoMapper;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Profile;
 using Despesas.Application.Implementations;
+using Despesas.GlobalException.CustomExceptions.Core;
 using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.ValueObject;
 using Domain.Entities;
@@ -174,9 +175,8 @@ public sealed class UsuarioBusinessImplTest
         _repositorioMock.Setup(repo => repo.Delete(It.IsAny<Usuario>())).Verifiable();
 
         // Act & Assert 
-        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _usuarioBusiness.Delete(usuarioDto));
+        var exception = await Assert.ThrowsAsync<UsuarioNaoAutorizadoException>(() => _usuarioBusiness.Delete(usuarioDto));
         Assert.Equal("Usuário não permitido a realizar operação!", exception.Message);
-
         _repositorioMock.Verify(repo => repo.Delete(It.IsAny<Usuario>()), Times.Never);
         _unitOfWork.Verify(uow => uow.Repository.Get(It.IsAny<Guid>()), Times.Once);
     }

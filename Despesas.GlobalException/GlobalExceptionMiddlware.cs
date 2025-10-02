@@ -1,5 +1,4 @@
-﻿using Despesas.GlobalException.CustomExceptions.Acesso;
-using Despesas.GlobalException.CustomExceptions.Core;
+﻿using Despesas.GlobalException.CustomExceptions.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
@@ -24,7 +23,7 @@ public class GlobalExceptionMiddleware
         {
             await _next(context);
         }
-        catch (AcessoException ex)
+        catch (CustomException ex)
         {
             await HandleExceptionAsync(context, ex.StatusCode, ex.Message);
         }

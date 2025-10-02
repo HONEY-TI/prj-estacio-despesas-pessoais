@@ -30,6 +30,9 @@
     "files.eol": "\n",
     "[html]": {
       "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    "[scss]": {
+      "editor.defaultFormatter": "HookyQR.beautify"
     }
   },
   "launch": {

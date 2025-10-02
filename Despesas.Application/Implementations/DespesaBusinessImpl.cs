@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
+using Despesas.GlobalException.CustomExceptions;
+using Despesas.GlobalException.CustomExceptions.Core;
 using Despesas.Repository.UnitOfWork.Abstractions;
 using Domain.Core.ValueObject;
 using Domain.Entities;
@@ -20,6 +22,24 @@ public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusinessBas
         _unitOfWorkCategoria =  unitOfWorkCategoria;
     }
 
+    private async Task IsValidDespesa(Despesa dto)
+    {
+        var despesa = await UnitOfWork!.Repository.Get(dto.Id);
+        if (despesa == null || despesa.UsuarioId != dto.UsuarioId)
+            throw new DespesaUsuarioInvalidaException();
+    }
+
+    private async Task IsValidCategoria(Despesa dto)
+    {
+        var categoria = await _unitOfWorkCategoria.Repository.Get(dto.CategoriaId);
+        if (categoria == null
+            || categoria.UsuarioId != dto.UsuarioId
+            || categoria == null
+            || categoria.TipoCategoria != TipoCategoria.CategoriaType.Despesa
+            || categoria.Id != dto.CategoriaId)
+            throw new CategoriaUsuarioInvalidaException();
+    }
+
     public override async Task<Dto> Create(Dto dto)
     {
         var despesa = _mapper.Map<Despesa>(dto);
@@ -27,12 +47,14 @@ public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusinessBas
         await UnitOfWork.Repository.Insert(despesa);
         await UnitOfWork.CommitAsync();
         despesa = await UnitOfWork.Repository.Get(despesa.Id);
+        if (despesa is null)
+            throw new CustomException("Não foi possível realizar o cadastro da despesa.");
         return _mapper.Map<Dto>(despesa);
     }
 
     public override async Task<List<Dto>> FindAll(Guid idUsuario)
     {
-        var result = await UnitOfWork.Repository.Find(repo => repo.UsuarioId == idUsuario);
+        var result = await UnitOfWork.Repository.Find(repo => repo.UsuarioId == idUsuario && repo.Categoria.TipoCategoria.Id == (int)TipoCategoria.CategoriaType.Despesa);
         var despesas = result.ToList();
         var dtos = _mapper.Map<List<Dto>>(despesas);
         return dtos;
@@ -40,8 +62,9 @@ public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusinessBas
 
     public override async Task<Dto> FindById(Guid id, Guid idUsuario)
     {
-        var despesa = await UnitOfWork.Repository.Get(id);
-        if (despesa is null) return null;
+        var result = await UnitOfWork.Repository.Find(d => d.Id == id && d.UsuarioId == idUsuario);
+        if (result is null) return null;
+        var despesa = result.FirstOrDefault();        
         despesa.UsuarioId = idUsuario;
         await IsValidDespesa(despesa);
         var despesaDto = _mapper.Map<Dto>(despesa);
@@ -55,34 +78,20 @@ public class DespesaBusinessImpl<Dto> : BusinessBase<Dto, Despesa>, IBusinessBas
         await IsValidCategoria(despesa);
         await UnitOfWork.Repository.Update(despesa);
         await UnitOfWork.CommitAsync();
-        despesa = await UnitOfWork.Repository.Get(dto.Id.Value);
+        despesa = await UnitOfWork.Repository.Get(dto.Id.Value) 
+            ?? throw new CustomException("Não foi possível atualizar o cadastro da despesa.");
         return _mapper.Map<Dto>(despesa);
     }
 
     public override async Task<bool> Delete(Dto dto)
     {
-        Despesa despesa = _mapper.Map<Despesa>(dto);
+        var result = await UnitOfWork.Repository.Find(d => d.Id == dto.Id && d.UsuarioId == dto.UsuarioId);
+        if (result is null)
+            throw new UsuarioNaoAutorizadoException();
+        var despesa = result.FirstOrDefault();
         await IsValidDespesa(despesa);
         await UnitOfWork.Repository.Delete(despesa.Id);
         await UnitOfWork.CommitAsync();
         return true;
-    }
-
-    private async Task IsValidCategoria(Despesa dto)
-    {
-        var categoria = await _unitOfWorkCategoria.Repository.Get(dto.CategoriaId);
-        if (categoria == null 
-            || categoria.UsuarioId != dto.UsuarioId 
-            || categoria == null 
-            || categoria.TipoCategoria != TipoCategoria.CategoriaType.Despesa 
-            || categoria.Id != dto.CategoriaId) 
-            throw new ArgumentException("Categoria inválida para este usuário!");
-    }
-
-    private async Task IsValidDespesa(Despesa dto)
-    {
-        var despesa = await UnitOfWork!.Repository.Get(dto.Id);
-        if (despesa == null || despesa.UsuarioId != dto.UsuarioId)
-            throw new ArgumentException("Despesa inválida para este usuário!");
     }
 }

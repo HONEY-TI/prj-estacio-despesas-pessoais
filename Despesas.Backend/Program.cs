@@ -1,106 +1,101 @@
 ﻿using CrossCutting.CommonDependenceInject;
 using Despesas.Application.CommonDependenceInject;
 using Despesas.Backend.CommonDependenceInject;
-using Despesas.Infrastructure.CommonDependenceInject;
-using Microsoft.EntityFrameworkCore;
-using Repository;
-using Repository.CommonDependenceInject;
 using Despesas.GlobalException.CommonDependenceInject;
+using Despesas.Infrastructure.CommonDependenceInject;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Repository.CommonDependenceInject;
+using Migrations.Oracle.CommonInjectDependence;
+using Migrations.MsSqlServer.CommonInjectDependence;
+using Migrations.MySqlServer.CommonInjectDependence;
 
 var builder = WebApplication.CreateBuilder(args);
+// -------------------- Configuração de CORS --------------------
+// Define as origens permitidas para requisições cross-origin
+builder.AddCORSConfigurations();
 
-// Add Cors Configurations 
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins(
-            "https://alexfariakof.com",
-            "https://alexfariakof.com:42535",
-            "https://localhost", 
-            "https://localhost:42535",
-            "https://localhost:4200",            
-            "https://127.0.0.1",
-            "https://127.0.0.1:4200",
-            "https://127.0.0.1:42535",
-            "https://accounts.google.com")
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .AllowCredentials();
-    });
-});
+// -------------------- Configuração de Routing e Controllers --------------------
+builder.Services.AddRouting(options => options.LowercaseUrls = true); // URLs em minúsculo
+builder.Services.AddControllers(); // Registra controllers
+builder.Services.AddSwaggerApiVersioning(); // Swagger + versionamento de API
 
-builder.Services.AddRouting(options => options.LowercaseUrls = true);
-builder.Services.AddControllers();
-builder.Services.AddSwaggerApiVersioning();
+// -------------------- Configuração do DbContext Oralce --------------------
+//builder.Services.ConfigureOracleServerMigrationsContext(builder.Configuration);
+
+// -------------------- Configuração do DbContext Sql Server  --------------------
+//builder.Services.ConfigureMsSqlServerMigrationsContext(builder.Configuration);
+
+// -------------------- Configuração do DbContext MySql Server  --------------------
+builder.Services.ConfigureMySqlServerMigrationsContext(builder.Configuration);
 
 
-if (builder.Environment.IsStaging() || builder.Environment.IsDevelopment())
-{
-    builder.Services.AddDbContext<RegisterContext>(options => options
-    .UseLazyLoadingProxies()
-    .UseMySQL(builder.Configuration.GetConnectionString("Dev.SqlConnectionString") ?? 
-        throw new NullReferenceException("SqlConnectionString not defined.")));
-}
-else
-{
-    builder.Services.AddDbContext<RegisterContext>(options => options
-    .UseMySQL(builder.Configuration.GetConnectionString("SqlConnectionString") ?? 
-        throw new NullReferenceException("SqlConnectionString not defined.")));
-}
+// -------------------- Configurações de Segurança --------------------
+builder.AddSigningConfigurations(); // Configura assinaturas JWT
+builder.AddAuthenticationConfigurations(); // Configura autenticação
 
-//Add SigningConfigurations
-builder.AddSigningConfigurations();
-
-// Add AuthConfigurations
-builder.AddAuthenticationConfigurations();
-
-// Add Cryptography Configurations
+// -------------------- Configurações de Criptografia --------------------
 builder.Services.AddServicesCryptography(builder.Configuration);
 
-// Add CommonDependencesInject 
-builder.Services.AddAutoMapper();
-builder.Services.AddAmazonS3BucketConfigurations(builder.Configuration);
-builder.Services.AddRepositories();
-builder.Services.AddServices();
-builder.Services.AddCrossCuttingConfiguration();
+// -------------------- Injeção de Dependências --------------------
+builder.Services.AddAutoMapper(); // AutoMapper
+builder.Services.AddAmazonS3BucketConfigurations(builder.Configuration); // Configuração S3
+builder.Services.AddRepositories(); // Repositórios
+builder.Services.AddServices(); // Serviços da aplicação
+builder.Services.AddCrossCuttingConfiguration(); // Cross-cutting concerns
 
-if (builder.Environment.IsStaging())
-{
-    builder.WebHost.UseUrls("https://0.0.0.0:42535", "http://0.0.0.0:42536");
-}
+// -------------------- Logging --------------------
+// Remove todos os providers (Console, Debug, EventLog) em Staging ou Production
+if (builder.Environment.IsProduction() || builder.Environment.IsStaging())
+    builder.Logging.ClearProviders();
+
+// -------------------- Health Checks --------------------
+builder.AddHealthCheckConfigurations();
+
 
 var app = builder.Build();
 
-//Configure Global Execeptions
-app.UseGlobalExceptionHandler();
+// -------------------- Middleware --------------------
+app.UseGlobalExceptionHandler(); // Tratamento global de exceções
+app.UseHsts(); // HTTPS Strict Transport Security
+app.UseHttpsRedirection(); // Redireciona HTTP para HTTPS
+app.AddSupporteCulturesPtBr(); // Suporte a culturas PT-BR
+app.UseCors(); // Ativa CORS
 
-// Configure the HTTP request pipeline
-app.UseHsts();
+if (!app.Environment.IsProduction()) 
+    app.AddSwaggerUIApiVersioning(); // Swagger UI apenas para ambientes que não sejam produção 
 
-app.UseHttpsRedirection();
+app.UseDefaultFiles(); // Suporte a arquivos default (index.html)
+app.UseStaticFiles(); // Servir arquivos estáticos
+app.UseRouting(); // Habilita roteamento
+app.UseCertificateForwarding(); // Forward de certificados
+app.UseAuthentication(); // Autenticação
+app.UseAuthorization(); // Autorização
 
-app.AddSupporteCulturesPtBr();
-app.UseDefaultFiles();
-app.UseStaticFiles();
-app.UseCors();
+// -------------------- Endpoints --------------------
+app.MapHealthChecks("/health"); // Endpoint de health check
+app.MapControllers(); // Mapeia controllers
+app.MapFallbackToFile("index.html"); // Fallback para SPA
 
-app.AddSwaggerUIApiVersioning();
 
-app.UseRouting()
-    .UseAuthentication()
-    .UseAuthorization()
-    .UseCertificateForwarding()
-    .UseEndpoints(endpoints =>
-    {
-        endpoints.MapControllers();
-        endpoints.MapFallbackToFile("index.html");
-    });
-
-if (app.Environment.IsStaging())
+// -------------------- Configuração de URLs para Staging & Development -------------------- i
+if (app.Environment.IsStaging() || app.Environment.IsDevelopment())
 {
-    app.Urls.Add("https://0.0.0.0:42535");
-    app.Urls.Add("http://0.0.0.0:42536");
+    app.Urls.Add("https://0.0.0.0:42535"); app.Urls.Add("http://0.0.0.0:42536");
 }
 
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+{
+    app.UseHealthChecks("/health", new HealthCheckOptions
+    {
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse // necessário para a UI
+    });
+
+    app.UseHealthChecksUI(options =>
+    {
+        options.UIPath = "/health-ui"; // URL para acessar a interface
+    });
+}
+
+// -------------------- Executa aplicação --------------------
 app.Run();

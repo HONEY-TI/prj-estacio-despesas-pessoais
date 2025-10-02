@@ -1,6 +1,6 @@
-﻿using Domain.Entities;
+﻿using Despesas.Infrastructure.DatabaseContexts;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Repository.Abastractions;
 using Repository.Persistency.Generic;
 using System.Linq.Expressions;

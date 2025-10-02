@@ -42,9 +42,9 @@ public sealed class AcessoControllerTest
     {
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
         _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>()))
-            .ThrowsAsync(new AcessoException("Não foi possível realizar o cadastro.", 400));
+            .ThrowsAsync(new CustomException("Não foi possível realizar o cadastro.", 400));
 
-        var result = await Assert.ThrowsAsync<AcessoException>(() => _acessoController.Post(acessoDto));
+        var result = await Assert.ThrowsAsync<CustomException>(() => _acessoController.Post(acessoDto));
         Assert.Equal("Não foi possível realizar o cadastro.", result.Message);
     }
 
@@ -113,9 +113,9 @@ public sealed class AcessoControllerTest
         var acessoDto = AcessoFaker.Instance.GetNewFakerVM();
         acessoDto.ConfirmaSenha = "senhaErrada";
         _mockAcessoBusiness.Setup(b => b.Create(It.IsAny<AcessoDto>()))
-            .ThrowsAsync(new AcessoException("Senha e Confirma Senha são diferentes!", 400));
+            .ThrowsAsync(new CustomException("Senha e Confirma Senha são diferentes!", 400));
 
-        var ex = await Assert.ThrowsAsync<AcessoException>(() => _acessoController.Post(acessoDto));
+        var ex = await Assert.ThrowsAsync<CustomException>(() => _acessoController.Post(acessoDto));
         Assert.Equal("Senha e Confirma Senha são diferentes!", ex.Message);
     }
 
@@ -237,9 +237,9 @@ public sealed class AcessoControllerTest
     public async Task Refresh_With_InvalidToken_Throws_AcessoException()
     {
         _mockAcessoBusiness.Setup(b => b.ValidateCredentials(It.IsAny<string>()))
-            .ThrowsAsync(new AcessoException("Token inválido", 400));
+            .ThrowsAsync(new CustomException("Token inválido", 400));
 
-        var ex = await Assert.ThrowsAsync<AcessoException>(() => _acessoController.Refresh("fakeToken"));
+        var ex = await Assert.ThrowsAsync<CustomException>(() => _acessoController.Refresh("fakeToken"));
         Assert.Equal("Token inválido", ex.Message);
     }
 }

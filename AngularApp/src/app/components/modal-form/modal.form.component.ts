@@ -11,11 +11,11 @@ export class ModalFormComponent {
     config.keyboard = false;
 	}
 
-	open(content: any) {
+	public open(content: any): void  {
 		this.modalService.open(content, { centered: true });
 	}
 
-  close(){
+  public close(): void {
     this.modalService.dismissAll();
   }
 }

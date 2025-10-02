@@ -1,6 +1,7 @@
 ﻿using Despesas.Application.Abstractions;
 using Despesas.Application.Dtos;
 using Despesas.Application.Dtos.Core;
+using Despesas.GlobalException.CustomExceptions.Core;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,15 +23,8 @@ public class CategoriaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Get()
     {
-        try
-        {
-            var _categoria = await _categoriaBusiness.FindAll(UserIdentity);
-            return Ok(_categoria);
-        }
-        catch
-        {
-            return Ok(new List<CategoriaDto>());
-        }
+        var categoria = await _categoriaBusiness.FindAll(UserIdentity);
+        return Ok(categoria);
     }
 
     [HttpGet("GetById/{idCategoria}")]
@@ -40,15 +34,8 @@ public class CategoriaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> GetById([FromRoute] Guid idCategoria)
     {
-        try
-        {
-            CategoriaDto _categoria = await _categoriaBusiness.FindById(idCategoria, UserIdentity);
-            return Ok(_categoria);
-        }
-        catch
-        {
-            return Ok(new CategoriaDto());
-        }
+        var ccategoria = await _categoriaBusiness.FindById(idCategoria, UserIdentity);
+        return Ok(ccategoria);
     }
 
     [HttpGet("GetByTipoCategoria/{tipoCategoria}")]
@@ -67,24 +54,15 @@ public class CategoriaController : AuthController
     [ProducesResponseType(200, Type = typeof(CategoriaDto))]
     [ProducesResponseType(400, Type = typeof(string))]
     [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
-    public async Task<IActionResult> Post([FromBody] CategoriaDto categoria)
+    [ProducesResponseType(403)] public async Task<IActionResult> Post([FromBody] CategoriaDto categoria)
     {
-        try
-        {
-            if (categoria.IdTipoCategoria == (int)TipoCategoriaDto.Todas)
-                throw new ArgumentException("Nenhum tipo de Categoria foi selecionado!");
+        if (categoria.IdTipoCategoria == (int)TipoCategoriaDto.Todas)
+            return BadRequest("Nenhum tipo de Categoria foi selecionado!");
 
-            categoria.UsuarioId = UserIdentity;
-            return Ok(await _categoriaBusiness.Create(categoria));
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Não foi possível realizar o cadastro de uma nova categoria, tente mais tarde ou entre em contato com o suporte.");
-        }
+        categoria.UsuarioId = UserIdentity;
+        categoria = await _categoriaBusiness.Create(categoria) 
+            ?? throw new CustomException("Não foi possível realizar o cadastro de uma nova categoria, tente mais tarde ou entre em contato com o suporte.");
+        return Ok(categoria);
     }
 
     [HttpPut]
@@ -95,22 +73,13 @@ public class CategoriaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Put([FromBody] CategoriaDto categoria)
     {
-        try
-        {
-            if (categoria.IdTipoCategoria == TipoCategoriaDto.Todas)
-                throw new ArgumentException("Nenhum tipo de Categoria foi selecionado!");
+        if (categoria.IdTipoCategoria == TipoCategoriaDto.Todas)
+            return BadRequest("Nenhum tipo de Categoria foi selecionado!");
 
-            categoria.UsuarioId = UserIdentity;
-            CategoriaDto updateCategoria = await _categoriaBusiness.Update(categoria) ?? throw new();
-            return Ok(updateCategoria);
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
-            return BadRequest("Erro ao atualizar categoria!");
-        }
+        categoria.UsuarioId = UserIdentity;
+        categoria = await _categoriaBusiness.Update(categoria)
+            ?? throw new CustomException("Erro ao atualizar categoria!");
+        return Ok(categoria);
     }
 
     [HttpDelete("{idCategoria}")]
@@ -121,23 +90,15 @@ public class CategoriaController : AuthController
     [ProducesResponseType(403)]
     public async Task<IActionResult> Delete(Guid idCategoria)
     {
-        try
+        var categoria = new CategoriaDto()
         {
-            CategoriaDto categoria = await _categoriaBusiness.FindById(idCategoria, UserIdentity);
-            if (categoria == null || UserIdentity != categoria.UsuarioId)
-                throw new ArgumentException("Usuário não permitido a realizar operação!");
-
-            if (await _categoriaBusiness.Delete(categoria))
-                return Ok(true);
-
-            return Ok(false);
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx)
-                return BadRequest(argEx.Message);
-
+            Id = idCategoria,
+            UsuarioId = UserIdentity
+        };
+        var result = await _categoriaBusiness.Delete(categoria);
+        if (result)
+            return Ok(result);
+        else
             return BadRequest("Erro ao deletar categoria!");
-        }
     }
 }

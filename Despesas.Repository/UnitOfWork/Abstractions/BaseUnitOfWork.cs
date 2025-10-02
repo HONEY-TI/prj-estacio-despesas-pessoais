@@ -1,6 +1,6 @@
-﻿using Domain.Core.Aggreggates;
+﻿using Despesas.Infrastructure.DatabaseContexts;
+using Domain.Core.Aggreggates;
 using Microsoft.EntityFrameworkCore;
-using Repository;
 using System.Linq.Expressions;
 
 namespace Despesas.Repository.UnitOfWork.Abstractions;

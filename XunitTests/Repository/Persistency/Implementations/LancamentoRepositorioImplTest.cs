@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Despesas.Repository.Mapping.Abstractions;
+using Microsoft.EntityFrameworkCore;
 using Repository.Persistency.Implementations.Fixtures;
 using System.Collections.Immutable;
 
@@ -57,7 +58,7 @@ public sealed class LancamentoRepositorioImplTest : IClassFixture<LancamentoRepo
         var despesaDbSetMock = new Mock<DbSet<Despesa>>();
         despesaDbSetMock.As<IQueryable<Despesa>>().Setup(d => d.Provider).Throws<Exception>();
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "FindByMesAno_Throws_Exception_When_Despesa_Execute_Where").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.Despesa = despesaDbSetMock.Object;
 
         // Act
@@ -77,7 +78,7 @@ public sealed class LancamentoRepositorioImplTest : IClassFixture<LancamentoRepo
         var receitaDbSetMock = new Mock<DbSet<Receita>>();
         receitaDbSetMock.As<IQueryable<Receita>>().Setup(d => d.Provider).Throws<Exception>();
         var options = new DbContextOptionsBuilder<RegisterContext>().UseInMemoryDatabase(databaseName: "FindByMesAno Throws Exception When Receita Execute Where").Options;
-        var context = new RegisterContext(options, Usings.GetLogerFactory());
+        var context = new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
         context.Receita = receitaDbSetMock.Object;
         _fixture.MockRepository = new LancamentoRepositorioImpl(context);
 

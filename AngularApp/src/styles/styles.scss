@@ -1,0 +1,110 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material'as mat;
+@use '_variables'as v; // importa variáveis globais
+
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+
+$my-theme: mat.define-theme((color: (theme-type: light,
+      primary: mat.$azure-palette),
+    typography: (brand-family: 'sans-serif'
+    ),
+    density: (scale: -5)));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+html {
+  @include mat.all-component-themes($my-theme);
+}
+
+html,
+body {
+  height: v.$height-full;
+  overflow: hidden;
+  color: v.$text-color;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+footer {
+  .opacity-50 {
+    opacity: v.$footer-opacity;
+  }
+}
+
+h2 {
+  font-size: smaller;
+  font-weight: lighter;
+  margin: 2vw;
+  color: v.$h2-color;
+}
+
+.scroll-content {
+  scrollbar-width: 0;
+  scrollbar-color: v.$scroll-thumb-color;
+  scroll-margin: 0;
+  border: 0;
+}
+
+.scroll-content::-webkit-scrollbar-corner {
+  width: 0;
+}
+
+/* Works on Chrome, Edge, and Safari */
+.scroll-content::-webkit-scrollbar {
+  width: v.$scrollbar-width;
+}
+
+.scroll-content::-webkit-scrollbar-track {
+  scroll-margin: 0;
+  background-color: transparent;
+  border: 0;
+}
+
+.scroll-content::-webkit-scrollbar-thumb {
+  scroll-margin: 0;
+  background-color: transparent;
+  border-radius: v.$scroll-thumb-radius;
+  border: v.$scroll-thumb-border;
+}
+
+.content-header-max-height {
+  height: v.$height-header;
+}
+
+.content-barra-ferramenta-max-height {
+  height: v.$height-header;
+  padding: v.$padding-barra-ferramenta;
+  padding-bottom: 0;
+  margin-bottom: v.$margin-barra-ferramenta;
+}
+
+.content-body-max-height {
+  height: v.$height-body;
+  max-width: v.$max-width-body;
+  max-height: v.$max-height-body;
+  margin-bottom: 1.4vh;
+}
+
+// Classe Responsável por Abrir elementos a frente do modalformComponent ex.: Mat-Select, Mat-Datepicker
+.cdk-overlay-container {
+  z-index: 1999;
+}
+
+.loading-modal .modal-content {
+  background-color: transparent;
+  text-align: center;
+}

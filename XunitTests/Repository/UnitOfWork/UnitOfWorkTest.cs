@@ -1,4 +1,5 @@
 ﻿using __mock__.Entities;
+using Despesas.Repository.Mapping.Abstractions;
 using Despesas.Repository.UnitOfWork.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,7 @@ public sealed class UnitOfWorkTest
             .UseInMemoryDatabase(databaseName: dbName)
             .Options;
 
-        return new RegisterContext(options, Usings.GetLogerFactory());
+        return new RegisterContext(options, DatabaseProvider.MySql, Usings.GetLogerFactory());
     }
 
     [Fact]
