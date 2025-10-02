@@ -36,7 +36,7 @@ public class DataSeederAcesso : ISeeder
             nome: "Teste",
             sobrenome: "Teste",
             telefone: "(21) 9999-9999",
-            email: "teste@teste.com",
+            email: "user@example.com",
             senha: "toor",
             perfilId: 2
         );
