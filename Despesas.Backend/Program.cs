@@ -21,13 +21,13 @@ builder.Services.AddControllers(); // Registra controllers
 builder.Services.AddSwaggerApiVersioning(); // Swagger + versionamento de API
 
 // -------------------- Configuração do DbContext Oralce --------------------
-builder.Services.ConfigureOracleServerMigrationsContext(builder.Configuration);
+//builder.Services.ConfigureOracleServerMigrationsContext(builder.Configuration);
 
 // -------------------- Configuração do DbContext Sql Server  --------------------
 //builder.Services.ConfigureMsSqlServerMigrationsContext(builder.Configuration);
 
 // -------------------- Configuração do DbContext MySql Server  --------------------
-///builder.Services.ConfigureMySqlServerMigrationsContext(builder.Configuration);
+builder.Services.ConfigureMySqlServerMigrationsContext(builder.Configuration);
 
 
 // -------------------- Configurações de Segurança --------------------
