@@ -1,4 +1,5 @@
-<div class="cookie-banner" *ngIf="showBanner">
+@if (showBanner) {
+<div class="cookie-banner" >
   <p>
     Usamos cookies para melhorar sua experiência. Ao continuar navegando, você concorda com nossa
     <a href="privacy">Política de Privacidade</a>.
@@ -8,3 +9,4 @@
     <button class="btn btn-outline-secondary btn-sm" (click)="declineCookies()">Recusar</button>
   </div>
 </div>
+}

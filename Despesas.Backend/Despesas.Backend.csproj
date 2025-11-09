@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>16b59695-31ee-4aac-999b-212bfa53563f</UserSecretsId>
@@ -27,9 +27,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
 		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.4.0" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.0" />
-		<PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.0" />
 	</ItemGroup>
-
 
 	<ItemGroup>
 		<None Include="..\.dockerignore" Link=".dockerignore">
@@ -43,7 +41,6 @@
 		</None>
 	</ItemGroup>
 
-
 	<ItemGroup>
 		<Content Include="certificate\webapi-cert.pfx">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -53,10 +50,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Despesas.Application\Despesas.Application.csproj" />
-	  <ProjectReference Include="..\Migrations.MsSqlServer\Migrations.MsSqlServer.csproj" />
-	  <ProjectReference Include="..\Migrations.MySqlServer\Migrations.MySqlServer.csproj" />
-	  <ProjectReference Include="..\Migrations.Oracle\Migrations.Oracle.csproj" />	  
+		<ProjectReference Include="..\Despesas.Application\Despesas.Application.csproj" />
+		<ProjectReference Include="..\Migrations.MsSqlServer\Migrations.MsSqlServer.csproj" />
+		<ProjectReference Include="..\Migrations.MySqlServer\Migrations.MySqlServer.csproj" />
+		<ProjectReference Include="..\Migrations.Oracle\Migrations.Oracle.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -88,9 +85,8 @@
 				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			</ResolvedFileToPublish>
 		</ItemGroup>
-
 	</Target>
-	
+
 	<Target Name="PublishRunWebpackDevelopment" AfterTargets="ComputeFilesToPublish" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Staging'">
 		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
 		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:staging" />
@@ -104,7 +100,7 @@
 			</ResolvedFileToPublish>
 		</ItemGroup>
 	</Target>
-	
+
 	<Target Name="PublishRunWebpackLocal" AfterTargets="ComputeFilesToPublish" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Development'">
 		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
 		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:local" />
@@ -117,7 +113,6 @@
 				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			</ResolvedFileToPublish>
 		</ItemGroup>
-
 	</Target>
 
 </Project>

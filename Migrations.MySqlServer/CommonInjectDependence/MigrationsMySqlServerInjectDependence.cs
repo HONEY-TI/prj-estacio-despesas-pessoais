@@ -18,14 +18,15 @@ public static class MigrationsMySqlServerInjectDependence
         services.AddDbContext<RegisterContext>((sp, options) =>
         {
             var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-            options.UseMySQL(
+            options.UseMySql(
                 connectionString,
+                ServerVersion.AutoDetect(connectionString),
                 b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
             options.UseLoggerFactory(loggerFactory);
             options.UseLazyLoadingProxies();
         });
 
-        var provider = DatabaseProvider.SqlServer;
+        var provider = DatabaseProvider.MySql;
         services.AddSingleton(typeof(DatabaseProvider), provider);
 
         services.AddScoped<RegisterContext>(sp =>
