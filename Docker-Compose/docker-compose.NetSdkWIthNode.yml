@@ -2,5 +2,5 @@
   sdk-with-node:
     image: alexfariakof/dotnet-sdk-8.0-with-node
     build:
-      context: .
+      context: ..
       dockerfile: Despesas.Backend/Dockerfile.NetSdkWithNode

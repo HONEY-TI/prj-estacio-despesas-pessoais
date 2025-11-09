@@ -3,5 +3,5 @@
     container_name: app-despesas-pessoais
     image: ${DOCKER_REGISTRY-}despesasbackendapinetcore
     build:
-      context: .
+      context: ..
       dockerfile: Despesas.Backend/Dockerfile

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11018.127 d18.0
+VisualStudioVersion = 18.0.11018.127
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "AngularApp", "AngularApp\AngularApp.esproj", "{1F0E3EBF-C778-E8DE-D94F-A4AD7CE053CA}"
 EndProject
@@ -18,8 +18,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations.MsSqlServer", "Migrations.MsSqlServer\Migrations.MsSqlServer.csproj", "{B69CCACE-AA4C-4F17-3F0D-29E0B324C210}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnit.Tests", "XunitTests\XUnit.Tests.csproj", "{30A971E8-A67F-E702-6E41-3663E7FCD5D4}"
-EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7900F85A-9B75-409E-96B7-6FB47F630975}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations.DataSeeders", "Migrations.DataSeeders\Migrations.DataSeeders.csproj", "{02C2773E-B8DC-63AF-7E9B-16E6CAB6CDE0}"
 EndProject
@@ -44,6 +42,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations.Oracle", "Migrations.Oracle\Migrations.Oracle.csproj", "{520515F4-B5D8-BFFA-B29A-19E580652700}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations.MySqlServer", "Migrations.MySqlServer\Migrations.MySqlServer.csproj", "{34826D52-2803-CDD4-E2AC-354A494EC008}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "Docker-Compose\docker-compose.dcproj", "{7900F85A-9B75-409E-96B7-6FB47F630975}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,10 +85,6 @@ Global
 		{30A971E8-A67F-E702-6E41-3663E7FCD5D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30A971E8-A67F-E702-6E41-3663E7FCD5D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30A971E8-A67F-E702-6E41-3663E7FCD5D4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7900F85A-9B75-409E-96B7-6FB47F630975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7900F85A-9B75-409E-96B7-6FB47F630975}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7900F85A-9B75-409E-96B7-6FB47F630975}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7900F85A-9B75-409E-96B7-6FB47F630975}.Release|Any CPU.Build.0 = Release|Any CPU
 		{02C2773E-B8DC-63AF-7E9B-16E6CAB6CDE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{02C2773E-B8DC-63AF-7E9B-16E6CAB6CDE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02C2773E-B8DC-63AF-7E9B-16E6CAB6CDE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -113,6 +109,10 @@ Global
 		{34826D52-2803-CDD4-E2AC-354A494EC008}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34826D52-2803-CDD4-E2AC-354A494EC008}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34826D52-2803-CDD4-E2AC-354A494EC008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7900F85A-9B75-409E-96B7-6FB47F630975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7900F85A-9B75-409E-96B7-6FB47F630975}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7900F85A-9B75-409E-96B7-6FB47F630975}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7900F85A-9B75-409E-96B7-6FB47F630975}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

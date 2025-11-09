@@ -3,7 +3,7 @@ $projectTestPath = Join-Path -Path ($baseDirectory) -ChildPath "XunitTests"
 
 if (-Not (Test-Path -Path $projectTestPath)) {
     $baseDirectory = (Resolve-Path -Path ..).Path    
-    $projectTestPath = Join-Path -Path ($baseDirectory) -ChildPath "LiteStreaming.XUnitTest"
+    $projectTestPath = Join-Path -Path ($baseDirectory) -ChildPath "XunitTests"
 }
 
 $projectAngular = (Resolve-Path -Path "$baseDirectory\AngularApp");
