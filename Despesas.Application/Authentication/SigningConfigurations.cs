@@ -16,10 +16,10 @@ public class SigningConfigurations : ISigningConfigurations
     public TokenConfiguration? TokenConfiguration { get; private set; }
     public SigningCredentials? SigningCredentials { get; private set; }
 
-    public SigningConfigurations(X509Certificate2? _X509Certificate, IOptions<TokenOptions> options) : this(options)
+    public SigningConfigurations(X509Certificate2? x509Certificate, IOptions<TokenOptions> options) : this(options)
     {
-        RSA? rsa = _X509Certificate?.GetRSAPrivateKey()
-                ?? _X509Certificate?.GetRSAPublicKey()
+        RSA? rsa = x509Certificate?.GetRSAPrivateKey()
+                ?? x509Certificate?.GetRSAPublicKey()
                 ?? RSA.Create(2048);
 
         var rsaKey = new RsaSecurityKey(rsa)
@@ -40,7 +40,7 @@ public class SigningConfigurations : ISigningConfigurations
         if (!String.IsNullOrEmpty(options.Value.Certificate) && (environment != "Test") && ((environment != Environments.Staging)))
         {
             string certificatePath = Path.Combine(AppContext.BaseDirectory, options.Value.Certificate);
-            X509Certificate2 certificate = new X509Certificate2(certificatePath, options.Value.Password, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
+            X509Certificate2 certificate = X509CertificateLoader.LoadPkcs12FromFile(certificatePath, options.Value.Password, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet);
             RSA? rsa = null;
             rsa = certificate.GetRSAPublicKey();
             RsaSecurityKey rsaSecurityKey = new RsaSecurityKey(rsa);
