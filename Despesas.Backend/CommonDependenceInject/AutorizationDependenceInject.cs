@@ -103,7 +103,8 @@ public static class AutorizationDependenceInject
         if (!File.Exists(certificatePath))
             return null;
 
-        return new X509Certificate2(
+        
+        return X509CertificateLoader.LoadPkcs12FromFile(
             certificatePath,
             options.Value.Password ?? string.Empty,
             X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet

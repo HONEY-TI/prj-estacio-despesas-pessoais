@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36301.6
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11018.127 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "AngularApp", "AngularApp\AngularApp.esproj", "{1F0E3EBF-C778-E8DE-D94F-A4AD7CE053CA}"
 EndProject
@@ -16,8 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Despesas.Repository", "Despesas.Repository\Despesas.Repository.csproj", "{13A5FE32-A2A1-C935-847F-7770D36E93F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations.MsSqlServer", "Migrations.MsSqlServer\Migrations.MsSqlServer.csproj", "{B69CCACE-AA4C-4F17-3F0D-29E0B324C210}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations.MySqlServer", "Migrations.MySqlServer\Migrations.MySqlServer.csproj", "{34826D52-2803-CDD4-E2AC-354A494EC008}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnit.Tests", "XunitTests\XUnit.Tests.csproj", "{30A971E8-A67F-E702-6E41-3663E7FCD5D4}"
 EndProject
@@ -44,6 +42,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Despesas.Repository.Mapping", "Despesas.Repository.Mapping\Despesas.Repository.Mapping.csproj", "{480F7982-6387-423D-9A7C-101E0E8B602F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations.Oracle", "Migrations.Oracle\Migrations.Oracle.csproj", "{520515F4-B5D8-BFFA-B29A-19E580652700}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations.MySqlServer", "Migrations.MySqlServer\Migrations.MySqlServer.csproj", "{34826D52-2803-CDD4-E2AC-354A494EC008}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,10 +81,6 @@ Global
 		{B69CCACE-AA4C-4F17-3F0D-29E0B324C210}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B69CCACE-AA4C-4F17-3F0D-29E0B324C210}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B69CCACE-AA4C-4F17-3F0D-29E0B324C210}.Release|Any CPU.Build.0 = Release|Any CPU
-		{34826D52-2803-CDD4-E2AC-354A494EC008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34826D52-2803-CDD4-E2AC-354A494EC008}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34826D52-2803-CDD4-E2AC-354A494EC008}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34826D52-2803-CDD4-E2AC-354A494EC008}.Release|Any CPU.Build.0 = Release|Any CPU
 		{30A971E8-A67F-E702-6E41-3663E7FCD5D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30A971E8-A67F-E702-6E41-3663E7FCD5D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30A971E8-A67F-E702-6E41-3663E7FCD5D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -113,6 +109,10 @@ Global
 		{520515F4-B5D8-BFFA-B29A-19E580652700}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{520515F4-B5D8-BFFA-B29A-19E580652700}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{520515F4-B5D8-BFFA-B29A-19E580652700}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34826D52-2803-CDD4-E2AC-354A494EC008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34826D52-2803-CDD4-E2AC-354A494EC008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34826D52-2803-CDD4-E2AC-354A494EC008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34826D52-2803-CDD4-E2AC-354A494EC008}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
