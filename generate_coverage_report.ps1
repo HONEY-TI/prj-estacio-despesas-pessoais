@@ -1,4 +1,4 @@
-﻿cls 
+﻿Clear-Host 
 
 # Pasta onde o relatário será gerado
 $baseDirectory = Get-Location
@@ -32,7 +32,7 @@ function Remove-TestResults {
  function Wait-TestResults {
     $REPEAT_WHILE = 0
     while (-not (Test-Path $reportPath)) {
-        echo "Agaurdando TestResults..."
+        Write-Output "Agaurdando TestResults..."
         Start-Sleep -Seconds 10        
         if ($REPEAT_WHILE -eq 6) { break }
         $REPEAT_WHILE = $REPEAT_WHILE + 1
@@ -40,7 +40,7 @@ function Remove-TestResults {
 
     $REPEAT_WHILE = 0
     while (-not (Test-Path $coverageXmlPath)) {
-        echo "Agaurdando Coverage Report..."
+        Write-Output "Agaurdando Coverage Report..."
         Start-Sleep -Seconds 10        
         if ($REPEAT_WHILE -eq 6) { break }
         $REPEAT_WHILE = $REPEAT_WHILE + 1
