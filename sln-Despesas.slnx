@@ -1,0 +1,28 @@
+<Solution>
+  <Folder Name="/BackEnd/">
+    <Project Path="src/Application/Application.csproj" />
+    <Project Path="src/CrossCutting/CrossCutting.csproj" />
+    <Project Path="src/Domain/Domain.csproj" />
+    <Project Path="src/GlobalException/GlobalException.csproj" />
+    <Project Path="src/Infrastructure/Infrastructure.csproj" />
+    <Project Path="src/Repository.Mapping/Repository.Mapping.csproj" />
+    <Project Path="src/Repository/Repository.csproj" />
+    <Project Path="src/WebApi/WebApi.csproj" />
+  </Folder>
+  <Folder Name="/FrontEnd/">
+    <Project Path="src/AngularApp/AngularApp.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
+  <Folder Name="/Migrations/">
+    <Project Path="src/Migrations/DataSeeders/Migrations.DataSeeders.csproj" />
+    <Project Path="src/Migrations/MsSqlServer/Migrations.MsSqlServer.csproj" />
+    <Project Path="src/Migrations/MySqlServer/Migrations.MySqlServer.csproj" />
+    <Project Path="src/Migrations/Oracle/Migrations.Oracle.csproj" />
+  </Folder>
+  <Project Path="docker-compose.dcproj" Id="7900f85a-9b75-409e-96b7-6fb47f630975">
+    <Build />
+  </Project>
+  <Project Path="src/XunitTests/XUnit.Tests.csproj" />
+</Solution>

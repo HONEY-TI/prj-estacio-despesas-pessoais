@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net10.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\GlobalException\GlobalException.csproj" PrivateAssets="none" ReferenceOutputAssembly="true" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig">
+			<DependentUpon>$(MSBuildProjectDirectory)</DependentUpon>
+		</None>
+	</ItemGroup>
+</Project>

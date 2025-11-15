@@ -1,0 +1,30 @@
+﻿FROM  mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+USER app
+
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:80;https://+:443;
+
+FROM alexfariakof/dotnet-sdk-with-node:latest AS publish 
+WORKDIR /src
+COPY ./src . 
+
+WORKDIR /src/XunitTests
+RUN dotnet test "./XUnit.Tests.csproj" -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura --collect:"XPlat Code Coverage;Format=opencover" 
+
+RUN baseDirectory=$(realpath ..) && \
+    sourceDirs="$baseDirectory/Application;$baseDirectory/Domain;$baseDirectory/Repository;$baseDirectory/WebApi;" && \
+    filefilters="$baseDirectory/Migrations.DataSeeders/**;-$baseDirectory/Migrations.MySqlServer/**;-$baseDirectory/Migrations.MsSqlServer/**;-$baseDirectory/CrossCutting/**;-$baseDirectory/Infrastructure/**" && \
+    /tools/reportgenerator -reports:**/coverage.cobertura.xml -targetdir:/app/test -reporttypes:Html -sourcedirs:$sourceDirs -filefilters:-$filefilters
+
+WORKDIR /src/WebApi
+RUN dotnet publish "./WebApi.csproj" -c Release -f net10.0 -o /app/publish /p:UseAppHost=false /p:ASPNETCORE_ENVIRONMENT=Production
+
+FROM base AS final
+WORKDIR /app
+
+COPY --from=publish /app/publish .
+COPY --from=publish /app/test ./wwwroot/coveragereport
+ENTRYPOINT ["dotnet", "WebApi.dll"]

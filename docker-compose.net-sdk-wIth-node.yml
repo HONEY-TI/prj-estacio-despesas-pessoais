@@ -1,0 +1,6 @@
+﻿services:
+  sdk-with-node:
+    image: alexfariakof/dotnet-sdk-with-node
+    build:
+      context: .
+      dockerfile: src/WebApi/Dockerfile.net-sdk-with-node

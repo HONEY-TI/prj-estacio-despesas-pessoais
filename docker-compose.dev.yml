@@ -1,0 +1,31 @@
+﻿services:
+  app-despesas-pessoais-dev:    
+    container_name: app-despesas-pessoais-dev
+    image: alexfariakof/api-despesas-backend-netcore-dev-img
+    environment:
+      TZ: America/Sao_Paulo
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:42535;http://+:42536
+      ASPNETCORE_HTTP_PORTS: 42535
+      ASPNETCORE_HTTPS_PORTS: 42536
+    logging:
+        driver: json-file
+        options:
+            max-size: "2m"
+            max-file: "1"
+    build:
+      context: .
+      dockerfile: ./src/WebApi/Dockerfile.development    
+    ports:
+      - 42535:42535
+      - 42536:42536
+    volumes:
+      - ${LOCALAPPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${LOCALAPPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro    
+      - ./src/AngularApp/dist:/app/wwwroot
+      - ./src/WebApi/appsettings.docker.json:/app/appsettings.json:ro
+      - ./src/WebApi/appsettings.docker.development.json:/app/appsettings.development.json:ro
+      - ./src/WebApi/certificate/webapi-cert.pfx:/app/certificate/webapi-cert.pfx:ro
+    deploy:
+      update_config:
+        order: start-first  

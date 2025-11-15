@@ -1,0 +1,123 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>16b59695-31ee-4aac-999b-212bfa53563f</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>..\..</DockerfileContext>
+		<SpaRoot>..\AngularApp</SpaRoot>
+		<SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
+		<SpaProxyServerUrl>https://localhost:4200</SpaProxyServerUrl>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.MySql" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="9.0.0" />
+		<PackageReference Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
+		<PackageReference Include="EasyCryptoSalt" Version="1.0.4" />
+		<PackageReference Include="KubernetesClient" Version="18.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.SpaProxy">
+			<Version>8.*-*</Version>
+		</PackageReference>
+		<PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
+		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.4.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\.dockerignore" Link=".dockerignore">
+			<DependentUpon>$(DockerDefaultDockerfile)</DependentUpon>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig">
+			<DependentUpon>$(MSBuildProjectDirectory)</DependentUpon>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="certificate\webapi-cert.pfx">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Application\Application.csproj" />
+		<ProjectReference Include="..\Migrations\MsSqlServer\Migrations.MsSqlServer.csproj" />
+		<ProjectReference Include="..\Migrations\MySqlServer\Migrations.MySqlServer.csproj" />
+		<ProjectReference Include="..\Migrations\Oracle\Migrations.Oracle.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="certificate\" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<Build>
+			DebugEnsureNodeEnv;
+		</Build>
+	</PropertyGroup>
+
+	<Target Name="DebugEnsureNodeEnv" BeforeTargets="Build;Rebuild" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)\node_modules') ">
+		<!-- Ensure Node.js is installed -->
+		<Exec Command="node --version" ContinueOnError="true">
+			<Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+		</Exec>
+		<Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+		<Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm install" />
+	</Target>
+
+	<Target Name="PublishRunWebpackProduction" AfterTargets="ComputeFilesToPublish" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Production'">
+		<!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+
+		<ItemGroup>
+			<DistFiles Include="$(SpaRoot)\dist\**; $(SpaRoot)\dist-server\angular-app\**" />
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="PublishRunWebpackDevelopment" AfterTargets="ComputeFilesToPublish" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Staging'">
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:staging" />
+
+		<ItemGroup>
+			<DistFiles Include="$(SpaRoot)\dist\**; $(SpaRoot)\dist-server\angular-app\**" />
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+	</Target>
+
+	<Target Name="PublishRunWebpackLocal" AfterTargets="ComputeFilesToPublish" Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Development'">
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:local" />
+
+		<ItemGroup>
+			<DistFiles Include="$(SpaRoot)\dist\**; $(SpaRoot)\dist-server\angular-app\**" />
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+	</Target>
+
+</Project>

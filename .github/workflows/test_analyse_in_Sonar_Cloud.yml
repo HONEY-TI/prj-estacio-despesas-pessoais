@@ -61,15 +61,15 @@ jobs:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |          
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"alexribeirofaria_prj-despesas-pessoais" /o:"alexribeirofaria" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"  /d:sonar.exclusions="**/XunitTests/**,  **/Migrations.MsSqlServer/**, **/Migrations.MySqlServer/**, **/Despesas.Application\HyperMedia/**, **/.documents/**, *.sql, **/Program.cs, **/Despesas.DataSeeders/**, **/Despesas.CrossCutting/**, **/*.spec.ts, **/main.ts, **/environment.*, **/app.routing.module.ts, **/__mock__/*.ts, **/*.js, **/*Dockerfile*, **/docker-compose*, **/AngularApp/app-android/**, **/AngularApp/app-ios/**, **/appsettings*, **/Properties/**, **/CommonDependenceInject/**" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.cs.lcov.reportPaths="**/coveragereport/lcov.info"  /d:sonar.typescript.opencover.reportsPaths="**/coverage/clover.xml" /d:sonar.typescript.lcov.reportPaths="**/coverage/lcov.info"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"alexribeirofaria_prj-despesas-pessoais" /o:"alexribeirofaria" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"  /d:sonar.exclusions="**/XunitTests/**,  **/Migrations.MsSqlServer/**, **/Migrations.MySqlServer/**, **/Application\HyperMedia/**, **/.documents/**, *.sql, **/Program.cs, **/DataSeeders/**, **/CrossCutting/**, **/*.spec.ts, **/main.ts, **/environment.*, **/app.routing.module.ts, **/__mock__/*.ts, **/*.js, **/*Dockerfile*, **/docker-compose*, **/AngularApp/app-android/**, **/AngularApp/app-ios/**, **/appsettings*, **/Properties/**, **/CommonDependenceInject/**" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" /d:sonar.cs.lcov.reportPaths="**/coveragereport/lcov.info"  /d:sonar.typescript.opencover.reportsPaths="**/coverage/clover.xml" /d:sonar.typescript.lcov.reportPaths="**/coverage/lcov.info"
             #npm install -g @angular/core @angular/cli > $null 2>&1
             dotnet tool install -g dotnet-reportgenerator-globaltool
             $baseDirectory = Get-Location
-            $projectTestPath = Join-Path -Path (Get-Location) -ChildPath "XunitTests"
+            $projectTestPath = Join-Path -Path (Get-Location) -ChildPath "src\XunitTests"
             #$projectAngular = Join-Path -Path ($baseDirectory) -ChildPath "AngularApp"
 
-            $sourceDirs = "$baseDirectory\Despesas.Application;$baseDirectory\Despesas.Domain;$baseDirectory\Despesas.Repository;$baseDirectory\Despesas.Backend;"
-            $filefilters = "$baseDirectory\Migrations.DataSeeders\**;-$baseDirectory\Migrations.MySqlServer\**;-$baseDirectory\Migrations.MsSqlServer\**;-$baseDirectory\Despesas.CrossCutting\**;-$baseDirectory\Despesas.Infrastructure\**"
+            $sourceDirs = "$baseDirectory\src\Application;$baseDirectory\src\Domain;$baseDirectory\src\Repository;$baseDirectory\src\Backend;"
+            $filefilters = "$baseDirectory\src\Migrations.DataSeeders\**;-$baseDirectory\src\Migrations.MySqlServer\**;-$baseDirectory\src\Migrations.MsSqlServer\**;-$baseDirectory\src\CrossCutting\**;-$baseDirectory\src\Infrastructure\**"
             $reportPath = Join-Path -Path (Get-Location) -ChildPath "XunitTests\TestResults"
             $coveragePath = Join-Path -Path $reportPath -ChildPath "coveragereport"
             #$coverageAngularPath = Join-Path -Path $projectAngular -ChildPath "coverage"
