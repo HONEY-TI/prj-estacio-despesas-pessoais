@@ -16,3 +16,8 @@ services:
     deploy:
       update_config:
         order: start-first
+      resources:
+        limits:
+          memory: 500M  
+        reservations:
+          memory: 256M

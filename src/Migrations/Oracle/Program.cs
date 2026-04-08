@@ -1,19 +1,18 @@
 ﻿using Application.CommonDependenceInject;
 using Infrastructure.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Migrations.DataSeeders.CommonDependenceInject;
-using Migrations.Oracle.CommonInjectDependence;
+using Infrastructure.CommonInjectDependence;
 using Repository.CommonDependenceInject;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
 
-        services.ConfigureOracleServerMigrationsContext(context.Configuration);
+        services.ConfigureOracleServerContext(context.Configuration);
 
         string environment = context.Configuration["Environment"] ?? "Production";
         Console.WriteLine($"Environment: {environment}");
