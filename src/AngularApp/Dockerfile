@@ -1,6 +1,19 @@
-FROM node:current-slim as node
+# ---- Stage 1: Build ----
+FROM node:22.21-slim AS build
 WORKDIR /app
-RUN npm install -g npm@latest >/dev/null 2ENV NODE_ENV=local-development
-EXPOSE 4200
-EXPOSE 9229
-USER node
+
+RUN npm install -g npm@latest
+RUN npm install -g @angular/cli@20.1.5
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+EXPOSE 443
+
+CMD ["nginx", "-g", "daemon off;"]

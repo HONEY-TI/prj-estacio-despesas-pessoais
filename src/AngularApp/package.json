@@ -19,6 +19,7 @@
     "prestart": "node aspnetcore-https",
     "start:windows": "ng serve --ssl --configuration local-development --ssl-cert \"%LOCALAPPDATA%\\ASP.NET\\https\\%npm_package_name%.pem\" --ssl-key \"%LOCALAPPDATA%\\ASP.NET\\https\\%npm_package_name%.key\" --host=localhost",
     "start:default": "ng serve --ssl --configuration local-development --ssl-cert \"$HOME/.aspnet/https/${npm_package_name}.pem\" --ssl-key \"$HOME/.aspnet/https/${npm_package_name}.key\" --host=localhost",
+    "start:docker": "ng serve --ssl --configuration local-development --ssl-cert \"/app/certificate/ssl_certificate.pem\" --ssl-key \"/app/certificate/ssl_certificate.key\" --host=0.0.0.0 --port=4200 --disable-host-check",
     "build:android": "npm run build:mobile --workspace=app-android",
     "build:android-dev": "npm run build:mobile-dev --workspace=app-android",
     "build:ios": "npm run build:mobile --workspace=app-ios",
@@ -61,9 +62,11 @@
     "run-script-os": "*",
     "rxjs": "~7.8.2",
     "tslib": "^2.8.1",
-    "zone.js": "~0.15.1"
+    "zone.js": "~0.15.1",
+    "@ionic/angular": "^8.7.3",
+    "@capacitor/core": "6.2.1"
   },
-  "devDependencies": {
+  "devDependencies": {    
     "@angular-devkit/build-angular": "20.1.5",
     "@angular/cli": "20.1.5",
     "@angular/compiler-cli": "20.1.5",

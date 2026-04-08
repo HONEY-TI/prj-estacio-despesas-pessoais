@@ -29,6 +29,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Infrastructure\Infrastructure.csproj" />
 		<ProjectReference Include="..\..\Application\Application.csproj" />
 		<ProjectReference Include="..\..\Repository\Repository.csproj" />
 		<ProjectReference Include="..\DataSeeders\Migrations.DataSeeders.csproj" />

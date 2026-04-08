@@ -1,10 +1,10 @@
 services:
-  despesas-frontend-angular-prod:
+  app-angular-prod:
     container_name: prod
     image: alexfariakof/despesas-frontend-angular-img
     build:
       context: .
-      dockerfile: ./Dockerfile.production
+      dockerfile: ./Dockerfile
     environment:
       NODE_ENV: production
     ports:

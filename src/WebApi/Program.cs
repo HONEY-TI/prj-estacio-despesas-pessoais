@@ -6,9 +6,7 @@ using Infrastructure.CommonDependenceInject;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Repository.CommonDependenceInject;
-using Migrations.Oracle.CommonInjectDependence;
-using Migrations.MsSqlServer.CommonInjectDependence;
-using Migrations.MySqlServer.CommonInjectDependence;
+using Infrastructure.CommonInjectDependence;
 
 var builder = WebApplication.CreateBuilder(args);
 // -------------------- Configuração de CORS --------------------
@@ -27,7 +25,7 @@ builder.Services.AddSwaggerApiVersioning(); // Swagger + versionamento de API
 //builder.Services.ConfigureMsSqlServerMigrationsContext(builder.Configuration);
 
 // -------------------- Configuração do DbContext MySql Server  --------------------
-builder.Services.ConfigureMySqlServerMigrationsContext(builder.Configuration);
+builder.Services.ConfigureMySqlServerContext(builder.Configuration);
 
 
 // -------------------- Configurações de Segurança --------------------

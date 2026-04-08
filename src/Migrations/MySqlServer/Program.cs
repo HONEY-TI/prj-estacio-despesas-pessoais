@@ -6,13 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Migrations.DataSeeders.CommonDependenceInject;
-using Migrations.MySqlServer.CommonInjectDependence;
+using Infrastructure.CommonInjectDependence;
 using Repository.CommonDependenceInject;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
-        services.ConfigureMySqlServerMigrationsContext(context.Configuration);
+        services.ConfigureMySqlServerContext(context.Configuration);
 
         string environment = context.Configuration["Environment"] ?? "Production";
         Console.WriteLine($"Environment: {environment}");

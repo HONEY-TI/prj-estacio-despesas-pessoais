@@ -1,18 +1,13 @@
 services:
-  despesas-frontend-angular-local:
+ app-angular-local:
     container_name: local
     image: despesas-frontend-angular-local-img
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile.local
     environment:
       NODE_ENV: local-development
     ports:
-      - 4200:4200
-      - 9229:9229
+      - 4201:4200
     volumes:
       - ./:/app
-      - ./certificate/ssl_certificate.pem:/etc/nginx/certificate/ssl_certificate.pem:ro
-      - ./certificate/ssl_certificate.key:/etc/nginx/certificate/ssl_certificate.key:ro
-    command: |
-      /bin/sh -c "npm install --silent --no-audit --no-fund; npm start;"
