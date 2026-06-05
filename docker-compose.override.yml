@@ -11,10 +11,13 @@ services:
       - "443"
     volumes:
       - ${LOCALAPPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
-      - ${LOCALAPPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
-      - ./AngularApp/dist:/app/wwwroot
-      - ./Despesas.WebApi/appsettings.docker.json:/app/appsettings.json
-      - ./Despesas.WebApi/appsettings.docker.json:/app/appsettings.develpment.json
+      - ${LOCALAPPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro    
+      - ./src/AngularApp/dist:/app/wwwroot
     deploy:
       update_config:
         order: start-first
+      resources:
+        limits:
+          memory: 500M  
+        reservations:
+          memory: 256M

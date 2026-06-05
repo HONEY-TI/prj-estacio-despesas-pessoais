@@ -1,0 +1,20 @@
+﻿FROM  mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+USER app
+
+WORKDIR /app
+EXPOSE 42535
+EXPOSE 42536
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=https://+:42535;http://+:42536;
+
+FROM alexfariakof/dotnet-sdk-with-node:latest AS build
+WORKDIR /src
+COPY ./src . 
+
+WORKDIR /src/WebApi
+RUN dotnet publish "./WebApi.csproj" -c Release -f net10.0 -o /app/publish /p:UseAppHost=false /p:ASPNETCORE_ENVIRONMENT=Development
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "WebApi.dll"]

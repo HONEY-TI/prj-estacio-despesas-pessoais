@@ -4,4 +4,4 @@
     image: ${DOCKER_REGISTRY-}despesasbackendapinetcore
     build:
       context: .
-      dockerfile: Despesas.Backend/Dockerfile
+      dockerfile: src/WebApi/Dockerfile

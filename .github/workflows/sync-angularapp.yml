@@ -5,7 +5,7 @@ on:
     branches:
       - develop
     paths:
-      - AngularApp/**
+      - src/AngularApp/**
 
 jobs:
   sync-folder:
@@ -32,7 +32,7 @@ jobs:
         git clone https://x-access-token:${{ secrets.TOKEN_DESTINO }}@github.com/alexribeirofaria/angular-frontend-despesas.git
         cd angular-frontend-despesas
 
-        cp -r ../AngularApp/* .
+        cp -r ../src/AngularApp/* .
 
         git add .
         git commit --author="${{ env.COMMIT_AUTHOR }}" --date="${{ env.COMMIT_DATE }}" -m "${{ env.COMMIT_MSG }}" || echo "No changes to commit"

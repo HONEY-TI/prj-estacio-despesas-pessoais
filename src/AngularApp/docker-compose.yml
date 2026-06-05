@@ -1,0 +1,13 @@
+services:
+ app-angular-local:
+    container_name: local
+    image: despesas-frontend-angular-local-img
+    build:
+      context: .
+      dockerfile: ./Dockerfile.local
+    environment:
+      NODE_ENV: local-development
+    ports:
+      - 4201:4200
+    volumes:
+      - ./:/app

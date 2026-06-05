@@ -1,0 +1,27 @@
+[ req ]
+default_bits        = 2048
+default_keyfile     = ssl_certificate.key  # Nome da chave privada ajustado
+distinguished_name  = req_distinguished_name
+attributes          = req_attributes
+x509_extensions     = v3_ca
+prompt              = no
+
+[ req_distinguished_name ]
+C  = BR
+ST = Rio de Janeiro
+L  = Rio de Janeiro
+O  = HONEY TI
+OU = Development
+CN = Alex Ribeiro de Faria
+emailAddress = alexfariakof@yaoo.com.br
+
+[ req_attributes ]
+challengePassword = 
+unstructuredName   = 
+
+[ v3_ca ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = localhost
+DNS.2 = 127.0.0.1
