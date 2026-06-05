@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
   selector: 'app-cookie-consent',
   templateUrl: './cookie-consent.component.html',
   styleUrls: ['./cookie-consent.component.scss'],
-  imports: [CommonModule] ,
+  imports: [CommonModule],
   standalone: true
 })
 
@@ -19,7 +19,7 @@ export class CookieConsentComponent implements OnInit {
     }
   }
 
-  public acceptCookies = () =>  {
+  public acceptCookies = () => {
     localStorage.setItem('cookie-consent', 'accepted');
     this.showBanner = false;
   }
