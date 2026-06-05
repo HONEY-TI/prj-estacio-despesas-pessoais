@@ -18,6 +18,8 @@
 - [🧭 Visão Geral](#-visão-geral)
 - [🔎 Análise Técnica](#-análise-técnica)
 - [🏗️ Arquitetura](#️-arquitetura)
+- [📐 Diagramas Técnicos](#-diagramas-técnicos)
+- [🔄 Fluxos de Execução](#-fluxos-de-execução)
 - [🧱 Padrões e Decisões](#-padrões-e-decisões)
 - [📁 Estrutura do Repositório](#-estrutura-do-repositório)
 - [🧩 Backend .NET](#-backend-net)
@@ -85,66 +87,382 @@ O projeto evoluiu de uma API acadêmica de finanças pessoais para uma solução
 
 ## 🏗️ Arquitetura
 
-```text
-Angular/Ionic SPA
-  -> WebApi Controllers
-  -> Application Business Services
-  -> Repository / UnitOfWork
-  -> Infrastructure RegisterContext
-  -> MySQL | SQL Server | Oracle | InMemory em testes
+A solução segue uma arquitetura em camadas com separação explícita entre interface, aplicação, domínio, persistência e infraestrutura. O `Program.cs` da WebApi é o ponto de composição do runtime: registra CORS, controllers, versionamento Swagger, DbContext, JWT, criptografia, AutoMapper, S3, repositórios, serviços de aplicação, CQRS, middleware global de exceções, arquivos estáticos e health checks.
 
-WebApi
-  -> JWT Bearer / SigningConfigurations
-  -> GlobalException Middleware
-  -> Swagger Versioning
-  -> Health Checks
-  -> Static files / SPA fallback
+| Camada | Projetos | Responsabilidade técnica |
+| --- | --- | --- |
+| Interface | `WebApi`, `AngularApp` | Exposição HTTP, SPA, guards, services TypeScript, Swagger, fallback para `index.html` e health endpoints. |
+| Aplicação | `Application` | Casos de uso, DTOs, AutoMapper, autenticação, validações de fluxo, geração de token e orquestração de repositórios. |
+| Domínio | `Domain` | Entidades financeiras, objetos de valor, estados e regras que não dependem de framework. |
+| Persistência | `Repository`, `Repository.Mapping` | Repositórios, Unit of Work, queries especializadas e mapeamentos EF Core por provider. |
+| Infraestrutura | `Infrastructure`, `Migrations`, `GlobalException`, `CrossCutting` | DbContext, providers SQL, Amazon S3, e-mail, migrations, seeders, tratamento global de erros e CQRS genérico. |
 
-Application
-  -> DTOs / AutoMapper
-  -> EasyCryptoSalt
-  -> TokenConfiguration
-  -> EmailSender
-  -> Amazon S3 bucket abstraction
+### Visão em Camadas
+
+```mermaid
+flowchart TB
+    User[Usuario final] --> SPA[Angular/Ionic SPA]
+    SPA -->|HTTPS + JWT Bearer| API[ASP.NET Core WebApi]
+
+    API --> Controllers[Controllers REST]
+    Controllers --> App[Application Business Services]
+    App --> Domain[Domain Entities e Value Objects]
+    App --> Repo[Repository + Unit of Work]
+    Repo --> EF[Infrastructure RegisterContext]
+    EF --> DB[(MySQL ativo)]
+    EF -. provider alternativo .-> SQL[(SQL Server)]
+    EF -. provider alternativo .-> Oracle[(Oracle)]
+
+    App --> Crypto[EasyCryptoSalt]
+    App --> Token[JWT TokenConfiguration]
+    App --> S3[Amazon S3 Bucket]
+    API --> Health[Health Checks]
+    API --> Swagger[Swagger + API Versioning]
+    API --> Errors[GlobalException Middleware]
 ```
 
-### Fluxos Principais
+### Dependências entre Projetos
 
-```text
-Cadastro/Login
-  -> AcessoController
-  -> IAcessoBusiness
-  -> AcessoBusinessImpl
-  -> IAcessoRepositorioImpl
-  -> EasyCryptoSalt / TokenConfiguration
-  -> AuthenticationDto com token e refresh token
+```mermaid
+flowchart LR
+    WebApi --> Application
+    Application --> CrossCutting
+    Application --> Domain
+    Application --> Infrastructure
+    Application --> Repository
+    CrossCutting --> Domain
+    CrossCutting --> Repository
+    Repository --> Domain
+    Repository --> Infrastructure
+    Infrastructure --> Domain
+    Infrastructure --> Mapping[Repository.Mapping]
+    Mapping --> Domain
+    XunitTests --> WebApi
+    XunitTests --> Application
+    XunitTests --> Domain
+    XunitTests --> Infrastructure
+    XunitTests --> Repository
+    XunitTests --> DataSeeders[Migrations.DataSeeders]
 ```
 
-```text
-Registro financeiro
-  -> DespesaController ou ReceitaController
-  -> IBusinessBase<Dto, Entity>
-  -> BusinessBase / implementação específica
-  -> IRepositorio<Entity>
-  -> UnitOfWork
-  -> RegisterContext
+### Pipeline HTTP
+
+```mermaid
+flowchart TD
+    Request[HTTP Request] --> Exception[GlobalException Middleware]
+    Exception --> Hsts[HSTS + HTTPS Redirection]
+    Hsts --> Culture[Cultura pt-BR]
+    Culture --> Cors[CORS]
+    Cors --> Static[DefaultFiles + StaticFiles]
+    Static --> Routing[Routing]
+    Routing --> Cert[Certificate Forwarding]
+    Cert --> AuthN[Authentication JWT Bearer]
+    AuthN --> AuthZ[Authorization Roles]
+    AuthZ --> Controllers[MapControllers]
+    Controllers --> Fallback[Fallback SPA index.html]
 ```
 
-```text
-Dashboard
-  -> Angular dashboard
-  -> SaldoController / GraficosController / LancamentoController
-  -> ISaldoBusiness / IGraficosBusiness / ILancamentoBusiness
-  -> Repositories especializados
-  -> dados consolidados por usuário e período
+## 📐 Diagramas Técnicos
+
+### Modelo de Domínio
+
+```mermaid
+classDiagram
+    direction LR
+
+    class BaseDomain {
+        +Guid Id
+    }
+
+    class Usuario {
+        +string Nome
+        +string SobreNome
+        +string Telefone
+        +string Email
+        +StatusUsuario StatusUsuario
+        +PerfilUsuario PerfilUsuario
+        +byte[] Profile
+        +CreateUsuario(Usuario)
+    }
+
+    class Acesso {
+        +string Login
+        +string Senha
+        +Guid UsuarioId
+        +string RefreshToken
+        +DateTime RefreshTokenExpiry
+        +string ExternalProvider
+        +string ExternalId
+    }
+
+    class Categoria {
+        +string Descricao
+        +Guid UsuarioId
+        +int TipoCategoriaId
+    }
+
+    class Despesa {
+        +DateTime Data
+        +string Descricao
+        +decimal Valor
+        +DateTime DataVencimento
+        +Guid UsuarioId
+        +Guid CategoriaId
+    }
+
+    class Receita {
+        +DateTime Data
+        +string Descricao
+        +decimal Valor
+        +Guid UsuarioId
+        +Guid CategoriaId
+    }
+
+    class Lancamento {
+        +decimal Valor
+        +DateTime Data
+        +string Descricao
+        +Guid UsuarioId
+        +Guid CategoriaId
+        +Guid DespesaId
+        +Guid ReceitaId
+        +DateTime DataCriacao
+    }
+
+    class ImagemPerfilUsuario
+    class Grafico
+    class Saldo
+    class PerfilUsuario
+    class TipoCategoria
+    class StatusUsuario
+
+    BaseDomain <|-- Usuario
+    BaseDomain <|-- Acesso
+    BaseDomain <|-- Categoria
+    BaseDomain <|-- Despesa
+    BaseDomain <|-- Receita
+    BaseDomain <|-- Lancamento
+    BaseDomain <|-- ImagemPerfilUsuario
+
+    Usuario "1" o-- "*" Categoria
+    Usuario "1" --> "1" PerfilUsuario
+    Usuario "1" --> "1" StatusUsuario
+    Categoria "*" --> "1" TipoCategoria
+    Categoria "1" o-- "*" Despesa
+    Categoria "1" o-- "*" Receita
+    Usuario "1" o-- "*" Despesa
+    Usuario "1" o-- "*" Receita
+    Usuario "1" o-- "*" Lancamento
+    Lancamento "0..1" --> "1" Despesa
+    Lancamento "0..1" --> "1" Receita
+    Lancamento "*" --> "1" Categoria
 ```
 
-```text
-Imagem de perfil
-  -> UsuarioController UpdateProfileImage
-  -> IUsuarioBusiness
-  -> Infrastructure AmazonS3Bucket
-  -> bucket configurado em AmazonS3Configurations
+### Modelo Conceitual de Dados
+
+```mermaid
+erDiagram
+    USUARIO ||--o{ CATEGORIA : possui
+    USUARIO ||--o{ DESPESA : registra
+    USUARIO ||--o{ RECEITA : registra
+    USUARIO ||--o{ LANCAMENTO : consolida
+    CATEGORIA ||--o{ DESPESA : classifica
+    CATEGORIA ||--o{ RECEITA : classifica
+    CATEGORIA ||--o{ LANCAMENTO : referencia
+    DESPESA ||--o| LANCAMENTO : gera
+    RECEITA ||--o| LANCAMENTO : gera
+
+    USUARIO {
+        guid Id PK
+        string Nome
+        string SobreNome
+        string Telefone
+        string Email
+        int StatusUsuario
+        int PerfilUsuario
+    }
+
+    CATEGORIA {
+        guid Id PK
+        string Descricao
+        guid UsuarioId FK
+        int TipoCategoriaId FK
+    }
+
+    DESPESA {
+        guid Id PK
+        date Data
+        string Descricao
+        decimal Valor
+        date DataVencimento
+        guid UsuarioId FK
+        guid CategoriaId FK
+    }
+
+    RECEITA {
+        guid Id PK
+        date Data
+        string Descricao
+        decimal Valor
+        guid UsuarioId FK
+        guid CategoriaId FK
+    }
+
+    LANCAMENTO {
+        guid Id PK
+        decimal Valor
+        date Data
+        string Descricao
+        guid UsuarioId FK
+        guid CategoriaId FK
+        guid DespesaId FK
+        guid ReceitaId FK
+    }
+```
+
+### Componentes do Frontend
+
+```mermaid
+flowchart TB
+    AppModule[AppModule] --> Routing[AppRoutingModule]
+    Routing --> Publicas[Login, Registro, Privacidade]
+    Routing --> Guard[AuthGuard]
+    Guard --> Privadas[Dashboard, Categorias, Despesas, Receitas, Lancamentos, Perfil, Configuracoes]
+
+    Privadas --> Layout[Layout + Barra de Ferramenta + Footer]
+    Privadas --> DataTable[DataTable Component]
+    Privadas --> Charts[BarChart Component]
+    Privadas --> Modals[Modal Form + Modal Confirm]
+
+    Publicas --> AuthService[Auth Services]
+    Privadas --> ApiServices[API Services]
+    ApiServices --> Interceptor[HTTP Interceptor]
+    Interceptor --> TokenStorage[Token Storage]
+    Interceptor --> WebApi[ASP.NET Core WebApi]
+```
+
+### Estratégia de Deploy
+
+```mermaid
+flowchart LR
+    Dev[Desenvolvimento local] --> ComposeDev[docker-compose.dev.yml]
+    Staging[Staging] --> ComposeStaging[docker-compose.staging.yml]
+    Prod[Producao] --> ComposeProd[docker-compose.prod.yml]
+
+    ComposeDev --> WebApiDev[WebApi + Angular dist]
+    ComposeStaging --> WebApiStaging[WebApi + Angular dist]
+    ComposeProd --> WebApiProd[WebApi + Angular dist]
+
+    WebApiDev --> MySqlDev[(MySQL)]
+    WebApiStaging --> MySqlStaging[(MySQL)]
+    WebApiProd --> MySqlProd[(MySQL)]
+
+    WebApiDev --> HealthDev["/health + /health-ui"]
+    WebApiStaging --> HealthStaging["/health + /health-ui"]
+    WebApiProd --> HealthProd["/health"]
+```
+
+## 🔄 Fluxos de Execução
+
+### Cadastro e Autenticação
+
+```mermaid
+sequenceDiagram
+    actor U as Usuario
+    participant SPA as Angular/Ionic
+    participant API as AcessoController
+    participant Biz as AcessoBusinessImpl
+    participant Repo as AcessoRepositorio
+    participant Crypto as EasyCryptoSalt
+    participant Token as TokenConfiguration
+    participant DB as RegisterContext
+
+    U->>SPA: Informa cadastro ou login
+    SPA->>API: POST /api/acesso ou /api/acesso/signin
+    API->>Biz: Delegacao do caso de uso
+    Biz->>Crypto: Hash/verificacao de senha
+    Biz->>Repo: Consulta ou persistencia de acesso
+    Repo->>DB: EF Core query/command
+    DB-->>Repo: Entidade persistida ou usuario encontrado
+    Biz->>Token: Gera access token e refresh token
+    Token-->>Biz: AuthenticationDto
+    Biz-->>API: Resultado autenticado
+    API-->>SPA: 200 OK + JWT
+```
+
+### Registro de Despesa ou Receita
+
+```mermaid
+sequenceDiagram
+    actor U as Usuario autenticado
+    participant SPA as Angular Page
+    participant API as DespesaReceitaController
+    participant Base as BusinessBase
+    participant Impl as Business especifico
+    participant Repo as Repositorio
+    participant UoW as UnitOfWork
+    participant DB as RegisterContext
+
+    U->>SPA: Preenche formulario financeiro
+    SPA->>API: POST /api/despesa ou /api/receita com Bearer token
+    API->>API: Extrai UserIdentity do claim sub
+    API->>Impl: Envia DTO + usuario autenticado
+    Impl->>Base: Aplica fluxo comum de CRUD
+    Base->>Repo: Add/Update/Delete/Get
+    Repo->>DB: Manipula DbSet
+    Base->>UoW: Commit
+    UoW->>DB: SaveChanges
+    DB-->>UoW: Resultado
+    Impl-->>API: DTO atualizado
+    API-->>SPA: Resposta HTTP
+```
+
+### Dashboard Financeiro
+
+```mermaid
+sequenceDiagram
+    actor U as Usuario autenticado
+    participant SPA as Dashboard
+    participant Saldo as SaldoController
+    participant Grafico as GraficosController
+    participant Lanc as LancamentoController
+    participant App as Business Services
+    participant Repo as Repositories especializados
+    participant DB as RegisterContext
+
+    U->>SPA: Abre dashboard
+    SPA->>Saldo: GET /api/saldo
+    SPA->>Grafico: GET /api/graficos/bar/{ano}
+    SPA->>Lanc: GET /api/lancamento/{anoMes}
+    Saldo->>App: Calcula saldo do usuario
+    Grafico->>App: Agrega receitas/despesas por ano
+    Lanc->>App: Consulta lancamentos por competencia
+    App->>Repo: Queries filtradas por usuario e periodo
+    Repo->>DB: EF Core
+    DB-->>Repo: Dados financeiros
+    Repo-->>App: Entidades/agregados
+    App-->>SPA: DTOs para cards, tabelas e graficos
+```
+
+### Imagem de Perfil
+
+```mermaid
+sequenceDiagram
+    actor U as Usuario autenticado
+    participant SPA as ConfiguracoesPerfil
+    participant API as UsuarioController
+    participant Biz as UsuarioBusinessImpl
+    participant S3 as AmazonS3Bucket
+    participant DB as RegisterContext
+
+    U->>SPA: Seleciona nova imagem
+    SPA->>API: PUT /api/usuario/updateprofileimage
+    API->>API: Valida autenticacao e formato
+    API->>Biz: Encaminha arquivo e usuario
+    Biz->>S3: Upload/atualizacao conforme configuracao
+    Biz->>DB: Atualiza referencia/metadados quando aplicavel
+    Biz-->>API: Resultado do processamento
+    API-->>SPA: Imagem atualizada
 ```
 
 ## 🧱 Padrões e Decisões
