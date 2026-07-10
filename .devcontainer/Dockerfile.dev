@@ -1,0 +1,119 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0
+
+# Ferramentas do sistema
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        git \
+        curl \
+        wget \
+        unzip \
+        vim \
+        nano \
+        zsh \
+        sudo \
+        sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# eza
+ARG EZA_VERSION=0.23.4
+RUN curl -fsSL "https://github.com/eza-community/eza/releases/download/v${EZA_VERSION}/eza_x86_64-unknown-linux-musl.tar.gz" \
+    | tar -xzf - -C /usr/local/bin \
+    && chmod +x /usr/local/bin/eza
+
+# Usuário dev (não root)
+ARG USERNAME=developer
+RUN groupadd ${USERNAME} \
+    && useradd -m -s /bin/bash -g ${USERNAME} ${USERNAME} \
+    && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${USERNAME} \
+    && chmod 0440 /etc/sudoers.d/${USERNAME}
+
+RUN chmod 1777 /tmp
+USER ${USERNAME}
+# Ferramentas .NET
+RUN dotnet tool install --global dotnet-ef \
+    && dotnet tool install --global dotnet-watch \
+    && dotnet tool install --global dotnet-outdated-tool
+
+ENV DOTNET_USE_POLLING_FILE_WATCHER=1
+ENV DOTNET_RUNNING_IN_CONTAINER=true
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
+ENV PATH="${PATH}:/home/${USERNAME}/.dotnet/tools"
+ENV NUGET_PACKAGES=/home/${USERNAME}/.nuget/packages
+ENV DOTNET_CLI_HOME=/home/${USERNAME}
+
+USER root    
+# Node.js 24.x
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && npm install -g npm@12.0.1 \
+    && npm install -g @angular/cli@20.1.5 \
+    && npm cache clean --force
+
+# ── Bash personalizado 
+RUN cat >> /home/${USERNAME}/.bashrc <<'EOF'
+alias cls='clear'
+alias ll='eza -l -h --group --icons'
+alias la='eza -la -hs --group'
+alias lt='eza --tree --level=2 --group'
+
+function run() {
+    case "$1" in
+        swagger:dev)
+            dotnet run --launch-profile "Swagger Development"
+            ;;
+
+        swagger:prod)
+            dotnet run --launch-profile "Swagger Production"
+            ;;
+
+        dev)
+            dotnet run --launch-profile "Development"
+            ;;
+
+        prod)
+            dotnet run --launch-profile "Production"
+            ;;
+
+        *)
+            echo "Uso: run {swagger:dev|swagger:prod|dev|prod|docker}"
+            ;;
+    esac
+}
+
+function ls() {
+    command eza -la --group --group-directories-first "$@"
+}
+
+function parse_git_branch() {
+    local branch
+    branch=$(git branch --show-current 2>/dev/null)
+    [ -n "$branch" ] && echo " ($branch)"
+}
+
+PS1='\[\e[0;32m\][\[\e[1;34m\]\u\[\e[0m\]:\[\e[1;36m\]\w\[\e[0m\]\[\e[1;33m\]$(parse_git_branch)\[\e[0m\]\[\e[0;32m\]]\[\e[0m\]\$'
+EOF
+
+RUN cat > /home/${USERNAME}/.bash_profile <<'EOF'
+export PATH="$PATH:/home/developer/.dotnet/tools"
+
+if [ -f ~/.bashrc ]; then
+    source ~/.bashrc
+fi
+EOF
+
+RUN chown ${USERNAME}:${USERNAME} \
+    /home/${USERNAME}/.bashrc \
+    /home/${USERNAME}/.bash_profile
+
+RUN mkdir -p /home/${USERNAME}/.aspnet/DataProtection-Keys \
+    && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.aspnet
+
+COPY .devcontainer/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+RUN mkdir -p /home/${USERNAME}/.aspnet/https \
+    && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.aspnet
+
+USER ${USERNAME}
+WORKDIR /workspace
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
