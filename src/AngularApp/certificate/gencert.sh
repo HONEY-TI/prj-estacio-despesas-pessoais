@@ -5,7 +5,7 @@ arquivo_base="ssl_certificate"
 chave_privada="${arquivo_base}.key"
 certificado="${arquivo_base}.pem"
 
-cnf_file="Oem.cnf"
+cnf_file="oem.cnf"
 
 # Verifica se o arquivo de configuração Oem.cnf existe
 if [ ! -f "$cnf_file" ]; then
