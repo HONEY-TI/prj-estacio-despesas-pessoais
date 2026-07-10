@@ -1,0 +1,60 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile.dev
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    container_name: dotnet-dev
+    volumes:
+      - ..:/workspace      
+      - dotnet-nuget:/home/developer/.nuget   # cache de pacotes NuGet
+      - dotnet-tools:/home/developer/.dotnet  # tools globais persistidas
+      - aspnet-keys:/home/developer/.aspnet/DataProtection-Keys
+      - node_modules:/home/developer/workspace/src/AngularApp/node_modules  # cache de pacotes npm
+    working_dir: /workspace/src
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:42535
+      - DOTNET_CLI_TELEMETRY_OPTOUT=1
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - BUILDKIT_STEP_LOG_MAX_SIZE=-1
+      - CONNECTION_STRING=Data Source=/workspace/src/data/app.db
+      - TMPDIR=/home/developer/tmp      
+    ports:
+      - "443:443"   # HTTP
+      - "80:80"   # HTTP
+      - "42536:42536"   # HTTP http://localhost:42536
+      - "42535:42535"   # HTTPS (opcional) http://localhost:42535
+      - "4200:4200"   # HTTPS (opcional) http://localhost:42535
+    stdin_open: true  # mantém o container vivo
+    tty: true
+    command: sleep infinity
+    entrypoint: ["/usr/local/bin/docker-entrypoint.sh"]
+    networks:
+      - dotnet-network
+
+  # SQLite browser — opcional, acesse em http://localhost:8080
+  sqlite-web:
+    image: coleifer/sqlite-web
+    container_name: sqlite-browser
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../src/data:/data
+    environment:
+      - SQLITE_DATABASE=/data/app.db
+    networks:
+      - dotnet-network
+    profiles:
+      - tools   # só sobe com: docker compose --profile tools up
+
+volumes:
+  dotnet-nuget:
+  dotnet-tools:
+  aspnet-keys:
+  node_modules:
+
+networks:
+  dotnet-network:
+    driver: bridge
