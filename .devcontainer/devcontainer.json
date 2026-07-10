@@ -1,0 +1,29 @@
+{
+  "name": ".NET Core 3.1 Dev",
+  "dockerComposeFile": ["docker-compose.yml"],
+  "service": "app",
+  "workspaceFolder": "/workspace/src",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "kreativ-software.csharpextensions",
+        "jchannon.csharpfixformat",
+        "streetsidesoftware.code-spell-checker",
+        "eamodio.gitlens",
+        "pkief.material-icon-theme"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4,
+        "omnisharp.enableRoslynAnalyzers": true,
+        "omnisharp.enableEditorConfigSupport": true,
+        "dotnet-test-explorer.testProjectPath": "**/*.Tests.csproj"
+      }
+    }
+  },
+  "forwardPorts": [5000, 5001],
+  "postCreateCommand": "echo Container preparado",
+  "remoteUser": "developer"
+}
