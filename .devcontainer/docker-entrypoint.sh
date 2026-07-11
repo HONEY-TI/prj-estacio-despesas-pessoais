@@ -2,7 +2,7 @@
 set -e
 
 echo "Inicializando ambiente..."
-
+ng config -g cli.completion false
 # Corrige permissões dos volumes persistentes
 sudo chown -R developer:developer /home/developer/.nuget || true
 sudo chown -R developer:developer /home/developer/.dotnet || true

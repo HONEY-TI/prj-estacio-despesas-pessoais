@@ -35,12 +35,17 @@ public class SeederExceptionHandler : ISeederExceptionHandler
 
     private static bool IsDuplicate(Exception exception)
     {
-        return exception.InnerException switch
+        while (exception != null)
         {
-            MySqlException mysqlException 
-                when mysqlException.Number == 1062 => true,
+            if (exception is MySqlException mysqlException &&
+                mysqlException.Number == 1062)
+            {
+                return true;
+            }
 
-            _ => false
-        };
+            exception = exception.InnerException;
+        }
+
+        return false;
     }
 }

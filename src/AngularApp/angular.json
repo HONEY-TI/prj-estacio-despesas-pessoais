@@ -138,6 +138,9 @@
           },
           "configurations": {
             "production": {
+              "ssl": true,
+              "host": "0.0.0.0",
+              "proxyConfig": "src/proxy.conf.js",
               "buildTarget": "angularapp:build:production"
             },
             "development": {

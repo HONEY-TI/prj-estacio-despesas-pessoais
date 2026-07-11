@@ -29,7 +29,6 @@ RUN groupadd ${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
 
 RUN chmod 1777 /tmp
-RUN ng config -g cli.completion false
 ENV DOTNET_USE_POLLING_FILE_WATCHER=1
 ENV DOTNET_RUNNING_IN_CONTAINER=true
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
