@@ -8,13 +8,14 @@ public static class HealthCheckDependencyInject
     {
 
         // Carregar configurações do appsettings
+        //https://localhost:42535/health-ui
         var healthCheckConfig = builder.Configuration
                         .GetSection("HealthCheckOptions")
                         .Get<HealthCheckConfig>();
 
 
         var healthChecksBuilder = builder.Services.AddHealthChecks();
-        
+
         // HealthChecks de URLs externas
         healthCheckConfig?.Endpoints?
             .Where(e => !string.IsNullOrWhiteSpace(e.EndPoint))

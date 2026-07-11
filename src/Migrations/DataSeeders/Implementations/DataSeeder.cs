@@ -3,11 +3,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Migrations.DataSeeders.Implementations;
 
-public interface ISeederExceptionHandler
-{
-    void Handle(string component, Exception exception);
-}
-
 public class DataSeeder : IDataSeeder
 {
     private readonly IEnumerable<ISeeder> _seeders;
@@ -58,34 +53,33 @@ public class DataSeeder : IDataSeeder
 
     private void ExecuteSeeder(ISeeder seeder)
     {
-        try
-        {
-            seeder.Seed();
-
-            _logger.LogInformation(
-                "Seeder {Seeder} executed successfully.",
-                seeder.GetType().Name);
-        }
-        catch (Exception exception)
-        {
-            _exceptionHandler.Handle(
-                seeder.GetType().Name,
-                exception);
-        }
+        Execute(
+            seeder.GetType().Name,
+            seeder.Seed);
     }
 
     private void ExecuteUpdater(IUpdater updater)
     {
+        Execute(
+            updater.GetType().Name,
+            updater.Update);
+    }
+
+    private void Execute(string componentName, Action action)
+    {
         try
         {
-            updater.Update();
+            action();
+
+            _logger.LogInformation(
+                "{Component} executed successfully.",
+                componentName);
         }
         catch (Exception exception)
         {
-            _logger.LogError(
-                exception,
-                "Error executing updater {Updater}.",
-                updater.GetType().Name);
+            _exceptionHandler.Handle(
+                componentName,
+                exception);
         }
     }
 }

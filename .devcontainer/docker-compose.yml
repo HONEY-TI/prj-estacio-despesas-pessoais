@@ -11,6 +11,7 @@ services:
       - ../src/WebApi/appsettings.docker.json:/workspace/src/Migrations/MySqlServer/appsettings.json      
       - ../src/WebApi/appsettings.docker.json:/workspace/src/WebApi/appsettings.json      
       - ../src/WebApi/appsettings.docker.json:/workspace/src/WebApi/appsettings.development.json
+      - ../src/AngularApp/src/environments/environment.dev.ts:/workspace/src/AngularApp/src/environments/environment.ts
       - dotnet-nuget:/home/developer/.nuget   # cache de pacotes NuGet
       - aspnet-keys:/home/developer/.aspnet/DataProtection-Keys
       - node_modules:/home/developer/workspace/src/AngularApp/node_modules  # cache de pacotes npm
