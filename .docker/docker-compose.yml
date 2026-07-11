@@ -1,24 +1,35 @@
-﻿services:
-  app-despesas-pessoais:
+﻿include:
+  - path: ../.docker-infra-db/docker-compose.yml
+
+services:
+  app-despesas-pessoais-dev:
     build:
       context: ..
-      dockerfile: .docker/Dockerfile.dotnet
+      dockerfile: .docker/Dockerfile
       args:
         - BUILDKIT_INLINE_CACHE=1
-    container_name: app-despesas-pessoais
+    container_name: app-despesas-pessoais-dev
     image: alexfariakof/despesas-backend-img
     environment:
       TZ: America/Sao_Paulo
-      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_ENVIRONMENT: Development
     ports:
       - "80:80"   # HTTP http://localhost
       - "443:443"   # HTTPS (opcional) https://localhost
     volumes:
       - ../src/WebApi/certificate:/app/certificate:ro
     networks:
-      - dotnet-network
+      - dev-network
+      - mariadb-network
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 networks:
-  dotnet-network:
-    external: true
-    name: dotnet-network
+  dev-network:
+    driver: bridge
+  mariadb-network:
+    external: true    
+
