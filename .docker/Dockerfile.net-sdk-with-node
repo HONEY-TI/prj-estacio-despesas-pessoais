@@ -1,0 +1,21 @@
+﻿FROM mcr.microsoft.com/dotnet/sdk:10.0 AS base
+
+RUN apt-get update && \
+    apt-get install -y curl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# Ferramentas .NET disponíveis para todos os usuários
+RUN dotnet tool install --tool-path /usr/local/bin dotnet-ef \
+    && dotnet tool install --tool-path /usr/local/bin dotnet-watch \
+    && dotnet tool install --tool-path /usr/local/bin dotnet-outdated-tool \
+    && dotnet tool install --tool-path /usr/local/bin dotnet-reportgenerator-globaltool
+
+# Node.js 24.x
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && npm install -g npm@12.0.1 \
+    && npm install -g @angular/cli@21.2.13 \
+    && npm cache clean --force
+
+RUN mkdir -p /tools \
+    && ln -s /usr/local/bin/reportgenerator /tools/reportgenerator
