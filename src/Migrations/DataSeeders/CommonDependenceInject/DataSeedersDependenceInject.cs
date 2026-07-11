@@ -20,6 +20,7 @@ public static class DataSeedersDependenceInject
         services.AddScoped<IDatabaseMaintenance, SqlServerDatabaseMaintenance>();
         services.AddScoped<IDatabaseMaintenance, OracleDatabaseMaintenance>();
         services.AddScoped<IDataSeeder, DataSeeder>();
+        services.AddScoped<ISeederExceptionHandler, SeederExceptionHandler>();
 
     }
 
