@@ -10,13 +10,8 @@ namespace WebApi.CommonDependenceInject;
 
 public static class AutorizationDependenceInject
 {
-    private static readonly string[] PRODUCTION_ORIGINGS =  { 
-        "https://alexfariakof.com" 
-    };
-
-    private static readonly string[] DEVELOPMENT_ORIGINGS = {
+    private static readonly string[] ALLOWED_ORIGINGS = {
         "https://alexfariakof.com",
-        "https://alexfariakof.com:42535",
         "https://localhost",
         "https://localhost:42535",
         "https://localhost:4200",
@@ -28,15 +23,11 @@ public static class AutorizationDependenceInject
 
     public static void AddCORSConfigurations(this WebApplicationBuilder builder)
     {
-        var allowedOrigins = builder.Environment.IsProduction()
-            ? PRODUCTION_ORIGINGS
-            : DEVELOPMENT_ORIGINGS;
-
         builder.Services.AddCors(options =>
         {
             options.AddDefaultPolicy(policy =>
             {
-                policy.WithOrigins(allowedOrigins)
+                policy.WithOrigins(ALLOWED_ORIGINGS)
                       .AllowAnyMethod()
                       .AllowAnyHeader()
                       .AllowCredentials();
