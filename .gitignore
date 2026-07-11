@@ -412,3 +412,5 @@ FodyWeavers.xsd
 /Despesas.Backend/Program.cs
 **/src/app/pages/login/login.component.ts
 **/coveragereport/
+.claude/
+**/TODO*
