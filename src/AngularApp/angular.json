@@ -27,7 +27,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "dist/angular-app",
+            "deleteOutputPath": true,
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -57,16 +58,41 @@
           },
           "configurations": {
             "production": {
-              "optimization": true,
+              "buildOptimizer": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": {
+                  "inline": true
+                }
+              },
               "sourceMap": false,
               "aot": true,
               "extractLicenses": true,
-              "namedChunks": true,
-              "outputHashing": "all"
+              "vendorChunk": false,
+              "commonChunk": true,
+              "namedChunks": false,
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "4mb",
+                  "maximumError": "4mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "10kb",
+                  "maximumError": "20kb"
+                }
+              ]
             },
             "development": {
               "optimization": true,
               "extractLicenses": false,
+              "sourceMap": true,
               "progress": true,
               "aot": true,
               "namedChunks": true,
@@ -176,6 +202,10 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "cache": {
+      "enabled": true,
+      "environment": "all"
+    }
   }
 }
