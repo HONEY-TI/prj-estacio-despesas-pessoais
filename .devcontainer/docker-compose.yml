@@ -1,3 +1,6 @@
+include:
+  - path: ../.docker-infra-db/docker-compose.yml
+
 services:
   app:
     build:
@@ -34,39 +37,13 @@ services:
     entrypoint: /usr/local/bin/docker-entrypoint.sh
     networks:
       - dotnet-network
+      - mariadb-network
     depends_on:
       mariadb:
         condition: service_healthy
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  mariadb:
-    container_name: mariadb
-    image: mariadb:10.3.39
-    restart: always
-    environment:
-        TZ: America/Sao_Paulo
-        MARIADB_ROOT_PASSWORD: "12345!"
-        MARIADB_USER: docker
-        MARIADB_PASSWORD: docker
-        MARIADB_DATABASE: DespesasPessoaisDB
-        LANG: C.UTF-8
-    ports:
-        - "3306:3306"
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "mysqladmin ping -h localhost -uroot -p12345!"
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 60s
-    networks:
-      - dotnet-network      
-      
 volumes:
   dotnet-nuget:
   aspnet-keys:
@@ -76,3 +53,5 @@ networks:
   dotnet-network:
     driver: bridge
     name: dotnet-network
+  mariadb-network:
+    external: true
