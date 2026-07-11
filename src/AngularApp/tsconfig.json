@@ -12,10 +12,10 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node16",
     "importHelpers": true,
     "target": "ES2022",
-    "module": "node16",
+    "module": "nodenext",
     "lib": [
       "ES2022",
       "dom"

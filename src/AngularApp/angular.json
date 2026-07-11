@@ -37,36 +37,22 @@
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": [
               "oidc-client",
-              "dayjs",
-              "moment",
-              "popperjs",
               "bootstrap",
-              "mdb"
+              "mdb-ui-kit",
+              "datatables.net"
             ],
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
-              "src/styles/_variables.scss",
-              "src/styles/styles.scss",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
-              "node_modules/mdb-ui-kit/css/mdb.min.css",
-              "node_modules/datatables.net-dt/css/jquery.dataTables.css",
-              "node_modules/datatables.net-select-dt/css/select.dataTables.css"
+              "src/styles/styles.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "node_modules/mdb-ui-kit/js/mdb.umd.min.js",
               "node_modules/datatables.net/js/jquery.dataTables.js",
-              "node_modules/datatables.net-select/js/dataTables.select.min.js",
-              "node_modules/dayjs/dayjs.min.js",
-              "node_modules/dayjs/locale/pt-br.js",
-              "node_modules/moment/min/moment.min.js"
+              "node_modules/datatables.net-select/js/dataTables.select.min.js"
             ]
           },
           "configurations": {
@@ -88,20 +74,6 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.dev.ts"
-                }
-              ]
-            },
-            "local-development": {
-              "buildOptimizer": true,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.local.ts"
                 }
               ]
             },
@@ -169,14 +141,10 @@
               "buildTarget": "angularapp:build:production"
             },
             "development": {
-              "proxyConfig": "src/proxy.conf.js",
-              "buildTarget": "angularapp:build:development"
-            },
-            "local-development": {
               "ssl": true,
               "host": "0.0.0.0",
               "proxyConfig": "src/proxy.conf.js",
-              "buildTarget": "angularapp:build:local-development"
+              "buildTarget": "angularapp:build:development"
             }
           },
           "defaultConfiguration": "production"
@@ -195,7 +163,6 @@
               "src/assets"
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles/styles.scss"
             ],
             "scripts": [],

@@ -3,6 +3,14 @@ set -e
 
 echo "Inicializando ambiente..."
 
+# Corrige permissões dos volumes persistentes
+sudo chown -R developer:developer /home/developer/.nuget || true
+sudo chown -R developer:developer /home/developer/.dotnet || true
+sudo chown -R developer:developer /home/developer/.aspnet || true
+
+chmod -R u+rwX /home/developer/.nuget || true
+chmod -R u+rwX /home/developer/.dotnet || true
+
 # Gera certificado se não existir
 if [ ! -f /workspace/src/WebApi/certificate/webapi-cert.pfx ]; then
     echo "Criando certificado HTTPS..."
@@ -13,7 +21,6 @@ if [ ! -f /workspace/src/WebApi/certificate/webapi-cert.pfx ]; then
 fi
 
 
-# Converte certificado para Angular
 mkdir -p /home/developer/.aspnet/https
 
 if [ ! -f /home/developer/.aspnet/https/WebApi.pem ]; then
@@ -25,7 +32,6 @@ if [ ! -f /home/developer/.aspnet/https/WebApi.pem ]; then
         -out /home/developer/.aspnet/https/WebApi.pem \
         -passin pass:12345!
 
-
     openssl pkcs12 \
         -in /workspace/src/WebApi/certificate/webapi-cert.pfx \
         -nocerts \
@@ -35,10 +41,6 @@ if [ ! -f /home/developer/.aspnet/https/WebApi.pem ]; then
 
 fi
 
-
 echo "Ambiente pronto."
 
-
-# IMPORTANTE:
-# mantém o container vivo para o VS Code
 exec "$@"

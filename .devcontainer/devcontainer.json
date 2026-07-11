@@ -1,11 +1,14 @@
 {
   "name": ".NET Core 3.1 Dev",
-  "dockerComposeFile": ["docker-compose.yml"],
+  "dockerComposeFile": [
+    "docker-compose.yml"
+  ],
   "service": "app",
   "workspaceFolder": "/workspace/src",
   "customizations": {
     "vscode": {
       "extensions": [
+        "ms-dotnettools.csdevkit",
         "ms-dotnettools.csharp",
         "ms-dotnettools.vscode-dotnet-runtime",
         "kreativ-software.csharpextensions",
@@ -23,7 +26,10 @@
       }
     }
   },
-  "forwardPorts": [5000, 5001],
-  "postCreateCommand": "echo Container preparado",
+  "forwardPorts": [
+    42535,
+    42536
+  ],
+  "postCreateCommand": "cd /workspace/src/WebApi && dotnet dev-certs https --trust || true && dotnet build && cd /workspace/src/Migrations/MySqlServer && dotnet restore && DOTNET_ENVIRONMENT=Development dotnet ef database update -p Migrations.MySqlServer.csproj && DOTNET_ENVIRONMENT=Development dotnet run --project Migrations.MySqlServer.csproj ",
   "remoteUser": "developer"
 }
