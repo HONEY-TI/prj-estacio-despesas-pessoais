@@ -34,6 +34,7 @@ bld/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+dotnet/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
@@ -378,12 +379,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# VS Code files for those working on multiple tools
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
 # Local History for Visual Studio Code
 .history/
@@ -401,7 +396,6 @@ FodyWeavers.xsd
 # Script gerador de Certificado SSL
 */gencert.sh
 
-.vscode/
 */appsettings.Development.json
 */appsettings.json
 .config/
@@ -410,5 +404,7 @@ FodyWeavers.xsd
 *.key
 *.crt
 /Despesas.Backend/Program.cs
-**/src/app/pages/login/login.component.ts
 **/coveragereport/
+**.angular/
+**/*TODO*
+.claude/
