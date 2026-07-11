@@ -22,7 +22,7 @@ builder.Services.AddSwaggerApiVersioning(); // Swagger + versionamento de API
 //builder.Services.ConfigureOracleServerMigrationsContext(builder.Configuration);
 
 // -------------------- Configuração do DbContext Sql Server  --------------------
-//builder.Services.ConfigureMsSqlServerMigrationsContext(builder.Configuration);
+//builder.Services.ConfigureMsSqlServerContext(builder.Configuration);
 
 // -------------------- Configuração do DbContext MySql Server  --------------------
 builder.Services.ConfigureMySqlServerContext(builder.Configuration);
