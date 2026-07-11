@@ -20,6 +20,7 @@
 		<SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
 		<SpaProxyServerUrl>https://localhost:4200</SpaProxyServerUrl>
 	</PropertyGroup>
+	
 	<ItemGroup>
 		<PackageReference Include="AspNetCore.HealthChecks.MySql" Version="9.0.0" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI" Version="9.0.0" />
@@ -35,7 +36,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6" />
 		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
-	  	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -74,8 +75,15 @@
 
 	<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
 		<!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm install" />
-		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm run build -- --configuration production" />
+		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm ci" Condition="'$(Configuration)' == 'Release'" />
+		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm i" Condition="'$(Configuration)' == 'Debug'" />
+		<!-- Build de produção -->
+		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm run build"
+			Condition="'$(Configuration)' == 'Release'" />
+
+		<!-- Build de desenvolvimento -->
+		<Exec WorkingDirectory="$(SpaRoot)\" Command="npm run build:dev"
+			Condition="'$(Configuration)' == 'Debug'" />
 
 		<!-- Include the newly-built files in the publish output -->
 		<ItemGroup>
