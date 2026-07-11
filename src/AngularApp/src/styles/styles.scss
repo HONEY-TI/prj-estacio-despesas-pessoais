@@ -1,8 +1,15 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@use '@angular/material'as mat;
-@use '_variables'as v; // importa variáveis globais
+@use '@angular/material' as mat;
+@use '_variables' as v; // importa variáveis globais
+@use "@angular/material/prebuilt-themes/azure-blue.css";
+@use "bootstrap/dist/css/bootstrap.min.css";
+@use "bootstrap-icons/font/bootstrap-icons.css";
+@use "mdb-ui-kit/css/mdb.min.css";
+@use "datatables.net-dt/css/jquery.dataTables.css";
+@use "datatables.net-select-dt/css/select.dataTables.css";
 
+@use "./variables";
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -15,10 +22,10 @@
 // hue. Available color palettes: https://material.io/design/color/
 
 $my-theme: mat.define-theme((color: (theme-type: light,
-      primary: mat.$azure-palette),
-    typography: (brand-family: 'sans-serif'
-    ),
-    density: (scale: -5)));
+        primary: mat.$azure-palette),
+      typography: (brand-family: 'sans-serif'
+      ),
+      density: (scale: -5)));
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
