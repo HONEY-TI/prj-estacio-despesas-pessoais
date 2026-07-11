@@ -50,9 +50,9 @@ public static class SqlServicesInjectDependence
         {
             var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
             options.UseMySql(
-                connectionString,
-                ServerVersion.AutoDetect(connectionString),
-                b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name));
+                    connectionString,
+                    ServerVersion.AutoDetect(connectionString),
+                    b => b.MigrationsAssembly("Migrations.MySqlServer"));
             options.UseLoggerFactory(loggerFactory);
             options.UseLazyLoadingProxies();
         });

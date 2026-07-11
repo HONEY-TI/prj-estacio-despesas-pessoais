@@ -6,10 +6,10 @@
 ### Set-Item -Path Env:DOTNET_ENVIRONMENT -Value "Production"
 
 ## Migrations.Application
-dotnet ef migrations add Initial -c MsSqlServerContext -p ./Migrations.MsSqlServer/Migrations.MsSqlServer.csproj -s ./Despesas.WebApi -o Migrations.Application
+dotnet ef migrations add Initial -c MsSqlServerContext -p ./Migrations.MsSqlServer/Migrations.MsSqlServer.csproj -s ./WebApi -o Migrations.Application
 dotnet ef migrations add Change-Ids-TypeInt-to-UUID -c MsSqlServerContext -p ./Migrations.MsSqlServer/Migrations.MsSqlServer.csproj -s ./Despesas.WebApi -o Migrations.Application
 
-dotnet ef database update -c MsSqlServerContext -p ./Migrations.MsSqlServer/Migrations.MsSqlServer.csproj -s ./Despesas.WebApi
+dotnet ef database update -c MsSqlServerContext -p Migrations.MsSqlServer.csproj -s /WebApi
 
 
 # Return to a state creatred by Mingrations

@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:10.0
+FROM alexfariakof/dotnet-sdk-with-node:latest
 
 # Ferramentas do sistema
 RUN apt-get update \
@@ -12,6 +12,7 @@ RUN apt-get update \
         zsh \
         sudo \
         sqlite3 \
+        netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 # eza
@@ -28,27 +29,13 @@ RUN groupadd ${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME}
 
 RUN chmod 1777 /tmp
-USER ${USERNAME}
-# Ferramentas .NET
-RUN dotnet tool install --global dotnet-ef \
-    && dotnet tool install --global dotnet-watch \
-    && dotnet tool install --global dotnet-outdated-tool
-
+RUN ng config -g cli.completion false
 ENV DOTNET_USE_POLLING_FILE_WATCHER=1
 ENV DOTNET_RUNNING_IN_CONTAINER=true
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
 ENV PATH="${PATH}:/home/${USERNAME}/.dotnet/tools"
 ENV NUGET_PACKAGES=/home/${USERNAME}/.nuget/packages
 ENV DOTNET_CLI_HOME=/home/${USERNAME}
-
-USER root    
-# Node.js 24.x
-RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
-    && npm install -g npm@12.0.1 \
-    && npm install -g @angular/cli@20.1.5 \
-    && npm cache clean --force
-
 # ── Bash personalizado 
 RUN cat >> /home/${USERNAME}/.bashrc <<'EOF'
 alias cls='clear'
@@ -59,23 +46,32 @@ alias lt='eza --tree --level=2 --group'
 function run() {
     case "$1" in
         swagger:dev)
+            ASPNETCORE_ENVIRONMENT=Development \
+            DOTNET_ENVIRONMENT=Development \
             dotnet run --launch-profile "Swagger Development"
             ;;
 
         swagger:prod)
+            ASPNETCORE_ENVIRONMENT=Production \
+            DOTNET_ENVIRONMENT=Production \
             dotnet run --launch-profile "Swagger Production"
             ;;
 
         dev)
+            ASPNETCORE_ENVIRONMENT=Development \
+            DOTNET_ENVIRONMENT=Development \
             dotnet run --launch-profile "Development"
             ;;
 
         prod)
+            ASPNETCORE_ENVIRONMENT=Production \
+            DOTNET_ENVIRONMENT=Production \
             dotnet run --launch-profile "Production"
             ;;
 
         *)
-            echo "Uso: run {swagger:dev|swagger:prod|dev|prod|docker}"
+            echo "Uso: run {swagger:dev|swagger:prod|dev|prod}"
+            return 1
             ;;
     esac
 }
@@ -107,12 +103,11 @@ RUN chown ${USERNAME}:${USERNAME} \
 
 RUN mkdir -p /home/${USERNAME}/.aspnet/DataProtection-Keys \
     && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.aspnet
+RUN mkdir -p /home/${USERNAME}/.aspnet/https \
+    && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.aspnet
 
 COPY .devcontainer/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-RUN mkdir -p /home/${USERNAME}/.aspnet/https \
-    && chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.aspnet
 
 USER ${USERNAME}
 WORKDIR /workspace
