@@ -33,11 +33,9 @@
 **/MySqlServer.Migrations
 **/.documents
 **/.gitKeep
-**.pem
 LICENSE
 README.md
 **.crt
-**.key
 **/oracle-database-21c
 **/oracle-xe
 **/.docker_scipts_backup_restore
