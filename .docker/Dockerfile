@@ -4,24 +4,22 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-ENV ASPNETCORE_ENVIRONMENT=Production
 ENV ASPNETCORE_URLS=http://+:80;https://+:443
+ENV ASPNETCORE_ENVIRONMENT=Development
 
 FROM alexfariakof/dotnet-sdk-with-node:latest AS build
 WORKDIR /src
 COPY ./src .
 
 WORKDIR /src/WebApi
-
 RUN dotnet publish \
     "./WebApi.csproj" \
-    -c Release \
+    -c Debug \
     -f net10.0 \
     -o /app/publish \
     /p:UseAppHost=false
 
 FROM base AS final
-
 WORKDIR /app
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "WebApi.dll"]
