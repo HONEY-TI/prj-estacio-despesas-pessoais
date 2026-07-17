@@ -1,5 +1,5 @@
 {
-  "name": ".NET Core 3.1 Dev",
+  "name": ".NET Core Dev",
   "dockerComposeFile": [
     "docker-compose.yml"
   ],
@@ -15,7 +15,9 @@
         "jchannon.csharpfixformat",
         "streetsidesoftware.code-spell-checker",
         "eamodio.gitlens",
-        "pkief.material-icon-theme"
+        "pkief.material-icon-theme",
+        "mtxr.sqltools",
+        "redis.redis-for-vscode"
       ],
       "settings": {
         "editor.formatOnSave": true,
