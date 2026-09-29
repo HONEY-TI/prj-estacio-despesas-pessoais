@@ -5,7 +5,7 @@ title: "PR(#21)-Documentar Sincronização Contínua das PRs do Fork"
 branch: feature/documentar-sincronizacao-prs-continuas
 base: develop
 extends: feature-01-documentar-sincronizacao-prs-continuas
-status: open
+status: merged
 ---
 
 ## 📋 Descrição
