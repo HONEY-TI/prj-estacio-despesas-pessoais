@@ -31,6 +31,7 @@
 - [🚀 Execução Local](#-execução-local)
 - [✅ Testes e Cobertura](#-testes-e-cobertura)
 - [⚙️ CI/CD](#️-cicd)
+- [🔁 Sincronização de PRs](#-sincronização-de-prs)
 - [🧭 Observações Importantes](#-observações-importantes)
 - [📄 Licença](#-licença)
 
@@ -808,6 +809,21 @@ Os workflows do GitHub Actions ficam em [`.github/workflows`](.github/workflows)
 | `sync-angularapp.yml` | Sincronização/build relacionado ao Angular. |
 | `test_analyse_in_Sonar_Cloud.yml` | Testes e análise estática configurados no pipeline. |
 | `tests_E2E.yml` | Testes end-to-end. |
+
+## 🔁 Sincronização de PRs
+
+O repositório mantém PRs contínuas para acompanhar a evolução da branch
+`develop` do fork `HONEY-TI/prj-estacio-despesas-pessoais` em relação ao
+repositório de origem `alexfariakof/app-despesas-pessoais`:
+
+- [PR #192](https://github.com/alexfariakof/app-despesas-pessoais/pull/192)
+  acompanha o destino `dev`.
+- [PR #193](https://github.com/alexfariakof/app-despesas-pessoais/pull/193)
+  acompanha o destino `main`.
+
+As PRs devem permanecer abertas como referências de sincronização. Cada push
+na branch de referência do fork atualiza automaticamente a comparação exibida
+pelo GitHub.
 
 ## 🧭 Observações Importantes
 
