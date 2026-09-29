@@ -5,8 +5,41 @@ title: "PR(#21)-Documentar Sincronização Contínua das PRs do Fork"
 branch: feature/documentar-sincronizacao-prs-continuas
 base: develop
 extends: feature-01-documentar-sincronizacao-prs-continuas
-status: draft
+status: open
 ---
 
-Registro da PR que documenta as referências contínuas #192 (`dev`) e #193
-(`main`) do fork HONEY-TI.
+## 📋 Descrição
+
+Documentação das PRs contínuas que acompanham o `develop` do fork HONEY-TI nos
+destinos `dev` e `main` do repositório de origem.
+
+Feature relacionada: `.backlog/features/feature-01-documentar-sincronizacao-prs-continuas.md`
+
+## 📊 Estatísticas
+
+| Métrica | Valor |
+| --- | ---: |
+| 🌿 Branch de origem | `feature/documentar-sincronizacao-prs-continuas` |
+| 🎯 Branch de destino | `develop` |
+| 📝 Total de commits | 4 |
+| 📁 Arquivos alterados | 3 |
+| 📈 Linhas | 49 adicionadas / 0 removidas |
+
+## PRs documentadas
+
+- [PR #192](https://github.com/alexfariakof/app-despesas-pessoais/pull/192) — destino `dev`.
+- [PR #193](https://github.com/alexfariakof/app-despesas-pessoais/pull/193) — destino `main`.
+
+## Checklist
+
+- [x] Commits separados por arquivo
+- [x] Referência da PR incluída nos commits de conteúdo
+- [x] Alterações revisadas e enviadas para a branch
+- [ ] Revisão funcional
+- [ ] Validação em ambiente Linux/jail
+
+## 📝 Commits de conteúdo
+
+- `docs(readme): documentar sincronizacao das PRs`
+- `docs(backlog): registrar feature de sincronizacao`
+- `docs(backlog): registrar PR de sincronizacao`
