@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Bootstrap Repository",
+            "type": "shell",
+            "command": "${workspaceFolder}/.ai/tools/bootstrap.sh",
+            "problemMatcher": [],
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "close": true
+            }
+        }
+    ]
+}
