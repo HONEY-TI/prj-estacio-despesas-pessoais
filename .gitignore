@@ -3,6 +3,57 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+
+# ================================
+# SECURITY / SECRETS
+# ================================
+.env
+.env.*
+*.env
+.claude/
+.claude
+.blackbox/
+.envrc
+.direnv/
+.secrets/
+secrets/
+vault/
+.vault/
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.der
+*.asc
+*.gpg
+1
+credentials.*
+auth.*
+apikey.*
+api_key.*
+token.*
+tokens.*
+secret.*
+secrets.*
+core.*
+.aws/
+.azure/
+.gcp/
+
+firebase-adminsdk*.json
+service-account*.json
+google-services.json
+
+.ssh/
+*.kubeconfig
+
+*.tfstate
+*.tfstate.*
+
 # User-specific files
 *.rsuser
 *.suo
@@ -407,3 +458,32 @@ FodyWeavers.xsd
 **/coveragereport/
 .claude/
 **/TODO*
+**/AGENTS.md
+
+
+# Arquivos temporários / sistema
+**/.Trash*
+**/tmp/
+**/.DS_Store/
+
+# Ferramentas de IA
+**/.ai/
+**/.claude/
+**/.codex/
+**/.gemini/
+**/.copilot/
+**/.cursor/
+**/.windsurf/
+**/.continue/
+**/.aider/
+**/.openclaude/
+**/.blackbox/
+
+# Arquivos de instruções para IAs
+**/AGENTS.md
+**/CLAUDE.md
+**/GEMINI.md
+**/AI.md
+**/.cursorrules
+**/.windsurfrules
+**.backlog
