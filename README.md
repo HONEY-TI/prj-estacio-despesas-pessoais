@@ -812,18 +812,18 @@ Os workflows do GitHub Actions ficam em [`.github/workflows`](.github/workflows)
 
 ## 🔁 Sincronização de PRs
 
-O repositório mantém PRs contínuas para acompanhar a evolução da branch
-`develop` do fork `HONEY-TI/prj-estacio-despesas-pessoais` em relação ao
+O repositório mantém referências de sincronização para acompanhar a evolução
+das branches do fork `HONEY-TI/prj-estacio-despesas-pessoais` em relação ao
 repositório de origem `alexfariakof/app-despesas-pessoais`:
 
-- [PR #194](https://github.com/alexfariakof/app-despesas-pessoais/pull/194)
-  acompanha o destino `dev`.
-- [PR #191](https://github.com/alexfariakof/app-despesas-pessoais/pull/191)
-  acompanha o destino `main`.
+- [PR #192](https://github.com/alexfariakof/app-despesas-pessoais/pull/192)
+  permanece aberta para o destino `dev`.
+- [PR #193](https://github.com/alexfariakof/app-despesas-pessoais/pull/193)
+  permanece aberta para o destino `main`.
+- As PRs #191 e #194 foram encerradas e mantidas apenas como histórico.
 
-As PRs devem permanecer abertas como referências de sincronização. Cada push
-na branch de referência do fork atualiza automaticamente a comparação exibida
-pelo GitHub.
+As PRs abertas permanecem como referências de sincronização. Cada push na
+branch de referência do fork atualiza a comparação exibida pelo GitHub.
 
 ## 🧭 Observações Importantes
 

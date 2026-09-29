@@ -10,8 +10,9 @@ status: open
 
 ## 📋 Descrição
 
-Documentação das PRs contínuas que acompanham o `develop` do fork HONEY-TI nos
-destinos `dev` e `main` do repositório de origem.
+Documentação das PRs abertas que acompanham as branches do fork HONEY-TI nos
+destinos `dev` e `main` do repositório de origem, preservando o histórico das
+PRs encerradas.
 
 Feature relacionada: `.backlog/features/feature-01-documentar-sincronizacao-prs-continuas.md`
 
@@ -21,14 +22,15 @@ Feature relacionada: `.backlog/features/feature-01-documentar-sincronizacao-prs-
 | --- | ---: |
 | 🌿 Branch de origem | `feature/documentar-sincronizacao-prs-continuas` |
 | 🎯 Branch de destino | `develop` |
-| 📝 Total de commits | 8 |
+| 📝 Total de commits | 10 |
 | 📁 Arquivos alterados | 12 |
 | 📈 Linhas | 213 adicionadas / 2 removidas |
 
 ## PRs documentadas
 
-- [PR #194](https://github.com/alexfariakof/app-despesas-pessoais/pull/194) — destino `dev`.
-- [PR #191](https://github.com/alexfariakof/app-despesas-pessoais/pull/191) — destino `main`.
+- [PR #192](https://github.com/alexfariakof/app-despesas-pessoais/pull/192) — aberta, destino `dev`.
+- [PR #193](https://github.com/alexfariakof/app-despesas-pessoais/pull/193) — aberta, destino `main`.
+- PRs #191 e #194 — encerradas, preservadas como histórico.
 
 ## Checklist
 
