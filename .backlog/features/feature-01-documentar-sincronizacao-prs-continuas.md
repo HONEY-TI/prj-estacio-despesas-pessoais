@@ -13,7 +13,7 @@ que sua finalidade e destinos sejam claros para a equipe.
 
 ## Objetivo
 
-Documentar as PRs #192 e #193 e o papel delas na sincronização contínua.
+Documentar as PRs #194 e #191 e o papel delas na sincronização contínua.
 
 ## Critérios de aceite
 

@@ -27,8 +27,8 @@ Feature relacionada: `.backlog/features/feature-01-documentar-sincronizacao-prs-
 
 ## PRs documentadas
 
-- [PR #192](https://github.com/alexfariakof/app-despesas-pessoais/pull/192) — destino `dev`.
-- [PR #193](https://github.com/alexfariakof/app-despesas-pessoais/pull/193) — destino `main`.
+- [PR #194](https://github.com/alexfariakof/app-despesas-pessoais/pull/194) — destino `dev`.
+- [PR #191](https://github.com/alexfariakof/app-despesas-pessoais/pull/191) — destino `main`.
 
 ## Checklist
 

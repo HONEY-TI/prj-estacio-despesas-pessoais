@@ -816,9 +816,9 @@ O repositório mantém PRs contínuas para acompanhar a evolução da branch
 `develop` do fork `HONEY-TI/prj-estacio-despesas-pessoais` em relação ao
 repositório de origem `alexfariakof/app-despesas-pessoais`:
 
-- [PR #192](https://github.com/alexfariakof/app-despesas-pessoais/pull/192)
+- [PR #194](https://github.com/alexfariakof/app-despesas-pessoais/pull/194)
   acompanha o destino `dev`.
-- [PR #193](https://github.com/alexfariakof/app-despesas-pessoais/pull/193)
+- [PR #191](https://github.com/alexfariakof/app-despesas-pessoais/pull/191)
   acompanha o destino `main`.
 
 As PRs devem permanecer abertas como referências de sincronização. Cada push
