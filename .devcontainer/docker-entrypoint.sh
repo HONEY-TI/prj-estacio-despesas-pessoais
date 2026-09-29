@@ -1,46 +1,34 @@
 #!/bin/bash
 set -e
 
-echo "Inicializando ambiente..."
+readonly USER=ubuntu
+readonly PROJECT_WORKSPACE=/workspace
 
-# Corrige permissões dos volumes persistentes
-sudo chown -R developer:developer /home/developer/.nuget || true
-sudo chown -R developer:developer /home/developer/.dotnet || true
-sudo chown -R developer:developer /home/developer/.aspnet || true
+# ── Realinhar UID/GID do ubuntu com o dono do $PROJECT_WORKSPACE ───────────────
+HOST_UID=$(stat -c '%u' $PROJECT_WORKSPACE)
+HOST_GID=$(stat -c '%g' $PROJECT_WORKSPACE)
+CURRENT_UID=$(id -u "$USER")
+CURRENT_GID=$(id -g "$USER")
 
-chmod -R u+rwX /home/developer/.nuget || true
-chmod -R u+rwX /home/developer/.dotnet || true
+echo "[entrypoint] $PROJECT_WORKSPACE pertence a UID:GID ${HOST_UID}:${HOST_GID}"
+echo "[entrypoint] usuário '$USER' atualmente é UID:GID ${CURRENT_UID}:${CURRENT_GID}"
 
-# Gera certificado se não existir
-if [ ! -f /workspace/src/WebApi/certificate/webapi-cert.pfx ]; then
-    echo "Criando certificado HTTPS..."
-
-    dotnet dev-certs https \
-        -ep /workspace/src/WebApi/certificate/webapi-cert.pfx \
-        -p "12345!"
+if [ "$HOST_GID" != "$CURRENT_GID" ]; then
+    echo "[entrypoint] ajustando GID de '$USER' para $HOST_GID"
+    groupmod -o -g "$HOST_GID" "$USER"
 fi
 
-
-mkdir -p /home/developer/.aspnet/https
-
-if [ ! -f /home/developer/.aspnet/https/WebApi.pem ]; then
-
-    openssl pkcs12 \
-        -in /workspace/src/WebApi/certificate/webapi-cert.pfx \
-        -clcerts \
-        -nokeys \
-        -out /home/developer/.aspnet/https/WebApi.pem \
-        -passin pass:12345!
-
-    openssl pkcs12 \
-        -in /workspace/src/WebApi/certificate/webapi-cert.pfx \
-        -nocerts \
-        -nodes \
-        -out /home/developer/.aspnet/https/WebApi.key \
-        -passin pass:12345!
-
+if [ "$HOST_UID" != "$CURRENT_UID" ]; then
+    echo "[entrypoint] ajustando UID de '$USER' para $HOST_UID"
+    usermod -o -u "$HOST_UID" "$USER"
 fi
 
-echo "Ambiente pronto."
+chown -R "$USER:$USER" /home/$USER 2>/dev/null || true
+chown -R "$USER:$USER" /home/$USER/.vscode-server 2>/dev/null || true
 
+if [ "$(stat -c '%u:%g' $PROJECT_WORKSPACE)" != "$HOST_UID:$HOST_GID" ]; then
+    chown "$USER:$USER" $PROJECT_WORKSPACE 2>/dev/null || true
+fi
+
+# ── Processo original do container ──────────────────────────────────
 exec "$@"

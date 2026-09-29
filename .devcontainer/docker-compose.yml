@@ -1,57 +1,52 @@
-include:
-  - path: ../.docker-infra-db/docker-compose.yml
-
 services:
   app:
-    build:
-      context: ..
-      dockerfile: .devcontainer/Dockerfile
-      args:
-        - BUILDKIT_INLINE_CACHE=1
     container_name: dotnet-devcontainer
-    volumes:
-      - ..:/workspace      
-      - ../src/WebApi/appsettings.docker.json:/workspace/src/Migrations/MySqlServer/appsettings.json      
-      - ../src/WebApi/appsettings.docker.json:/workspace/src/WebApi/appsettings.json      
-      - ../src/WebApi/appsettings.docker.json:/workspace/src/WebApi/appsettings.development.json
-      - ../src/AngularApp/src/environments/environment.dev.ts:/workspace/src/AngularApp/src/environments/environment.ts
-      - dotnet-nuget:/home/developer/.nuget   # cache de pacotes NuGet
-      - aspnet-keys:/home/developer/.aspnet/DataProtection-Keys
-      - node_modules:/home/developer/workspace/src/AngularApp/node_modules  # cache de pacotes npm
-    working_dir: /workspace/src
+    image: dotnet-devcontainer:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
-      - DOTNET_CLI_TELEMETRY_OPTOUT=1
-      - DOTNET_USE_POLLING_FILE_WATCHER=1
-      - BUILDKIT_STEP_LOG_MAX_SIZE=-1
-      - CONNECTION_STRING=Data Source=/workspace/src/data/app.db
-      - TMPDIR=/home/developer/tmp      
+      DOTNET_OPTIONS: "--max-old-space-size=4096"
+      GITHUB_TOKEN: ${GITHUB_TOKEN}      
+    env_file:
+      - .env
+    volumes:
+      - ../:/workspace:cached
+      - vscode-extensions:/home/ubuntu/.vscode-server/extensions
     ports:
-      - "443:443"   # HTTP
-      - "80:80"   # HTTP
-      - "42536:42536"   # HTTP http://localhost:42536
-      - "42535:42535"   # HTTPS (opcional) http://localhost:42535
-      - "4200:4200"   # HTTPS (opcional) http://localhost:42535
-    stdin_open: true  # mantém o container vivo
-    tty: true
+      - 3000:3000
+      - 4200:4200
+      - 18789:18789
+      - 42536:42536
+      - 42535:42535
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_ADMIN
+    security_opt:
+      - apparmor=unconfined
+      - seccomp:unconfined
     command: sleep infinity
-    entrypoint: /usr/local/bin/docker-entrypoint.sh
+    #entrypoint: /usr/local/bin/docker-entrypoint.sh
     networks:
       - dotnet-network
-      - mariadb-network
-    depends_on:
-      mariadb:
-        condition: service_healthy
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+          cpus: "2"
+        reservations:
+          memory: 1G
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "1"
 
 volumes:
-  dotnet-nuget:
-  aspnet-keys:
-  node_modules:
+  vscode-extensions:
+    name: vscode-extensions-dotnet
 
 networks:
   dotnet-network:
-    driver: bridge
-    name: dotnet-network
-  mariadb-network:
-    external: true
+    name: dotnet-net
