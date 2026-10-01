@@ -22,7 +22,7 @@ builder.Services.AddSwaggerApiVersioning(); // Swagger + versionamento de API
 //builder.Services.ConfigureOracleServerMigrationsContext(builder.Configuration);
 
 // -------------------- Configuração do DbContext Sql Server  --------------------
-//builder.Services.ConfigureMsSqlServerMigrationsContext(builder.Configuration);
+//builder.Services.ConfigureMsSqlServerContext(builder.Configuration);
 
 // -------------------- Configuração do DbContext MySql Server  --------------------
 builder.Services.ConfigureMySqlServerContext(builder.Configuration);
@@ -36,7 +36,7 @@ builder.AddAuthenticationConfigurations(); // Configura autenticação
 builder.Services.AddServicesCryptography(builder.Configuration);
 
 // -------------------- Injeção de Dependências --------------------
-builder.Services.AddAutoMapper(); // AutoMapper
+builder.Services.AddApplicationAutoMapper(); // AutoMapper
 builder.Services.AddAmazonS3BucketConfigurations(builder.Configuration); // Configuração S3
 builder.Services.AddRepositories(); // Repositórios
 builder.Services.AddServices(); // Serviços da aplicação
@@ -60,7 +60,7 @@ app.UseHttpsRedirection(); // Redireciona HTTP para HTTPS
 app.AddSupporteCulturesPtBr(); // Suporte a culturas PT-BR
 app.UseCors(); // Ativa CORS
 
-if (!app.Environment.IsProduction()) 
+if (!app.Environment.IsProduction())
     app.AddSwaggerUIApiVersioning(); // Swagger UI apenas para ambientes que não sejam produção 
 
 app.UseDefaultFiles(); // Suporte a arquivos default (index.html)

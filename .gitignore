@@ -3,6 +3,57 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+
+# ================================
+# SECURITY / SECRETS
+# ================================
+.env
+.env.*
+*.env
+.claude/
+.claude
+.blackbox/
+.envrc
+.direnv/
+.secrets/
+secrets/
+vault/
+.vault/
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.der
+*.asc
+*.gpg
+1
+credentials.*
+auth.*
+apikey.*
+api_key.*
+token.*
+tokens.*
+secret.*
+secrets.*
+core.*
+.aws/
+.azure/
+.gcp/
+
+firebase-adminsdk*.json
+service-account*.json
+google-services.json
+
+.ssh/
+*.kubeconfig
+
+*.tfstate
+*.tfstate.*
+
 # User-specific files
 *.rsuser
 *.suo
@@ -34,6 +85,7 @@ bld/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+dotnet/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
@@ -61,6 +113,8 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+**/dotnet/
+dotnet/
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
@@ -376,12 +430,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# VS Code files for those working on multiple tools
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
 # Local History for Visual Studio Code
 .history/
@@ -399,7 +447,6 @@ FodyWeavers.xsd
 # Script gerador de Certificado SSL
 */gencert.sh
 
-.vscode/
 */appsettings.Development.json
 */appsettings.json
 .config/
@@ -408,5 +455,35 @@ FodyWeavers.xsd
 *.key
 *.crt
 /Despesas.Backend/Program.cs
-**/src/app/pages/login/login.component.ts
 **/coveragereport/
+.claude/
+**/TODO*
+**/AGENTS.md
+
+
+# Arquivos temporários / sistema
+**/.Trash*
+**/tmp/
+**/.DS_Store/
+
+# Ferramentas de IA
+**/.ai/
+**/.claude/
+**/.codex/
+**/.gemini/
+**/.copilot/
+**/.cursor/
+**/.windsurf/
+**/.continue/
+**/.aider/
+**/.openclaude/
+**/.blackbox/
+
+# Arquivos de instruções para IAs
+**/AGENTS.md
+**/CLAUDE.md
+**/GEMINI.md
+**/AI.md
+**/.cursorrules
+**/.windsurfrules
+**.backlog

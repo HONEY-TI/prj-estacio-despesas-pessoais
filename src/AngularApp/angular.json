@@ -27,50 +27,55 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist",
+            "outputPath": "dist/angular-app",
+            "deleteOutputPath": true,
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": ["src/polyfills.ts"],
+            "polyfills": [
+              "src/polyfills.ts"
+            ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": [
               "oidc-client",
-              "dayjs",
-              "moment",
-              "popperjs",
               "bootstrap",
-              "mdb"
+              "mdb-ui-kit",
+              "datatables.net"
             ],
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
             "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
-              "src/styles/_variables.scss",
-              "src/styles/styles.scss",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
-              "node_modules/mdb-ui-kit/css/mdb.min.css",
-              "node_modules/datatables.net-dt/css/jquery.dataTables.css",
-              "node_modules/datatables.net-select-dt/css/select.dataTables.css"
+              "src/styles/styles.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
-              "node_modules/mdb-ui-kit/js/mdb.umd.min.js",
               "node_modules/datatables.net/js/jquery.dataTables.js",
-              "node_modules/datatables.net-select/js/dataTables.select.min.js",
-              "node_modules/dayjs/dayjs.min.js",
-              "node_modules/dayjs/locale/pt-br.js",
-              "node_modules/moment/min/moment.min.js"
+              "node_modules/datatables.net-select/js/dataTables.select.min.js"
             ]
           },
           "configurations": {
             "production": {
-              "optimization": true,
+              "buildOptimizer": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": {
+                  "inline": true
+                }
+              },
               "sourceMap": false,
               "aot": true,
               "extractLicenses": true,
-              "namedChunks": true,
+              "vendorChunk": false,
+              "commonChunk": true,
+              "namedChunks": false,
+              "outputHashing": "all",
               "budgets": [
                 {
                   "type": "initial",
@@ -79,60 +84,22 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "10kb",
+                  "maximumError": "20kb"
                 }
-              ],
-              "outputHashing": "all"
+              ]
             },
             "development": {
               "optimization": true,
               "extractLicenses": false,
+              "sourceMap": true,
               "progress": true,
               "aot": true,
               "namedChunks": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "3.5mb",
-                  "maximumError": "3.5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.dev.ts"
-                }
-              ]
-            },
-            "local-development": {
-              "buildOptimizer": true,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "10mb",
-                  "maximumError": "10mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "10kb",
-                  "maximumError": "10kb"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.local.ts"
                 }
               ]
             },
@@ -169,18 +136,6 @@
               "aot": true,
               "extractLicenses": true,
               "namedChunks": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "4mb",
-                  "maximumError": "4mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
-                }
-              ],
               "outputHashing": "all"
             },
             "production-ios": {
@@ -200,42 +155,43 @@
           }
         },
         "serve": {
-					"builder": "@angular-devkit/build-angular:dev-server",
-					"options": {
-						"headers": {
-							"Cross-Origin-Opener-Policy": "same-origin-allow-popups",
-							"Cross-Origin-Embedder-Policy": "unsafe-none"
-						}
-					},
-					"configurations": {
-						"production": {
-							"buildTarget": "angularapp:build:production"
-						},
-						"staging": {
-							"proxyConfig": "src/proxy.conf.js",
-							"buildTarget": "angularapp:build:staging"
-						},
-						"development": {
-							"proxyConfig": "src/proxy.conf.js",
-							"buildTarget": "angularapp:build:development"
-						},
-						"local-development": {
-							"proxyConfig": "src/proxy.conf.js",
-							"buildTarget": "angularapp:build:local-development"
-						}
-					},
-					"defaultConfiguration": "production"
-				},
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "headers": {
+              "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+              "Cross-Origin-Embedder-Policy": "unsafe-none"
+            }
+          },
+          "configurations": {
+            "production": {
+              "ssl": true,
+              "host": "0.0.0.0",
+              "proxyConfig": "src/proxy.conf.js",
+              "buildTarget": "angularapp:build:production"
+            },
+            "development": {
+              "ssl": true,
+              "host": "0.0.0.0",
+              "proxyConfig": "src/proxy.conf.js",
+              "buildTarget": "angularapp:build:development"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "codeCoverage": true,
             "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": [
+              "src/polyfills.ts"
+            ],
             "tsConfig": "tsconfig.spec.json",
-            "assets": ["src/favicon.ico", "src/assets"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
             "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles/styles.scss"
             ],
             "scripts": [],
@@ -246,6 +202,10 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "cache": {
+      "enabled": true,
+      "environment": "all"
+    }
   }
 }

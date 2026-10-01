@@ -1,0 +1,52 @@
+services:
+  app:
+    container_name: dotnet-devcontainer
+    image: dotnet-devcontainer:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DOTNET_OPTIONS: "--max-old-space-size=4096"
+      GITHUB_TOKEN: ${GITHUB_TOKEN}      
+    env_file:
+      - .env
+    volumes:
+      - ../:/workspace:cached
+      - vscode-extensions:/home/ubuntu/.vscode-server/extensions
+    ports:
+      - 3000:3000
+      - 4200:4200
+      - 18789:18789
+      - 42536:42536
+      - 42535:42535
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_ADMIN
+    security_opt:
+      - apparmor=unconfined
+      - seccomp:unconfined
+    command: sleep infinity
+    #entrypoint: /usr/local/bin/docker-entrypoint.sh
+    networks:
+      - dotnet-network
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+          cpus: "2"
+        reservations:
+          memory: 1G
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "1"
+
+volumes:
+  vscode-extensions:
+    name: vscode-extensions-dotnet
+
+networks:
+  dotnet-network:
+    name: dotnet-net
