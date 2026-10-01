@@ -2,6 +2,3 @@
 	path = .ai
 	url = git@github.com:HONEY-TI/.ai.git
 	branch = main
-[submodule ".github/.ai"]
-	path = .github/.ai
-	url = git@github.com:HONEY-TI/.ai.git
