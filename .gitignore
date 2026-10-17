@@ -487,3 +487,5 @@ FodyWeavers.xsd
 **/.cursorrules
 **/.windsurfrules
 **.backlog
+**/.xauth-devc
+**/pull-request/*.md
