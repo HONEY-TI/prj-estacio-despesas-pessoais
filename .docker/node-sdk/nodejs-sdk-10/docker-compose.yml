@@ -1,0 +1,7 @@
+﻿#docker run --rm -it alexfariakof/dotnet-sdk-10-with-node:latest
+services:
+  sdk-with-node:
+    image: alexfariakof/dotnet-sdk-10-with-node:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
